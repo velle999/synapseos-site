@@ -6,7 +6,7 @@ tags: linux, artificial-intelligence, opensource, llm, wayland
 cover: /public/assets/synui-desktop.png
 seoTitle: SynapseOS — an Arch-based Linux distro with a local LLM in the system layer
 seoDescription: SynapseOS runs a local LLM as a system service. An AI-native shell, a wlroots compositor, a security monitor with in-kernel enforcement, and a DKMS kernel module — all talking to one inference daemon. No cloud, no API keys.
-ogImage: https://synapseos.pages.dev/assets/og.png
+ogImage: https://synapseos.brncomputerhelp.workers.dev/assets/og.png
 enableToc: true
 ---
 
@@ -18,8 +18,8 @@ I wanted to know what happens if you start one layer down — if the model is a
 system service in the same sense that `systemd-resolved` is. Something the rest
 of the OS can *depend on* rather than an app you open.
 
-That's [SynapseOS](https://synapseos.pages.dev/). It's an Arch-based
-distribution, it's at 0.2.6, it's alpha, and I daily-drive it.
+That's [SynapseOS](https://synapseos.brncomputerhelp.workers.dev/). It's an
+Arch-based distribution, it's at 0.2.6, it's alpha, and I daily-drive it.
 
 ## The shape of it
 
@@ -172,7 +172,7 @@ When you're ready to install for real, `syn-install` does a whole-disk install
 with optional LUKS2 full-disk encryption, or a non-destructive UEFI dual-boot
 into existing free space, reusing the machine's ESP.
 
-- **Site:** [synapseos.pages.dev](https://synapseos.pages.dev/)
+- **Site:** [SynapseOS](https://synapseos.brncomputerhelp.workers.dev/)
 - **Source:** [github.com/velle999/SYNAPSE](https://github.com/velle999/SYNAPSE)
 - **Download:** [latest release](https://github.com/velle999/SYNAPSE/releases/latest)
 
