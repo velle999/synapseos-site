@@ -19,6 +19,7 @@ assets/style.css    all styles
 assets/logo.svg     dendrite mark (transparent, used as favicon)
 assets/og.png       1200×630 social card
 assets/*.png        screenshots
+posts/*.md          articles published to Hashnode (see below)
 ```
 
 ## Deploying on Cloudflare Pages
@@ -62,6 +63,38 @@ Cloudflare, and re-submit the sitemap in Google Search Console.
 4. Check the structured data with the
    [Rich Results Test](https://search.google.com/test/rich-results) — the page
    declares `WebSite`, `SoftwareApplication` and `FAQPage`.
+
+## Publishing to Hashnode
+
+`posts/` holds articles in Hashnode's markdown format, published by
+`.github/workflows/publish-to-hashnode.yml` through the
+[Publish to Hashnode action](https://github.com/Hashnode/publish-github-action).
+The `slug` in each file's front matter is the update key — keep it stable and a
+re-push edits the existing post instead of creating a second one.
+
+Setup (one time):
+
+1. Publishing through the API **requires Hashnode Pro**. Without it, open the
+   post file and paste its body into the Hashnode editor by hand — the front
+   matter maps onto fields in the editor's settings panel.
+2. Generate a Personal Access Token at <https://hashnode.com/settings/developer>.
+3. Add it as the `HASHNODE_PAT` repository secret.
+4. Replace `YOUR_BLOG.hashnode.dev` in the workflow with your publication host.
+
+Notes that cost time if you don't know them:
+
+- **SVG covers are rejected.** Cover and inline images may be jpg/png/gif/webp/avif
+  up to 8 MB. Relative paths upload to Hashnode's CDN automatically; a leading `/`
+  resolves from the repo root, which is why `cover: /assets/synui-desktop.png`
+  works.
+- **No `canonical` on an original post.** The field is for articles first
+  published elsewhere. These are written for Hashnode, so pointing their canonical
+  at this site would ask Google to drop them from the index for no gain. Add
+  `canonical:` only if the same text also goes up on a page of this site.
+- **Deleting a markdown file does not delete the post.** Manage published posts
+  from the Hashnode dashboard.
+- `robots.txt` disallows `/posts/` so Cloudflare never serves the raw markdown
+  into search results alongside the published article.
 
 ## Keeping it accurate
 

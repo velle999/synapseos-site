@@ -1,0 +1,32 @@
+# Setup before this does anything:
+#   1. Publishing through the API requires Hashnode Pro.
+#   2. Generate a Personal Access Token at https://hashnode.com/settings/developer
+#   3. Add it to this repo as the HASHNODE_PAT secret
+#      (Settings -> Secrets and variables -> Actions).
+#   4. Replace YOUR_BLOG.hashnode.dev below with your publication host.
+#
+# Until step 4 is done the job runs and fails on an unknown publication.
+# That is expected, not a broken workflow.
+
+name: Publish to Hashnode
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**'
+      - '.github/workflows/publish-to-hashnode.yml'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: Hashnode/publish-github-action@v1
+        with:
+          access-token: ${{ secrets.HASHNODE_PAT }}
+          publication-host: YOUR_BLOG.hashnode.dev
+          posts-directory: posts
