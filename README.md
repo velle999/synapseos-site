@@ -66,27 +66,62 @@ Cloudflare, and re-submit the sitemap in Google Search Console.
 
 ## Publishing to Hashnode
 
-`posts/` holds articles in Hashnode's markdown format, published by
-`.github/workflows/publish-to-hashnode.yml` through the
-[Publish to Hashnode action](https://github.com/Hashnode/publish-github-action).
-The `slug` in each file's front matter is the update key — keep it stable and a
-re-push edits the existing post instead of creating a second one.
+`posts/` holds the articles. The YAML front matter at the top of each file is
+Hashnode's own format, but **it is documentation as much as automation** —
+publishing from GitHub goes through Hashnode's API, and that requires a **Pro**
+publication. On the free plan you paste the post into the editor and set the
+same fields by hand.
 
-Setup (one time):
+### By hand (works on any plan)
 
-1. Publishing through the API **requires Hashnode Pro**. Without it, open the
-   post file and paste its body into the Hashnode editor by hand — the front
-   matter maps onto fields in the editor's settings panel.
-2. Generate a Personal Access Token at <https://hashnode.com/settings/developer>.
-3. Add it as the `HASHNODE_PAT` repository secret.
-4. Replace `YOUR_BLOG.hashnode.dev` in the workflow with your publication host.
+Copy the body without the front matter — everything after the second `---`:
 
-Notes that cost time if you don't know them:
+```sh
+awk 'p{print} /^---$/{n++; if (n==2) p=1}' \
+  posts/synapseos-ai-as-a-system-service.md | wl-copy
+```
+
+Paste that into a new Hashnode post, then set these in the editor. The mapping
+is one-to-one, so nothing in the file goes unused:
+
+| Front matter | Where it goes in the editor |
+|---|---|
+| `title` | the title line |
+| `subtitle` | **Article settings** → Subtitle |
+| `slug` | **Article settings** → Custom slug — set it, don't let it be derived |
+| `tags` | the tag picker, up to 15 |
+| `cover` | **Add cover image** → upload `assets/synui-desktop.png` |
+| `seoTitle`, `seoDescription` | **Article settings** → SEO |
+| `ogImage` | **Article settings** → OG image (needs the site deployed first) |
+| `enableToc` | **Article settings** → Table of contents |
+
+Editing later means editing in Hashnode, not in this file. Keep the file as the
+source of the *text* and copy changes across, or accept the drift — but don't
+assume a push updates the post, because on the free plan nothing here talks to
+Hashnode at all.
+
+### From GitHub (Pro)
+
+`.github/workflows/publish-to-hashnode.yml` runs the
+[Publish to Hashnode action](https://github.com/Hashnode/publish-github-action)
+on any push touching `posts/`. It **skips with a notice** until both the
+`HASHNODE_PAT` secret and a real `PUBLICATION_HOST` are set, so an unconfigured
+repo stays green instead of sitting on a failed run.
+
+1. Generate a Personal Access Token at <https://hashnode.com/settings/developer>.
+2. Add it as the `HASHNODE_PAT` repository secret.
+3. Replace `YOUR_BLOG.hashnode.dev` in the workflow's `env` block.
+
+The `slug` is the update key: keep it stable and a re-push edits the existing
+post rather than creating a second one.
+
+### Notes that cost time if you don't know them
 
 - **SVG covers are rejected.** Cover and inline images may be jpg/png/gif/webp/avif
-  up to 8 MB. Relative paths upload to Hashnode's CDN automatically; a leading `/`
-  resolves from the repo root, which is why `cover: /assets/synui-desktop.png`
-  works.
+  up to 8 MB. Under the action, relative paths upload to Hashnode's CDN and a
+  leading `/` resolves from the repo root — which is why
+  `cover: /assets/synui-desktop.png` works there. Uploading by hand, just pick
+  the file.
 - **No `canonical` on an original post.** The field is for articles first
   published elsewhere. These are written for Hashnode, so pointing their canonical
   at this site would ask Google to drop them from the index for no gain. Add
