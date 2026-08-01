@@ -97,7 +97,7 @@ Copy the body without the front matter — everything after the second `---`:
 ```sh
 cd ~/synapseos-site   # the paths below are relative to the repo root
 awk 'p{print} /^---$/{n++; if (n==2) p=1}' \
-  posts/synapseos-ai-as-a-system-service.md | wl-copy
+  posts/synapseos-llm-as-a-system-service.md | wl-copy
 ```
 
 Paste that into a new Hashnode post, then set these in the editor. The mapping

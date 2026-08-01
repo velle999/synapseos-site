@@ -1,11 +1,11 @@
 ---
-title: I built a Linux distro where the AI is a system service, not an app
-slug: synapseos-ai-as-a-system-service
+title: I built a Linux distro where the LLM is a system service, not an app
+slug: synapseos-llm-as-a-system-service
 subtitle: SynapseOS puts a local LLM daemon at the system layer and lets the shell, the compositor, the security monitor and a kernel module talk to it over a Unix socket.
 tags: linux, artificial-intelligence, opensource, llm, wayland
 cover: /public/assets/synui-desktop.png
-seoTitle: SynapseOS — an Arch-based Linux distro with a local LLM in the system layer
-seoDescription: SynapseOS runs a local LLM as a system service. An AI-native shell, a wlroots compositor, a security monitor with in-kernel enforcement, and a DKMS kernel module — all talking to one inference daemon. No cloud, no API keys.
+seoTitle: "SynapseOS: an Arch Linux distro with a local LLM built in"
+seoDescription: "SynapseOS runs a local LLM as a system service: the shell, the compositor and the security monitor all query it over a Unix socket. No cloud, no API keys."
 ogImage: https://synapseos.brncomputerhelp.workers.dev/assets/og.png
 enableToc: true
 ---
