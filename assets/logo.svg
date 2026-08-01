@@ -1,0 +1,16 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SynapseOS dendrite mark">
+  <g transform="translate(512,512)">
+    <polygon points="0,-464 400,272 -400,272" fill="none" stroke="#a78bfa" stroke-width="2" opacity="0.4"/>
+    <circle cx="0" cy="-48" r="36" fill="#a78bfa"/>
+    <line x1="0" y1="-48" x2="0" y2="-416" stroke="#a78bfa" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="288" y2="192" stroke="#a78bfa" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="-288" y2="192" stroke="#a78bfa" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="176" y2="200" stroke="#a78bfa" stroke-width="4.4"/>
+    <line x1="0" y1="-48" x2="-176" y2="200" stroke="#a78bfa" stroke-width="4.4"/>
+    <circle cx="0" cy="-416" r="17.6" fill="#a78bfa"/>
+    <circle cx="288" cy="192" r="17.6" fill="#a78bfa"/>
+    <circle cx="-288" cy="192" r="17.6" fill="#a78bfa"/>
+    <circle cx="176" cy="200" r="12.8" fill="#a78bfa"/>
+    <circle cx="-176" cy="200" r="12.8" fill="#a78bfa"/>
+  </g>
+</svg>

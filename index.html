@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SynapseOS — Arch Linux with a local LLM in the system layer</title>
+<meta name="description" content="SynapseOS is a free, open-source Arch-based Linux distribution that runs a local LLM as a system service: an AI-native shell, a wlroots Wayland desktop, a security monitor and a kernel module. No cloud, no API keys.">
+<link rel="canonical" href="https://synapseos.pages.dev/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SynapseOS">
+<meta property="og:title" content="SynapseOS — Arch Linux with a local LLM in the system layer">
+<meta property="og:description" content="An Arch-based Linux distribution that runs a local LLM as a system service: AI-native shell, wlroots Wayland desktop, security monitor, kernel module. No cloud, no API keys.">
+<meta property="og:url" content="https://synapseos.pages.dev/">
+<meta property="og:image" content="https://synapseos.pages.dev/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SynapseOS — where the kernel thinks.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SynapseOS — Arch Linux with a local LLM in the system layer">
+<meta name="twitter:description" content="An Arch-based Linux distribution that runs a local LLM as a system service. No cloud, no API keys.">
+<meta name="twitter:image" content="https://synapseos.pages.dev/assets/og.png">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://synapseos.pages.dev/#website",
+      "url": "https://synapseos.pages.dev/",
+      "name": "SynapseOS",
+      "description": "An Arch-based Linux distribution with a local LLM wired into the system layer.",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://synapseos.pages.dev/#software",
+      "name": "SynapseOS",
+      "alternateName": "SYNAPSE",
+      "applicationCategory": "OperatingSystem",
+      "applicationSubCategory": "Linux distribution",
+      "operatingSystem": "Linux (x86_64)",
+      "softwareVersion": "0.2.6",
+      "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
+      "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
+      "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
+      "url": "https://synapseos.pages.dev/",
+      "image": "https://synapseos.pages.dev/assets/og.png",
+      "screenshot": "https://synapseos.pages.dev/assets/synui-desktop.png",
+      "license": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
+      "isAccessibleForFree": true,
+      "description": "SynapseOS is an Arch-based Linux distribution that runs a local large language model as a system service. The shell, the Wayland compositor, the security monitor, the network filter and a kernel module all talk to it over a Unix socket, with no network calls and no API keys.",
+      "featureList": [
+        "Local LLM inference daemon (llama.cpp) exposed over a Unix socket",
+        "AI-native shell (synsh)",
+        "synui — a wlroots 0.20 / scenefx 0.5 Wayland compositor",
+        "synguard security monitor with in-kernel BPF-LSM enforcement",
+        "Custom DKMS kernel module exporting syscall telemetry via sysfs",
+        "LUKS2 full-disk encryption and UEFI dual-boot installer"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Velle Sinclair",
+        "url": "https://github.com/velle999"
+      },
+      "codeRepository": "https://github.com/velle999/SYNAPSE"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://synapseos.pages.dev/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is SynapseOS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SynapseOS is an Arch-based Linux distribution that runs a local large language model as a system service. Instead of shipping an AI application on top of a normal desktop, it puts an inference daemon (synapd) at the system layer and lets the shell, the compositor, the security monitor and the network filter query it over a Unix socket."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does SynapseOS send anything to the cloud?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The model file lives on the machine and inference runs locally through llama.cpp. There are no API keys to configure and no account to create. The ISO embeds Mistral 7B Instruct (Q4_K_M, about 4.1 GB) so the AI works on first boot with no network connection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the system requirements for SynapseOS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An x86_64 machine, 8 GB of RAM or more (the embedded 7B model is the reason), and roughly 25 GB of disk for an install. A GPU is optional: NVIDIA systems can install the CUDA build of the inference backend and AMD or Intel systems the Vulkan build, but the default is CPU inference and it works everywhere."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SynapseOS free and open source?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. SynapseOS-authored code is GPL-2.0-or-later, except the kernel module, which is GPL-2.0-only because the Linux kernel is. The full source tree is on GitHub."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SynapseOS ready to use as a daily driver?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is alpha software at version 0.2.x. The author daily-drives it, but it moves fast and it will break. Try it in a virtual machine before you give it a disk."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I install SynapseOS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Download every .part file from the latest GitHub release, concatenate them back into one ISO, verify the checksum, and write it to a USB stick with dd. Boot it and run syn-install from the live session, which offers a whole-disk install with optional LUKS2 full-disk encryption, or a non-destructive UEFI dual-boot install into existing free space."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#what">What it is</a>
+      <a href="#desktop">Desktop</a>
+      <a href="#components">Components</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Arch-based &middot; Wayland &middot; local-first AI</p>
+      <h1>SynapseOS</h1>
+      <p class="tagline">Where the kernel thinks.</p>
+      <p class="lede">
+        An Arch-based Linux distribution with a local large language model wired into
+        the system layer &mdash; not bolted on top. The shell, the compositor, the
+        security monitor and a kernel module all talk to one inference daemon over a
+        Unix socket. <strong>No network calls. No API keys.</strong> The model lives on
+        your machine.
+      </p>
+      <p class="cta">
+        <a class="btn btn-primary" href="#download">Download 0.2.6</a>
+        <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
+      </p>
+      <p class="status" role="note">
+        <strong>Status: alpha.</strong> Version 0.2.x. A real, actively developed system
+        &mdash; the author daily-drives it &mdash; but it is early, moves fast, and will
+        break. Try it in a VM before you give it a disk.
+      </p>
+    </div>
+  </section>
+
+  <section id="what" class="wrap section">
+    <h2>What is SynapseOS?</h2>
+    <p>
+      Most &ldquo;AI operating systems&rdquo; are a chat window on a normal desktop.
+      SynapseOS starts one layer down. A local inference daemon called
+      <code>synapd</code> owns the model and serves every other component over the SYN
+      socket protocol, so the AI is a system service in the same sense that
+      <code>systemd-resolved</code> is &mdash; something the rest of the OS can depend on
+      rather than an app you open.
+    </p>
+    <p>
+      It boots to <code>synsh</code>, a shell where you can type a command or just say
+      what you want, and into <code>synui</code>, a wlroots Wayland compositor written
+      for this system rather than adapted to it &mdash; one that knows the AI daemon
+      exists and holds a live subscription to the security monitor&rsquo;s verdict feed.
+    </p>
+
+    <ul class="grid" role="list">
+      <li>
+        <h3>Local inference, no accounts</h3>
+        <p>
+          The ISO embeds Mistral 7B Instruct (Q4_K_M, ~4.1&nbsp;GB) and runs it through
+          llama.cpp, so the AI is live on first boot with nothing to configure and
+          nothing leaving the machine.
+        </p>
+      </li>
+      <li>
+        <h3>A shell that takes English</h3>
+        <p>
+          <code>synsh</code> is a normal POSIX-ish shell until you stop typing commands.
+          Describe the outcome instead and it resolves the intent against the local
+          model &mdash; then shows you what it is about to run.
+        </p>
+      </li>
+      <li>
+        <h3>A compositor of its own</h3>
+        <p>
+          <code>synui</code> runs on wlroots 0.20 and renders through scenefx 0.5:
+          tiling and monocle layouts, per-output workspaces, XWayland, layer-shell,
+          glass, blur, shadows, and an optional CRT post-process pass.
+        </p>
+      </li>
+      <li>
+        <h3>Security that enforces in-kernel</h3>
+        <p>
+          <code>synguard</code> classifies syscall events, scores threats and publishes
+          verdicts on a feed the desktop subscribes to. Since 0.2.4 it can also deny
+          in-kernel through a BPF-LSM gate, behind warmup, heartbeat and deny-budget
+          guards.
+        </p>
+      </li>
+      <li>
+        <h3>Telemetry from a real kernel module</h3>
+        <p>
+          <code>synapse_kmod</code> is a DKMS module exporting syscall telemetry and AI
+          scheduling hints through <code>/sys/kernel/synapse/</code> &mdash;
+          <code>syscall_log</code>, <code>ai_hints</code>, <code>stats</code>,
+          <code>status</code>, <code>config</code>, <code>version</code>.
+        </p>
+      </li>
+      <li>
+        <h3>An installer that respects your disk</h3>
+        <p>
+          <code>syn-install</code> offers a whole-disk install with optional LUKS2
+          full-disk encryption, or &mdash; on UEFI, where the disk already holds another
+          OS &mdash; a non-destructive dual-boot into existing free space, reusing the
+          machine&rsquo;s ESP. Four filesystems, three bootloaders.
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="architecture" class="wrap section">
+    <h2>How it fits together</h2>
+    <p>
+      One model, resident once, shared by everything. Components do not each load
+      their own copy &mdash; the AI coding assistant reuses the model already sitting in
+      <code>synapd</code> rather than spending a second allocation of VRAM.
+    </p>
+<pre class="diagram" aria-label="SynapseOS architecture diagram"><code>  User
+   │
+   ▼
+ synsh ─── natural language / commands ──┐
+   │                                     │
+   ▼                                     │
+ synapd  (local LLM — Mistral 7B)        │
+   │  inference over SYN socket protocol │
+   ├──► synguard      security verdicts ─┤
+   ├──► synnet        network policy     │
+   └──► synapse_kmod  kernel sysfs       │
+            │                            ▼
+            ▼                    synui (Wayland)
+     /sys/kernel/synapse/
+     syscall_log, ai_hints, stats,
+     status, config, version</code></pre>
+  </section>
+
+  <section id="desktop" class="wrap section">
+    <h2>The desktop</h2>
+    <p>
+      <code>synui</code> draws its own display settings, wallpaper picker, dock, cursor
+      picker, sound panel and control panel. The status bar and the desktop widgets are
+      a native <a href="https://quickshell.org/" rel="noopener">quickshell</a> shell.
+      Everything below is compositor-drawn &mdash; there is no third-party panel,
+      launcher or settings app in the picture.
+    </p>
+
+    <figure>
+      <img src="/assets/synui-desktop.png" width="1920" height="1080" loading="lazy" decoding="async"
+           alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, application menu and auto-hiding dock.">
+      <figcaption>synui &mdash; native quickshell bar, application menu, auto-hiding dock.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="/assets/synui-crt.png" width="1920" height="1080" loading="lazy" decoding="async"
+           alt="SynapseOS with the CRT post-process filter enabled in amber phosphor, showing scanlines across the whole desktop.">
+      <figcaption>The optional CRT post-process pass, in amber phosphor.</figcaption>
+    </figure>
+
+    <h3>Some of what the keyboard reaches</h3>
+    <div class="table-scroll">
+      <table>
+        <caption>A selection of default keybindings. Rebind anything in <code>~/.config/synui/synuirc</code>.</caption>
+        <thead>
+          <tr><th scope="col">Key</th><th scope="col">Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><kbd>Super</kbd> (tapped alone)</td><td>Start menu</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>C</kbd></td><td>Control panel &mdash; every setting and shortcut in one place</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>Space</kbd></td><td>Command bar</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>Backspace</kbd></td><td>Ask the AI</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>A</kbd></td><td>Neural activity overlay</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>W</kbd></td><td>Wallpaper picker (per-monitor with <kbd>Tab</kbd>)</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>E</kbd></td><td>Visual effects &mdash; CRT strengths, corners, shadow, blur</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>T</kbd></td><td>Theme manager</td></tr>
+          <tr><td><kbd>Alt</kbd>+<kbd>Tab</kbd></td><td>Most-recently-used switch, with live window previews</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Delete</kbd></td><td>Task manager (CPU / RAM / GPU)</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>G</kbd></td><td>Game mode</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">
+      The full table &mdash; sixty-odd bindings &mdash; is in the
+      <a href="https://github.com/velle999/SYNAPSE#the-desktop" rel="noopener">README</a>,
+      and <kbd>Super</kbd>+<kbd>C</kbd> generates it live from the running bind table.
+    </p>
+  </section>
+
+  <section id="components" class="wrap section">
+    <h2>Components</h2>
+    <p>Each lives in its own directory in the tree with its own <code>PKGBUILD</code>.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">Component</th><th scope="col">What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><code>synapd</code></th><td>Local LLM inference daemon (llama.cpp). Owns the model; serves every other component over a Unix socket. Drops root after start.</td></tr>
+          <tr><th scope="row"><code>synsh</code></th><td>AI-native shell. Type naturally, or use it as a normal shell.</td></tr>
+          <tr><th scope="row"><code>synui</code></th><td>Wayland compositor on wlroots 0.20, rendering through scenefx 0.5 &mdash; tiling and monocle layouts, per-output workspaces, XWayland, layer-shell, glass, blur, shadows.</td></tr>
+          <tr><th scope="row"><code>synguard</code></th><td>Security monitor. Classifies syscall events, scores threats, publishes verdicts on a feed <code>synui</code> subscribes to; optional in-kernel BPF-LSM enforcement.</td></tr>
+          <tr><th scope="row"><code>synnet</code></th><td>Network policy daemon with nftables integration.</td></tr>
+          <tr><th scope="row"><code>synapse_kmod</code></th><td>Kernel module (DKMS). Syscall monitoring and AI scheduling hints, exposed via sysfs.</td></tr>
+          <tr><th scope="row"><code>vibe</code></th><td>Local AI coding assistant &mdash; an agentic read/write/edit/bash/grep loop that reuses the resident model, and confirms before destructive tools.</td></tr>
+          <tr><th scope="row"><code>chibi</code></th><td>Voice-interactive AI companion with a security-sentinel aspect over <code>synguard</code>&rsquo;s verdict feed.</td></tr>
+          <tr><th scope="row"><code>syn-update</code></th><td>Updates the SynapseOS half of an installed system, rebuilding only the components whose version moved.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="download" class="wrap section">
+    <h2>Download SynapseOS</h2>
+    <p class="release-line">
+      Latest release: <strong>0.2.6</strong> &mdash; the desktop release. Free, x86_64,
+      about 7.9&nbsp;GB with the model embedded.
+    </p>
+    <p class="cta">
+      <a class="btn btn-primary" href="https://github.com/velle999/SYNAPSE/releases/latest" rel="noopener">Get the ISO from GitHub Releases</a>
+    </p>
+
+    <h3>Reassemble and verify</h3>
+    <p>
+      The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit. Download
+      <strong>all</strong> <code>.part*</code> files, then:
+    </p>
+<pre><code>cat SynapseOS-0.2.6-x86_64.iso.part* &gt; SynapseOS-0.2.6-x86_64.iso
+sha256sum -c SynapseOS-0.2.6-x86_64.iso.sha256</code></pre>
+
+    <h3>Write it to a USB stick</h3>
+<pre><code>sudo dd if=SynapseOS-0.2.6-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+
+    <h3>Or try it in a VM first</h3>
+<pre><code>git clone https://github.com/velle999/SYNAPSE.git &amp;&amp; cd SYNAPSE
+QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
+    <p class="small">
+      The script auto-detects the newest ISO, uses KVM when available, boots UEFI via
+      OVMF, and attaches a persistent 20&nbsp;GB test disk.
+    </p>
+
+    <h3>System requirements</h3>
+    <ul class="reqs" role="list">
+      <li><strong>CPU</strong> &mdash; x86_64. CPU inference is the default and works everywhere.</li>
+      <li><strong>RAM</strong> &mdash; 8&nbsp;GB minimum; the embedded 7B model is the reason.</li>
+      <li><strong>Disk</strong> &mdash; ~25&nbsp;GB for an install.</li>
+      <li><strong>GPU</strong> &mdash; optional. NVIDIA via a CUDA build, AMD and Intel via Vulkan.</li>
+      <li><strong>Firmware</strong> &mdash; UEFI or BIOS. Dual-boot installs need UEFI.</li>
+    </ul>
+  </section>
+
+  <section id="faq" class="wrap section">
+    <h2>Frequently asked questions</h2>
+
+    <h3>Does SynapseOS send anything to the cloud?</h3>
+    <p>
+      No. The model file lives on the machine and inference runs locally through
+      llama.cpp. There are no API keys to configure and no account to create. The AI
+      works with the network cable out.
+    </p>
+
+    <h3>Is it just Arch with an app on top?</h3>
+    <p>
+      No. The inference daemon is a system service and the components query it over a
+      socket: the shell resolves intent through it, the compositor talks to it, the
+      security monitor uses it to classify events. The desktop, the shell, the security
+      monitor, the network daemon and the kernel module are all written for this
+      project.
+    </p>
+
+    <h3>Can I run it on a machine with no GPU?</h3>
+    <p>
+      Yes &mdash; that is the default. The ISO is deliberately a CPU build of the
+      inference backend so it starts on any x86_64 machine. GPU acceleration is a
+      separate package you install afterwards if you have the hardware.
+    </p>
+
+    <h3>Is it free and open source?</h3>
+    <p>
+      Yes. SynapseOS-authored code is GPL-2.0-or-later, except the kernel module, which
+      is GPL-2.0-only because the Linux kernel is. The whole tree is on
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>.
+    </p>
+
+    <h3>Can I use it as my daily driver?</h3>
+    <p>
+      The author does. That is not a recommendation that you do &mdash; it is alpha at
+      0.2.x, it moves fast, and it will break. Run it in a VM first.
+    </p>
+
+    <h3>How do updates work?</h3>
+    <p>
+      An installed system needs two commands, because they cover different halves of
+      it: <code>sudo pacman -Syu</code> for Arch, and <code>syn-update check</code> /
+      <code>syn-update apply</code> for the SynapseOS components. There is a GUI for the
+      second one in the start menu.
+    </p>
+  </section>
+
+  <section class="wrap section closing">
+    <h2>Get involved</h2>
+    <p>
+      Issues, discussion and the full source tree live on GitHub, and the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">wiki</a> covers
+      installing, updating and the release process in detail.
+    </p>
+    <p class="cta">
+      <a class="btn btn-primary" href="https://github.com/velle999/SYNAPSE" rel="noopener">velle999/SYNAPSE</a>
+      <a class="btn" href="https://github.com/velle999/SYNAPSE/issues" rel="noopener">Report an issue</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      GPL-2.0-or-later (kernel module: GPL-2.0-only). Not affiliated with or endorsed by
+      Arch Linux. &ldquo;Linux&rdquo; is a registered trademark of Linus Torvalds.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
