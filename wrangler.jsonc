@@ -1,0 +1,14 @@
+{
+  // Static-assets-only Worker: no `main`, no Worker script — Cloudflare serves
+  // public/ directly. `wrangler deploy` is the whole deploy.
+  "name": "synapseos",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    // Only this directory is public. README.md, posts/ and .github/ live
+    // outside it and are never served, which is why there is no .assetsignore.
+    "directory": "./public",
+    // Serve public/404.html (with a 404 status) for an unmatched path.
+    // The default is a bare "not found" with no page at all.
+    "not_found_handling": "404-page"
+  }
+}

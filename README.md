@@ -3,52 +3,70 @@
 The public website for **[SynapseOS](https://github.com/velle999/SYNAPSE)** — an
 Arch-based Linux distribution with a local LLM wired into the system layer.
 
-Live at **https://synapseos.pages.dev/**
-
 It is a static site with no build step, no framework and no external requests —
 every asset is served from this repo, which is also what the `Content-Security-Policy`
 in `_headers` enforces.
 
 ```
-index.html          the page (content, metadata, JSON-LD)
-404.html            not-found page
-robots.txt          crawl policy + sitemap pointer
-sitemap.xml         one URL; bump <lastmod> on a content change
-_headers            Cloudflare Pages: caching + security headers
-assets/style.css    all styles
-assets/logo.svg     dendrite mark (transparent, used as favicon)
-assets/og.png       1200×630 social card
-assets/*.png        screenshots
-posts/*.md          articles published to Hashnode (see below)
+wrangler.jsonc          Cloudflare Workers config — the entire deploy
+public/                 EVERYTHING IN HERE IS PUBLIC. Nothing outside it is.
+  index.html            the page (content, metadata, JSON-LD)
+  404.html              not-found page
+  robots.txt            crawl policy + sitemap pointer
+  sitemap.xml           one URL; bump <lastmod> on a content change
+  _headers              caching + security headers
+  assets/style.css      all styles
+  assets/logo.svg       dendrite mark (transparent, used as favicon)
+  assets/og.png         1200×630 social card
+  assets/*.png          screenshots
+posts/*.md              articles published to Hashnode (see below)
 ```
 
-## Deploying on Cloudflare Pages
+## Deploying on Cloudflare
 
-Connect this repo in the Cloudflare dashboard (Workers & Pages → Create → Pages →
-Connect to Git) with:
+This deploys as a **Worker serving static assets**, not as a Pages project —
+Cloudflare no longer offers Pages in the create flow on new accounts. There is no
+Worker script: `wrangler.jsonc` points at `public/` and Cloudflare serves it.
 
-| Setting | Value |
+In the dashboard, **Workers & Pages → Create → Workers → Import a repository**,
+pick `velle999/synapseos-site`, and:
+
+| Field | Value |
 |---|---|
-| Framework preset | None |
+| Project name | `synapseos` |
 | Build command | *(leave empty)* |
-| Build output directory | `/` |
-| Production branch | `main` |
+| Deploy command | `npx wrangler deploy` (the default) |
+| Path | `/` |
+| API token | leave on **Create new token** |
 
-Every push to `main` redeploys. Pull requests get preview URLs automatically.
+Every push to `main` redeploys. Non-production branches upload a preview version.
+
+Deploying from this machine instead:
+
+```sh
+npx wrangler deploy --dry-run   # validate without shipping
+npx wrangler deploy
+```
+
+`public/` is the whole story for what is reachable on the web: `README.md`,
+`posts/` and `.github/` sit outside it and are never uploaded, which is why there
+is no `.assetsignore`. **A new file only becomes public by being in `public/`.**
 
 ## Changing the domain
 
-The site URL is written into five places. When a real domain replaces
-`synapseos.pages.dev`, update all of them:
+The site URL is written into five places. When the real domain replaces the
+`workers.dev` one, update all of them:
 
-1. `index.html` — `<link rel="canonical">`
-2. `index.html` — the `og:url` and `og:image` / `twitter:image` meta tags
-3. `index.html` — the `@id` and `url` fields in the JSON-LD block
-4. `robots.txt` — the `Sitemap:` line
-5. `sitemap.xml` — the `<loc>` element
+1. `public/index.html` — `<link rel="canonical">`
+2. `public/index.html` — the `og:url` and `og:image` / `twitter:image` meta tags
+3. `public/index.html` — the `@id` and `url` fields in the JSON-LD block
+4. `public/robots.txt` — the `Sitemap:` line
+5. `public/sitemap.xml` — the `<loc>` element
+
+Plus `ogImage` in any `posts/*.md` front matter.
 
 ```sh
-git grep -l 'synapseos.pages.dev'   # finds all of them
+git grep -ln 'synapseos\.pages\.dev'   # finds all of them
 ```
 
 Then add the custom domain under the project's **Custom domains** tab in
@@ -129,8 +147,11 @@ post rather than creating a second one.
   `canonical:` only if the same text also goes up on a page of this site.
 - **Deleting a markdown file does not delete the post.** Manage published posts
   from the Hashnode dashboard.
-- `robots.txt` disallows `/posts/` so Cloudflare never serves the raw markdown
-  into search results alongside the published article.
+- `posts/` sits outside `public/`, so Cloudflare never serves the raw markdown
+  into search results alongside the published article. It needs no `robots.txt`
+  rule because it is not on the web at all.
+- The `cover:` path is `/public/assets/...` — the Hashnode action resolves a
+  leading `/` from the **repo root**, not from the site root.
 
 ## Keeping it accurate
 

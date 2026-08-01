@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-
-# Cloudflare Pages serves everything in the repo, including the raw markdown
-# these posts are published to Hashnode from. Keep the .md out of the index so
-# it never competes with the published article.
-Disallow: /posts/
-
-Sitemap: https://synapseos.pages.dev/sitemap.xml
