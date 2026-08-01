@@ -5,8 +5,8 @@
 #      (Settings -> Secrets and variables -> Actions).
 #   4. Replace YOUR_BLOG.hashnode.dev below with your publication host.
 #
-# Until step 4 is done the job runs and fails on an unknown publication.
-# That is expected, not a broken workflow.
+# Until both are done the job SKIPS with a note rather than failing, so an
+# unconfigured repo does not sit on a red X.
 
 name: Publish to Hashnode
 
@@ -18,15 +18,38 @@ on:
       - '.github/workflows/publish-to-hashnode.yml'
   workflow_dispatch:
 
+env:
+  # Replace with your publication host, or swap to publication-id below.
+  PUBLICATION_HOST: YOUR_BLOG.hashnode.dev
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - name: Check configuration
+        id: cfg
+        env:
+          PAT: ${{ secrets.HASHNODE_PAT }}
+        run: |
+          ready=true
+          if [ -z "$PAT" ]; then
+            echo "::notice::HASHNODE_PAT secret is not set — skipping publish."
+            ready=false
+          fi
+          if [ "$PUBLICATION_HOST" = "YOUR_BLOG.hashnode.dev" ]; then
+            echo "::notice::PUBLICATION_HOST is still the placeholder — skipping publish."
+            ready=false
+          fi
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v4
+        if: steps.cfg.outputs.ready == 'true'
         with:
           fetch-depth: 2
+
       - uses: Hashnode/publish-github-action@v1
+        if: steps.cfg.outputs.ready == 'true'
         with:
           access-token: ${{ secrets.HASHNODE_PAT }}
-          publication-host: YOUR_BLOG.hashnode.dev
+          publication-host: ${{ env.PUBLICATION_HOST }}
           posts-directory: posts
