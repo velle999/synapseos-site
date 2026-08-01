@@ -2,7 +2,7 @@
 title: I built a Linux distro where the LLM is a system service, not an app
 slug: synapseos-llm-as-a-system-service
 subtitle: SynapseOS puts a local LLM daemon at the system layer and lets the shell, the compositor, the security monitor and a kernel module talk to it over a Unix socket.
-tags: linux, artificial-intelligence, opensource, llm, wayland
+tags: linux, artificial-intelligence, opensource, llm, archlinux
 cover: /public/assets/synui-desktop.png
 seoTitle: "SynapseOS: an Arch Linux distro with a local LLM built in"
 seoDescription: "SynapseOS runs a local LLM as a system service: the shell, the compositor and the security monitor all query it over a Unix socket. No cloud, no API keys."
