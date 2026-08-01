@@ -77,6 +77,7 @@ same fields by hand.
 Copy the body without the front matter — everything after the second `---`:
 
 ```sh
+cd ~/synapseos-site   # the paths below are relative to the repo root
 awk 'p{print} /^---$/{n++; if (n==2) p=1}' \
   posts/synapseos-ai-as-a-system-service.md | wl-copy
 ```
