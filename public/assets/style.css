@@ -221,90 +221,155 @@ tbody tr:hover { background: var(--bg-raise); }
 
 /* ---------- gallery ---------- */
 /*
- * A grid of shots, each one a link to a full-size overlay.
+ * One screenshot at a time, on a horizontal scroll-snap track.
  *
- * The overlay is pure CSS, driven by :target, and it has to be: the site's
- * own Content-Security-Policy is `script-src 'none'`, so there is no
- * JavaScript here to open a dialog with and no library to reach for. An
- * anchor to #shot-<name> is what opens it and a second anchor closes it,
- * which also means every shot has its own shareable URL and the browser Back
- * button closes the overlay — behaviour a scripted lightbox usually has to
- * reimplement badly.
+ * It has to be CSS alone: the site's own Content-Security-Policy is
+ * `script-src 'none'`, so there is no JavaScript here to drive a slider with
+ * and no library to reach for. A scroll container with snap points is the
+ * whole mechanism — arrows and dots are ordinary anchors to the slide ids, and
+ * `scroll-behavior: smooth` on the track is what makes following one glide
+ * instead of jump. That also keeps what the old overlay was actually good for:
+ * every shot still has its own shareable URL, and Back still walks them.
+ *
+ * ⚠ WHAT IT REPLACED, AND WHY IT IS NOT COMING BACK: a grid of thumbnails plus
+ * thirteen `:target` overlays, which is thirteen copies of the pictures in the
+ * page. Correct only while the stylesheet is — with the CSS missing, `display:
+ * none` goes with it and every shot renders a second time at full width. That
+ * is a real state, not a hypothetical: /assets/* is served immutable for a
+ * year, so anyone holding an older stylesheet saw exactly that. The markup no
+ * longer has a second copy to reveal.
+ *
+ * ⚠ AND THE STYLESHEET IS VERSIONED IN THE LINK NOW (`?v=`) for the same
+ * reason. An edit at an unversioned immutable URL reaches new visitors only;
+ * everyone who has been here before keeps the old file for a year and does not
+ * revalidate. Bump the query whenever this file changes.
  */
 
-.gallery {
-  list-style: none; margin: 1.75rem 0 0; padding: 0;
-  display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-}
-.gallery > li { margin: 0; }
+.carousel { position: relative; margin-top: 1.75rem; }
 
-.shot {
-  display: block; text-decoration: none; color: inherit;
+.track {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; gap: 0;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
   border: 1px solid var(--line); border-radius: .75rem;
-  background: var(--bg-raise); overflow: hidden;
-  transition: border-color .18s ease, transform .18s ease;
+  background: var(--bg-raise);
+  scrollbar-width: none;
 }
-.shot:hover, .shot:focus-visible {
-  border-color: var(--brand-dim);
-  transform: translateY(-2px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .shot, .shot:hover, .shot:focus-visible { transition: none; transform: none; }
-}
+.track::-webkit-scrollbar { display: none; }
 
-/* A fixed aspect box so a 231x258 widget and a 1600x900 television sit in the
- * same grid without one of them dictating the row height. `contain` rather
- * than `cover`: these are screenshots, and cropping one hides the thing it
- * was taken to show. */
-.shot img {
-  display: block; width: 100%; height: auto; aspect-ratio: 4 / 3;
-  object-fit: contain; background: var(--bg-sunk);
+.slide {
+  position: relative;
+  flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always;
+  margin: 0; padding: 1rem 1rem .25rem;
+}
+.slide figure { margin: 0; }
+
+/*
+ * A FIXED media box, not a fixed image. The shots run from a 231x258 widget to
+ * a 1600x1329 theme sheet, and sizing to the picture would make the carousel
+ * change height on every slide — the thing that reads as "massive" on the wide
+ * ones and empty on the small. The box is constant, the picture is centred
+ * inside it and contained: `cover` would crop, and these were taken to show
+ * what is in them.
+ */
+.slide .media {
+  display: flex; align-items: center; justify-content: center;
+  height: clamp(15rem, 46vh, 30rem);
+  background: var(--bg-sunk); border-radius: .5rem;
+  overflow: hidden;
+}
+.slide .media img {
+  display: block;
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto; object-fit: contain;
   border: 0; border-radius: 0;
 }
-/* ⚠ `height: auto` above is load-bearing, not tidying. Every one of these
- * carries width= and height= attributes so the browser can reserve the space
- * before the picture arrives, and a browser maps those to CSS width/height as
- * presentational hints. With BOTH set, aspect-ratio is ignored — the 1600x1329
- * themes tile rendered at its full natural height and blew the grid row apart.
- * height:auto is what hands the sizing back to aspect-ratio while leaving the
- * attributes doing their real job. */
-.shot b {
-  display: block; padding: .6rem .75rem .15rem;
-  font-size: .9rem; font-weight: 600; color: var(--brand);
+
+/* Reserved so a one-line caption and a three-line one do not move the dots. */
+.slide figcaption {
+  min-height: 5.5rem;
+  padding: .85rem .25rem .25rem;
+  text-align: center;
 }
-.shot span {
-  display: block; padding: 0 .75rem .7rem;
-  font-size: .82rem; line-height: 1.5; color: var(--ink-dim);
+.slide figcaption b {
+  display: block; margin-bottom: .25rem;
+  font-size: 1rem; font-weight: 600; color: var(--brand);
+}
+.slide figcaption span {
+  display: block; max-width: 60ch; margin: 0 auto;
+  font-size: .88rem; line-height: 1.55; color: var(--ink-dim);
 }
 
-.lightbox {
-  position: fixed; inset: 0; z-index: 40;
-  display: none; align-items: center; justify-content: center;
-  padding: clamp(.75rem, 3vw, 2.5rem);
-  background: rgba(4, 4, 10, .93);
+/* Overlaid on the media box, vertically centred on it rather than on the
+ * slide, so they do not drift down over the caption. */
+.arrow {
+  position: absolute; top: 1rem; z-index: 1;
+  height: clamp(15rem, 46vh, 30rem);
+  display: flex; align-items: center;
+  width: clamp(2.5rem, 7%, 4rem);
+  text-decoration: none; color: var(--ink);
+  opacity: .55; transition: opacity .18s ease;
 }
-.lightbox:target { display: flex; }
-.lightbox figure { margin: 0; max-width: 100%; max-height: 100%; }
-.lightbox img {
-  display: block; max-width: 100%; max-height: 82vh;
-  width: auto; height: auto; object-fit: contain;
-  border: 1px solid var(--line); border-radius: .5rem;
-  background: var(--bg-sunk);
+.arrow:hover, .arrow:focus-visible { opacity: 1; }
+.arrow.prev { left: 1rem; justify-content: flex-start; }
+.arrow.next { right: 1rem; justify-content: flex-end; }
+.arrow span {
+  display: flex; align-items: center; justify-content: center;
+  width: 2.25rem; height: 2.25rem;
+  font: 400 1.6rem/1 var(--sans);
+  border: 1px solid var(--line); border-radius: 50%;
+  background: rgba(4, 4, 10, .65); backdrop-filter: blur(6px);
 }
-.lightbox figcaption {
-  margin-top: .75rem; text-align: center;
-  font-size: .9rem; color: var(--ink-dim);
+
+.dots {
+  list-style: none; margin: .9rem 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  justify-content: center;
 }
-/* Covers the whole overlay, so a click anywhere outside the picture closes
- * it — the gesture people already expect. The visible × sits above it. */
-.lightbox .close {
-  position: absolute; inset: 0;
-  display: block; text-indent: -9999px; overflow: hidden;
+.dots li { margin: 0; }
+.dots a {
+  display: flex; align-items: center; justify-content: center;
+  width: 1.6rem; height: 1.6rem;
+  font-size: .72rem; text-decoration: none;
+  color: var(--ink-dim); background: var(--bg-raise);
+  border: 1px solid var(--line); border-radius: 50%;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
-.lightbox .x {
-  position: absolute; top: .75rem; right: 1rem; z-index: 1;
-  font: 400 1.75rem/1 var(--sans); text-decoration: none;
-  color: var(--ink-dim); padding: .25rem .6rem; border-radius: .4rem;
+.dots a:hover, .dots a:focus-visible {
+  color: var(--ink); border-color: var(--brand-dim);
 }
-.lightbox .x:hover, .lightbox .x:focus-visible { color: var(--ink); background: var(--bg-raise); }
+
+/* Which one you are on, for the two ways of getting there that set :target —
+ * a dot and an arrow. A swipe sets no target and leaves the mark where it was;
+ * a stale dot is a smaller cost than no indicator at all, and the caption under
+ * the picture always names the slide you are actually looking at. Browsers
+ * without :has() simply show no active mark. */
+.carousel:has(#shot-control-panel:target) .dots a[href="#shot-control-panel"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-software:target) .dots a[href="#shot-software"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-files:target) .dots a[href="#shot-files"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-settings:target) .dots a[href="#shot-settings"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-disks:target) .dots a[href="#shot-disks"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-task-manager:target) .dots a[href="#shot-task-manager"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-arcade:target) .dots a[href="#shot-arcade"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-big-screen:target) .dots a[href="#shot-big-screen"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-chibi:target) .dots a[href="#shot-chibi"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-arsenal:target) .dots a[href="#shot-arsenal"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-updates:target) .dots a[href="#shot-updates"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-tuxagotchi:target) .dots a[href="#shot-tuxagotchi"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.carousel:has(#shot-themes:target) .dots a[href="#shot-themes"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .track { scroll-behavior: auto; }
+  .arrow, .dots a { transition: none; }
+}
+
+@media (max-width: 40rem) {
+  /* The arrows sit over the picture on a narrow screen, where there is no
+   * margin beside it to hold them. The dots are the reliable control there. */
+  .arrow { width: 2.75rem; }
+  .arrow.prev { left: .25rem; }
+  .arrow.next { right: .25rem; }
+  .slide { padding: .75rem .75rem .25rem; }
+  .slide figcaption { min-height: 6.5rem; }
+}
