@@ -52,10 +52,14 @@ npx wrangler deploy
 `posts/` and `.github/` sit outside it and are never uploaded, which is why there
 is no `.assetsignore`. **A new file only becomes public by being in `public/`.**
 
-## Changing the domain
+## The domain
 
-The site URL is written into five places. When the real domain replaces the
-`workers.dev` one, update all of them:
+The site is **https://soslinux.org**. The `synapseos.brncomputerhelp.workers.dev`
+origin still answers — Cloudflare keeps it alongside a custom domain — but every
+canonical, `og:url`, JSON-LD `@id` and sitemap entry names `soslinux.org`, so
+that is the one search engines index.
+
+The URL is written into five places. Changing it again means all of them:
 
 1. `public/index.html` — `<link rel="canonical">`
 2. `public/index.html` — the `og:url` and `og:image` / `twitter:image` meta tags
@@ -66,11 +70,14 @@ The site URL is written into five places. When the real domain replaces the
 Plus `ogImage` in any `posts/*.md` front matter.
 
 ```sh
-git grep -ln 'synapseos\.pages\.dev'   # finds all of them
+git grep -ln 'soslinux\.org'   # finds all of them
 ```
 
-Then add the custom domain under the project's **Custom domains** tab in
-Cloudflare, and re-submit the sitemap in Google Search Console.
+**The DNS side is not in this repo.** The domain has to be added under the
+project's **Custom domains** tab in Cloudflare *before* these URLs mean
+anything — until it resolves, the canonical points at a host that does not
+answer. Then re-verify the property and re-submit the sitemap in Google Search
+Console; the old origin is a separate property there.
 
 ## Getting it indexed
 

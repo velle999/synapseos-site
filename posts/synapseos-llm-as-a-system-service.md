@@ -6,7 +6,7 @@ tags: linux, artificial-intelligence, opensource, llm, archlinux
 cover: /public/assets/synui-desktop.png
 seoTitle: "SynapseOS: an Arch Linux distro with a local LLM built in"
 seoDescription: "SynapseOS runs a local LLM as a system service: the shell, the compositor and the security monitor all query it over a Unix socket. No cloud, no API keys."
-ogImage: https://synapseos.brncomputerhelp.workers.dev/assets/og.png
+ogImage: https://soslinux.org/assets/og.png
 enableToc: true
 ---
 
@@ -18,7 +18,7 @@ I wanted to know what happens if you start one layer down — if the model is a
 system service in the same sense that `systemd-resolved` is. Something the rest
 of the OS can *depend on* rather than an app you open.
 
-That's [SynapseOS](https://synapseos.brncomputerhelp.workers.dev/). It's an
+That's [SynapseOS](https://soslinux.org/). It's an
 Arch-based distribution, it's at 0.2.6, it's alpha, and I daily-drive it.
 
 ## The shape of it
@@ -172,7 +172,7 @@ When you're ready to install for real, `syn-install` does a whole-disk install
 with optional LUKS2 full-disk encryption, or a non-destructive UEFI dual-boot
 into existing free space, reusing the machine's ESP.
 
-- **Site:** [SynapseOS](https://synapseos.brncomputerhelp.workers.dev/)
+- **Site:** [SynapseOS](https://soslinux.org/)
 - **Source:** [github.com/velle999/SYNAPSE](https://github.com/velle999/SYNAPSE)
 - **Download:** [latest release](https://github.com/velle999/SYNAPSE/releases/latest)
 

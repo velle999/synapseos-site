@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://synapseos.brncomputerhelp.workers.dev/sitemap.xml
+Sitemap: https://soslinux.org/sitemap.xml
