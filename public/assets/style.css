@@ -259,46 +259,56 @@ tbody tr:hover { background: var(--bg-raise); }
 
 /* ---------- gallery ---------- */
 /*
- * One screenshot at a time, on a horizontal scroll-snap track.
+ * One screenshot at a time, switched by a hidden radio group.
  *
- * It has to be CSS alone: the site's own Content-Security-Policy is
- * `script-src 'none'`, so there is no JavaScript here to drive a slider with
- * and no library to reach for. A scroll container with snap points is the
- * whole mechanism — arrows and dots are ordinary anchors to the slide ids, and
- * `scroll-behavior: smooth` on the track is what makes following one glide
- * instead of jump. That also keeps what the old overlay was actually good for:
- * every shot still has its own shareable URL, and Back still walks them.
+ * It is CSS alone because it has to be: _headers sets `script-src 'none'`, so
+ * there is no JavaScript here and no library to reach for.
  *
- * ⚠ WHAT IT REPLACED, AND WHY IT IS NOT COMING BACK: a grid of thumbnails plus
- * thirteen `:target` overlays, which is thirteen copies of the pictures in the
- * page. Correct only while the stylesheet is — with the CSS missing, `display:
- * none` goes with it and every shot renders a second time at full width. That
- * is a real state, not a hypothetical: /assets/* is served immutable for a
- * year, so anyone holding an older stylesheet saw exactly that. The markup no
- * longer has a second copy to reveal.
+ * ⚠ IT USED TO BE ANCHORS TO SLIDE IDS, AND THAT IS THE ONE THING NOT TO GO
+ * BACK TO. Following a fragment makes the browser scroll the target into view,
+ * and it scrolls EVERY scrollable ancestor to do it — the track sideways, which
+ * was the point, and the page vertically, which was not. There is no CSS that
+ * suppresses only the vertical half. Clicking a number threw the page around,
+ * which is exactly the complaint that produced this rewrite. A radio changes
+ * state without navigating anywhere, so nothing scrolls at all.
  *
- * ⚠ AND THE STYLESHEET IS VERSIONED IN THE LINK NOW (`?v=`) for the same
- * reason. An edit at an unversioned immutable URL reaches new visitors only;
- * everyone who has been here before keeps the old file for a year and does not
- * revalidate. Bump the query whenever this file changes.
+ * What that costs, so nobody re-adds it by accident: no per-shot URL to share
+ * and no Back-button step per shot (the ids are gone from the slides — with a
+ * transform moving them off-screen, an #shot-x URL would have scrolled the page
+ * to a picture nobody can see), and no swipe on touch, because the track is no
+ * longer a scroll container. The dots and arrows are the whole interface now.
+ *
+ * The inputs stay focusable rather than `display: none`, which is what gives
+ * keyboard control for free: focus the group and the arrow keys walk the shots,
+ * because that is simply what a radio group does.
+ *
+ * ⚠ AND THE STYLESHEET IS VERSIONED IN THE LINK (`?v=`): /assets/* is served
+ * immutable for a year, so an edit at an unversioned URL reaches new visitors
+ * only. Bump the query whenever this file changes.
  */
 
 .carousel { position: relative; margin-top: 1.75rem; }
 
+.viewport { overflow: hidden; border: 1px solid var(--line); border-radius: .75rem;
+  background: var(--bg-raise); }
+
 .track {
   list-style: none; margin: 0; padding: 0;
   display: flex; gap: 0;
-  overflow-x: auto; overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory; scroll-behavior: smooth;
-  border: 1px solid var(--line); border-radius: .75rem;
-  background: var(--bg-raise);
-  scrollbar-width: none;
+  transition: transform .35s ease;
 }
-.track::-webkit-scrollbar { display: none; }
+
+/* Visually hidden, deliberately NOT display:none — a removed input is not
+   focusable, and the arrow-key walk through the shots is just the radio group
+   behaving normally. */
+.pick {
+  position: absolute; width: 1px; height: 1px;
+  opacity: 0; margin: 0; pointer-events: none;
+}
 
 .slide {
   position: relative;
-  flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always;
+  flex: 0 0 100%;
   margin: 0; padding: 1rem 1rem .25rem;
 }
 .slide figure { margin: 0; }
@@ -342,6 +352,7 @@ tbody tr:hover { background: var(--bg-raise); }
 /* Overlaid on the media box, vertically centred on it rather than on the
  * slide, so they do not drift down over the caption. */
 .arrow {
+  cursor: pointer;
   position: absolute; top: 1rem; z-index: 1;
   height: clamp(15rem, 46vh, 30rem);
   display: flex; align-items: center;
@@ -349,7 +360,7 @@ tbody tr:hover { background: var(--bg-raise); }
   text-decoration: none; color: var(--ink);
   opacity: .55; transition: opacity .18s ease;
 }
-.arrow:hover, .arrow:focus-visible { opacity: 1; }
+.arrow:hover { opacity: 1; }
 .arrow.prev { left: 1rem; justify-content: flex-start; }
 .arrow.next { right: 1rem; justify-content: flex-end; }
 .arrow span {
@@ -366,7 +377,8 @@ tbody tr:hover { background: var(--bg-raise); }
   justify-content: center;
 }
 .dots li { margin: 0; }
-.dots a {
+.dots label { cursor: pointer; }
+.dots label {
   display: flex; align-items: center; justify-content: center;
   width: 1.6rem; height: 1.6rem;
   font-size: .72rem; text-decoration: none;
@@ -374,32 +386,57 @@ tbody tr:hover { background: var(--bg-raise); }
   border: 1px solid var(--line); border-radius: 50%;
   transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
-.dots a:hover, .dots a:focus-visible {
+.dots label:hover {
   color: var(--ink); border-color: var(--brand-dim);
 }
 
-/* Which one you are on, for the two ways of getting there that set :target —
- * a dot and an arrow. A swipe sets no target and leaves the mark where it was;
- * a stale dot is a smaller cost than no indicator at all, and the caption under
- * the picture always names the slide you are actually looking at. Browsers
- * without :has() simply show no active mark. */
-.carousel:has(#shot-control-panel:target) .dots a[href="#shot-control-panel"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-software:target) .dots a[href="#shot-software"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-files:target) .dots a[href="#shot-files"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-settings:target) .dots a[href="#shot-settings"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-disks:target) .dots a[href="#shot-disks"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-task-manager:target) .dots a[href="#shot-task-manager"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-arcade:target) .dots a[href="#shot-arcade"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-big-screen:target) .dots a[href="#shot-big-screen"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-chibi:target) .dots a[href="#shot-chibi"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-arsenal:target) .dots a[href="#shot-arsenal"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-updates:target) .dots a[href="#shot-updates"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-tuxagotchi:target) .dots a[href="#shot-tuxagotchi"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.carousel:has(#shot-themes:target) .dots a[href="#shot-themes"] { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+/* Which one you are on, and which slide is showing — the same :checked state
+   drives both, so the mark can never disagree with the picture. */
+.pick#pick-control-panel:checked ~ .viewport .track { transform: translateX(-0%); }
+.pick#pick-software:checked ~ .viewport .track { transform: translateX(-100%); }
+.pick#pick-files:checked ~ .viewport .track { transform: translateX(-200%); }
+.pick#pick-settings:checked ~ .viewport .track { transform: translateX(-300%); }
+.pick#pick-disks:checked ~ .viewport .track { transform: translateX(-400%); }
+.pick#pick-task-manager:checked ~ .viewport .track { transform: translateX(-500%); }
+.pick#pick-arcade:checked ~ .viewport .track { transform: translateX(-600%); }
+.pick#pick-big-screen:checked ~ .viewport .track { transform: translateX(-700%); }
+.pick#pick-chibi:checked ~ .viewport .track { transform: translateX(-800%); }
+.pick#pick-arsenal:checked ~ .viewport .track { transform: translateX(-900%); }
+.pick#pick-updates:checked ~ .viewport .track { transform: translateX(-1000%); }
+.pick#pick-tuxagotchi:checked ~ .viewport .track { transform: translateX(-1100%); }
+.pick#pick-themes:checked ~ .viewport .track { transform: translateX(-1200%); }
+
+.pick#pick-control-panel:checked ~ .dots li:nth-child(1) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-software:checked ~ .dots li:nth-child(2) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-files:checked ~ .dots li:nth-child(3) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-settings:checked ~ .dots li:nth-child(4) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-disks:checked ~ .dots li:nth-child(5) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-task-manager:checked ~ .dots li:nth-child(6) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-arcade:checked ~ .dots li:nth-child(7) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-big-screen:checked ~ .dots li:nth-child(8) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-chibi:checked ~ .dots li:nth-child(9) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-arsenal:checked ~ .dots li:nth-child(10) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-updates:checked ~ .dots li:nth-child(11) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-tuxagotchi:checked ~ .dots li:nth-child(12) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+.pick#pick-themes:checked ~ .dots li:nth-child(13) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+
+.pick#pick-control-panel:focus-visible ~ .dots li:nth-child(1) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-software:focus-visible ~ .dots li:nth-child(2) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-files:focus-visible ~ .dots li:nth-child(3) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-settings:focus-visible ~ .dots li:nth-child(4) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-disks:focus-visible ~ .dots li:nth-child(5) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-task-manager:focus-visible ~ .dots li:nth-child(6) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-arcade:focus-visible ~ .dots li:nth-child(7) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-big-screen:focus-visible ~ .dots li:nth-child(8) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-chibi:focus-visible ~ .dots li:nth-child(9) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-arsenal:focus-visible ~ .dots li:nth-child(10) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-updates:focus-visible ~ .dots li:nth-child(11) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-tuxagotchi:focus-visible ~ .dots li:nth-child(12) label { outline: 2px solid var(--brand); outline-offset: 2px; }
+.pick#pick-themes:focus-visible ~ .dots li:nth-child(13) label { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .track { scroll-behavior: auto; }
-  .arrow, .dots a { transition: none; }
+  .track { transition: none; }
+  .arrow, .dots label { transition: none; }
 }
 
 @media (max-width: 40rem) {
