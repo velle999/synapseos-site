@@ -218,3 +218,93 @@ tbody tr:hover { background: var(--bg-raise); }
 }
 .site-footer p { max-width: 62ch; }
 .site-footer p:last-child { margin-bottom: 0; }
+
+/* ---------- gallery ---------- */
+/*
+ * A grid of shots, each one a link to a full-size overlay.
+ *
+ * The overlay is pure CSS, driven by :target, and it has to be: the site's
+ * own Content-Security-Policy is `script-src 'none'`, so there is no
+ * JavaScript here to open a dialog with and no library to reach for. An
+ * anchor to #shot-<name> is what opens it and a second anchor closes it,
+ * which also means every shot has its own shareable URL and the browser Back
+ * button closes the overlay — behaviour a scripted lightbox usually has to
+ * reimplement badly.
+ */
+
+.gallery {
+  list-style: none; margin: 1.75rem 0 0; padding: 0;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.gallery > li { margin: 0; }
+
+.shot {
+  display: block; text-decoration: none; color: inherit;
+  border: 1px solid var(--line); border-radius: .75rem;
+  background: var(--bg-raise); overflow: hidden;
+  transition: border-color .18s ease, transform .18s ease;
+}
+.shot:hover, .shot:focus-visible {
+  border-color: var(--brand-dim);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .shot, .shot:hover, .shot:focus-visible { transition: none; transform: none; }
+}
+
+/* A fixed aspect box so a 231x258 widget and a 1600x900 television sit in the
+ * same grid without one of them dictating the row height. `contain` rather
+ * than `cover`: these are screenshots, and cropping one hides the thing it
+ * was taken to show. */
+.shot img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 3;
+  object-fit: contain; background: var(--bg-sunk);
+  border: 0; border-radius: 0;
+}
+/* ⚠ `height: auto` above is load-bearing, not tidying. Every one of these
+ * carries width= and height= attributes so the browser can reserve the space
+ * before the picture arrives, and a browser maps those to CSS width/height as
+ * presentational hints. With BOTH set, aspect-ratio is ignored — the 1600x1329
+ * themes tile rendered at its full natural height and blew the grid row apart.
+ * height:auto is what hands the sizing back to aspect-ratio while leaving the
+ * attributes doing their real job. */
+.shot b {
+  display: block; padding: .6rem .75rem .15rem;
+  font-size: .9rem; font-weight: 600; color: var(--brand);
+}
+.shot span {
+  display: block; padding: 0 .75rem .7rem;
+  font-size: .82rem; line-height: 1.5; color: var(--ink-dim);
+}
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 40;
+  display: none; align-items: center; justify-content: center;
+  padding: clamp(.75rem, 3vw, 2.5rem);
+  background: rgba(4, 4, 10, .93);
+}
+.lightbox:target { display: flex; }
+.lightbox figure { margin: 0; max-width: 100%; max-height: 100%; }
+.lightbox img {
+  display: block; max-width: 100%; max-height: 82vh;
+  width: auto; height: auto; object-fit: contain;
+  border: 1px solid var(--line); border-radius: .5rem;
+  background: var(--bg-sunk);
+}
+.lightbox figcaption {
+  margin-top: .75rem; text-align: center;
+  font-size: .9rem; color: var(--ink-dim);
+}
+/* Covers the whole overlay, so a click anywhere outside the picture closes
+ * it — the gesture people already expect. The visible × sits above it. */
+.lightbox .close {
+  position: absolute; inset: 0;
+  display: block; text-indent: -9999px; overflow: hidden;
+}
+.lightbox .x {
+  position: absolute; top: .75rem; right: 1rem; z-index: 1;
+  font: 400 1.75rem/1 var(--sans); text-decoration: none;
+  color: var(--ink-dim); padding: .25rem .6rem; border-radius: .4rem;
+}
+.lightbox .x:hover, .lightbox .x:focus-visible { color: var(--ink); background: var(--bg-raise); }

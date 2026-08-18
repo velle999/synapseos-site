@@ -60,7 +60,7 @@
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "url": "https://soslinux.org/",
       "image": "https://soslinux.org/assets/og.png",
-      "screenshot": "https://soslinux.org/assets/synui-desktop.png",
+      "screenshot": "https://soslinux.org/assets/synui-desktop.webp",
       "license": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
       "isAccessibleForFree": true,
       "description": "SynapseOS is an Arch-based Linux distribution that runs a local large language model as a system service. The shell, the Wayland compositor, the security monitor, the network filter and a kernel module all talk to it over a Unix socket, with no network calls and no API keys.",
@@ -158,6 +158,7 @@
     <nav aria-label="Primary">
       <a href="#what">What it is</a>
       <a href="#desktop">Desktop</a>
+      <a href="#gallery">Screenshots</a>
       <a href="#components">Components</a>
       <a href="#download">Download</a>
       <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
@@ -327,14 +328,14 @@
     </p>
 
     <figure>
-      <img src="/assets/synui-desktop.png" width="1920" height="1080" loading="lazy" decoding="async"
-           alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, application menu and auto-hiding dock.">
-      <figcaption>synui &mdash; native quickshell bar, application menu, auto-hiding dock.</figcaption>
+      <img src="/assets/synui-desktop.webp" width="1920" height="1080" loading="lazy" decoding="async"
+           alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, start menu, desktop widgets and auto-hiding dock.">
+      <figcaption>synui &mdash; native quickshell bar, start menu, desktop widgets, auto-hiding dock.</figcaption>
     </figure>
 
     <figure>
-      <img src="/assets/synui-crt.png" width="1920" height="1080" loading="lazy" decoding="async"
-           alt="SynapseOS with the CRT post-process filter enabled in amber phosphor, showing scanlines across the whole desktop.">
+      <img src="/assets/synui-crt.webp" width="1920" height="1080" loading="lazy" decoding="async"
+           alt="SynapseOS with the CRT post-process filter enabled in amber phosphor: scanlines and a curved screen over a fastfetch readout.">
       <figcaption>The optional CRT post-process pass, in amber phosphor.</figcaption>
     </figure>
 
@@ -370,6 +371,228 @@
       and <kbd>Super</kbd>+<kbd>C</kbd> generates it live from the running bind table.
     </p>
   </section>
+
+  <section id="gallery" class="wrap section">
+    <h2>A look around</h2>
+    <p>
+      Every window below is part of SynapseOS. The file manager, the package
+      manager, the settings, the disk utility, the task manager and the
+      editor are all written for this system &mdash; there is no third-party
+      desktop suite underneath. Pick any one to see it full size.
+    </p>
+
+    <ul class="gallery">
+      <li>
+        <a class="shot" href="#shot-control-panel">
+          <img src="/assets/shots/control-panel.webp" width="863" height="572" loading="lazy" decoding="async"
+               alt="Control panel — Every setting the compositor owns, on one keystroke. Generated from the live bind table, so it cannot drift from what the keys actually do.">
+          <b>Control panel</b>
+          <span>Every setting the compositor owns, on one keystroke. Generated from the live bind table, so it cannot drift from what the keys actually do.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-software">
+          <img src="/assets/shots/software.webp" width="841" height="715" loading="lazy" decoding="async"
+               alt="Software — synpkg — a libalpm front end in C, with the curated SynapseOS list beside the AUR and Flathub.">
+          <b>Software</b>
+          <span>synpkg — a libalpm front end in C, with the curated SynapseOS list beside the AUR and Flathub.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-files">
+          <img src="/assets/shots/files.webp" width="840" height="713" loading="lazy" decoding="async"
+               alt="Files — synfiles, with the capacity of every device in the sidebar and tabs across the top.">
+          <b>Files</b>
+          <span>synfiles, with the capacity of every device in the sidebar and tabs across the top.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-settings">
+          <img src="/assets/shots/settings.webp" width="840" height="713" loading="lazy" decoding="async"
+               alt="Settings — What the kernel sees for each connector, beside what the compositor is actually driving. The two disagreeing is a bug you can now see.">
+          <b>Settings</b>
+          <span>What the kernel sees for each connector, beside what the compositor is actually driving. The two disagreeing is a bug you can now see.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-disks">
+          <img src="/assets/shots/disks.webp" width="841" height="715" loading="lazy" decoding="async"
+               alt="Disks — Partitions, health and mount state. The disk the system booted from cannot be formatted, and the refusal says so.">
+          <b>Disks</b>
+          <span>Partitions, health and mount state. The disk the system booted from cannot be formatted, and the refusal says so.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-task-manager">
+          <img src="/assets/shots/task-manager.webp" width="661" height="577" loading="lazy" decoding="async"
+               alt="Task manager — CPU, memory, GPU and VRAM, per process — on Ctrl+Alt+Delete.">
+          <b>Task manager</b>
+          <span>CPU, memory, GPU and VRAM, per process — on Ctrl+Alt+Delete.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-arcade">
+          <img src="/assets/shots/arcade.webp" width="842" height="714" loading="lazy" decoding="async"
+               alt="Arcade — MangoHud, controller mapping, per-game window fit and the shortcuts that drive them.">
+          <b>Arcade</b>
+          <span>MangoHud, controller mapping, per-game window fit and the shortcuts that drive them.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-big-screen">
+          <img src="/assets/shots/big-screen.webp" width="1600" height="900" loading="lazy" decoding="async"
+               alt="Big screen — The ten-foot interface: the Steam library, media and the machine's own switches as tiles, driven with a controller.">
+          <b>Big screen</b>
+          <span>The ten-foot interface: the Steam library, media and the machine's own switches as tiles, driven with a controller.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-chibi">
+          <img src="/assets/shots/chibi.webp" width="839" height="712" loading="lazy" decoding="async"
+               alt="Chibi — A local-LLM avatar that also carries the clock, the weather and the tickers.">
+          <b>Chibi</b>
+          <span>A local-LLM avatar that also carries the clock, the weather and the tickers.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-arsenal">
+          <img src="/assets/shots/arsenal.webp" width="840" height="713" loading="lazy" decoding="async"
+               alt="Arsenal — Five thousand BlackArch tools, by category, installed on demand rather than shipped.">
+          <b>Arsenal</b>
+          <span>Five thousand BlackArch tools, by category, installed on demand rather than shipped.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-updates">
+          <img src="/assets/shots/updates.webp" width="841" height="714" loading="lazy" decoding="async"
+               alt="Updates — Source-revision aware: it names what an ISO upgrade would bring that a package update cannot.">
+          <b>Updates</b>
+          <span>Source-revision aware: it names what an ISO upgrade would bring that a package update cannot.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-tuxagotchi">
+          <img src="/assets/shots/tuxagotchi.webp" width="231" height="258" loading="lazy" decoding="async"
+               alt="Tuxagotchi — A desktop widget that needs feeding. The desktop takes widgets; this is one of them.">
+          <b>Tuxagotchi</b>
+          <span>A desktop widget that needs feeding. The desktop takes widgets; this is one of them.</span>
+        </a>
+      </li>
+      <li>
+        <a class="shot" href="#shot-themes">
+          <img src="/assets/shots/themes.webp" width="1600" height="1329" loading="lazy" decoding="async"
+               alt="Fourteen themes — The same window across four of them. Every application on the system reads the palette, not just the bar.">
+          <b>Fourteen themes</b>
+          <span>The same window across four of them. Every application on the system reads the palette, not just the bar.</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <div class="lightbox" id="shot-control-panel" role="dialog" aria-label="Control panel">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/control-panel.webp" width="863" height="572" loading="lazy" decoding="async" alt="Control panel">
+      <figcaption>Control panel &mdash; Every setting the compositor owns, on one keystroke. Generated from the live bind table, so it cannot drift from what the keys actually do.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-software" role="dialog" aria-label="Software">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/software.webp" width="841" height="715" loading="lazy" decoding="async" alt="Software">
+      <figcaption>Software &mdash; synpkg — a libalpm front end in C, with the curated SynapseOS list beside the AUR and Flathub.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-files" role="dialog" aria-label="Files">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/files.webp" width="840" height="713" loading="lazy" decoding="async" alt="Files">
+      <figcaption>Files &mdash; synfiles, with the capacity of every device in the sidebar and tabs across the top.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-settings" role="dialog" aria-label="Settings">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/settings.webp" width="840" height="713" loading="lazy" decoding="async" alt="Settings">
+      <figcaption>Settings &mdash; What the kernel sees for each connector, beside what the compositor is actually driving. The two disagreeing is a bug you can now see.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-disks" role="dialog" aria-label="Disks">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/disks.webp" width="841" height="715" loading="lazy" decoding="async" alt="Disks">
+      <figcaption>Disks &mdash; Partitions, health and mount state. The disk the system booted from cannot be formatted, and the refusal says so.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-task-manager" role="dialog" aria-label="Task manager">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/task-manager.webp" width="661" height="577" loading="lazy" decoding="async" alt="Task manager">
+      <figcaption>Task manager &mdash; CPU, memory, GPU and VRAM, per process — on Ctrl+Alt+Delete.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-arcade" role="dialog" aria-label="Arcade">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/arcade.webp" width="842" height="714" loading="lazy" decoding="async" alt="Arcade">
+      <figcaption>Arcade &mdash; MangoHud, controller mapping, per-game window fit and the shortcuts that drive them.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-big-screen" role="dialog" aria-label="Big screen">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/big-screen.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Big screen">
+      <figcaption>Big screen &mdash; The ten-foot interface: the Steam library, media and the machine's own switches as tiles, driven with a controller.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-chibi" role="dialog" aria-label="Chibi">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/chibi.webp" width="839" height="712" loading="lazy" decoding="async" alt="Chibi">
+      <figcaption>Chibi &mdash; A local-LLM avatar that also carries the clock, the weather and the tickers.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-arsenal" role="dialog" aria-label="Arsenal">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/arsenal.webp" width="840" height="713" loading="lazy" decoding="async" alt="Arsenal">
+      <figcaption>Arsenal &mdash; Five thousand BlackArch tools, by category, installed on demand rather than shipped.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-updates" role="dialog" aria-label="Updates">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/updates.webp" width="841" height="714" loading="lazy" decoding="async" alt="Updates">
+      <figcaption>Updates &mdash; Source-revision aware: it names what an ISO upgrade would bring that a package update cannot.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-tuxagotchi" role="dialog" aria-label="Tuxagotchi">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/tuxagotchi.webp" width="231" height="258" loading="lazy" decoding="async" alt="Tuxagotchi">
+      <figcaption>Tuxagotchi &mdash; A desktop widget that needs feeding. The desktop takes widgets; this is one of them.</figcaption>
+    </figure>
+  </div>
+  <div class="lightbox" id="shot-themes" role="dialog" aria-label="Fourteen themes">
+    <a class="close" href="#gallery">Close</a>
+    <a class="x" href="#gallery" aria-label="Close">&times;</a>
+    <figure>
+      <img src="/assets/shots/themes.webp" width="1600" height="1329" loading="lazy" decoding="async" alt="Fourteen themes">
+      <figcaption>Fourteen themes &mdash; The same window across four of them. Every application on the system reads the palette, not just the bar.</figcaption>
+    </figure>
+  </div>
 
   <section id="components" class="wrap section">
     <h2>Components</h2>
