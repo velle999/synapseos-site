@@ -54,7 +54,7 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "0.2.6",
+      "softwareVersion": "0.2.9",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
       "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
@@ -68,6 +68,9 @@
         "Local LLM inference daemon (llama.cpp) exposed over a Unix socket",
         "AI-native shell (synsh)",
         "synui — a wlroots 0.20 / scenefx 0.5 Wayland compositor",
+        "syntty — a Wayland terminal that links no GL at all",
+        "First-party file manager, package manager, settings, editor and disk utility",
+        "Big screen mode — a ten-foot interface for a television",
         "synguard security monitor with in-kernel BPF-LSM enforcement",
         "Custom DKMS kernel module exporting syscall telemetry via sysfs",
         "LUKS2 full-disk encryption and UEFI dual-boot installer"
@@ -102,7 +105,7 @@
           "name": "Does SynapseOS send anything to the cloud?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The model file lives on the machine and inference runs locally through llama.cpp. There are no API keys to configure and no account to create. The ISO embeds Mistral 7B Instruct (Q4_K_M, about 4.1 GB) so the AI works on first boot with no network connection."
+            "text": "No. The model file lives on the machine and inference runs locally through llama.cpp. There are no API keys to configure and no account to create. The installer downloads a model once — Mistral 7B Instruct (Q4_K_M, about 4.1 GB) is the recommendation — and after that the AI works with the network cable out."
           }
         },
         {
@@ -110,7 +113,7 @@
           "name": "What are the system requirements for SynapseOS?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "An x86_64 machine, 8 GB of RAM or more (the embedded 7B model is the reason), and roughly 25 GB of disk for an install. A GPU is optional: NVIDIA systems can install the CUDA build of the inference backend and AMD or Intel systems the Vulkan build, but the default is CPU inference and it works everywhere."
+            "text": "An x86_64 machine, 8 GB of RAM or more (a resident 7B model is the reason), and roughly 25 GB of disk for an install plus room for the model. A GPU is optional: NVIDIA systems can install the CUDA build of the inference backend and AMD or Intel systems the Vulkan build, but the default is CPU inference and it works everywhere."
           }
         },
         {
@@ -177,7 +180,7 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 0.2.6</a>
+        <a class="btn btn-primary" href="#download">Download 0.2.9</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
       <p class="status" role="note">
@@ -199,19 +202,19 @@
       rather than an app you open.
     </p>
     <p>
-      It boots to <code>synsh</code>, a shell where you can type a command or just say
-      what you want, and into <code>synui</code>, a wlroots Wayland compositor written
-      for this system rather than adapted to it &mdash; one that knows the AI daemon
-      exists and holds a live subscription to the security monitor&rsquo;s verdict feed.
+      The desktop is <code>synui</code>, a wlroots Wayland compositor written for this
+      system rather than adapted to it &mdash; one that knows the AI daemon exists and
+      holds a live subscription to the security monitor&rsquo;s verdict feed.
     </p>
 
     <ul class="grid" role="list">
       <li>
         <h3>Local inference, no accounts</h3>
         <p>
-          The ISO embeds Mistral 7B Instruct (Q4_K_M, ~4.1&nbsp;GB) and runs it through
-          llama.cpp, so the AI is live on first boot with nothing to configure and
-          nothing leaving the machine.
+          The installer downloads one model &mdash; Mistral 7B Instruct (Q4_K_M,
+          ~4.1&nbsp;GB) is the recommendation, and you can decline &mdash; and runs it
+          through llama.cpp. Nothing to configure afterwards, and nothing leaves the
+          machine.
         </p>
       </li>
       <li>
@@ -246,6 +249,34 @@
           scheduling hints through <code>/sys/kernel/synapse/</code> &mdash;
           <code>syscall_log</code>, <code>ai_hints</code>, <code>stats</code>,
           <code>status</code>, <code>config</code>, <code>version</code>.
+        </p>
+      </li>
+      <li>
+        <h3>A terminal that links no GL</h3>
+        <p>
+          <code>syntty</code> is the default terminal: wl_shm, xdg-shell, xkbcommon and
+          libc, cells to pixels on the CPU. 359&nbsp;KB, a window in 5.8&nbsp;ms, tabs,
+          images, and OSC&nbsp;133 prompt marks that <code>synsh</code> emits at the
+          other end. A live image cannot count on a GL context.
+        </p>
+      </li>
+      <li>
+        <h3>Applications of its own</h3>
+        <p>
+          A file manager (<code>synfiles</code>), a package manager
+          (<code>synpkg</code>), settings (<code>syn-settings</code>), an editor
+          (<code>syn-edit</code>) and a disk utility (<code>syn-disks</code>) &mdash;
+          each written for this system, and each a window and a command line over one
+          binary rather than two programs that disagree.
+        </p>
+      </li>
+      <li>
+        <h3>A ten-foot interface</h3>
+        <p>
+          Big screen mode (<kbd>Super</kbd>+<kbd>F10</kbd>, or the pad&rsquo;s Guide
+          button) puts the Steam library, Big Picture, a browser, music, and any Plex
+          or Jellyfin server on the network on a television &mdash; drivable from a
+          controller, including as a mouse.
         </p>
       </li>
       <li>
@@ -291,8 +322,8 @@
       <code>synui</code> draws its own display settings, wallpaper picker, dock, cursor
       picker, sound panel and control panel. The status bar and the desktop widgets are
       a native <a href="https://quickshell.org/" rel="noopener">quickshell</a> shell.
-      Everything below is compositor-drawn &mdash; there is no third-party panel,
-      launcher or settings app in the picture.
+      Everything below is compositor-drawn &mdash; there is no third-party panel or
+      settings app in the picture.
     </p>
 
     <figure>
@@ -317,15 +348,19 @@
         <tbody>
           <tr><td><kbd>Super</kbd> (tapped alone)</td><td>Start menu</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>C</kbd></td><td>Control panel &mdash; every setting and shortcut in one place</td></tr>
-          <tr><td><kbd>Super</kbd>+<kbd>Space</kbd></td><td>Command bar</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>/</kbd></td><td>Shortcut palette &mdash; every binding, searchable; <kbd>F2</kbd> on a row moves it</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>Return</kbd></td><td>Open a terminal (<code>syntty</code>)</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>Space</kbd></td><td>App launcher</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>=</kbd></td><td>Command bar &mdash; <code>synsh</code> intents and output capture</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>Backspace</kbd></td><td>Ask the AI</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>A</kbd></td><td>Neural activity overlay</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>W</kbd></td><td>Wallpaper picker (per-monitor with <kbd>Tab</kbd>)</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>E</kbd></td><td>Visual effects &mdash; CRT strengths, corners, shadow, blur</td></tr>
-          <tr><td><kbd>Super</kbd>+<kbd>T</kbd></td><td>Theme manager</td></tr>
-          <tr><td><kbd>Alt</kbd>+<kbd>Tab</kbd></td><td>Most-recently-used switch, with live window previews</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>T</kbd></td><td>Theme manager &mdash; thirteen of them</td></tr>
+          <tr><td><kbd>Alt</kbd>+<kbd>Tab</kbd></td><td>Mission control &mdash; every window on this desktop at once, and the desktops along the bottom</td></tr>
           <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Delete</kbd></td><td>Task manager (CPU / RAM / GPU)</td></tr>
           <tr><td><kbd>Super</kbd>+<kbd>G</kbd></td><td>Game mode</td></tr>
+          <tr><td><kbd>Super</kbd>+<kbd>F10</kbd></td><td>Big screen mode &mdash; the ten-foot interface for a television</td></tr>
         </tbody>
       </table>
     </div>
@@ -351,6 +386,15 @@
           <tr><th scope="row"><code>synguard</code></th><td>Security monitor. Classifies syscall events, scores threats, publishes verdicts on a feed <code>synui</code> subscribes to; optional in-kernel BPF-LSM enforcement.</td></tr>
           <tr><th scope="row"><code>synnet</code></th><td>Network policy daemon with nftables integration.</td></tr>
           <tr><th scope="row"><code>synapse_kmod</code></th><td>Kernel module (DKMS). Syscall monitoring and AI scheduling hints, exposed via sysfs.</td></tr>
+          <tr><th scope="row"><code>syntty</code></th><td>The terminal, and the default one. A Wayland terminal that links no GL at all &mdash; 359&nbsp;KB, a window in 5.8&nbsp;ms, tabs, the alternate screen, images, and OSC&nbsp;133 prompt marks.</td></tr>
+          <tr><th scope="row"><code>synpkg</code></th><td>The package manager. One C binary over <code>libalpm</code> covering the Arch repositories, the AUR, Flathub, BlackArch and SynapseOS&rsquo;s own components &mdash; CLI, terminal browser and GUI over the same code.</td></tr>
+          <tr><th scope="row"><code>synfiles</code></th><td>The file manager, and what a folder opens in. Trash, undo, split view, thumbnails, archives and search, with a window, a terminal browser and a command line as three front-ends onto one binary.</td></tr>
+          <tr><th scope="row"><code>syn-settings</code></th><td>Settings. Displays, keyboard and language, date and time, network, Bluetooth, power, kernels and default applications &mdash; every pane reading the real source, and saying which file decided it.</td></tr>
+          <tr><th scope="row"><code>syn-edit</code></th><td>The text editor. One modal engine driving a terminal editor, a graphical window, and a scripting mode with no terminal at all.</td></tr>
+          <tr><th scope="row"><code>syn-disks</code></th><td>The disk utility. Drives, health, mounting, safe removal, formatting and partitioning &mdash; and it refuses to format anything sharing a disk with a running system, with no override.</td></tr>
+          <tr><th scope="row"><code>syn-arcade</code></th><td>The game assistant: the MangoHud overlay inside a running game, controllers outside Steam, SDL mapping overrides, and big screen mode for a television.</td></tr>
+          <tr><th scope="row"><code>syn-confine</code></th><td>A sandbox launcher &mdash; run a command inside a kernel-enforced allowlist (Landlock), inherited across <code>execve</code>.</td></tr>
+          <tr><th scope="row"><code>syn-arsenal</code></th><td>The BlackArch browser &mdash; ~5000 security tools by category, installable from a window or a terminal.</td></tr>
           <tr><th scope="row"><code>vibe</code></th><td>Local AI coding assistant &mdash; an agentic read/write/edit/bash/grep loop that reuses the resident model, and confirms before destructive tools.</td></tr>
           <tr><th scope="row"><code>chibi</code></th><td>Voice-interactive AI companion with a security-sentinel aspect over <code>synguard</code>&rsquo;s verdict feed.</td></tr>
           <tr><th scope="row"><code>syn-update</code></th><td>Updates the SynapseOS half of an installed system, rebuilding only the components whose version moved.</td></tr>
@@ -362,8 +406,9 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>0.2.6</strong> &mdash; the desktop release. Free, x86_64,
-      about 7.9&nbsp;GB with the model embedded.
+      Latest release: <strong>0.2.9</strong> &mdash; the terminal and the television.
+      Free, x86_64, about 3.7&nbsp;GiB. The model is downloaded during installation,
+      not carried in the image.
     </p>
     <p class="cta">
       <a class="btn btn-primary" href="https://github.com/velle999/SYNAPSE/releases/latest" rel="noopener">Get the ISO from GitHub Releases</a>
@@ -374,11 +419,11 @@
       The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit. Download
       <strong>all</strong> <code>.part*</code> files, then:
     </p>
-<pre><code>cat SynapseOS-0.2.6-x86_64.iso.part* &gt; SynapseOS-0.2.6-x86_64.iso
-sha256sum -c SynapseOS-0.2.6-x86_64.iso.sha256</code></pre>
+<pre><code>cat SynapseOS-0.2.9-x86_64.iso.part* &gt; SynapseOS-0.2.9-x86_64.iso
+sha256sum -c SynapseOS-0.2.9-x86_64.iso.sha256</code></pre>
 
     <h3>Write it to a USB stick</h3>
-<pre><code>sudo dd if=SynapseOS-0.2.6-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-0.2.9-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
 
     <h3>Or try it in a VM first</h3>
 <pre><code>git clone https://github.com/velle999/SYNAPSE.git &amp;&amp; cd SYNAPSE
@@ -391,8 +436,9 @@ QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
     <h3>System requirements</h3>
     <ul class="reqs" role="list">
       <li><strong>CPU</strong> &mdash; x86_64. CPU inference is the default and works everywhere.</li>
-      <li><strong>RAM</strong> &mdash; 8&nbsp;GB minimum; the embedded 7B model is the reason.</li>
-      <li><strong>Disk</strong> &mdash; ~25&nbsp;GB for an install.</li>
+      <li><strong>RAM</strong> &mdash; 8&nbsp;GB minimum; a resident 7B model is the reason.</li>
+      <li><strong>Disk</strong> &mdash; ~25&nbsp;GB for an install, plus room for the model.</li>
+      <li><strong>Network</strong> &mdash; needed once, during installation, to fetch the model.</li>
       <li><strong>GPU</strong> &mdash; optional. NVIDIA via a CUDA build, AMD and Intel via Vulkan.</li>
       <li><strong>Firmware</strong> &mdash; UEFI or BIOS. Dual-boot installs need UEFI.</li>
     </ul>
@@ -403,9 +449,9 @@ QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
 
     <h3>Does SynapseOS send anything to the cloud?</h3>
     <p>
-      No. The model file lives on the machine and inference runs locally through
-      llama.cpp. There are no API keys to configure and no account to create. The AI
-      works with the network cable out.
+      No. The installer downloads a model once; after that the file lives on the
+      machine and inference runs locally through llama.cpp. There are no API keys to
+      configure and no account to create, and the AI works with the network cable out.
     </p>
 
     <h3>Is it just Arch with an app on top?</h3>
@@ -419,8 +465,8 @@ QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
 
     <h3>Can I run it on a machine with no GPU?</h3>
     <p>
-      Yes &mdash; that is the default. The ISO is deliberately a CPU build of the
-      inference backend so it starts on any x86_64 machine. GPU acceleration is a
+      Yes &mdash; that is the default. The ISO ships a CPU build of the inference
+      backend so it starts on any x86_64 machine. GPU acceleration is a
       separate package you install afterwards if you have the hardware.
     </p>
 
