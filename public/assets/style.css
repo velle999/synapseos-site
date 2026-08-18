@@ -177,6 +177,44 @@ kbd {
 .grid h3 { margin: 0 0 .5rem; font-size: 1.05rem; color: var(--brand); }
 .grid p { margin: 0; font-size: .95rem; color: var(--ink-dim); max-width: none; }
 
+/* ---------- merch ---------- */
+
+/* Product shots are vendored under /assets/merch/, not hotlinked from the
+   print shop: _headers sets img-src 'self' data:, so a remote mockup URL is
+   blocked by our own CSP and renders as a broken image. */
+.merch {
+  list-style: none; margin: 2rem 0 0; padding: 0;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.merch li {
+  background: var(--bg-raise); border: 1px solid var(--line);
+  border-radius: .75rem; overflow: hidden;
+  transition: border-color .15s, transform .15s;
+}
+.merch li:hover, .merch li:focus-within {
+  border-color: var(--brand); transform: translateY(-2px);
+}
+.merch a {
+  display: flex; flex-direction: column; height: 100%;
+  text-decoration: none; color: inherit;
+}
+.merch img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 1 / 1; object-fit: cover;
+  background: var(--bg-sunk); border-bottom: 1px solid var(--line);
+}
+.merch .name {
+  padding: .9rem 1rem .35rem;
+  font-size: .95rem; line-height: 1.35; color: var(--ink);
+}
+.merch .price {
+  margin-top: auto; padding: 0 1rem 1rem;
+  font: 600 .95rem var(--mono); color: var(--brand);
+}
+.merch-note { font-size: .9rem; color: var(--ink-faint); }
+@media (prefers-reduced-motion: reduce) { .merch li:hover { transform: none; } }
+
 /* ---------- figures ---------- */
 
 figure { margin: 2rem 0; }
