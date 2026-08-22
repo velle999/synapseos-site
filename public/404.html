@@ -7,7 +7,13 @@
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#0a0a12">
 <meta name="color-scheme" content="dark">
-<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<!-- Two cuts of the mark, and the TAB STRIP is the ground, not this page.
+     #a78bfa is drawn for dark: ~7:1 on our own header, ~2.7:1 on white,
+     where a light browser theme puts it. The ink cut is ~9:1 there. Both
+     links carry a media query so a browser that ignores the attribute
+     takes the LAST one — ink, which is the ground most browsers use. -->
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="stylesheet" href="/assets/style.css?v=2026-08-18b">
 </head>
 <body>

@@ -30,7 +30,13 @@
 <meta name="twitter:description" content="An Arch-based Linux distribution that runs a local LLM as a system service. No cloud, no API keys.">
 <meta name="twitter:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
 
-<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<!-- Two cuts of the mark, and the TAB STRIP is the ground, not this page.
+     #a78bfa is drawn for dark: ~7:1 on our own header, ~2.7:1 on white,
+     where a light browser theme puts it. The ink cut is ~9:1 there. Both
+     links carry a media query so a browser that ignores the attribute
+     takes the LAST one — ink, which is the ground most browsers use. -->
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/style.css?v=2026-08-18b">
 

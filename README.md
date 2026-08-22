@@ -16,7 +16,10 @@ public/                 EVERYTHING IN HERE IS PUBLIC. Nothing outside it is.
   sitemap.xml           one URL; bump <lastmod> on a content change
   _headers              caching + security headers
   assets/style.css      all styles
-  assets/logo.svg       dendrite mark (transparent, used as favicon)
+  assets/logo.svg       dendrite mark, brand purple — the header, and the
+                        favicon on a DARK browser theme
+  assets/logo-ink.svg   the same mark in ink (#5b21b6) — the favicon on a
+                        light browser theme, where the purple washes out
   assets/og.png         1200×630 social card
   assets/*.png          screenshots
 posts/*.md              articles published to Hashnode (see below)

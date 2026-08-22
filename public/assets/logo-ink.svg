@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SynapseOS dendrite mark">
+  <!-- INK CUT — #5b21b6, for PALE grounds. The brand purple #a78bfa is drawn
+       for dark ones: about 7:1 on this site's #0a0a12 header and about 2.7:1 on
+       white, where it stops reading. This cut is the reverse, about 9:1 on
+       white. It is the FAVICON, because a tab strip is the browser's ground and
+       not this page's — most browsers run a light one. The header mark on the
+       page itself stays purple, which is what its own dark ground wants.
+       Triangle opacity is lifted 0.4 -> 0.65 with the colour: a hairline that
+       was faint on black vanishes on white. -->
+  <g transform="translate(512,512)">
+    <polygon points="0,-464 400,272 -400,272" fill="none" stroke="#5b21b6" stroke-width="2" opacity="0.65"/>
+    <circle cx="0" cy="-48" r="36" fill="#5b21b6"/>
+    <line x1="0" y1="-48" x2="0" y2="-416" stroke="#5b21b6" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="288" y2="192" stroke="#5b21b6" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="-288" y2="192" stroke="#5b21b6" stroke-width="8"/>
+    <line x1="0" y1="-48" x2="176" y2="200" stroke="#5b21b6" stroke-width="4.4"/>
+    <line x1="0" y1="-48" x2="-176" y2="200" stroke="#5b21b6" stroke-width="4.4"/>
+    <circle cx="0" cy="-416" r="17.6" fill="#5b21b6"/>
+    <circle cx="288" cy="192" r="17.6" fill="#5b21b6"/>
+    <circle cx="-288" cy="192" r="17.6" fill="#5b21b6"/>
+    <circle cx="176" cy="200" r="12.8" fill="#5b21b6"/>
+    <circle cx="-176" cy="200" r="12.8" fill="#5b21b6"/>
+  </g>
+</svg>
