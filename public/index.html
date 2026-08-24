@@ -334,6 +334,26 @@
       settings app in the picture.
     </p>
 
+    <p>
+      A fresh install boots into <strong>SYNAPSE Prism</strong>, and Prism has no colour
+      of its own: it is one dark, near-neutral surface at low alpha, and the
+      <strong>wallpaper supplies the colour through it</strong> &mdash; measured live, on
+      every wallpaper change, and carried to the bar, the dock, the icons and, if there
+      is anything in the machine that glows, to the RGB hardware as well. Fifteen themes
+      ship, <em>Prism Light</em> among them; one slider sets how much of the desktop you
+      see through.
+    </p>
+
+    <p>
+      The bar takes third-party widgets in
+      <a href="https://omarchy.org/manual/shell-plugins/" rel="noopener">Omarchy&rsquo;s
+      shell-plugin format</a>. Their desktop is a quickshell process and so is this bar,
+      which makes their format the only one already describing &ldquo;a QML widget you
+      can drop into a quickshell bar&rdquo; &mdash; so a widget written once loads on
+      either. <code>synui-plugins browse</code> lists what you can install, and there is
+      a terminal browser and a window for it too.
+    </p>
+
     <figure>
       <img src="/assets/synui-desktop.webp" width="1920" height="1080" loading="lazy" decoding="async"
            alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, start menu, desktop widgets and auto-hiding dock.">
@@ -597,6 +617,7 @@
           <tr><th scope="row"><code>synapse_kmod</code></th><td>Kernel module (DKMS). Syscall monitoring and AI scheduling hints, exposed via sysfs.</td></tr>
           <tr><th scope="row"><code>syntty</code></th><td>The terminal, and the default one. A Wayland terminal that links no GL at all &mdash; 359&nbsp;KB, a window in 5.8&nbsp;ms, tabs, the alternate screen, images, and OSC&nbsp;133 prompt marks.</td></tr>
           <tr><th scope="row"><code>synpkg</code></th><td>The package manager. One C binary over <code>libalpm</code> covering the Arch repositories, the AUR, Flathub, BlackArch and SynapseOS&rsquo;s own components &mdash; CLI, terminal browser and GUI over the same code.</td></tr>
+          <tr><th scope="row"><code>synstudio</code></th><td>The darkroom and the cutting room. One colour engine decides a pixel for both, so a photograph and a frame of the same footage graded the same way come out the same &mdash; a clip&rsquo;s grade is baked to a 3D LUT and handed to ffmpeg. Non-destructive: edits live in a sidecar and the original is never written.</td></tr>
           <tr><th scope="row"><code>synfiles</code></th><td>The file manager, and what a folder opens in. Trash, undo, split view, thumbnails, archives and search, with a window, a terminal browser and a command line as three front-ends onto one binary.</td></tr>
           <tr><th scope="row"><code>syn-settings</code></th><td>Settings. Displays, keyboard and language, date and time, network, Bluetooth, power, kernels and default applications &mdash; every pane reading the real source, and saying which file decided it.</td></tr>
           <tr><th scope="row"><code>syn-edit</code></th><td>The text editor. One modal engine driving a terminal editor, a graphical window, and a scripting mode with no terminal at all.</td></tr>
