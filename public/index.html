@@ -38,7 +38,7 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=2026-08-18b">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
 
 <script type="application/ld+json">
 {
@@ -60,13 +60,13 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "0.2.9",
+      "softwareVersion": "0.2.9.4",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
       "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "url": "https://soslinux.org/",
       "image": "https://soslinux.org/assets/og.png?v=2026-08-22",
-      "screenshot": "https://soslinux.org/assets/synui-desktop.webp",
+      "screenshot": "https://soslinux.org/assets/synui-desktop.webp?v=2026-08-25",
       "license": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
       "isAccessibleForFree": true,
       "description": "SynapseOS is an Arch-based Linux distribution that runs a local large language model as a system service. The shell, the Wayland compositor, the security monitor, the network filter and a kernel module all talk to it over a Unix socket, with no network calls and no API keys.",
@@ -153,6 +153,26 @@
 </script>
 </head>
 <body>
+
+<!-- The theme switcher. `script-src 'none'` in _headers, so this is a radio
+     group and the rules live in style.css as `#th-x:checked ~ .page`. It has to
+     be declared BEFORE .page — a sibling combinator only reaches forward.
+
+     ⛔ NOT anchors to #prism etc. Following a fragment scrolls every scrollable
+     ancestor to bring the target into view, which on this page means yanking the
+     document while somebody is reading it. Same reason the screenshot carousel
+     stopped being anchors. A radio changes state without navigating.
+     Keep them focusable (they are 1px, NOT display:none) — that is what gives
+     arrow-key control with no script. -->
+<input class="theme-pick" type="radio" name="theme" id="th-prism" checked aria-label="Theme: SYNAPSE Prism">
+<input class="theme-pick" type="radio" name="theme" id="th-synapse"    aria-label="Theme: SYNAPSE neon">
+<input class="theme-pick" type="radio" name="theme" id="th-gruvbox"    aria-label="Theme: Gruvbox">
+<input class="theme-pick" type="radio" name="theme" id="th-nord"       aria-label="Theme: Nord">
+<input class="theme-pick" type="radio" name="theme" id="th-dracula"    aria-label="Theme: Dracula">
+<input class="theme-pick" type="radio" name="theme" id="th-tokyo"      aria-label="Theme: Tokyo Night">
+<input class="theme-pick" type="radio" name="theme" id="th-prismlight" aria-label="Theme: SYNAPSE Prism Light">
+
+<div class="page">
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
@@ -176,6 +196,13 @@
 <main id="main">
 
   <section class="hero">
+    <!-- The screenshot is the ground, not a figure further down the page. It is
+         the stock desktop — Prism, the shipped wallpaper, the accent measured off
+         it — captured in a nested compositor rather than off somebody's machine,
+         so there is no hostname, no hardware list and no LAN address in frame. -->
+    <img class="hero-shot" src="/assets/synui-desktop.webp?v=2026-08-25"
+         width="1920" height="1080" alt="" aria-hidden="true"
+         fetchpriority="high" decoding="async">
     <div class="wrap">
       <p class="eyebrow">Arch-based &middot; Wayland &middot; local-first AI</p>
       <h1>SynapseOS</h1>
@@ -188,14 +215,59 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 0.2.9</a>
+        <a class="btn btn-primary" href="#download">Download 0.2.9.4</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
+      <p class="themes-label">Fifteen themes ship. <b>Try one on this page.</b></p>
+      <div class="themes" role="group" aria-label="Preview a desktop theme">
+        <label class="swatch" for="th-prism"><i aria-hidden="true"></i>Prism</label>
+        <label class="swatch" for="th-synapse"><i aria-hidden="true"></i>SYNAPSE</label>
+        <label class="swatch" for="th-gruvbox"><i aria-hidden="true"></i>Gruvbox</label>
+        <label class="swatch" for="th-nord"><i aria-hidden="true"></i>Nord</label>
+        <label class="swatch" for="th-dracula"><i aria-hidden="true"></i>Dracula</label>
+        <label class="swatch" for="th-tokyo"><i aria-hidden="true"></i>Tokyo Night</label>
+        <label class="swatch" for="th-prismlight"><i aria-hidden="true"></i>Prism Light</label>
+      </div>
       <p class="status" role="note">
         <strong>Status: alpha.</strong> Version 0.2.x. A real, actively developed system
         &mdash; the author daily-drives it &mdash; but it is early, moves fast, and will
         break. Try it in a VM before you give it a disk.
       </p>
+    </div>
+  </section>
+
+  <!-- What synsh actually is, in six seconds and no script. The command is real:
+       `syn` here is the shell prompt, the line under it is what it resolves the
+       intent to, and it is the same example the shell's own help uses. -->
+  <section class="band band-term" aria-label="The shell, working">
+    <div class="wrap">
+      <div class="term" role="img"
+           aria-label="A terminal: the prompt reads 'find the big files in Downloads', and synsh answers with the command du -ah ~/Downloads | sort -rh | head -20, waiting to be run.">
+        <div class="term-bar" aria-hidden="true">
+          <i></i><i></i><i></i><span>synsh</span>
+        </div>
+        <pre class="term-body" aria-hidden="true"><span class="term-line"><b class="term-prompt">syn</b> <span class="term-typed">find the big files in Downloads</span><span class="term-caret"></span></span>
+<span class="term-out">  <b>→</b> du -ah ~/Downloads | sort -rh | head -20</span>
+<span class="term-hint">  Enter to run · Esc to edit it first</span></pre>
+      </div>
+      <p class="term-note">
+        <strong>Nothing left the machine to do that.</strong> <code>synsh</code> is a
+        normal POSIX-ish shell until you stop typing commands; describe the outcome
+        instead and it resolves the intent against the model already resident in
+        <code>synapd</code> &mdash; then shows you the command rather than running it.
+      </p>
+    </div>
+  </section>
+
+  <!-- Numbers, because this project has them and prose about "fast" does not
+       survive contact with anyone who has heard it before. Every one is measured
+       and every one is stated somewhere in the source it came from. -->
+  <section class="band band-figs" aria-label="Measured">
+    <div class="wrap figs">
+      <div class="fig"><b>359 KB</b><span>the terminal, up in 5.8 ms &mdash; and it links no GL at all</span></div>
+      <div class="fig"><b>0</b><span>network calls the AI makes. No API key exists to be leaked</span></div>
+      <div class="fig"><b>45 dB</b><span>PSNR floor between a graded photo and the same frame of video</span></div>
+      <div class="fig"><b>15</b><span>themes, and the wallpaper picks the accent inside whichever you choose</span></div>
     </div>
   </section>
 
@@ -354,16 +426,32 @@
       a terminal browser and a window for it too.
     </p>
 
-    <figure>
-      <img src="/assets/synui-desktop.webp" width="1920" height="1080" loading="lazy" decoding="async"
-           alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, start menu, desktop widgets and auto-hiding dock.">
-      <figcaption>synui &mdash; native quickshell bar, start menu, desktop widgets, auto-hiding dock.</figcaption>
-    </figure>
-
-    <figure>
-      <img src="/assets/synui-crt.webp?v=2026-08-18" width="1920" height="1080" loading="lazy" decoding="async"
-           alt="SynapseOS with the CRT post-process filter enabled in amber phosphor: scanlines and a curved screen over a fastfetch readout.">
-      <figcaption>The optional CRT post-process pass, in amber phosphor.</figcaption>
+    <!-- One desktop, two passes. They were two figures stacked down the page,
+         which asks the reader to hold the first in their head while they look at
+         the second — the whole point of a post-process filter is the DIFFERENCE,
+         so the checkbox puts them in the same rectangle. Both frames are the same
+         capture; only the filter moved. -->
+    <input class="crt-pick" type="checkbox" id="crt-on">
+    <figure class="crt-figure">
+      <div class="crt-stack">
+        <img class="crt-off-img" src="/assets/synui-desktop.webp?v=2026-08-25"
+             width="1920" height="1080" loading="lazy" decoding="async"
+             alt="The SynapseOS desktop: the synui Wayland compositor with its quickshell status bar, the control panel over the shipped wallpaper, and the dock.">
+        <img class="crt-on-img" src="/assets/synui-crt.webp?v=2026-08-25"
+             width="1920" height="1080" loading="lazy" decoding="async"
+             alt="The same desktop with the CRT post-process pass on: amber phosphor, scanlines, a curved screen and chromatic aberration.">
+        <label class="crt-toggle" for="crt-on">
+          <span class="crt-dot" aria-hidden="true"></span>
+          <span class="crt-word crt-word-off">CRT filter</span>
+          <span class="crt-word crt-word-on">CRT filter &middot; amber</span>
+        </label>
+      </div>
+      <figcaption>
+        The same desktop, twice. <strong>Press the switch</strong> &mdash; that is
+        <code>Super</code>+<code>E</code> on a real one: scanlines, curvature,
+        chromatic aberration and an amber phosphor, applied by the compositor to
+        everything on screen at once.
+      </figcaption>
     </figure>
 
     <h3>Some of what the keyboard reaches</h3>
@@ -636,7 +724,7 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>0.2.9</strong> &mdash; the terminal and the television.
+      Latest release: <strong>0.2.9.4</strong> &mdash; the desktop grows its own furniture.
       Free, x86_64, about 3.7&nbsp;GiB. The model is downloaded during installation,
       not carried in the image.
     </p>
@@ -649,11 +737,11 @@
       The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit. Download
       <strong>all</strong> <code>.part*</code> files, then:
     </p>
-<pre><code>cat SynapseOS-0.2.9-x86_64.iso.part* &gt; SynapseOS-0.2.9-x86_64.iso
-sha256sum -c SynapseOS-0.2.9-x86_64.iso.sha256</code></pre>
+<pre><code>cat SynapseOS-0.2.9.4-x86_64.iso.part* &gt; SynapseOS-0.2.9.4-x86_64.iso
+sha256sum -c SynapseOS-0.2.9.4-x86_64.iso.sha256</code></pre>
 
     <h3>Write it to a USB stick</h3>
-<pre><code>sudo dd if=SynapseOS-0.2.9-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-0.2.9.4-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
 
     <h3>Or try it in a VM first</h3>
 <pre><code>git clone https://github.com/velle999/SYNAPSE.git &amp;&amp; cd SYNAPSE
@@ -805,5 +893,6 @@ QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
   </div>
 </footer>
 
+</div><!-- /.page -->
 </body>
 </html>

@@ -1,18 +1,92 @@
-/* SynapseOS — site styles. Brand: #a78bfa on #0a0a12. */
+/* SynapseOS — site styles.
+ *
+ * ⚠ THE PALETTE IS THE COMPOSITOR'S, NOT A CHOICE MADE HERE. Every value below
+ * is lifted from synui/src/theme.c, so the page wears what a fresh install
+ * actually boots into rather than something drawn to look like it. Prism is the
+ * default there and the default here: accent #00D6E5, face #191C23, ink #E6EAF1.
+ *
+ * ⚠ AND #8B73FB IS NOT "the old brand purple" — it is Prism's `border_ai`, the
+ * colour synui draws round a window the AI is working in. That is why it stayed
+ * when the rest went cyan: on this desktop violet MEANS the model, so the page
+ * uses it for the model and cyan for the system. The logo and the social card
+ * are still violet and still correct.
+ *
+ * ── The theme switcher ──────────────────────────────────────────────────────
+ *
+ * `script-src 'none'`, so this is a hidden radio group (`.theme-pick`) declared
+ * before `.page`, with `#th-x:checked ~ .page { --var: … }` doing the work. The
+ * variable NAMES never change — every rule below reads --brand/--bg/--ink and
+ * knows nothing about themes — so a new palette is seven declarations and no
+ * component has to be touched.
+ *
+ * Same pattern as the screenshot carousel, and for the same reason: a radio
+ * changes state without navigating, so nothing scrolls. Do not turn these into
+ * anchors. Keep them focusable (NOT display:none) — that is what gives arrow-key
+ * control for free.
+ */
 
 :root {
-  --bg:        #0a0a12;
-  --bg-raise:  #11101c;
-  --bg-sunk:   #07070e;
-  --line:      #221f36;
-  --ink:       #e8e6f2;
-  --ink-dim:   #a9a4c4;
-  --ink-faint: #6f6a8d;
-  --brand:     #a78bfa;
-  --brand-dim: #7c5cf0;
+  /* SYNAPSE Prism — theme.c, [SYN_THEME_PRISM] */
+  --bg:        #12141a;   /* one step under the face, so panels lift off it */
+  --bg-raise:  #191c23;   /* .face */
+  --bg-sunk:   #0d0f14;
+  --line:      #2e323c;   /* .border_norm */
+  --ink:       #e6eaf1;   /* .tb_text_focus */
+  --ink-dim:   #8b92a0;   /* .tb_text — the secondary the desktop actually uses */
+  --ink-faint: #626977;
+  --brand:     #00d6e5;   /* .border_focus / .panel_accent */
+  --brand-dim: #00a3ad;
+  --ai:        #8b73fb;   /* .border_ai — the model's colour, not the brand's */
+  --warn:      #ff5a67;   /* .border_warn */
+  --on-brand:  #04141b;   /* ink for a filled brand button */
+
   --wrap:      68rem;
   --mono: ui-monospace, "JetBrains Mono", "DejaVu Sans Mono", SFMono-Regular, Menlo, monospace;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* ── The other fourteen ──────────────────────────────────────
+ *
+ * Seven of them offered, chosen to show the range rather than the list: the two
+ * Prisms (the default, and a light one — because a page that can only go dark is
+ * not demonstrating anything), the neon house theme, and four palettes people
+ * already know. Values are theme.c's `accent_*`, `base_*` and `text_*`.
+ *
+ * `--bg` is darkened a step off `base` and `--line` lifted a step off it, by
+ * hand, for the same reason the compositor does it: `base` is a PANEL face, and
+ * a page painted entirely in it has no depth to put a panel on.
+ */
+#th-synapse:checked ~ .page {
+  --bg: #141416; --bg-raise: #1e1e24; --bg-sunk: #0e0e10; --line: #34343c;
+  --ink: #ebebf2; --ink-dim: #9a9aa8; --ink-faint: #6d6d7a;
+  --brand: #ff296d; --brand-dim: #c41e52; --on-brand: #1a0209;
+}
+#th-gruvbox:checked ~ .page {
+  --bg: #1d2021; --bg-raise: #282828; --bg-sunk: #141617; --line: #3c3836;
+  --ink: #ebdbb2; --ink-dim: #a89984; --ink-faint: #7c6f64;
+  --brand: #fe8019; --brand-dim: #d65d0e; --on-brand: #1d1204;
+}
+#th-nord:checked ~ .page {
+  --bg: #242933; --bg-raise: #2e3440; --bg-sunk: #1c2029; --line: #434c5e;
+  --ink: #d8dee9; --ink-dim: #a3adbb; --ink-faint: #7b8494;
+  --brand: #88c0d0; --brand-dim: #5e81ac; --on-brand: #0f1a1f;
+}
+#th-dracula:checked ~ .page {
+  --bg: #21222c; --bg-raise: #282a36; --bg-sunk: #191a21; --line: #44475a;
+  --ink: #f8f8f2; --ink-dim: #b3b6c4; --ink-faint: #6272a4;
+  --brand: #ff79c6; --brand-dim: #bd93f9; --on-brand: #1e0716;
+}
+#th-tokyo:checked ~ .page {
+  --bg: #1a1b26; --bg-raise: #24283b; --bg-sunk: #16161e; --line: #3b4261;
+  --ink: #c0caf5; --ink-dim: #8d97bd; --ink-faint: #6b7394;
+  --brand: #7aa2f7; --brand-dim: #5273c4; --on-brand: #0a0f1f;
+}
+/* The light one. It has to invert the ground as well as the accent, or the
+ * switcher is only ever proving that seven dark themes are dark. */
+#th-prismlight:checked ~ .page {
+  --bg: #e5e9f0; --bg-raise: #eef1f6; --bg-sunk: #d8dde6; --line: #c2c9d6;
+  --ink: #1a1d24; --ink-dim: #4d5563; --ink-faint: #737b8a;
+  --brand: #00727e; --brand-dim: #005760; --ai: #5b41c9; --on-brand: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -33,13 +107,13 @@ body {
 
 .skip {
   position: absolute; left: -9999px;
-  background: var(--brand); color: #12002e;
+  background: var(--brand); color: var(--on-brand);
   padding: .6rem 1rem; border-radius: 0 0 .5rem 0; font-weight: 600; z-index: 50;
 }
 .skip:focus { left: 0; top: 0; }
 
 a { color: var(--brand); text-underline-offset: .18em; }
-a:hover { color: #c4b1ff; }
+a:hover { color: color-mix(in oklab, var(--brand) 72%, var(--ink)); }
 
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 3px; }
 
@@ -47,7 +121,7 @@ a:hover { color: #c4b1ff; }
 
 .site-header {
   position: sticky; top: 0; z-index: 20;
-  background: rgba(10, 10, 18, .86);
+  background: color-mix(in oklab, var(--bg) 84%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -69,11 +143,12 @@ a:hover { color: #c4b1ff; }
 
 /* ---------- hero ---------- */
 
+/* Geometry only. The hero's ground is set in the revamp block at the bottom of
+ * this file, over the screenshot; the two literals that used to live here
+ * (#0d0b1a and a hardcoded violet wash) could not follow a theme and were the
+ * one part of the page a switcher could not move. */
 .hero {
   padding: clamp(3rem, 9vw, 6.5rem) 0 clamp(2.5rem, 6vw, 4rem);
-  background:
-    radial-gradient(60rem 30rem at 50% -12rem, rgba(167,139,250,.18), transparent 70%),
-    linear-gradient(180deg, #0d0b1a, var(--bg));
   border-bottom: 1px solid var(--line);
   text-align: center;
 }
@@ -108,9 +183,13 @@ a:hover { color: #c4b1ff; }
 }
 .btn:hover { border-color: var(--brand); color: var(--ink); transform: translateY(-1px); }
 .btn-primary {
-  background: var(--brand); border-color: var(--brand); color: #150033;
+  background: var(--brand); border-color: var(--brand); color: var(--on-brand);
 }
-.btn-primary:hover { background: #bda5ff; border-color: #bda5ff; color: #150033; }
+.btn-primary:hover {
+  background: color-mix(in oklab, var(--brand) 78%, var(--ink));
+  border-color: color-mix(in oklab, var(--brand) 78%, var(--ink));
+  color: var(--on-brand);
+}
 @media (prefers-reduced-motion: reduce) { .btn:hover { transform: none; } }
 
 .status {
@@ -143,7 +222,10 @@ p.small, .small { font-size: .9rem; color: var(--ink-faint); }
 code {
   font: 500 .9em/1.5 var(--mono);
   background: var(--bg-raise); border: 1px solid var(--line);
-  padding: .1em .38em; border-radius: .3em; color: #d3c6ff;
+  /* Inline code is a NAME of something on the system, so it wears the AI/system
+   * violet rather than the accent — the accent is what a control does, and a
+   * page where every `synapd` looks like a button is a page of false buttons. */
+  padding: .1em .38em; border-radius: .3em; color: var(--ai);
 }
 pre {
   margin: 1rem 0; padding: 1rem 1.1rem;
@@ -448,3 +530,317 @@ tbody tr:hover { background: var(--bg-raise); }
   .slide { padding: .75rem .75rem .25rem; }
   .slide figcaption { min-height: 6.5rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The revamp — a page that looks like the desktop, and does a little of what
+   it does. All of it CSS: `script-src 'none'` is not a limitation to work
+   around here, it is the reason these are radios and not widgets.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The radio group itself: off-screen, but NOT display:none — an input that is
+ * not rendered is not focusable, and focusability is what gives this arrow-key
+ * control without a line of script. */
+.theme-pick {
+  position: absolute; opacity: 0; pointer-events: none;
+  width: 1px; height: 1px; margin: 0;
+}
+
+.page { background: var(--bg); color: var(--ink); }
+
+/* The whole page moves when a theme is picked, so the transition is on the
+ * things that carry colour rather than on `*` — animating every property of
+ * every node is how a switcher becomes a stutter on a long document. */
+.page, .hero, .band, .card, .site-header, .btn, .figure, .term {
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page, .hero, .band, .card, .site-header, .btn, .figure, .term { transition: none; }
+}
+
+/* ---------- the hero, over the desktop ---------- */
+
+/* ⚠ THE SCREENSHOT IS THE PITCH. It used to sit below the fold inside the
+ * carousel, which is a strange place to keep the one asset that answers "what
+ * is this" without a sentence. It is the ground now, scrimmed hard enough that
+ * the type over it clears AA on every theme — the scrim is a --bg gradient
+ * rather than a flat black, so it re-tints with the palette instead of sitting
+ * on top of it as a foreign grey. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  text-align: center;
+  padding: clamp(3.5rem, 10vw, 7rem) 0 clamp(3rem, 7vw, 5rem);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-sunk);
+}
+/* Pushed DOWN and softened. Two things were fighting the type: the desktop's own
+ * top bar sat right under the site header and read as a second header, and the
+ * control panel landed square behind the lede. `object-position` drops the frame
+ * so the skyline is what is behind the words, and a 3px blur turns the panel from
+ * a thing you try to read into texture — it is a backdrop, and a backdrop with
+ * legible UI in it is asking to be read instead of the headline. */
+.hero-shot {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 78%;
+  opacity: .40;
+  filter: saturate(1.1) blur(3px);
+  transform: scale(1.04);   /* hides the soft edge the blur leaves at the frame */
+}
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(70rem 34rem at 50% 8%, color-mix(in oklab, var(--brand) 20%, transparent), transparent 68%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--bg) 86%, transparent) 0%,
+      color-mix(in oklab, var(--bg) 76%, transparent) 38%,
+      color-mix(in oklab, var(--bg) 88%, transparent) 72%,
+      var(--bg) 100%);
+}
+/* A browser without color-mix() gets a flat scrim rather than unreadable type
+ * over a photograph. Worth the four lines: this is the first thing anyone sees. */
+@supports not (background: color-mix(in oklab, red 50%, blue)) {
+  .hero::after { background: linear-gradient(180deg, rgba(0,0,0,.62), var(--bg)); }
+}
+
+.hero h1 {
+  font-family: var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 7.5vw, 4.25rem);
+  font-weight: 700;
+}
+
+/* ---------- the theme switcher, in the hero ---------- */
+
+.themes {
+  margin: 0 auto;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: .45rem;
+  /* Wide enough that all seven fit one line on a desktop — a single chip
+     orphaned onto a second row reads as a mistake rather than as a wrap. */
+  max-width: 54rem;
+}
+/* Outside .themes, not a flex item inside it: a label that has to be on its own
+ * line should not depend on a flex-basis some other rule can win against. */
+.themes-label {
+  margin: 2rem 0 .6rem;
+  text-align: center;
+  font: 600 .72rem/1 var(--mono);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.themes-label b { color: var(--brand); font-weight: 600; }
+.swatch {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .38rem .7rem .38rem .5rem;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: color-mix(in oklab, var(--bg-raise) 70%, transparent);
+  font: 500 .82rem/1 var(--sans); color: var(--ink-dim);
+  cursor: pointer; user-select: none;
+}
+.swatch:hover { color: var(--ink); border-color: var(--brand-dim); }
+.swatch i {
+  width: .85rem; height: .85rem; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset;
+  flex: none;
+}
+/* The chip for the theme that is ON. Sibling selectors only reach forward, and
+ * every input is declared before .page, so this is written from the input. */
+#th-prism:checked      ~ .page .swatch[for="th-prism"],
+#th-synapse:checked    ~ .page .swatch[for="th-synapse"],
+#th-gruvbox:checked    ~ .page .swatch[for="th-gruvbox"],
+#th-nord:checked       ~ .page .swatch[for="th-nord"],
+#th-dracula:checked    ~ .page .swatch[for="th-dracula"],
+#th-tokyo:checked      ~ .page .swatch[for="th-tokyo"],
+#th-prismlight:checked ~ .page .swatch[for="th-prismlight"] {
+  color: var(--ink);
+  border-color: var(--brand);
+  background: color-mix(in oklab, var(--brand) 14%, transparent);
+}
+/* Keyboard focus has to be visible on the LABEL, which is the only thing on
+ * screen — the input it belongs to is off in the corner at 1px. */
+.theme-pick:focus-visible ~ .page .swatch[for="th-prism"],
+.theme-pick:focus-visible ~ .page .swatch { outline: none; }
+#th-prism:focus-visible      ~ .page .swatch[for="th-prism"],
+#th-synapse:focus-visible    ~ .page .swatch[for="th-synapse"],
+#th-gruvbox:focus-visible    ~ .page .swatch[for="th-gruvbox"],
+#th-nord:focus-visible       ~ .page .swatch[for="th-nord"],
+#th-dracula:focus-visible    ~ .page .swatch[for="th-dracula"],
+#th-tokyo:focus-visible      ~ .page .swatch[for="th-tokyo"],
+#th-prismlight:focus-visible ~ .page .swatch[for="th-prismlight"] {
+  outline: 2px solid var(--brand); outline-offset: 3px;
+}
+
+/* ---------- the CRT toggle ---------- */
+
+.crt-pick { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+
+.crt-figure { margin: 2rem 0; }
+.crt-stack {
+  position: relative;
+  border: 1px solid var(--line); border-radius: .7rem; overflow: hidden;
+  line-height: 0;
+}
+.crt-stack img { display: block; width: 100%; height: auto; }
+/* The filtered frame is stacked ON the plain one rather than swapped for it, so
+ * the flip has nothing to load and cannot flash a gap. Both are ~112 KB and the
+ * section is `loading="lazy"`, so the cost is one extra image below the fold. */
+.crt-on-img {
+  position: absolute; inset: 0; height: 100%;
+  opacity: 0; transition: opacity .28s ease;
+}
+/* The input is a SIBLING of the figure (both inside the section), not of .page —
+ * the theme radios are the ones declared at document top. Getting this wrong
+ * gives a switch that is perfectly focusable and does nothing. */
+#crt-on:checked ~ .crt-figure .crt-on-img { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .crt-on-img { transition: none; } }
+
+.crt-toggle {
+  position: absolute; right: .75rem; top: .75rem;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .4rem .8rem .4rem .55rem;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(8px);
+  font: 600 .8rem/1 var(--mono); letter-spacing: .04em;
+  color: var(--ink-dim); cursor: pointer; user-select: none;
+  line-height: 1;
+}
+.crt-toggle:hover { color: var(--ink); border-color: var(--brand-dim); }
+.crt-dot {
+  width: .6rem; height: .6rem; border-radius: 50%;
+  background: var(--ink-faint); flex: none;
+  transition: background-color .28s ease, box-shadow .28s ease;
+}
+.crt-word-on { display: none; }
+
+#crt-on:checked ~ .crt-figure .crt-toggle {
+  color: var(--ink);
+  border-color: #ffb454;
+  background: color-mix(in oklab, #ffb454 16%, color-mix(in oklab, var(--bg) 72%, transparent));
+}
+/* Amber, and not the theme accent: the dot is reporting the PHOSPHOR the filter
+ * is set to, which is a property of the filter and not of the palette. */
+#crt-on:checked ~ .crt-figure .crt-dot {
+  background: #ffb454;
+  box-shadow: 0 0 .5rem #ffb454, 0 0 1.1rem rgba(255,180,84,.55);
+}
+#crt-on:checked ~ .crt-figure .crt-word-off { display: none; }
+#crt-on:checked ~ .crt-figure .crt-word-on  { display: inline; }
+
+.crt-figure figcaption { margin-top: .7rem; }
+.crt-pick:focus-visible ~ .crt-figure .crt-toggle {
+  outline: 2px solid var(--brand); outline-offset: 3px;
+}
+
+/* ---------- bands ---------- */
+
+/* The page was h2 → prose → three cards, seven times. A band is a full-bleed
+ * change of ground, so the eye gets a beat between sections instead of one
+ * unbroken column. */
+.band { border-block: 1px solid var(--line); background: var(--bg-sunk); }
+.band > .wrap { padding-block: clamp(2.5rem, 6vw, 4rem); }
+
+/* ---------- the shell, typing ---------- */
+
+.term {
+  max-width: 46rem; margin-inline: auto;
+  border: 1px solid var(--line); border-radius: .7rem;
+  background: var(--bg-raise);
+  overflow: hidden;
+  box-shadow: 0 1.2rem 3rem rgba(0,0,0,.35);
+}
+.term-bar {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .55rem .8rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 60%, var(--bg-raise));
+}
+.term-bar i { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line); }
+.term-bar span {
+  margin-left: .5rem; font: 600 .78rem/1 var(--mono);
+  letter-spacing: .1em; color: var(--ink-faint); text-transform: uppercase;
+}
+.term-body {
+  margin: 0; padding: 1.1rem 1.2rem 1.3rem;
+  background: none; border: 0;
+  font: 500 .95rem/1.9 var(--mono);
+  white-space: pre-wrap; word-break: break-word;
+}
+.term-prompt { color: var(--brand); font-weight: 700; }
+.term-out    { color: var(--ink); }
+.term-out b  { color: var(--ai); font-weight: 700; }
+.term-hint   { color: var(--ink-faint); font-size: .85em; }
+
+/* The typing. `ch` units and steps() over the exact character count, so it lands
+ * on whole glyphs rather than clipping one down the middle — the string is 31
+ * characters and the count matches it.
+ *
+ * ⚠ The animation runs ONCE and stops filled in (`forwards`). A six-second loop
+ * beside prose is a thing that pulls the eye back every six seconds while
+ * somebody is trying to read the paragraph under it. */
+.term-typed {
+  display: inline-block; vertical-align: bottom;
+  overflow: hidden; white-space: nowrap;
+  max-width: 31ch;
+  animation: term-type 1.7s steps(31, end) .35s both;
+}
+.term-out, .term-hint { display: block; opacity: 0; animation: term-fade .4s ease forwards; }
+.term-out  { animation-delay: 2.2s; }
+.term-hint { animation-delay: 2.55s; }
+.term-caret {
+  display: inline-block; width: .55ch; height: 1.05em;
+  vertical-align: text-bottom; margin-left: .1ch;
+  background: var(--brand);
+  animation: term-blink 1.1s steps(1, end) infinite;
+}
+@keyframes term-type  { from { max-width: 0; } to { max-width: 31ch; } }
+@keyframes term-fade  { to { opacity: 1; } }
+@keyframes term-blink { 50% { opacity: 0; } }
+
+/* Reduced motion gets the finished state, not a broken one: the whole point is
+ * the answer, and the typing was only ever the delivery. */
+@media (prefers-reduced-motion: reduce) {
+  .term-typed { animation: none; max-width: 31ch; }
+  .term-out, .term-hint { animation: none; opacity: 1; }
+  .term-caret { animation: none; }
+}
+
+.term-note {
+  max-width: 46rem; margin: 1.4rem auto 0;
+  color: var(--ink-dim); text-align: center; font-size: .98rem;
+}
+
+/* ---------- the numbers ---------- */
+
+.figs {
+  display: grid; gap: 1.5rem 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.fig { text-align: center; }
+.fig b {
+  display: block;
+  font: 700 clamp(1.75rem, 4.5vw, 2.5rem)/1.1 var(--mono);
+  color: var(--brand); letter-spacing: -.02em;
+}
+.fig span {
+  display: block; margin-top: .45rem;
+  font-size: .92rem; line-height: 1.55; color: var(--ink-dim);
+}
+
+/* ⚠ THE DOT COLOURS LIVE HERE, NOT IN A style ATTRIBUTE ON THE LABEL.
+ * _headers sets `style-src 'self'` with no 'unsafe-inline', so an inline
+ * `style="--sw:#00d6e5"` is refused by our own CSP — and the failure is silent
+ * and invisible in the markup: the custom property never lands, `background:
+ * var(--sw)` resolves to nothing, and seven colour chips render as seven empty
+ * circles. Same shape as a remote image URL being blocked here.
+ * These are the accents out of theme.c, the same values the rules above use. */
+.swatch[for="th-prism"]      i { background: #00d6e5; }
+.swatch[for="th-synapse"]    i { background: #ff296d; }
+.swatch[for="th-gruvbox"]    i { background: #fe8019; }
+.swatch[for="th-nord"]       i { background: #88c0d0; }
+.swatch[for="th-dracula"]    i { background: #ff79c6; }
+.swatch[for="th-tokyo"]      i { background: #7aa2f7; }
+.swatch[for="th-prismlight"] i { background: #00727e; }
