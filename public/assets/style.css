@@ -844,3 +844,27 @@ tbody tr:hover { background: var(--bg-raise); }
 .swatch[for="th-dracula"]    i { background: #ff79c6; }
 .swatch[for="th-tokyo"]      i { background: #7aa2f7; }
 .swatch[for="th-prismlight"] i { background: #00727e; }
+
+/* ---------- platform sub-headings in the download steps ---------- */
+
+/* The download section is a procedure people follow with a machine in front of
+ * them, so the platform split is plain headings rather than tabs: both paths
+ * stay searchable, printable, and linkable, and nothing is one click away from
+ * being seen. */
+h4.plat {
+  margin: 1.6rem 0 .5rem;
+  font: 600 .78rem/1 var(--mono);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--brand);
+}
+h4.plat + p { margin-top: 0; }
+
+/* A comment inside a <pre>, dimmed so the command reads first. */
+pre .c { color: var(--ink-faint); }
+
+.warn-line {
+  border-left: 3px solid var(--warn);
+  padding: .5rem .9rem; margin: 1rem 0;
+  background: color-mix(in oklab, var(--warn) 8%, transparent);
+  border-radius: 0 .4rem .4rem 0;
+}
