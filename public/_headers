@@ -20,3 +20,12 @@
 # to /* and get whatever the platform's default is.
 /wiki/*
   Cache-Control: public, max-age=0, must-revalidate
+
+# Same reason, and these two matter more than most: Google's OAuth consent
+# screen links to them, and a review that fetches a stale cached copy is a
+# review that reads the wrong policy.
+/privacy
+  Cache-Control: public, max-age=0, must-revalidate
+
+/terms
+  Cache-Control: public, max-age=0, must-revalidate

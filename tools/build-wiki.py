@@ -380,7 +380,8 @@ def shell(*, title: str, desc: str, canonical: str, body: str) -> str:
     <p class="small">
       These pages are rendered from the
       <a href="{GH_WIKI}" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>
@@ -619,6 +620,19 @@ def write_sitemap(tree: Path) -> None:
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>"""]
+
+    # ⛔ THE STATIC PAGES BELONG IN THE GENERATOR, NOT IN THE FILE. This function
+    # rewrites sitemap.xml from nothing every run, so an entry added by hand
+    # survives exactly until the next wiki build and then disappears without a
+    # word. /privacy is linked from Google's OAuth consent screen; losing it
+    # from the sitemap is not something anyone would notice by looking.
+    for page, changed in (("privacy", "2026-08-29"), ("terms", "2026-08-29")):
+        urls.append(f"""  <url>
+    <loc>{SITE}/{page}</loc>
+    <lastmod>{changed}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>""")
     for p in pages:
         if p == "Home":
             continue

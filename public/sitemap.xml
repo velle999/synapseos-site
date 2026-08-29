@@ -14,6 +14,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://soslinux.org/privacy</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://soslinux.org/terms</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://soslinux.org/wiki/Architecture</loc>
     <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>

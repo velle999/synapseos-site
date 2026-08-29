@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Privacy Policy | SynapseOS</title>
+<meta name="description" content="SynapseOS runs on your own machine. There is no SynapseOS account, no SynapseOS server, and no telemetry. What the website, the operating system and syn-cal's Google sign-in do with data, stated plainly.">
+<link rel="canonical" href="https://soslinux.org/privacy">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<!-- Two cuts of the mark, and the TAB STRIP is the ground, not this page.
+     #a78bfa is drawn for dark: ~7:1 on our own header, ~2.7:1 on white,
+     where a light browser theme puts it. The ink cut is ~9:1 there. Both
+     links carry a media query so a browser that ignores the attribute
+     takes the LAST one — ink, which is the ground most browsers use. -->
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap">
+    <p class="eyebrow">Legal</p>
+    <h1>Privacy Policy</h1>
+    <p class="small">Last updated 29 August 2026.</p>
+
+    <div class="wiki-body">
+
+<blockquote>
+<p><strong>The short version.</strong> SynapseOS runs on your own machine. There is no
+SynapseOS account to create, no SynapseOS server to talk to, and nothing reports
+back to us. This site has no analytics and no cookies. When you connect
+SynapseOS to a service you already use — Google Calendar, for instance — your
+data travels between your computer and that service directly, and we never
+receive a copy.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="who-this-covers">Who this covers</h2>
+
+<p>SynapseOS is a free, open-source Linux distribution written by Velle Sinclair.
+This policy covers the website at <strong>soslinux.org</strong> and the software
+published under the SynapseOS name, including the <code>syn-cal</code> calendar.</p>
+
+<p>SynapseOS is a project, not a company. It sells nothing, has no customers, and
+keeps no database of users.</p>
+
+<hr />
+
+<h2 id="this-website">This website</h2>
+
+<p>soslinux.org is a set of static files. It runs no scripts of any kind — the
+site's Content-Security-Policy sets <code>script-src 'none'</code>, so a browser
+will refuse to execute JavaScript here even if some were added by mistake.</p>
+
+<p>As a result the site sets <strong>no cookies</strong>, uses <strong>no
+analytics</strong>, embeds <strong>no third-party trackers or fonts</strong>, and
+has <strong>no forms</strong> — nothing on this site asks you for information, and
+there is nowhere for it to be sent.</p>
+
+<p>The site is hosted on Cloudflare. Like any web host, Cloudflare receives the
+technical details a request cannot be served without — your IP address, the page
+requested, your browser's user-agent string — and handles them under its own
+privacy policy. We do not add anything to that, do not tie it to a person, and
+never see a visitor-level report of it.</p>
+
+<hr />
+
+<h2 id="the-operating-system">The operating system</h2>
+
+<p>SynapseOS contains <strong>no telemetry</strong>. It does not count installations,
+report which components you use, send crash reports, or check in on a schedule to
+say it exists.</p>
+
+<p>The system makes network connections only in the ordinary course of being a
+Linux distribution, and only for a reason you can name:</p>
+
+<ul>
+<li><strong>Updates.</strong> <code>syn-update</code> fetches the project's git
+repository from GitHub, and package updates come from the Arch Linux mirrors your
+machine is configured to use. Those services see your IP address, as they must to
+send you the files.</li>
+<li><strong>Software you install.</strong> Packages and their sources come from the
+Arch repositories and, if you use it, the AUR.</li>
+<li><strong>Services you connect yourself.</strong> An application only contacts a
+server after you point it at one and sign in.</li>
+</ul>
+
+<p>Nothing in that list routes through a machine we control. There is no SynapseOS
+server.</p>
+
+<hr />
+
+<h2 id="the-local-ai">The local AI</h2>
+
+<p>The language model that SynapseOS runs as a system service runs
+<strong>on your computer</strong>. Prompts, answers, and anything the model reads
+stay on the machine. There is no API key to supply because there is no remote API
+being called, and the installer will tell you it ships no model at all — you
+choose one and it is downloaded to your disk, where it stays.</p>
+
+<hr />
+
+<h2 id="google-user-data">Google Calendar, and Google user data</h2>
+
+<p>SynapseOS includes <code>syn-cal</code>, a calendar. If you choose to connect a
+Google account to it, this section describes exactly what happens. If you do not,
+none of it applies — the feature is off until you run the command that turns it
+on.</p>
+
+<h3 id="what-we-request">What is requested, and why</h3>
+
+<p><code>syn-cal</code> requests a single Google scope,
+<code>https://www.googleapis.com/auth/calendar</code>. It needs read
+<em>and</em> write access because the calendar synchronises in both directions:
+an event you create or edit on your machine is meant to appear in Google Calendar,
+and the read-only scope cannot do that. No other scope is requested. It does not
+ask for your mail, your contacts, your files, or your profile.</p>
+
+<h3 id="where-the-token-lives">Where the sign-in lives</h3>
+
+<p>Signing in happens in your own browser, against Google, using PKCE. Your Google
+password is never typed into SynapseOS and never passes through it.</p>
+
+<p>What Google returns is an access token and a refresh token. Both are stored
+<strong>on your computer</strong>, in your system keyring (GNOME Keyring or
+KWallet). If no keyring is running, <code>syn-cal</code> says so out loud and falls
+back to a file readable only by your user account. Tokens are never written to the
+account configuration file, never transmitted anywhere except back to Google, and
+never sent to us.</p>
+
+<h3 id="where-the-data-goes">Where your calendar data goes</h3>
+
+<p>Calendar events travel directly between your computer and Google's servers.
+They are stored on your machine as ordinary iCalendar files under your home
+directory. <strong>The SynapseOS project operates no server, receives no copy of
+your calendar, and has no ability to read it.</strong> The author cannot see your
+events, your calendar names, or the fact that you signed in at all.</p>
+
+<p>Your Google data is never sold, never used for advertising, never used to train
+any model, and never transferred to anyone — because it never reaches us in the
+first place.</p>
+
+<h3 id="limited-use">Limited Use</h3>
+
+<p>SynapseOS's use of information received from Google APIs adheres to the
+<a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Google
+API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+<h3 id="revoking">Taking it back</h3>
+
+<p>You can disconnect at any time, and it takes effect immediately:</p>
+
+<ul>
+<li><code>syn-cal logout &lt;name&gt;</code> deletes the stored tokens from your
+machine.</li>
+<li><code>syn-cal account remove &lt;name&gt;</code> deletes the account and its
+tokens together.</li>
+<li>Revoking SynapseOS at
+<a href="https://myaccount.google.com/permissions" rel="noopener">myaccount.google.com/permissions</a>
+invalidates the tokens at Google's end, whatever is on your disk.</li>
+<li>Deleting the calendar's folder in your home directory removes the local copy
+of your events.</li>
+</ul>
+
+<hr />
+
+<h2 id="other-accounts">Microsoft and CalDAV accounts</h2>
+
+<p><code>syn-cal</code> can also connect to Microsoft 365 over the Graph API, and to
+any standards-compliant CalDAV server. Everything above applies unchanged:
+sign-in happens against that provider, credentials and tokens are kept in your
+keyring on your machine, calendar data moves directly between your computer and
+that server, and the project receives nothing.</p>
+
+<hr />
+
+<h2 id="children">Children</h2>
+
+<p>SynapseOS is a general-purpose operating system and is not directed at children
+under 13. It collects no information from anyone, of any age.</p>
+
+<hr />
+
+<h2 id="changes">Changes to this policy</h2>
+
+<p>If this policy changes, the date at the top changes with it and the previous
+wording remains in the site's public git history. Material changes to how any
+account data is handled will be described in the release notes for the version
+that makes them.</p>
+
+<hr />
+
+<h2 id="contact">Contact</h2>
+
+<p>Questions about this policy, or about what a piece of SynapseOS does with data,
+can be raised as an issue at
+<a href="https://github.com/velle999/SYNAPSE/issues" rel="noopener">github.com/velle999/SYNAPSE/issues</a>,
+where the answer is public and stays findable.</p>
+
+<p>See also the <a href="/terms">Terms of Service</a>.</p>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later (kernel module: GPL-2.0-only). Not affiliated with or endorsed by
+      Arch Linux or Google. &ldquo;Linux&rdquo; is a registered trademark of Linus Torvalds.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>
