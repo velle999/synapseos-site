@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Updating — SynapseOS Wiki</title>
+<meta name="description" content="syn-update keeps an installed SynapseOS current with the project&#x27;s own components — synui, synapd, synguard and the rest. It is separate from synpkg upgrade, which updates Arch.">
+<link rel="canonical" href="https://soslinux.org/wiki/Updating">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Updating — SynapseOS Wiki">
+<meta property="og:description" content="syn-update keeps an installed SynapseOS current with the project&#x27;s own components — synui, synapd, synguard and the rest. It is separate from synpkg upgrade, which updates Arch.">
+<meta property="og:url" content="https://soslinux.org/wiki/Updating">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#quick-start">Quick start</a></li>
+<li><a href="#being-told-instead-of-remembering-to-look">Being told, instead of remembering to look</a></li>
+<li><a href="#how-it-works">How it works</a></li>
+<li class="sub"><a href="#options">Options</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#what-it-does-not-update">What it does not update</a></li>
+<li><a href="#why-this-exists">Why this exists</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Updating</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-26">2026-08-26</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>syn-update</code> keeps an installed SynapseOS current with the project's own
+components — <code>synui</code>, <code>synapd</code>, <code>synguard</code> and the rest. It is separate from
+<code>synpkg upgrade</code>, which updates Arch.</p>
+<p>You need both. They cover different halves of the system.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>Updates</th>
+<th>Run it with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synpkg upgrade</code> (or <strong>Update System</strong> in the start menu)</td>
+<td>Arch packages — kernel, Mesa, Qt, everything from the Arch repos</td>
+<td><code>synpkg upgrade</code></td>
+</tr>
+<tr>
+<td><code>syn-update</code> (or <strong>SynapseOS Updates</strong> in the start menu)</td>
+<td>The SynapseOS components themselves</td>
+<td><code>syn-update check</code></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>If you installed from an ISO older than 0.2.3, your SynapseOS components
+have never been updated.</strong> See <a href="#why-this-exists">Why this exists</a> below —
+this is worth reading once, because the old behaviour failed silently.</p>
+</blockquote>
+<hr />
+<h2 id="quick-start">Quick start</h2>
+<div class="hl"><pre><span></span><code>syn-update<span class="w"> </span>check<span class="w">     </span><span class="c1"># read-only: fetch and show what would change</span>
+syn-update<span class="w"> </span>apply<span class="w">     </span><span class="c1"># rebuild the changed components and install them</span>
+syn-update<span class="w"> </span>status<span class="w">    </span><span class="c1"># source revision and installed versions</span>
+</code></pre></div>
+
+<p><code>check</code> is the default, so bare <code>syn-update</code> is safe. It is also available as
+<code>syn update</code>.</p>
+<blockquote>
+<p><strong>It asks for your password once.</strong> <code>sudo</code>'s timestamp is five minutes and a
+full rebuild is much longer, so an apply used to authenticate and then ask
+again three or four times at unpredictable moments — <code>build-all.sh</code> ends every
+component with a <code>pacman -U</code>, and the credential expired mid-run, leaving the
+build stopped at a prompt long after anyone was still watching it. One
+password now, with a keep-alive behind it.</p>
+</blockquote>
+<p>There is a GUI — <strong>SynapseOS Updates</strong> in the start menu. It owns the read-only
+half and hands <code>apply</code> to a terminal window, deliberately: <code>apply</code> needs to run
+<code>sudo pacman -U</code> partway through a build, and sudo with no controlling terminal
+cannot prompt for a password. An in-window apply would fail at the install step,
+minutes into a build.</p>
+<p>Note the start menu has <strong>two</strong> update entries, and they are not the same thing.
+<strong>Update System</strong> is Arch. <strong>SynapseOS Updates</strong> is this. Conflating them is how
+a machine ends up fully patched on the Arch side while its compositor sits
+hundreds of releases behind.</p>
+<hr />
+<h2 id="being-told-instead-of-remembering-to-look">Being told, instead of remembering to look</h2>
+<p>A systemd <strong>user</strong> timer runs <code>syn-update ping</code> — the same check, quietly, with
+the answer written to a small file instead of printed as a report — and the bar
+grows an indicator showing how many updates are waiting. Click it and the
+Updates window opens. It is invisible when the machine is current: a row that
+reads "0 updates" all day is a row nobody reads on the day it says something
+else.</p>
+<div class="hl"><pre><span></span><code>syn-update<span class="w"> </span>ping<span class="w"> </span>--every<span class="w"> </span>6h<span class="w">    </span><span class="c1"># 30m, 12h, 1d, 1week — systemd&#39;s own syntax</span>
+syn-update<span class="w"> </span>ping<span class="w"> </span>--off<span class="w">         </span><span class="c1"># stop checking</span>
+syn-update<span class="w"> </span>ping<span class="w"> </span>--on<span class="w">          </span><span class="c1"># start again</span>
+syn-update<span class="w"> </span>ping<span class="w">               </span><span class="c1"># check right now</span>
+</code></pre></div>
+
+<p>It is on by default, every six hours, three minutes after login and with ten
+minutes of jitter so that every SynapseOS box does not fetch on the same tick.</p>
+<blockquote class="warn"><p>⚠ <strong>Two switches, and neither is a copy of the other.</strong> <code>ping --off</code> stops the
+machine <em>asking upstream</em> — that is about network traffic. Hiding the bar
+indicator is furniture, and lives with the rest of the bar's furniture:
+right-click the bar ▸ <strong>Update notifier</strong>, per monitor, beside the clock and
+the tray. You can have the checking on and the icon hidden, or the icon shown
+and the checking off (it keeps whatever it last saw).</p>
+</blockquote>
+<p>The interval is stored as a systemd drop-in under <code>~/.config/systemd/user</code>,
+never in the unit the package ships. <code>/usr/lib</code> belongs to the package and every
+upgrade replaces it — and this particular package is the updater, so an interval
+written there would quietly revert to six hours the next time syn-update updated
+itself.</p>
+<p><strong>A check that fails says so.</strong> If the source tree is not usable — most often
+left root-owned by an older run — <code>ping</code> refuses rather than reaching for a
+password it cannot ask for under a timer, and records the refusal. The indicator
+then shows <code>!</code> and the tooltip explains, instead of showing a stale count and
+implying the machine is up to date. Run <code>syn-update check</code> once in a terminal to
+clear it.</p>
+<h2 id="how-it-works">How it works</h2>
+<p><code>syn-update</code> clones the project's git repository to <code>/var/lib/synapse-src</code>,
+compares each component's <code>pkgver</code>/<code>pkgrel</code> at the remote revision against what
+is installed, and rebuilds only what changed. Builds go through <code>makepkg</code>, so
+<strong>components are compiled on your machine</strong> rather than downloaded as binaries.</p>
+<p>After installing, it republishes the built packages into the local repository at
+<code>/var/cache/synapseos</code> and rebuilds that repository's index. This matters: without
+it, a later <code>pacman -S synui</code> to repair an install would happily fetch the stale
+version the ISO shipped.</p>
+<p>The source tree is chowned to the user who invoked the command, because <code>makepkg</code>
+refuses to run as root.</p>
+<h3 id="options">Options</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--force</code></td>
+<td>With <code>apply</code>: discard local changes in the source tree</td>
+</tr>
+<tr>
+<td><code>--ref &lt;branch&gt;</code></td>
+<td>Track a branch other than <code>main</code></td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SYN_UPDATE_REPO</code></td>
+<td>The SynapseOS GitHub repository</td>
+</tr>
+<tr>
+<td><code>SYN_UPDATE_REF</code></td>
+<td><code>main</code></td>
+</tr>
+<tr>
+<td><code>SYN_UPDATE_SRC</code></td>
+<td><code>/var/lib/synapse-src</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<p>Because it builds from source, <code>syn-update</code> needs a toolchain. It depends on
+<code>bash</code>, <code>git</code>, <code>base-devel</code>, <code>pacman</code> and <code>sudo</code>, all of which pacman resolves
+from <code>core</code> — roughly <strong>17 packages, ~118 MiB</strong> on a system that has none of them.</p>
+<p><code>cmake</code> and <code>meson</code> are deliberately <strong>not</strong> hard dependencies. <code>makepkg -s</code>
+pulls each component's own <code>makedepends</code> on demand, so you only pay for what you
+actually build. Hard-depending on cmake would add ~150 MiB for a component
+<code>syn-update</code> does not update anyway.</p>
+<hr />
+<h2 id="what-it-does-not-update">What it does not update</h2>
+<p>Some components are on the ISO but are not rebuilt this way. <code>syn-update</code>
+<strong>reports</strong> these rather than skipping them silently — a component quietly frozen
+forever is the exact bug this tool exists to fix.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synapse-llama</code></td>
+<td>Packaged from a staging tree that only exists during an ISO build</td>
+</tr>
+<tr>
+<td><code>linux-wallpaperengine</code></td>
+<td>Its build fetches a ~1.3 GB CEF blob and needs ~6 GB of scratch</td>
+</tr>
+<tr>
+<td><code>chibi</code></td>
+<td>371 MB of bundled voice models; the rebuild cost is all download, no source change</td>
+</tr>
+</tbody>
+</table></div>
+<p>These move with an ISO upgrade instead.</p>
+<p><strong>A component that is new since you installed is ADDED</strong>, not skipped. That is
+what makes a suite work: <code>synfiles</code>, <code>synpkg</code>, <code>syn-settings</code>, <code>syn-disks</code>,
+<code>syn-edit</code>, <code>syn-confine</code>, <code>syn-arcade</code>, <strong><code>syntty</code></strong> and <strong><code>cliamp</code></strong> all
+arrived after some installed systems were built, and a machine that only ever
+updated what it already had would never see any of them.</p>
+<blockquote class="warn"><p>⚠ <strong>Adopting a brand-new component takes two applies.</strong> <code>syn-update</code> computes
+its build set from the component list in the <code>syn-update</code> that is <em>installed</em>,
+so the first apply updates <code>syn-update</code> itself and the second one sees the new
+component and offers it. A <code>check</code> that shows an update and then says
+"everything is already current" is that, not a bug — run it again.</p>
+</blockquote>
+<p><code>fetch</code> and <code>synapse-wallpapers</code> were the other half of this problem, in the
+opposite direction: both are in <code>packages.x86_64</code>, so they were on every
+installed machine and updatable on <strong>none</strong>, with nothing saying so. They are
+covered now.</p>
+<p>Adding software is a louder act than updating it, so new components are listed
+in their own section of <code>syn-update check</code> rather than mixed in with the
+upgrades.</p>
+<p>Two are deliberately excluded from that, and <code>syn-update</code> names them rather than
+skipping in silence:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Never added</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>syn-install</code></td>
+<td>The ISO's disk installer. An installed system is not meant to have a disk partitioner on <code>PATH</code></td>
+</tr>
+<tr>
+<td><code>limine-mkinitcpio-hook</code></td>
+<td>It writes limine boot entries. On any other bootloader it would pull limine in and override the mkinitcpio hook — a broken initramfs pipeline, delivered as an update. It reaches limine machines through the installer and the Settings Kernel pane instead</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both are still <em>updated</em> when present; they are only never introduced.</p>
+<hr />
+<h2 id="why-this-exists">Why this exists</h2>
+<p>Every system installed from an ISO before 0.2.3 was given a package repository
+that could never change:</p>
+<div class="hl"><pre><span></span><code><span class="k">[synapseos]</span>
+<span class="na">SigLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Optional TrustAll</span>
+<span class="na">Server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">file:///var/cache/synapseos</span>
+</code></pre></div>
+
+<p>That directory is copied off the ISO at install time and <strong>nothing ever writes to
+it again</strong>. So <code>pacman -Syu</code> faithfully upgraded all of Arch and could never see
+a newer <code>synui</code>, <code>synapd</code> or <code>synguard</code>. An installed SynapseOS was frozen at
+whatever ISO installed it — and, worst of all, <strong>with no error to notice</strong>. The
+update command succeeded, reported nothing to do for the SynapseOS packages, and
+was wrong.</p>
+<p><code>syn-update</code> closes that hole, and it <strong>lists itself among the components it can
+update</strong> — an updater that cannot update itself would need an OS reinstall to
+fix, which is the dead end being removed.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong><code>syn-update apply</code> fails at the install step with a sudo error.</strong>
+<code>apply</code> runs <code>sudo pacman -U</code> mid-build and needs a terminal to prompt on. Run it
+from a terminal, not from a launcher or a script with no tty. The GUI does this
+for you.</p>
+<p><strong>It reports a component as unsupported.</strong>
+That is intentional and not an error — see the table above. Those components come
+with an ISO upgrade.</p>
+<p><strong><code>pacman</code> offers to downgrade a SynapseOS package after an update.</strong>
+That was a real bug in <code>syn-update</code> 0.1.0-6 and earlier, where the local
+repository kept advertising versions older than what was installed. Update
+<code>syn-update</code> itself first, then re-run.</p>
+<p><strong>Nothing happens and no error appears.</strong>
+Check <code>syn-update status</code> for the source revision it is actually tracking. If the
+tree at <code>/var/lib/synapse-src</code> has local modifications, <code>apply</code> will refuse to
+clobber them without <code>--force</code>.</p>
+<hr />
+<p>See also: <a href="/wiki/Commands">Commands</a> · <a href="/wiki/Installation">Installation</a> ·
+<a href="/wiki/Building-and-Packaging">Building and Packaging</a> ·
+<a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Welcome-Guide"><span>Previous</span>Welcome Guide</a><a class="next" href="/wiki/Software"><span>Next</span>Software</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating" aria-current="page">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

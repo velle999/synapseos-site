@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Gaming — SynapseOS Wiki</title>
+<meta name="description" content="SynapseOS runs a 7B model as a system service, which means something has to give when you launch a game — the model pins around 4 GB of VRAM and a pile of worker threads. Game…">
+<link rel="canonical" href="https://soslinux.org/wiki/Gaming">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Gaming — SynapseOS Wiki">
+<meta property="og:description" content="SynapseOS runs a 7B model as a system service, which means something has to give when you launch a game — the model pins around 4 GB of VRAM and a pile of worker threads. Game…">
+<meta property="og:url" content="https://soslinux.org/wiki/Gaming">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
+<li><a href="#steam-and-cachyos-proton">Steam, and CachyOS Proton</a></li>
+<li><a href="#game-mode">Game mode</a></li>
+<li class="sub"><a href="#what-triggers-it">What triggers it</a></li>
+<li class="sub"><a href="#what-it-does-while-a-game-is-up">What it does while a game is up</a></li>
+<li class="sub"><a href="#the-exclusion-list">The exclusion list</a></li>
+<li class="sub"><a href="#settings">Settings</a></li>
+<li><a href="#launching-a-game-syn-game">Launching a game: syn game</a></li>
+<li class="sub"><a href="#-the-overlay-comes-from-the-launcher-and-only-from-the-launcher">⚠ The overlay comes from the launcher, and only from the launcher</a></li>
+<li class="sub"><a href="#the-overlay-is-hidden-until-you-ask">The overlay is hidden until you ask</a></li>
+<li class="sub"><a href="#which-config-file-the-overlay-actually-reads">Which config file the overlay actually reads</a></li>
+<li><a href="#geforce-now">GeForce NOW</a></li>
+<li><a href="#controllers">Controllers</a></li>
+<li class="sub"><a href="#stick-drift">Stick drift</a></li>
+<li class="sub"><a href="#buttons-in-the-wrong-places">Buttons in the wrong places</a></li>
+<li class="sub"><a href="#it-does-not-need-root">It does not need root</a></li>
+<li><a href="#things-that-will-confuse-you">Things that will confuse you</a></li>
+<li class="sub"><a href="#fullscreen-is-a-lie">&quot;Fullscreen&quot; is a lie</a></li>
+<li class="sub"><a href="#a-game-opens-on-the-wrong-monitor">A game opens on the wrong monitor</a></li>
+<li class="sub"><a href="#a-correctly-sized-window-that-renders-nothing">A correctly-sized window that renders nothing</a></li>
+<li class="sub"><a href="#windows-games">Windows games</a></li>
+<li class="sub"><a href="#the-ai-came-back-and-the-network-didnt">The AI came back and the network didn&#x27;t</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Gaming</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+      </p>
+
+      <div class="wiki-body">
+<p>SynapseOS runs a 7B model as a system service, which means something has to give
+when you launch a game — the model pins around 4 GB of VRAM and a pile of worker
+threads. <strong>Game mode</strong> (<code>Super</code>+<code>G</code>) is that negotiation, and <code>syn game</code> is the launcher
+wrapper that goes with it.</p>
+<p>These solve different halves of the problem and it is worth knowing which is
+which:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>When it applies</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Game mode</strong> (<code>Super</code>+<code>G</code>)</td>
+<td>a game that is <strong>already running</strong></td>
+<td>frees the GPU, holds off idle</td>
+</tr>
+<tr>
+<td><strong><code>syn game</code></strong></td>
+<td>at <strong>launch</strong></td>
+<td>loads the FPS overlay, CPU/GPU governor, optional gamescope</td>
+</tr>
+<tr>
+<td><strong><code>syn-arcade</code></strong></td>
+<td><strong>any time</strong></td>
+<td>shows/hides/moves the overlay, sets up controllers, wraps a low-resolution game in gamescope, and opens <strong><a href="/wiki/Big-Screen">big screen mode</a></strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>The overlay has to be <em>loaded</em> at launch — you cannot inject a Vulkan layer into
+a process that is already up, which is why the launcher exists separately. But
+once it is loaded, <code>syn-arcade</code> can turn it on, off and move it around from a
+keypress <strong>without leaving the game</strong>. See <a href="#the-overlay-is-hidden-until-you-ask">the overlay</a>
+and <a href="#controllers">controllers</a>.</p>
+<blockquote>
+<p><strong>On a television, start here instead: <a href="/wiki/Big-Screen">Big Screen</a>.</strong>
+<code>Super</code>+<code>F10</code> (or the pad's Guide button) puts up a ten-foot interface — your
+Steam library with its cover art, media, music and the machine's own switches,
+all drivable from a controller with the keyboard left on the table.</p>
+</blockquote>
+<hr />
+<h2 id="fitting-an-old-game-to-the-screen">Fitting an old game to the screen</h2>
+<p>A game that renders at 640×480 or 1024×768 has no idea what a 2560×1440 monitor
+is, so it sits as a postage stamp in the middle of a black screen. gamescope
+fixes that, and the line is hard to remember:</p>
+<div class="hl"><pre><span></span><code>gamescope -w 1024 -h 768 -W 2560 -H 1440 -f -F fsr -- wine Sims.exe
+</code></pre></div>
+
+<p><code>syn-arcade fit</code> writes it, and gives it a menu entry:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;The Sims&quot;</span><span class="w"> </span>--exec<span class="o">=</span><span class="s2">&quot;wine Sims.exe&quot;</span><span class="w"> </span>--game<span class="o">=</span>1024x768
+syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--from<span class="o">=</span>/usr/share/applications/thegame.desktop
+syn-arcade<span class="w"> </span>fit<span class="w">                  </span><span class="c1"># the wrappers you have made</span>
+syn-arcade<span class="w"> </span>fit<span class="w"> </span><span class="nb">command</span><span class="w"> </span>&lt;id&gt;<span class="w">     </span><span class="c1"># the command line it builds, to check or copy</span>
+syn-arcade<span class="w"> </span>fit<span class="w"> </span>run<span class="w"> </span>&lt;id&gt;<span class="w">         </span><span class="c1"># what the menu entry runs</span>
+syn-arcade<span class="w"> </span>fit<span class="w"> </span>remove<span class="w"> </span>&lt;id&gt;<span class="w">      </span><span class="c1"># the wrapper, its menu entry and its desktop icon</span>
+</code></pre></div>
+
+<blockquote class="warn"><p>⚠ <strong><code>--game</code> is what the GAME renders at (<code>gamescope -w/-h</code>); <code>--screen</code> is the
+MONITOR (<code>-W/-H</code>).</strong> The lower-case pair and the upper-case pair are one letter
+apart and mean opposite things, and getting them the wrong way round produces a
+wrapper that runs and looks worse than none.</p>
+</blockquote>
+<p><code>--screen</code> defaults to your primary monitor and <code>--filter</code> to FSR;
+<code>--force-window</code>, <code>--grab</code>, <code>--overlay</code> and <code>--gamemode</code> are there for the games
+that need them, and <code>fit inspect &lt;FILE&gt;</code> shows what a wrapper made from an
+installed application <em>would</em> be without making one.</p>
+<hr />
+<h2 id="steam-and-cachyos-proton">Steam, and CachyOS Proton</h2>
+<p>Steam is an installer option, not something the ISO carries: taking it enables
+<code>[multilib]</code> and brings the 32-bit stack, <code>mangohud</code>, <code>gamemode</code> and
+<code>gamescope</code> with it.</p>
+<p>It also installs <strong><code>proton-cachyos-slr</code></strong> — Valve's experimental Proton branch
+plus the CachyOS patch set, built against the same Steam Linux Runtime Valve's
+own Proton uses. It lands in <code>/usr/share/steam/compatibilitytools.d/</code>, which is
+the directory Steam scans at start, so it appears in a game's
+<strong>Properties → Compatibility</strong> dropdown with nothing to copy into <code>~/.steam</code>.</p>
+<p><strong>Valve's Proton stays installed and stays the default.</strong> This is an extra
+option per game, not a replacement — try it when a title misbehaves, leave it
+alone otherwise.</p>
+<p>Adding it means adding CachyOS's repository, and how that is done matters:</p>
+<ul>
+<li>Only the generic <code>[cachyos]</code> repo, <strong>appended last</strong> in <code>/etc/pacman.conf</code>.
+  pacman takes the first repository in the file that carries a package name, so
+  at the end it can only supply names nothing else has — <code>proton-cachyos-*</code>.
+  <code>core</code> and <code>extra</code> keep every package they share. <strong>SynapseOS stays Arch.</strong></li>
+<li>CachyOS's own <code>cachyos-repo.sh</code> does the opposite: it inserts the v3/v4 repos
+  <em>above</em> <code>[core]</code> and installs their build of pacman, which re-sources the
+  whole system from CachyOS. <strong>Do not run it here</strong> — the installer adds the
+  repository by hand for exactly this reason.</li>
+<li>The signing key is pinned by fingerprint and checked before anything imports
+  it.</li>
+</ul>
+<p>Already installed and want it?</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>proton-cachyos-slr<span class="w">      </span><span class="c1"># ~340 MB down, ~1.6 GB installed</span>
+</code></pre></div>
+
+<p><code>proton-cachyos-native</code> is the same Proton outside the runtime container, for
+driving Proton without Steam. If <code>[cachyos]</code> is not in your <code>pacman.conf</code> — an
+install from before 0.2.8, or one where you declined Steam — add it as the
+installer does, or see
+<a href="https://wiki.cachyos.org/features/optimized_repos/">the CachyOS documentation</a>.</p>
+<h2 id="game-mode">Game mode</h2>
+<h3 id="what-triggers-it">What triggers it</h3>
+<p><strong>A fullscreen XWayland client</strong>, minus an exclusion list. That is the whole
+signal, and it works because of what the desktop looks like: Steam titles,
+Proton/Wine and native X11 games all present as fullscreen X11 clients, while
+modern desktop apps are Wayland-native and never match.</p>
+<p>It is automatic — <code>Super</code>+<code>G</code> toggles the <em>feature</em>, not each game.</p>
+<h3 id="what-it-does-while-a-game-is-up">What it does while a game is up</h3>
+<ul>
+<li><strong>Stops <code>synapd</code>.</strong> It holds ~4 GB of VRAM and llama.cpp worker threads, and
+  the wire protocol has no unload or sleep message — only <code>RELOAD</code> and
+  <code>SHUTDOWN</code> — so stopping the service is the only way to hand the GPU and those
+  cores over. It starts again on exit and reloads the model then.</li>
+<li><strong>Stops the <code>synapd</code> poller</strong>, which would otherwise spin on connect failures
+  and log them forever.</li>
+<li><strong>Holds off the idle stages.</strong> A gamepad is not a seat input device, so to the
+  compositor a controller-only session looks perfectly idle — without this the
+  screen dims and then blanks mid-game.</li>
+</ul>
+<p>Everything is restored on exit, <strong>including when synui itself shuts down</strong>.
+Leaving the machine with a stopped <code>synapd</code> because the compositor died mid-game
+would be a poor way to lose the AI.</p>
+<p>The bar shows an indicator while it is active. synui publishes the state to
+<code>$XDG_RUNTIME_DIR/synui-game</code> (0700, session-user owned, so nothing else can
+forge it) and the bar module reads it.</p>
+<h3 id="the-exclusion-list">The exclusion list</h3>
+<p>Fullscreen X11 things that are <em>not</em> games:</p>
+<div class="hl"><pre><span></span><code>firefox · chibi · tepris · nexus-chat · kitty · foot
+</code></pre></div>
+
+<p><strong>A fullscreen video is the case this exists for.</strong> Without it, going fullscreen
+on a YouTube video would stop the AI daemon — a genuinely nasty surprise. The
+Firefox-app-mode apps report their own <code>app_id</code> via <code>MOZ_APP_REMOTINGNAME</code>, so
+they need naming separately from <code>firefox</code>.</p>
+<p>Add your own with <code>game_exclude</code> in <code>synuirc</code>; matching is case-insensitive
+substring against the app id.</p>
+<h3 id="settings">Settings</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>game_mode</code></td>
+<td><code>on</code></td>
+<td>The feature as a whole</td>
+</tr>
+<tr>
+<td><code>game_suspend_ai</code></td>
+<td><code>on</code></td>
+<td>Stop <code>synapd</code> while a game is up</td>
+</tr>
+<tr>
+<td><code>game_inhibit_idle</code></td>
+<td><code>on</code></td>
+<td>Don't dim or blank during a game</td>
+</tr>
+<tr>
+<td><code>game_ai_stop_cmd</code> / <code>game_ai_start_cmd</code></td>
+<td><code>systemctl</code></td>
+<td>How the AI is stopped and started</td>
+</tr>
+<tr>
+<td><code>game_exclude</code></td>
+<td>see above</td>
+<td>One entry per line; adds to the defaults</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Stopping <code>synapd</code> needs root, and the session has no polkit agent — so it goes
+through a tightly-scoped <code>sudo -n</code> rule (<code>/etc/sudoers.d/synapd-gamemode</code>).
+See <a href="/wiki/Commands#privileged-desktop-actions-sudo--n">Commands</a>.</p>
+</blockquote>
+<hr />
+<h2 id="launching-a-game-syn-game">Launching a game: <code>syn game</code></h2>
+<p>Wraps a command in <code>gamemoderun</code> (CPU/GPU governor), MangoHud (the overlay), and
+optionally gamescope (a nesting micro-compositor for clean scaling and a frame
+cap).</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>game<span class="w"> </span>./game.x86_64
+syn<span class="w"> </span>game<span class="w"> </span>steam<span class="w">                       </span><span class="c1"># one wrap covers a whole library</span>
+syn<span class="w"> </span>game<span class="w"> </span>--<span class="w"> </span>wine<span class="w"> </span>some-game.exe
+synui-game-run<span class="w"> </span>--gamescope<span class="o">=</span>2560x1440@60<span class="w"> </span>--<span class="w"> </span>steam<span class="w"> </span>-gamepadui
+</code></pre></div>
+
+<p><code>syn game</code> is the front door and <code>synui-game-run</code> is the same program under its
+own name — <code>syn game</code> supplies the <code>--</code> for you.</p>
+<p>In Steam, set it as a launch option — the <code>%command%</code> form:</p>
+<div class="hl"><pre><span></span><code>syn game -- %command%
+</code></pre></div>
+
+<p>Flags: <code>--gamescope[=WxH[@R]]</code> · <code>--no-hud</code> · <code>--no-gamemode</code> · <code>--ensure-config</code></p>
+<p><strong>Every wrapper is optional and guarded.</strong> A missing tool is dropped rather than
+being fatal, so the command still launches, just without that layer. <code>gamescope</code>
+ships on the ISO, <code>mangohud</code> arrives with <code>syn-arcade</code>, and <code>lib32-mangohud</code> and
+<code>gamemode</code> are optdepends:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>lib32-mangohud<span class="w"> </span>gamemode
+</code></pre></div>
+
+<h3 id="-the-overlay-comes-from-the-launcher-and-only-from-the-launcher">⚠ The overlay comes from the launcher, and only from the launcher</h3>
+<p><strong><code>MANGOHUD=1</code> is no longer exported for the session</strong>, and that is a deliberate
+change rather than an omission. MangoHud's Vulkan manifest declares
+<code>enable_environment MANGOHUD=1</code>, so that one variable loads
+<code>VK_LAYER_MANGOHUD_overlay</code> into <strong>every Vulkan client on the machine</strong> — a game,
+a browser, a video player, any Qt application that touches QtMultimedia, a test
+suite. On AMD the layer segfaults the client inside its own <code>vkCreateDevice</code>
+hook; on NVIDIA it never does. So it is a crash that follows the graphics card
+rather than the program, which is exactly the kind that gets blamed on four
+different applications in turn.</p>
+<p>Nothing can inject an overlay into a process that is already running anyway, so
+the launcher is the only place it could have come from. <code>syn game</code> wraps it, and
+everything started from that wrap inherits it.</p>
+<p>If your machine has never seen the crash and you want the old behaviour:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>game<span class="w"> </span>hud<span class="w"> </span>on<span class="w">              </span><span class="c1"># MANGOHUD=1 back in every Vulkan client, at next login</span>
+syn<span class="w"> </span>game<span class="w"> </span>hud<span class="w"> </span>off<span class="w">             </span><span class="c1"># …and back to games only</span>
+syn<span class="w"> </span>game<span class="w"> </span>hud<span class="w">                 </span><span class="c1"># which it is now</span>
+</code></pre></div>
+
+<p>That writes <code>~/.config/synapseos/mangohud.conf</code>; the machine's own default lives
+in <code>/etc/synapseos/mangohud.conf</code> and ships <strong>off</strong>.</p>
+<h3 id="the-overlay-is-hidden-until-you-ask">The overlay is hidden until you ask</h3>
+<p>The overlay is loaded but invisible until something shows it. <strong><code>syn-arcade</code></strong> is
+what shows it, and it works <em>inside a game that is already running</em>:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>hud<span class="w"> </span>toggle<span class="w">        </span><span class="c1"># show it or hide it</span>
+syn-arcade<span class="w"> </span>hud<span class="w"> </span>cycle<span class="w">         </span><span class="c1"># move it to the next corner</span>
+syn-arcade<span class="w"> </span>hud<span class="w"> </span>position<span class="w"> </span>top-right
+syn-arcade<span class="w"> </span>hud<span class="w"> </span><span class="nb">set</span><span class="w"> </span>font_size<span class="w"> </span><span class="m">24</span>
+</code></pre></div>
+
+<p>Put the first two on keys:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>binds<span class="w"> </span>install<span class="w">     </span><span class="c1"># Super+F11 toggles, Super+F12 moves it</span>
+</code></pre></div>
+
+<p>That writes two ordinary <code>bind =</code> lines into your <code>synuirc</code>, so the <code>Super</code>+<code>/</code>
+shortcuts palette can rebind them like anything else. It is not done for you —
+nothing edits your compositor config until you ask. Pick your own combos with
+<code>--toggle=</code> and <code>--cycle=</code>, and <code>syn-arcade binds remove</code> takes them back out.</p>
+<p><code>Shift_R</code>+<code>F12</code> — right Shift, not left — still works as MangoHud's own built-in
+toggle, handled inside the game process. It is deliberately a <em>different</em> key
+from the two above: two things toggling one setting on one keypress would cancel
+each other out.</p>
+<blockquote>
+<p><strong><code>MANGOHUD=1</code> only hooks Vulkan.</strong> An OpenGL game needs the <em>wrapper</em>:
+<code>mangohud %command%</code>, or <code>syn game</code>, which does it for you. This is the single
+most common reason the overlay "doesn't work".</p>
+</blockquote>
+<h3 id="which-config-file-the-overlay-actually-reads">Which config file the overlay actually reads</h3>
+<p>This trips people up, so it is worth being exact. <strong>MangoHud reads exactly one
+config file.</strong> It has a list of candidates and returns on the first that opens —
+there is no merging, and the list is not in the order you would guess:</p>
+<div class="hl"><pre><span></span><code>~/.config/MangoHud/wine-&lt;exe&gt;.conf     ← checked first
+&lt;game directory&gt;/MangoHud.conf
+~/.config/MangoHud/&lt;program&gt;.conf
+/etc/MangoHud.conf
+~/.config/MangoHud/MangoHud.conf       ← checked last
+</code></pre></div>
+
+<p>So <code>/etc/MangoHud.conf</code> <strong>outranks your own file</strong>, and on a stock setup nothing
+you put in <code>~/.config/MangoHud/MangoHud.conf</code> was ever read.</p>
+<p>SynapseOS pins <code>MANGOHUD_CONFIGFILE</code> to your own file (from
+<code>/etc/profile.d/syn-arcade.sh</code>), which collapses that whole list to one path you
+can write. Two commands tell you where you stand:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>hud<span class="w"> </span>path<span class="w">      </span><span class="c1"># which file is winning, and who outranks it</span>
+syn-arcade<span class="w"> </span>hud<span class="w"> </span>adopt<span class="w">     </span><span class="c1"># take ownership, keeping the settings already in effect</span>
+</code></pre></div>
+
+<p><code>hud adopt</code> copies whatever is currently in effect into your own file first, so
+taking ownership does not change how the overlay looks.</p>
+<p>Edit that file freely — <code>syn-arcade</code> only ever rewrites the individual lines it
+is asked to change, and keeps everything else, comments included.</p>
+<details>
+<summary>Why a keybind can change the overlay in a game that is already running</summary>
+<p>MangoHud is an implicit Vulkan layer living <strong>inside the game's own process</strong>.
+There is no socket and no signal to send it, and <code>mangohudctl</code> does not reach it
+— that speaks to the separate <code>mangoapp</code> process used by gamescope and SteamOS.</p>
+<p>What <code>libMangoHud</code> <em>does</em> do is watch its own config file with inotify and
+reparse on every change. So <strong>rewriting that file is a live control channel into
+every running game at once</strong>, which is what makes a plain compositor keybind
+possible.</p>
+<p>One consequence worth knowing, because it explains an otherwise baffling
+failure: the config file must <strong>exist before the game starts</strong>. MangoHud adds its
+watch once, at layer init, and if the path is missing at that moment the watch
+fails and <em>that process never sees a config change again</em> — the keys are dead in
+that game for as long as it runs, while working fine in the next one you launch.
+Your session runs <code>syn-arcade hud ensure</code> at login so this cannot happen.</p>
+</details>
+<hr />
+<h2 id="geforce-now">GeForce NOW</h2>
+<p><code>syn-gfn</code> — no arguments, or the <strong>GeForce NOW</strong> entry in the applications menu,
+or its tile in <a href="/wiki/Big-Screen">big screen mode</a>.</p>
+<div class="hl"><pre><span></span><code>syn-gfn
+syn-gfn<span class="w"> </span>--list-browsers<span class="w">      </span><span class="c1"># what it found, and which one it would use</span>
+</code></pre></div>
+
+<p><strong>It is a launcher, and the browser is the client</strong>, because the Electron client
+cannot do either of the two things a game stream is — and both failures are
+silent.</p>
+<ul>
+<li>Its Wayland branch hardcodes a GL implementation Chromium 142 removed, so the
+  GPU process dies at every launch and falls back to software compositing — in
+  which its Wayland surface never repaints at the size the compositor gave it.
+  synui sends <code>configure(2556, 1382)</code>, the client answers
+  <code>set_window_geometry(0, 0, 2556, 1382)</code> and acknowledges it, and then paints
+  800×600 into the corner with the desktop showing through the rest. A stream
+  negotiated against that viewport comes back 5:4.</li>
+<li>It binds <code>zwp_pointer_constraints_v1</code> and <strong>never calls <code>lock_pointer</code></strong>, so
+  nothing asks the compositor to hold the cursor and it leaves the window
+  mid-game onto the next monitor.</li>
+</ul>
+<p>Neither is synui's doing — a compliant client driven through the same
+maximise-then-fullscreen sequence in a nested headless synui is configured to the
+exact output box and fills it, and both pointer protocols are advertised and
+answered.</p>
+<p>Every hard part of a cloud-gaming client — pointer lock, keyboard lock,
+fullscreen, H.264/HEVC decode, WebRTC — belongs to the browser engine, already
+written and already tested against this service. So <code>syn-gfn</code> runs the first
+Chromium-family browser it finds, in <strong>a profile of its own</strong> (never your
+browsing one), with <strong>keyboard lock, pointer lock and automatic fullscreen
+pre-granted for the site</strong> — the permission prompt they replace is raised while
+the page is already fullscreen with the cursor captured, where nobody can see it.
+Keyboard lock is what makes <code>Escape</code> reach the game instead of being spent
+leaving fullscreen.</p>
+<blockquote>
+<p><strong>No browser is a dependency.</strong> GeForce NOW refuses Gecko, so Firefox cannot
+run it. If <code>--list-browsers</code> comes back empty, install any Chromium-family
+browser and it will be found.</p>
+</blockquote>
+<hr />
+<h2 id="controllers">Controllers</h2>
+<p>Steam handles its own controller input. This is for everything outside it —
+emulators, native Linux games, and anything launched from outside a store.</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>pads<span class="w">                     </span><span class="c1"># what is plugged in</span>
+syn-arcade<span class="w"> </span>pads<span class="w"> </span>info<span class="w"> </span>&lt;pad&gt;<span class="w">          </span><span class="c1"># buttons, axes, deadzones, live positions</span>
+syn-arcade<span class="w"> </span>pads<span class="w"> </span><span class="nb">test</span><span class="w"> </span>&lt;pad&gt;<span class="w">          </span><span class="c1"># watch buttons and sticks as you press them</span>
+syn-arcade<span class="w"> </span>pads<span class="w"> </span>rumble<span class="w"> </span>&lt;pad&gt;<span class="w">        </span><span class="c1"># check the motors</span>
+</code></pre></div>
+
+<p>A <code>&lt;pad&gt;</code> is its event id (<code>event20</code>), its number in the list (<code>2</code>), or any
+unique part of its name (<code>dualsense</code>). An ambiguous fragment lists the
+candidates rather than picking one.</p>
+<p><code>syn-arcade gui</code> puts all of this in a window.</p>
+<h3 id="stick-drift">Stick drift</h3>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>pads<span class="w"> </span>calibrate<span class="w"> </span>&lt;pad&gt;
+</code></pre></div>
+
+<p>Measures how far each stick wanders while nobody is touching it, then sets the
+kernel's per-axis <strong>deadzone</strong> wide enough to cover it. <strong>Let go of both sticks
+first</strong> — a reading taken with one held is refused rather than believed, because
+believing it would give you a controller that ignores half its own range.</p>
+<p>The reason to do it this way: the deadzone lives in the kernel's description of
+the device, and SDL, evdev-based emulators and most native games read it from
+there. So one calibration fixes drift <strong>everywhere at once</strong>, instead of hunting
+for a deadzone slider in every game that has one.</p>
+<p>Other forms:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>pads<span class="w"> </span>calibrate<span class="w"> </span>&lt;pad&gt;<span class="w"> </span>--deadzone<span class="o">=</span><span class="m">10</span><span class="w">   </span><span class="c1"># skip measuring, set 10%</span>
+syn-arcade<span class="w"> </span>pads<span class="w"> </span>calibrate<span class="w"> </span>&lt;pad&gt;<span class="w"> </span>--reset<span class="w">         </span><span class="c1"># clear what this set</span>
+</code></pre></div>
+
+<p>Deadzones live in the kernel's copy of the device, so they are <strong>lost when the
+pad is unplugged</strong>. Save them and your session puts them back at every login:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>pads<span class="w"> </span>save<span class="w"> </span>&lt;pad&gt;<span class="w"> </span>--deadzone<span class="o">=</span><span class="m">10</span>
+</code></pre></div>
+
+<p>They are remembered against the controller's USB ids, not its event number —
+<code>event20</code> is whatever number happened to be free when you plugged it in.</p>
+<h3 id="buttons-in-the-wrong-places">Buttons in the wrong places</h3>
+<p>If A and B are swapped, the triggers act like buttons, or the right stick reads
+as a d-pad, the pad is missing from SDL's mapping database or is in it wrongly.
+No game has a setting for this, because from the game's side nothing is wrong.</p>
+<p><strong><code>map learn</code> builds one for you</strong> — press each control once and it writes the
+mapping. It exists because the Mappings tab could list a broken controller and
+not fix one: its answer to "my pad's buttons are in the wrong places" used to be
+the name of a program this desktop does not ship.</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>map<span class="w"> </span>learn<span class="w"> </span><span class="o">[</span>&lt;pad&gt;<span class="o">]</span><span class="w">                 </span><span class="c1"># press each control once</span>
+syn-arcade<span class="w"> </span>map<span class="w"> </span>add<span class="w"> </span><span class="s1">&#39;&lt;the mapping string&gt;&#39;</span><span class="w">    </span><span class="c1"># or paste one — quote it</span>
+syn-arcade<span class="w"> </span>map<span class="w">                               </span><span class="c1"># what you have added</span>
+syn-arcade<span class="w"> </span>map<span class="w"> </span>remove<span class="w"> </span>&lt;guid<span class="w"> </span>or<span class="w"> </span>name&gt;
+syn-arcade<span class="w"> </span>map<span class="w"> </span>path<span class="w">                          </span><span class="c1"># is SDL actually reading them?</span>
+</code></pre></div>
+
+<p>A mapping from <code>antimicrox</code> or the SDL project's gamepad tool still pastes in.</p>
+<p>Every SDL2 and SDL3 game reads them, through <code>SDL_GAMECONTROLLERCONFIG_FILE</code>.</p>
+<blockquote>
+<p>A mapping that says <strong><code>platform:Windows</code></strong> loads and is then silently never
+applied — SDL only uses mappings matching the platform it is running on. This
+is the single most common reason a mapping copied off a forum does nothing, so
+<code>map add</code> refuses that one and tells you what to change.</p>
+</blockquote>
+<h3 id="it-does-not-need-root">It does not need root</h3>
+<p>Rumble and deadzones write to the controller's device node, which is
+<code>root:input</code> — and you are not in the <code>input</code> group. It still works, and that is
+deliberate: <code>udev</code> tags <strong>joysticks</strong>, and <em>only</em> joysticks, for <code>uaccess</code>, so
+whoever is logged in at the machine is granted access to them. Keyboards and mice
+get no such rule, which is rather the point.</p>
+<p>So if you see <em>permission denied</em>, <code>sudo</code> is not the fix. It means one of two
+things: <code>udev</code> did not recognise the device as a joystick (check with
+<code>udevadm info /dev/input/eventN | grep ID_INPUT</code>), or this session is not the
+active seat — an SSH login, or another user switched to.</p>
+<hr />
+<h2 id="things-that-will-confuse-you">Things that will confuse you</h2>
+<h3 id="fullscreen-is-a-lie">"Fullscreen" is a lie</h3>
+<p>Some games' fullscreen is <strong>borderless windowed</strong>: they never send
+<code>_NET_WM_STATE_FULLSCREEN</code>, so the compositor correctly tiles them, game mode
+never triggers, and it looks like synui is broken.</p>
+<p>Doom KEX is the standing example — <code>v_windowmode=1</code> is borderless, <code>2</code> is true
+fullscreen. Either fix it in the game, or force it with <code>Super</code>+<code>Shift</code>+<code>F</code>.</p>
+<h3 id="a-game-opens-on-the-wrong-monitor">A game opens on the wrong monitor</h3>
+<p>Xwayland with no primary output leaves SDL falling back to connector order. Set
+one: <code>Super</code>+<code>D</code> → <code>p</code>, or <code>primary=1</code> in <code>outputs.conf</code>.</p>
+<h3 id="a-correctly-sized-window-that-renders-nothing">A correctly-sized window that renders nothing</h3>
+<p>Usually the game, not the compositor. Unity titles persist a screen-resolution
+<strong>index</strong> rather than a resolution, so moving a game between monitors with
+different mode lists can leave the saved index out of range — which resolves to
+a 1×1 viewport inside a properly sized window. Delete or fix the game's prefs
+entry.</p>
+<p><strong>A blank window at the right size is a client resolution bug far more often
+than a compositor bug.</strong></p>
+<h3 id="windows-games">Windows games</h3>
+<p><code>wine</code> and <code>wine-mono</code> ship on the ISO, and there is a <strong>Run with Wine</strong> action
+in the file manager's context menu (<code>synui-wine-run</code>).</p>
+<p>Two traps worth knowing if you use Lutris or a prefix by hand:</p>
+<ul>
+<li>A 32-bit game needs <code>arch: win32</code> in the <strong>config</strong>, not just a 32-bit prefix.</li>
+<li><strong>gamescope and Wine do not always mix</strong> — if a Wine title misbehaves under
+  <code>--gamescope</code>, run it without.</li>
+</ul>
+<h3 id="the-ai-came-back-and-the-network-didnt">The AI came back and the network didn't</h3>
+<p><code>synnet</code> used to carry a <code>Requires=</code> on <code>synapd</code>, so stopping <code>synapd</code> stopped
+<code>synnet</code> too — and starting <code>synapd</code> again did not bring it back. It is a
+<code>Wants=</code> now. The shape is worth remembering: <strong>check <code>Requires=</code> before you
+stop a unit</strong>, and remember the dependency only points one way.</p>
+<hr />
+<p>See also: <a href="/wiki/synui">synui</a>, <a href="/wiki/synapd#vram-and-game-mode">synapd</a>,
+<a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/Troubleshooting#displays-and-games">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Nix"><span>Previous</span>Nix</a><a class="next" href="/wiki/Big-Screen"><span>Next</span>Big Screen</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming" aria-current="page">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

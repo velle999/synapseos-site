@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The Dock — SynapseOS Wiki</title>
+<meta name="description" content="A row of application icons along one edge of the screen. It is drawn by the compositor itself — not by the bar, not by a separate program — so it survives the bar being turned…">
+<link rel="canonical" href="https://soslinux.org/wiki/The-Dock">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="The Dock — SynapseOS Wiki">
+<meta property="og:description" content="A row of application icons along one edge of the screen. It is drawn by the compositor itself — not by the bar, not by a separate program — so it survives the bar being turned…">
+<meta property="og:url" content="https://soslinux.org/wiki/The-Dock">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-short-version">The short version</a></li>
+<li><a href="#the-right-click-menu">The right-click menu</a></li>
+<li><a href="#where-it-lives">Where it lives</a></li>
+<li><a href="#size-and-shape">Size and shape</a></li>
+<li><a href="#pinned-applications">Pinned applications</a></li>
+<li><a href="#the-three-cells">The three cells</a></li>
+<li><a href="#icons">Icons</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>The Dock</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Dock/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-24">2026-08-24</time>
+      </p>
+
+      <div class="wiki-body">
+<p>A row of application icons along one edge of the screen. It is drawn by the
+compositor itself — not by the bar, not by a separate program — so it survives
+the bar being turned off, and it is themed by the same palette everything else
+on the desktop is.</p>
+<p>It is <strong>not</strong> the bar. The <a href="/wiki/The-Desktop#the-bar">bar</a> is the strip with the
+clock and the tray; the dock is the icons.</p>
+<hr />
+<h2 id="the-short-version">The short version</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Right-click the dock</td>
+<td>every setting on this page, as a menu</td>
+</tr>
+<tr>
+<td>Right-click an icon</td>
+<td>pin/unpin, new window, close, quit — at the <strong>bottom</strong> of that menu</td>
+</tr>
+<tr>
+<td>Drag an icon</td>
+<td>reorder it</td>
+</tr>
+<tr>
+<td>Drag the dock body</td>
+<td>move it to another edge, or another monitor</td>
+</tr>
+<tr>
+<td><strong>Control panel ▸ Desktop</strong></td>
+<td>the same settings with descriptions</td>
+</tr>
+</tbody>
+</table></div>
+<p>Everything the menu writes goes to <code>~/.config/synui/dock.state</code>, so a dock
+arranged by pointer comes back the way it was left.</p>
+<hr />
+<h2 id="the-right-click-menu">The right-click menu</h2>
+<p>Two menus, depending on where the click lands.</p>
+<p><strong>On the bar body</strong> you get the dock's own settings: auto-hide, magnify, the
+clock, the apps button, the power button, where each of those sits, which edge
+the dock is on, and a link into the control panel.</p>
+<p><strong>On an icon</strong> you get all of that <em>plus</em> that application's own rows —
+<strong>Unpin from Dock</strong>, <strong>New Window</strong>, <strong>Close Window</strong>, <strong>Quit All Windows</strong> —
+at the <strong>bottom</strong>, under a rule.</p>
+<blockquote>
+<p><strong>Why the app's rows are last.</strong> That block is one to four rows depending on
+whether the icon is pinned, whether the app has a launcher and whether it is
+running. With it on top every setting below it shifted by up to four positions
+from one icon to the next, and "Auto-hide Dock" was never twice in the same
+place. Below the settings, the dock's rows start at the top of the menu on
+every icon. The menu also opens <em>upward</em> from a bottom dock, so the last rows
+are the ones nearest your pointer — which is sitting on the icon those rows
+are about.</p>
+</blockquote>
+<hr />
+<h2 id="where-it-lives">Where it lives</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dock_edge</code></td>
+<td><code>bottom</code> <code>top</code> <code>left</code> <code>right</code></td>
+<td>Which edge. <code>left</code>/<code>right</code> draw a vertical column</td>
+</tr>
+<tr>
+<td><code>dock_enabled</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>Whether there is a dock at all</td>
+</tr>
+<tr>
+<td><code>dock_autohide</code></td>
+<td><code>on</code> (default) <code>off</code></td>
+<td>Off keeps it on screen always</td>
+</tr>
+<tr>
+<td><code>dock_on_top</code></td>
+<td><code>on</code> <code>off</code> (default)</td>
+<td>Only means anything with auto-hide <strong>off</strong>: on, the dock floats over windows; off, windows cover it. An auto-hiding dock is always on top, so the menu hides this row rather than showing a switch that is ignored</td>
+</tr>
+<tr>
+<td><code>dock_hover_margin</code></td>
+<td><code>4</code> (px)</td>
+<td>How close to the edge the pointer must get to bring it back</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>A <strong>vertical</strong> dock is a column, and a column cannot widen. That is what
+<code>dock_clock_analog</code> below is for.</p>
+</blockquote>
+<hr />
+<h2 id="size-and-shape">Size and shape</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dock_height</code></td>
+<td><code>64</code> (px)</td>
+<td>The slab <strong>and</strong> the icons — icons are this minus 16</td>
+</tr>
+<tr>
+<td><code>dock_radius</code></td>
+<td><code>26</code> (px)</td>
+<td>Its corners. Clamped at draw time to half the dock's thickness, so past that the number stops doing anything</td>
+</tr>
+<tr>
+<td><code>dock_magnify</code></td>
+<td><code>on</code></td>
+<td>Icons under the pointer swell and the run slides apart to make room</td>
+</tr>
+<tr>
+<td><code>dock_magnify_scale</code></td>
+<td><code>1.60</code></td>
+<td>How big the one under the pointer gets (1.00–2.50)</td>
+</tr>
+<tr>
+<td><code>dock_style</code></td>
+<td><code>auto</code> <code>solid</code> <code>glass</code></td>
+<td><code>auto</code> is glass on a glass theme and a tinted slab elsewhere</td>
+</tr>
+<tr>
+<td><code>dock_opacity</code></td>
+<td><code>auto</code></td>
+<td>How much wallpaper shows through. <strong><code>auto</code> is the theme's own answer</strong> — frosted (0.05) on the two Prisms, a 0.72 slab on the other thirteen. <code>0.00</code> is a row of icons on the wallpaper; the icons are opaque whatever this says</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>The house desktop ships <code>dock_radius = 64</code></strong>, which the clamp turns into a
+capsule, and leaves the opacity on <code>auto</code> — which on Prism <em>is</em> 0.05.
+See <a href="/wiki/The-Desktop#glass">Glass</a>.</p>
+<p>⚠ Until synui 467 the dock was the one surface with <strong>no way to ask its
+theme</strong>: it kept its compiled <code>0.72</code> whatever was on screen, so a Prism
+desktop came up with a see-through bar, see-through windows and a solid slab
+of a dock. That is why the house desktop briefly had to write a glass level
+down.</p>
+</blockquote>
+<hr />
+<h2 id="pinned-applications">Pinned applications</h2>
+<div class="hl"><pre><span></span><code>dock_pin = firefox foot synfiles
+</code></pre></div>
+
+<p>Space-separated <code>app_id</code>s or <code>.desktop</code> basenames. Pin and unpin from the
+icon's right-click menu; drag to reorder.</p>
+<blockquote class="warn"><p>⚠ <strong>The <code>.desktop</code> basename must equal the <code>app_id</code>.</strong> A pin is matched by
+name, and <code>StartupWMClass</code> is <strong>ignored</strong> — so an application whose window
+reports one id and whose launcher file is called something else pins as two
+different things. If an icon will not stay pinned, that is why.</p>
+</blockquote>
+<hr />
+<h2 id="the-three-cells">The three cells</h2>
+<p>Besides applications, the dock can carry a clock, an apps button and a power
+button. Each is a cell in the run, each can be turned off, and each can be
+<strong>dragged to a different position</strong> in the row.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dock_clock</code></td>
+<td><code>off</code></td>
+<td>Time and date in a cell of its own. Off because the bar already has a clock, and a desktop showing the time twice is a choice rather than something to undo</td>
+</tr>
+<tr>
+<td><code>dock_clock_analog</code></td>
+<td><code>off</code></td>
+<td>Draw it as a <strong>dial</strong>. The one clock that fits a vertical dock — a column cannot widen for a time string, but a dial is square</td>
+</tr>
+<tr>
+<td><code>dock_apps_button</code></td>
+<td><code>on</code></td>
+<td>The "show all apps" grid at the end of the run. On, because a dock of pinned icons has no route to an application that is not on it</td>
+</tr>
+<tr>
+<td><code>dock_power_button</code></td>
+<td><code>on</code></td>
+<td>Lock / Log Out / Suspend / Restart / Shut Down. On for the same reason: none of those five is a program, so no arrangement of icons reaches them</td>
+</tr>
+<tr>
+<td><code>dock_clock_slot</code> <code>dock_apps_slot</code> <code>dock_power_slot</code></td>
+<td><code>-1</code></td>
+<td>Where each sits. <code>-1</code> is past the last icon; written by dragging the cell</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>The power menu has <strong>no confirmation dialog</strong>, and that is deliberate rather
+than missing: the menu <em>is</em> the confirmation. Pressing the button commits to
+nothing, and nothing fires until a second, aimed press lands on a named row.</p>
+</blockquote>
+<hr />
+<h2 id="icons">Icons</h2>
+<p>Dock icons come from the icon theme, and follow the desktop:</p>
+<ul>
+<li>On a <strong>monochrome</strong> wallpaper they go monochrome with everything else.</li>
+<li>The clock, apps grid, power mark and the running dots are <strong>drawn</strong> by synui
+  rather than pulled from a theme, so they can be the colour that reads on this
+  bar on every preset — and on a see-through dock they measure what is actually
+  behind them rather than trusting the theme's ink.</li>
+</ul>
+<hr />
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a> — the bar, widgets, themes, layouts</li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a> — third-party widgets for the bar</li>
+<li><a href="/wiki/Settings">Settings</a> — the control panel</li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/The-Desktop"><span>Previous</span>The Desktop</a><a class="next" href="/wiki/Bar-Plugins"><span>Next</span>Bar Plugins</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock" aria-current="page">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

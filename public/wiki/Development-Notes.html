@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Development Notes — SynapseOS Wiki</title>
+<meta name="description" content="Engineering lessons from building SynapseOS, kept because almost all of them were silent failures — something kept reporting success while doing nothing. Each entry ends with…">
+<link rel="canonical" href="https://soslinux.org/wiki/Development-Notes">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Development Notes — SynapseOS Wiki">
+<meta property="og:description" content="Engineering lessons from building SynapseOS, kept because almost all of them were silent failures — something kept reporting success while doing nothing. Each entry ends with…">
+<meta property="og:url" content="https://soslinux.org/wiki/Development-Notes">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#diagnostic-reflexes">Diagnostic reflexes</a></li>
+<li><a href="#a-commit-is-not-a-release-and-a-pkgrel-bump-is-not-an-install">A commit is not a release, and a pkgrel bump is not an install</a></li>
+<li><a href="#stale-dkms-modules-survive-kernel-upgrades">Stale DKMS modules survive kernel upgrades</a></li>
+<li><a href="#hand-copied-so-files-shadow-the-packaged-ones">Hand-copied .so files shadow the packaged ones</a></li>
+<li><a href="#etc-units-silently-shadow-usrlib-ones">/etc units silently shadow /usr/lib ones</a></li>
+<li class="sub"><a href="#more-systemd-traps">More systemd traps</a></li>
+<li class="sub"><a href="#a-socket-activated-service-is-a-way-for-a-stopped-daemon-to-come-back">A socket-activated service is a way for a stopped daemon to come back</a></li>
+<li><a href="#inherited-signal-dispositions--this-burned-us-three-times">Inherited signal dispositions — this burned us three times</a></li>
+<li><a href="#check-the-exit-status-of-everything-you-shell-out-to">Check the exit status of everything you shell out to</a></li>
+<li><a href="#tighten-a-check-and-you-must-handle-the-existing-invalid-values">Tighten a check and you must handle the existing invalid values</a></li>
+<li><a href="#one-flat-namespace-means-every-key-must-be-distinct">One flat namespace means every key must be distinct</a></li>
+<li><a href="#duplicate-keybinds-are-not-conflicts-they-are-deletions">Duplicate keybinds are not conflicts, they are deletions</a></li>
+<li><a href="#two-copies-of-everything">Two copies of everything</a></li>
+<li><a href="#a-validated-argument-is-not-a-dispatched-one">A validated argument is not a dispatched one</a></li>
+<li><a href="#a-containers-frame-rate-may-be-its-timebase">A container&#x27;s &quot;frame rate&quot; may be its timebase</a></li>
+<li><a href="#compositor-errors-do-not-go-to-the-journal">Compositor errors do not go to the journal</a></li>
+<li><a href="#a-running-process-is-not-a-working-one">A running process is not a working one</a></li>
+<li><a href="#two-pieces-of-state-that-must-agree-updated-from-only-one-side">Two pieces of state that must agree, updated from only one side</a></li>
+<li><a href="#an-flock-belongs-to-the-open-file-description-not-the-fd">An flock belongs to the open file description, not the fd</a></li>
+<li><a href="#two-renderings-of-one-row-are-two-places-to-forget">Two renderings of one row are two places to forget</a></li>
+<li class="sub"><a href="#driving-a-quickshell-app-with-no-display">Driving a quickshell app with no display</a></li>
+<li><a href="#a-bounds-check-turns-a-wrong-answer-into-no-answer-which-is-how-you-find-it">A bounds check turns a wrong answer into no answer, which is how you find it</a></li>
+<li><a href="#a-terminal-program-borrows-the-terminal-and-may-not-get-to-give-it-back">A terminal program borrows the terminal, and may not get to give it back</a></li>
+<li><a href="#a-command-written-to-exit-cannot-be-called-from-a-loop-unchecked">A command written to exit cannot be called from a loop unchecked</a></li>
+<li><a href="#a-check-on-a-name-and-an-open-of-the-same-name-are-two-different-files">A check on a name and an open of the same name are two different files</a></li>
+<li><a href="#compositor-traps">Compositor traps</a></li>
+<li class="sub"><a href="#never-block-the-wl_event_loop-on-x">Never block the wl_event_loop on X</a></li>
+<li class="sub"><a href="#decorative-scene-buffers-must-set-point_accepts_input--false">Decorative scene buffers must set point_accepts_input = false</a></li>
+<li class="sub"><a href="#keyboard-focus-takes-view_surfaceview-never-the-raw-surface">Keyboard focus takes view_surface(view), never the raw surface</a></li>
+<li class="sub"><a href="#popups-three-separate-rules">Popups: three separate rules</a></li>
+<li class="sub"><a href="#an-x11-view-has-a-null-xdg_surface">An X11 view has a NULL xdg_surface</a></li>
+<li class="sub"><a href="#a-layer-surfaces-exclusivezone-before-its-first-configure-is-dropped">A layer surface&#x27;s exclusiveZone before its first configure is dropped</a></li>
+<li class="sub"><a href="#effects-whole-damage-before-build_state-or-you-get-a-stale-swapchain">Effects: whole-damage before build_state, or you get a stale swapchain</a></li>
+<li class="sub"><a href="#re-seat-the-blur-node-per-commit">Re-seat the blur node per commit</a></li>
+<li class="sub"><a href="#the-seam-rule-is-right-inside-a-window-and-wrong-outside-it">The seam rule is right inside a window and wrong outside it</a></li>
+<li class="sub"><a href="#session-environment-variables-live-in-three-places">Session environment variables live in three places</a></li>
+<li><a href="#testing-the-compositor-without-a-real-seat">Testing the compositor without a real seat</a></li>
+<li class="sub"><a href="#shell-traps-that-made-good-fixes-look-broken">Shell traps that made good fixes look broken</a></li>
+<li class="sub"><a href="#an-indented-heredoc-terminator-does-not-close-the-heredoc">An indented heredoc terminator does not close the heredoc</a></li>
+<li class="sub"><a href="#a-prompt-that-answers-itself">A prompt that answers itself</a></li>
+<li class="sub"><a href="#grep--q-in-a-pipeline-under-pipefail-reports-failure-on-success">grep -q in a pipeline under pipefail reports failure on success</a></li>
+<li class="sub"><a href="#a-generator-that-cannot-parse-its-config-emits-nothing-quietly">A generator that cannot parse its config emits nothing, quietly</a></li>
+<li class="sub"><a href="#a-checkbox-that-silently-un-ticks-itself-is-worse-than-one-never-offered">A checkbox that silently un-ticks itself is worse than one never offered</a></li>
+<li class="sub"><a href="#a-helper-that-writes-to-a-shell-array-cannot-be-called-inside--">A helper that writes to a shell array cannot be called inside $( )</a></li>
+<li class="sub"><a href="#-15s-pads-a-short-string-and-does-nothing-to-a-long-one">%-15s pads a short string and does nothing to a long one</a></li>
+<li class="sub"><a href="#a-grep-based-drift-check-breaks-silently-when-the-thing-it-greps-for-moves">A grep-based drift check breaks silently when the thing it greps for moves</a></li>
+<li class="sub"><a href="#parentmodeldata-in-a-qml-delegate-resolves-to-undefined-at-run-time">parent.modelData in a QML delegate resolves to undefined at run time</a></li>
+<li><a href="#two-packet-filters-compose-as-the-stricter-one-never-the-looser">Two packet filters compose as the stricter one, never the looser</a></li>
+<li class="sub"><a href="#and-interface-rules-must-match-by-name-not-by-index">…and interface rules must match by NAME, not by index</a></li>
+<li><a href="#one-hardcoded-colourway-is-wrong-on-half-the-themes">One hardcoded colourway is wrong on half the themes</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Hacking on it</p>
+      <h1>Development Notes</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Development-Notes/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Engineering lessons from building SynapseOS, kept because <strong>almost all of them
+were silent failures</strong> — something kept reporting success while doing nothing.
+Each entry ends with the generalisable rule.</p>
+<p>This page is for people working <em>on</em> the system. If something is broken on a
+machine you are <em>using</em>, start at <a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+<p><strong>The meta-rule: never trust a status command. Go and look at the running
+process.</strong></p>
+<hr />
+<h2 id="diagnostic-reflexes">Diagnostic reflexes</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Don't ask</th>
+<th>Ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is my module the one I just built?</td>
+<td><code>dkms status</code></td>
+<td><code>modinfo &lt;mod&gt; | grep vermagic</code> vs <code>uname -r</code></td>
+</tr>
+<tr>
+<td>Is this process using the library I built?</td>
+<td>the config file</td>
+<td><code>grep &lt;lib&gt; /proc/&lt;pid&gt;/maps</code></td>
+</tr>
+<tr>
+<td>Is systemd running the unit I edited?</td>
+<td>the file you edited</td>
+<td><code>systemctl show -p FragmentPath &lt;unit&gt;</code></td>
+</tr>
+<tr>
+<td>Is the daemon on the GPU?</td>
+<td>the log line</td>
+<td><code>grep -c nvidia /proc/$(pidof synapd)/maps</code></td>
+</tr>
+<tr>
+<td>Did my child inherit a broken signal state?</td>
+<td>assume it didn't</td>
+<td><code>/proc/&lt;pid&gt;/status</code> → <code>SigIgn</code>, <code>SigBlk</code></td>
+</tr>
+<tr>
+<td>Did my fix ship?</td>
+<td>the commit</td>
+<td><code>pacman -Q &lt;pkg&gt;</code>, then run the binary</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="a-commit-is-not-a-release-and-a-pkgrel-bump-is-not-an-install">A commit is not a release, and a <code>pkgrel</code> bump is not an install</h2>
+<p>The most expensive class of wasted time in this project: fixing something,
+committing it, bumping <code>pkgrel</code>, and testing against the <em>old</em> binary.</p>
+<p>None of those three steps puts code on a machine. Only <code>makepkg</code> + <code>pacman -U</code>
+does — and the <strong>source tarball has to be regenerated in between</strong>, because most
+PKGBUILDs here consume a tarball rather than your working tree. Forget that and
+<code>makepkg</code> packages the old code and exits 0.</p>
+<div class="hl"><pre><span></span><code>pacman<span class="w"> </span>-Q<span class="w"> </span>synui<span class="w">                 </span><span class="c1"># is the pkgrel you built the one installed?</span>
+pacman<span class="w"> </span>-Qo<span class="w"> </span>/usr/bin/synui-sound<span class="w"> </span><span class="c1"># does this file belong to that package?</span>
+</code></pre></div>
+
+<p>synui's PKGBUILD now <strong>refuses to build if the tarball is older than <code>src/</code></strong> —
+run <code>./mktarball.sh</code> first. And never <code>rm -rf src/</code> inside a component directory;
+see <a href="/wiki/Building-and-Packaging#the-src-collision-hazard">the src collision hazard</a>.</p>
+<p><strong>Rule:</strong> the question is never "did I fix it", it is "is the fixed thing the
+thing that is running".</p>
+<hr />
+<h2 id="stale-dkms-modules-survive-kernel-upgrades">Stale DKMS modules survive kernel upgrades</h2>
+<p><strong>Symptom:</strong> after a kernel upgrade the module fails to load with <code>ENOEXEC</code>,
+while <code>dkms status</code> insists it is installed.</p>
+<p><strong>Cause:</strong> three failures stacked. <code>dkms.conf</code> built in <code>source/</code> — a symlink to
+the shared <code>/usr/src</code> tree — so stale <code>.o</code> files were reused across kernels. The
+rebuild hook trusted <code>dkms status</code>, which <strong>only checks that a <code>.ko</code> exists</strong>,
+not that it matches the running kernel. And the status helper never compiled at
+all, because its build step ended in <code>|| true</code>.</p>
+<p><strong>Rule:</strong> <code>dkms status</code> is not a health check — compare vermagic to <code>uname -r</code>.
+And never let a build step end in <code>|| true</code>.</p>
+<hr />
+<h2 id="hand-copied-so-files-shadow-the-packaged-ones">Hand-copied <code>.so</code> files shadow the packaged ones</h2>
+<p><strong>Symptom:</strong> you rebuild a library, install it, and the running program keeps the
+old behaviour. Nothing errors.</p>
+<p><strong>Cause:</strong> a <code>.so</code> that was once <code>cp</code>'d into <code>/usr/lib</code> by hand is owned by <strong>no
+package</strong>, so pacman will never remove or replace it — and it silently wins in
+the <code>ld.so</code> cache over the properly packaged one.</p>
+<p><strong>The tell:</strong> <code>ldconfig</code> complaining that <code>/usr/lib/libfoo.so</code> is not a symbolic
+link.</p>
+<p><strong>Rule:</strong> check <code>/proc/&lt;pid&gt;/maps</code> for what the process actually mapped.
+<code>pacman -Qo</code> on a library should always name an owner; "No package owns" is the
+bug.</p>
+<blockquote>
+<p>There is no pacman hook running <code>ldconfig</code> for arbitrary paths — packaged
+libraries belong in <code>/usr/lib</code>, not somewhere under <code>/opt</code> that nothing
+searches.</p>
+</blockquote>
+<hr />
+<h2 id="etc-units-silently-shadow-usrlib-ones"><code>/etc</code> units silently shadow <code>/usr/lib</code> ones</h2>
+<p><strong>Symptom:</strong> you ship hardened unit files in a package, install it, and none of
+the hardening takes effect.</p>
+<p><strong>Cause:</strong> a stale copy in <code>/etc/systemd/system/</code> overrides the packaged unit.
+systemd is doing exactly what it documents; the surprise is that you forgot the
+<code>/etc</code> copy existed.</p>
+<p><strong>Rule:</strong> <code>systemctl show -p FragmentPath &lt;unit&gt;</code> tells you which file is in
+force. Never trust the file you just edited.</p>
+<h3 id="more-systemd-traps">More systemd traps</h3>
+<ul>
+<li><strong>There are no inline comments.</strong> A trailing <code># comment</code> on a directive parses
+  <em>into the value</em>. The directive is not commented out — it is silently wrong,
+  with no warning.</li>
+<li><strong>Never order a service <code>Before=</code> a <code>.socket</code> it depends on.</strong> That is an
+  ordering cycle, and systemd resolves a cycle by dropping a job — so something
+  you asked for simply never runs.</li>
+<li><strong>Hardening can silently break the thing being hardened.</strong>
+  <code>ProtectControlGroups</code> defeats cgroup-based containment while leaving the
+  service looking healthy.</li>
+<li><strong>Dependency lists are additive-only.</strong> An empty <code>Requires=</code> in a drop-in does
+  <strong>not</strong> reset the list, whatever the empty-string reset does for <code>ExecStart=</code>.
+  A drop-in written to remove a dependency reads as correct and changes nothing —
+  confirmed across both <code>daemon-reload</code> and <code>daemon-reexec</code>. Removing one means
+  editing the unit fragment itself.</li>
+</ul>
+<h3 id="a-socket-activated-service-is-a-way-for-a-stopped-daemon-to-come-back">A socket-activated service is a way for a stopped daemon to come back</h3>
+<p>Stopping a daemon does not stop what can start it. If anything still listening
+<code>Requires=</code> that daemon, the next connection restarts it — and if the listener is
+reachable from the network, the trigger arrives from another machine, where
+nothing local shows why.</p>
+<p>Symptom: you stop something, it is down, and seconds later it is running again
+with the journal showing only <code>Started …</code>.</p>
+<ul>
+<li>Check the whole reverse dependency set, not just the unit:
+  <code>systemctl list-dependencies --reverse &lt;unit&gt;</code>, and
+  <code>systemctl show &lt;unit&gt; -p RequiredBy -p WantedBy -p TriggeredBy</code>.</li>
+<li>A <strong>proxy in front of a socket-activated Unix socket does not need
+  <code>Requires=</code></strong> on the backend. The socket activates the backend by itself, so
+  the dependency adds nothing except the ability to resurrect it — while with the
+  backend's socket stopped, the connection simply fails, which is what "stopped"
+  is supposed to mean.</li>
+<li>"Off" switches must close <strong>every</strong> listener, or they undo themselves.</li>
+</ul>
+<hr />
+<h2 id="inherited-signal-dispositions--this-burned-us-three-times">Inherited signal dispositions — this burned us three times</h2>
+<p><code>SIG_IGN</code> <strong>and the blocked signal mask</strong> survive <code>exec()</code>. A child inherits both
+from whoever spawned it and has no idea.</p>
+<ol>
+<li><strong>Xwayland aborted itself.</strong> The compositor had <code>SIGCHLD</code> set to <code>SIG_IGN</code>;
+   that leaked into Xwayland, whose <code>wait4()</code> then never reaped.</li>
+<li><strong>An idle-inhibit died quietly for 21 hours.</strong> systemd's <code>IgnoreSIGPIPE=yes</code>
+   (the default) meant a <code>SIGPIPE</code> that should have killed a dead pipe write was
+   ignored instead.</li>
+<li><strong>Every app the compositor spawned was immune to <code>SIGTERM</code></strong>, because the
+   <code>signalfd</code> blocked mask was inherited by every child.</li>
+</ol>
+<p><strong>Rule:</strong> reset all signal dispositions and unblock the full mask in the child,
+between <code>fork()</code> and <code>exec()</code>.</p>
+<div class="hl"><pre><span></span><code>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;SigIgn|SigBlk&#39;</span><span class="w"> </span>/proc/&lt;pid&gt;/status
+</code></pre></div>
+
+<hr />
+<h2 id="check-the-exit-status-of-everything-you-shell-out-to">Check the exit status of everything you shell out to</h2>
+<p>A swallowed non-zero status is how a hard failure becomes a silent one. Two
+instances: a text-to-speech path ignored <code>aplay</code>'s status, so a broken audio
+route was a silent mute rather than an error; and a build step suffixed
+<code>|| true</code> never compiled at all.</p>
+<hr />
+<h2 id="tighten-a-check-and-you-must-handle-the-existing-invalid-values">Tighten a check and you must handle the existing invalid values</h2>
+<p>When the sound-theme picker learned that a directory needs <code>index.theme</code>,
+<code>stereo/</code> or <code>mono/</code> to be a theme, filtering alone would have left anyone
+already sitting on an invalid selection silent and none the wiser.</p>
+<p>So the invalid value is also <strong>named</strong>, in the CLI and in the panel:</p>
+<div class="hl"><pre><span></span><code>  theme            alsa  &lt;-- NOT a sound theme, nothing will play
+</code></pre></div>
+
+<p><strong>Rule:</strong> a filter fixes new choices and abandons existing ones. Report the state
+you are now rejecting.</p>
+<hr />
+<h2 id="one-flat-namespace-means-every-key-must-be-distinct">One flat namespace means every key must be distinct</h2>
+<p>A state file had <code>volume</code> as both the master level and an event name. Reading the
+level picked up the event's line (<code>off</code>) and silenced everything.</p>
+<p>The fix renamed the event, and the per-event sample override is keyed
+<code>&lt;event&gt;_sound</code> and matched by <strong>building the exact key</strong>, never by prefix — an
+event added later whose name extends another's would otherwise steal its line.</p>
+<hr />
+<h2 id="duplicate-keybinds-are-not-conflicts-they-are-deletions">Duplicate keybinds are not conflicts, they are deletions</h2>
+<p><code>handle_keybinding</code> takes the <strong>first</strong> match, so a second bind on a combo is not
+something anyone notices — it is the older feature silently going dead. The
+compositor now logs <code>DUPLICATE default bind</code> at startup, because one such
+collision only turned up when the table happened to get grepped.</p>
+<hr />
+<h2 id="two-copies-of-everything">Two copies of everything</h2>
+<p>Several things exist in more than one place and drift silently. The full list is
+in <a href="/wiki/Building-and-Packaging#two-copies-of-everything">Building and Packaging</a>; the
+worst offender is worth repeating:</p>
+<p><code>create_source_tarball</code> existed in <strong>two</strong> collectors, and every fix to it landed
+in one and not the other — <strong>four times out of four</strong>. Both now delegate to the
+component's own <code>&lt;pkg&gt;/mktarball.sh</code>. When a package needs particular files,
+write it a <code>mktarball.sh</code> rather than teaching two collectors about it.</p>
+<hr />
+<h2 id="a-validated-argument-is-not-a-dispatched-one">A validated argument is not a dispatched one</h2>
+<p><code>build-all.sh</code> keeps <strong>two</strong> lists: <code>KNOWN=</code>, which decides whether an argument
+is <em>legal</em>, and the sequence of <code>build_component</code> / <code>build_script_pkg</code> calls,
+which decides what is actually <em>built</em>. A component was added to the first and
+never to the second:</p>
+<div class="hl"><pre><span></span><code>./build-all.sh &lt;component&gt;   -&gt;  passes the KNOWN= argument check
+                             -&gt;  matches no build rule
+                             -&gt;  builds nothing, exits 0
+</code></pre></div>
+
+<p><code>syn-update</code> reads exit status, so it reported success, published nothing, and
+offered the identical update again on the next run — for two releases, which
+also meant the fix that component carried could never install. What reached the
+user was <em>"this update keeps coming back after I apply it and log back in"</em>, a
+symptom that points at the updater, the session, the package cache — everything
+except the build script.</p>
+<p><strong>The rule: when one list validates input and another list acts on it, something
+must assert that everything accepted was also handled.</strong> <code>want()</code> now records
+every name a build rule asks about, and the run exits non-zero with <code>no build
+rule for: &lt;name&gt;</code> if anything named on the command line was never dispatched.</p>
+<hr />
+<h2 id="a-containers-frame-rate-may-be-its-timebase">A container's "frame rate" may be its timebase</h2>
+<p>Screen capture is damage-driven — a frame only when the screen changes — so the
+file is variable-rate and declares <code>r_frame_rate</code> as the <strong>90 kHz timebase</strong>
+(<code>90000/1</code>), not any rate it runs at. Three unrelated-looking symptoms came out
+of that single field:</p>
+<ul>
+<li>the capture stamped itself <strong>H.264 level 6.2</strong>, a level meant for 8K, because
+  the encoder read 90000 as the frame rate;</li>
+<li>every video editor conformed the clip on import, since no timeline runs at the
+  ~67 fps such a capture averages; and</li>
+<li>conforming <strong>dropped frames</strong> — a 313-frame capture reached DNxHR as 226, with
+  nothing said about the 87 that went missing.</li>
+</ul>
+<p>On a variable-rate file <code>avg_frame_rate</code> is the honest field and <code>r_frame_rate</code>
+is not; a converter reading the wrong one asks for a 90000 fps output.</p>
+<p><strong>The rule: fix a variable rate at the source, not downstream.</strong> Capturing at a
+constant rate costs nothing — on a high-refresh screen it is the <em>smaller</em> file,
+because damage capture emits frames faster than 60 whenever anything moves — and
+it makes every later conversion a clean rewrap instead of a lossy conform. One
+flag at the source; every downstream tool inherits it.</p>
+<hr />
+<h2 id="compositor-errors-do-not-go-to-the-journal">Compositor errors do not go to the journal</h2>
+<p>Anything the compositor prints — and anything it spawns that fails — lands on
+<strong>tty1</strong>, not in <code>journalctl</code>. A GUI component failing with "no message" almost
+always means the message went to a stream you aren't reading.</p>
+<p>Two that cost time this way: a QML shell missing <code>pragma UseQApplication</code> (which
+kills menus and the system tray entirely), and Nerd Font glyphs silently reducing
+to the empty string, which made an icon-only bar module collapse to zero width
+and vanish. The glyph fix was to store every icon as a <code>\u</code> escape and verify the
+codepoints <strong>mechanically</strong> — <code>fc-query --format %{charset}</code> against the font —
+rather than by eye.</p>
+<hr />
+<h2 id="a-running-process-is-not-a-working-one">A running process is not a working one</h2>
+<p>A helper daemon can hold every resource it needs, report healthy, and paint
+nothing. The wallpaper renderer did exactly that after a suspend: still running,
+<strong>0% CPU, blocked in <code>poll()</code> forever</strong>, because it had lost its Wayland surfaces
+and had no code path that rebuilds one. Its output-removal handler was a literal
+<code>// todo</code>, and the only caller of its surface setup ran once at init.</p>
+<p>Two lessons, both general:</p>
+<ul>
+<li><strong>When a client cannot recover its own state, restart it — from the event you
+  actually have.</strong> synui re-runs the control script on logind's
+  <code>PrepareForSleep(false)</code> <em>and</em> on an output arriving after one was lost,
+  coalesced into one delayed timer. Both triggers are armed because it was never
+  proven which one fires; a delay is also required, since the restore path drops
+  any saved entry naming an output the compositor can't currently see, and firing
+  mid-reprobe would persist a partial layout.</li>
+<li><strong><code>ps %cpu</code> is a lifetime average.</strong> It read 20% for a process that had done
+  nothing for hours. Sample <code>/proc/PID/stat</code> fields 14+15 over a few seconds, or
+  <code>top -b -n2</code>. When <code>strace</code> is blocked by <code>kernel.yama.ptrace_scope</code>,
+  <code>/proc/PID/task/*/wchan</code> still works unprivileged and names the exact sleep.</li>
+</ul>
+<p>And when the evidence lives in a log the fix truncates on restart (<code>&gt;"$LOG"</code>),
+<strong>copy it before running the fix.</strong> That one was lost.</p>
+<hr />
+<h2 id="two-pieces-of-state-that-must-agree-updated-from-only-one-side">Two pieces of state that must agree, updated from only one side</h2>
+<p>The monocle layout hides every window on a monitor except the focused one. It
+did that correctly — and there was still no way to change which window you were
+looking at, because <strong>the code that hid windows only ever ran from the layout
+pass, and nothing on the focus path called the layout pass.</strong> Focus moved; the
+scene nodes did not. Three windows, after one <code>Alt</code>+<code>Tab</code>:</p>
+<div class="hl"><pre><span></span><code>pid A  focused=false  enabled=true    &lt;- still the one on screen
+pid B  focused=true   enabled=false   &lt;- has the keyboard, invisible
+pid C  focused=false  enabled=false
+</code></pre></div>
+
+<p>You were typing into a window you could not see.</p>
+<p><strong>Why it survived so long:</strong> almost anything you try next fixes it. Opening a
+window, closing one, switching desktop, <code>Super</code>+<code>F</code>, retile and a config reload
+all re-run the layout, so the desktop rights itself the moment you fidget. A
+bug you cannot reproduce twice in a row reads as "I must have imagined that".</p>
+<p>The rules:</p>
+<ul>
+<li><strong>When one thing is derived from another, derive it at the point the source
+  changes.</strong> Visibility was derived from focus, but only recomputed at the
+  layout pass. Putting the recompute at the focus choke point — the single
+  function every focus path already goes through — fixes every route in at
+  once: both cycles, the dock, a click. Fixing it inside <code>Alt</code>+<code>Tab</code> would have
+  left <code>Super</code>+<code>J</code> broken.</li>
+<li><strong>Then guard the write.</strong> That choke point is now hot, and the layout it runs
+  hands every window a size. Compare before configuring, or a reflow-per-focus
+  becomes a configure sent to every client on every keypress. The window boxes
+  under monocle never change, so the compare rejects all of them.</li>
+<li><strong>A comment claiming a behaviour is not a test of it.</strong> The file's own header
+  had said "cycle with Alt+Tab" since the layout was written. Nothing had ever
+  checked it. The test that does now asserts the <em>invariant</em> — exactly one
+  window enabled per output, and it is the focused one — re-checked after each
+  way of moving focus, rather than asserting one window ends up on screen.</li>
+</ul>
+<p><strong>Diagnostic that found it:</strong> <code>synctl clients</code> reports <code>enabled</code> alongside
+<code>focused</code> precisely to answer "why is this window invisible when every other
+field says it is fine". Two fields that should agree, printed side by side, is
+what turned a vague "monocle feels broken" into a one-line fix.</p>
+<hr />
+<h2 id="an-flock-belongs-to-the-open-file-description-not-the-fd">An <code>flock</code> belongs to the open file description, not the fd</h2>
+<p>A control script serialised itself with <code>flock -w 30</code> on fd 9 and then launched a
+<strong>daemon</strong>, which inherited that fd. The lock therefore lived as long as the
+daemon did: every later invocation sat out the full 30-second timeout, printed
+its "continuing anyway" warning, and then ran unserialised — the exact race the
+lock existed to prevent, now with a 30-second stall attached.</p>
+<p>Close the lock fd explicitly in anything long-lived you spawn (<code>9&gt;&amp;-</code>).
+Short-lived children that finish while you still hold the lock are harmless.</p>
+<hr />
+<h2 id="two-renderings-of-one-row-are-two-places-to-forget">Two renderings of one row are two places to forget</h2>
+<p>A list view and an icon view of the same data are usually two separate
+delegates, and a feature added to one of them is simply <strong>absent</strong> from the
+other. Nothing warns: the menu entry still exists, the shortcut still fires, the
+state it sets is still set — and nothing is drawn to act on it, so the control
+reads as a dead button.</p>
+<p>This has now happened twice in the same file, to two different features:</p>
+<ul>
+<li>drag-and-drop, wired into the list delegate only, so dragging did nothing at
+  all in icon view — which is the view anybody with thumbnails turned on is
+  looking at;</li>
+<li>inline rename, the same omission, reached from both the right-click menu and
+  <code>F2</code>, both of which appeared to do nothing.</li>
+</ul>
+<p><strong>The rule: when two delegates render the same row, treat them as one feature
+with two renderings.</strong> Anything added to one is unfinished until it is in the
+other, and the test that proves it has to be run in <em>each</em> view — a check that
+runs in whichever view is the default is a check that will pass while half the
+application is broken.</p>
+<p>The same shape appears one level down, in input handling: a full-size
+<code>MouseArea</code> declared <strong>after</strong> the controls it covers swallows their clicks,
+because Qt Quick delivers a press to the last matching child first. An editor,
+a small button or an eject glyph that "does nothing" is usually this. Give the
+control a <code>z</code> above the row, or declare the row-wide handler first.</p>
+<h3 id="driving-a-quickshell-app-with-no-display">Driving a quickshell app with no display</h3>
+<p><code>QT_QPA_PLATFORM=offscreen quickshell -p &lt;file&gt;</code> proves a QML file <strong>loads</strong>
+("Configuration Loaded" versus "Failed to load configuration"), which catches
+most breakage for free. It also does more than that: append a <code>Timer</code> to a
+<strong>copy</strong> of the file in a scratch directory, set the state you want to test, and
+print what became visible. That is a real functional test on a machine with no
+spare seat.</p>
+<p>Two gotchas cost time:</p>
+<ul>
+<li>A window's visual tree hangs off <strong><code>contentItem</code></strong>. Walking <code>children</code> from
+  the window object itself finds nothing, which looks exactly like "the item
+  isn't there".</li>
+<li>Run the probe against the <strong>shipped</strong> file as well as the fixed one. "The
+  editor is visible now" is only evidence when paired with "it was not visible
+  before" — otherwise a probe that never worked reports success.</li>
+</ul>
+<hr />
+<h2 id="a-bounds-check-turns-a-wrong-answer-into-no-answer-which-is-how-you-find-it">A bounds check turns a wrong answer into no answer, which is how you find it</h2>
+<p>Reading a binary format means trusting offsets somebody wrote down. One of them
+was wrong by eight bytes — a video track header's dimensions were read from the
+wrong field and from four bytes of the <em>next</em> structure entirely.</p>
+<p>What made that a five-minute bug instead of a shipped one is that the parser
+validates before it believes: the garbage failed a plausibility check, so the
+feature reported <strong>nothing</strong> rather than a number that was merely odd. An
+offset that had landed a few bytes earlier, still inside the structure, would
+have produced a confident wrong answer that nobody would have questioned.</p>
+<p>Three rules for anything that parses a file it did not write:</p>
+<ul>
+<li><strong>Validate the answer, not just the read.</strong> A dimension of four billion is not
+  a dimension. Refusing it is what makes a mistake visible.</li>
+<li><strong>A short read is normal.</strong> Requiring a fixed-size header block up front broke
+  a ten-byte file that legitimately carries everything it needs in ten bytes.
+  Read what is there and check the length before each comparison.</li>
+<li><strong>Decide the format by magic bytes, never by the extension.</strong> It is not
+  politeness towards oddly-named files: it is what stops a text file with an
+  image's extension being parsed at all.</li>
+</ul>
+<hr />
+<h2 id="a-terminal-program-borrows-the-terminal-and-may-not-get-to-give-it-back">A terminal program borrows the terminal, and may not get to give it back</h2>
+<p>Anything that reads keys without waiting for <code>Enter</code> has to change the terminal's
+mode, and the terminal keeps that change after the program is gone. So the
+question to design around is not "what does this need on" — it is <strong>what does a
+<code>kill -9</code> leave behind</strong>.</p>
+<ul>
+<li><strong>Mouse reporting is the one that does harm.</strong> A program that enables it and is
+  killed mid-flight never sends the sequence that disables it, and the shell
+  underneath then reads every pointer movement as typed input — into the prompt,
+  and into the history file. Nothing here turns it on, so nothing here can leave
+  it on.</li>
+<li><strong>The alternate screen throws away the scrollback</strong> of what you were just
+  looking at, which for a browser is the most useful thing on the screen.
+  Redrawing in place is a cursor move and an erase — two escape sequences, no
+  mode change, nothing to restore.</li>
+<li><strong>Keep <code>ISIG</code></strong>, or <code>Ctrl</code>+<code>C</code> becomes a keystroke the program has to
+  reimplement, badly, and stops working the moment it is stuck.</li>
+<li><strong>Keep <code>OPOST</code>.</strong> Full raw mode means every <code>\n</code> in the program must become
+  <code>\r\n</code>, which is a great many call sites to get right once and keep right.</li>
+<li><strong>Restore from <code>atexit</code> <em>and</em> from <code>SIGINT</code>/<code>SIGTERM</code>/<code>SIGHUP</code>/<code>SIGQUIT</code>.</strong>
+  Everything short of <code>SIGKILL</code> then puts it back, and what <code>SIGKILL</code> leaves is
+  echo turned off — recoverable with <code>reset</code>, and it spills nothing anywhere.</li>
+</ul>
+<p>Turning off canonical mode and echo, and <strong>nothing else</strong>, is a complete feature
+set for an arrow-key browser and has no cleanup story worth worrying about.</p>
+<hr />
+<h2 id="a-command-written-to-exit-cannot-be-called-from-a-loop-unchecked">A command written to exit cannot be called from a loop unchecked</h2>
+<p>Reusing existing commands from a new interactive front-end is the right call —
+it is what stops the two disagreeing about which key trashes and which deletes.
+But commands built as one-shot processes report bad input by <strong>exiting</strong>, and
+that is a perfectly good design right up until something calls them in a loop:
+a typed destination with a typo then does not print an error, it <strong>ends the
+session</strong>, and to the person using it the program simply vanished.</p>
+<p>The fix is not to soften the commands. It is that the caller validates
+everything the command would exit over — does the destination exist, is it a
+directory, is it the folder the file is already in — <strong>before</strong> the call, and
+reports those itself. The command keeps its exit-on-bad-argument contract for
+every script that relies on it.</p>
+<p>The same applies to what the command <em>prints</em>: a long-running one writing to a
+terminal that is in a non-canonical mode needs that mode handed back first, or
+its output arrives without carriage returns and <code>Ctrl</code>+<code>C</code> never reaches it.</p>
+<hr />
+<h2 id="a-check-on-a-name-and-an-open-of-the-same-name-are-two-different-files">A check on a name and an open of the same name are two different files</h2>
+<p>A recursive size walk validated its argument with <code>lstat()</code> and then opened the
+same path — two resolutions of one name, with a window in between. That is the
+textbook race, and here it was not theoretical in the boring way: the check
+<strong>did not</strong> follow symlinks and the open <strong>did</strong>, so replacing the directory
+with a symlink between the two sent the entire walk somewhere else and reported
+that tree's numbers as this one's.</p>
+<p><strong>Let the open be the check.</strong> <code>O_DIRECTORY</code> fails with <code>ENOTDIR</code> on anything
+that is not a directory, so it <em>is</em> the "is this a directory" test; <code>O_NOFOLLOW</code>
+refuses a symlink outright; and the size of the directory itself comes from
+<code>fstat()</code> on the descriptor you already have. One resolution, no window. The
+same substitution retires most of this class: <code>O_EXCL</code> is the "does it exist
+already" test, and <code>fchmod(fd)</code> is <code>chmod(path)</code> without the second lookup.</p>
+<p>The recursion below it had been doing this correctly all along — <code>openat()</code> and
+<code>fstatat()</code> relative to the parent's descriptor. It is nearly always the <strong>entry
+point</strong> that is still working with a name.</p>
+<hr />
+<h2 id="compositor-traps">Compositor traps</h2>
+<p>wlroots/scenefx-specific, and specific enough that they cost real days each.
+They lived on the <a href="/wiki/synui">synui</a> page until that page was cut back to what a
+<em>user</em> of the compositor needs; this is where the engineering half went.</p>
+<p>Signal inheritance is the other one that bit the compositor hardest, and it is
+its own section above — it is not compositor-specific.</p>
+<h3 id="never-block-the-wl_event_loop-on-x">Never block the <code>wl_event_loop</code> on X</h3>
+<p>Xwayland is <strong>itself a client of that event loop</strong>, and it starts lazily. A
+blocking xcb round-trip made from the event loop <strong>deadlocked the whole
+compositor at login</strong> — black screen, dead input, no core dump. Use a ready-flag
+plus a worker thread.</p>
+<h3 id="decorative-scene-buffers-must-set-point_accepts_input--false">Decorative scene buffers must set <code>point_accepts_input = false</code></h3>
+<p>Or they swallow clicks. (Found via cat mode, of all things.) The QML equivalent
+is <code>mask: Region {}</code> on a desktop widget — without it the widget is an invisible
+rectangle that eats every click over it.</p>
+<h3 id="keyboard-focus-takes-view_surfaceview-never-the-raw-surface">Keyboard focus takes <code>view_surface(view)</code>, never the raw surface</h3>
+<p>Two click sites passed the raw (sub)surface to <code>focus_view</code>, sending
+<code>wl_keyboard.enter</code> to a <em>render subsurface</em>. Firefox therefore never made its
+persistent-storage doorhanger the active modal: the panel was unresponsive and
+<code>Tab</code> skipped it. <strong>A doorhanger is a subsurface, not a popup</strong> — none of the
+popup/grab machinery applies to it.</p>
+<h3 id="popups-three-separate-rules">Popups: three separate rules</h3>
+<ul>
+<li><strong>Don't call <code>focus_view</code> on popup clicks.</strong> It disrupts the <code>xdg_popup</code>
+  grab, which broke menu activation in Firefox.</li>
+<li><strong>Unconstrain nested popups too.</strong> <code>parent_view</code> is only set for
+  toplevel-parented popups, so nested ones were never unconstrained and every
+  submenu got its full requested size — an application list ran off-screen
+  instead of scrolling.</li>
+<li><strong>Pointer motion must be delivered during an implicit grab.</strong> Without
+  <code>wl_pointer.motion</code> while a button is held, region-select (<code>slurp</code>) and every
+  client-side drag are broken.</li>
+</ul>
+<h3 id="an-x11-view-has-a-null-xdg_surface">An X11 view has a NULL <code>xdg_surface</code></h3>
+<p>Anything on the unmap or decoration path that reaches for <code>xdg_surface</code>
+unconditionally will SEGV the moment an X11 window is involved.</p>
+<p>And when you need to crop something, <strong>crop the buffer, not the tree</strong> —
+<code>wlr_scene_subsurface_tree_set_clip()</code> recurses into every subsurface tree below
+the node it is given, and xdg popups are parented beside the client tree, so
+clipping the parent crops the menus.</p>
+<h3 id="a-layer-surfaces-exclusivezone-before-its-first-configure-is-dropped">A layer surface's <code>exclusiveZone</code> before its first configure is dropped</h3>
+<p>The bar reserved its strip while auto-hidden and lost the reservation when it
+should have had it, because the zone was set too early. The same ordering is why
+desktop-icon layout pass 1 saw the whole output: <strong>the bar reserves its strip
+after startup</strong>, so anything laid out at startup must re-run once the zone lands.</p>
+<h3 id="effects-whole-damage-before-build_state-or-you-get-a-stale-swapchain">Effects: whole-damage before <code>build_state</code>, or you get a stale swapchain</h3>
+<p>Committing whole-output damage <em>after</em> the state is built shows the previous
+frame's buffer for one frame — the "flash on focus change" bug.</p>
+<h3 id="re-seat-the-blur-node-per-commit">Re-seat the blur node per commit</h3>
+<p>A blur node that keeps its old size after a resize is the "shadow ghost" people
+report as a rendering artifact. It is a scenefx blur node that was never resized.</p>
+<h3 id="the-seam-rule-is-right-inside-a-window-and-wrong-outside-it">The seam rule is right <em>inside</em> a window and wrong outside it</h3>
+<p>A decorated window is two stacked buffers whose corner radii encode the
+titlebar/content seam. Anything built by <em>growing</em> those per-buffer boxes
+inherits the seam and comes out square where it should be round. Frame-level
+effects belong on <code>view-&gt;frame</code>, not on the buffers. See
+<a href="/wiki/Window-Effects#glass_halo-letting-the-blur-past-the-window">Window Effects</a>.</p>
+<h3 id="session-environment-variables-live-in-three-places">Session environment variables live in three places</h3>
+<p>The live <code>/usr/local/bin/synui-session</code> and <strong>two</strong> blocks in <code>syn-install.sh</code>.
+Change one, change all three — the same shape as
+<a href="#two-copies-of-everything">two copies of everything</a>, one copy worse.</p>
+<p><code>XCURSOR_SIZE</code> is the one that shows: unset, libXcursor sizes the cursor from
+the <em>virtual</em> screen width, which on a multi-monitor desk is thousands of pixels
+and gives Xwayland clients an enormous pointer.</p>
+<hr />
+<h2 id="testing-the-compositor-without-a-real-seat">Testing the compositor without a real seat</h2>
+<p>The nested-headless rig is how most rendering work gets verified. Four rules that
+are not optional:</p>
+<ol>
+<li><strong>scenefx's <code>fx_renderer</code> ignores <code>WLR_RENDERER</code></strong> — it is GLES2-only.
+   <code>WLR_RENDERER_FORCE_SOFTWARE=1</code> <strong>plus</strong> <code>WLR_RENDERER_ALLOW_SOFTWARE=1</code> is
+   the only headless path, and the only one <code>grim</code> can capture from.</li>
+<li><strong>Stub <code>synui-apply-theme</code> on <code>PATH</code> first.</strong> It hardcodes <code>$HOME</code>, so a
+   nested session with a scratch <code>XDG_CONFIG_HOME</code> will still re-theme the live
+   desktop. <code>gsettings</code> is worse: it reaches dconf over the <strong>session bus</strong>, so
+   even a faked <code>$HOME</code> does not contain it. Stub <code>gsettings</code> and
+   <code>kwriteconfig5/6</code> too.</li>
+<li><strong>Confirm which compositor you are talking to.</strong> A nested instance takes the
+   next free Wayland name, and <code>SYNUI_SOCKET</code> beats <code>WAYLAND_DISPLAY</code> — check
+   that <code>synctl outputs</code> reports the headless output before trusting a result, or
+   a dispatched action opens a panel on the live desktop.</li>
+<li><strong>Drive it with <code>wtype</code>, never uinput.</strong> uinput events go to the real seat.</li>
+</ol>
+<p><strong><code>wtype</code> gives a false negative against Qt/quickshell clients</strong> — they need a
+real keypress, so zero key events in a headless <code>wtype</code> test proves nothing about
+a QML panel.</p>
+<h3 id="shell-traps-that-made-good-fixes-look-broken">Shell traps that made good fixes look broken</h3>
+<ul>
+<li><strong><code>pkill -f &lt;pattern&gt;</code> kills the shell that ran it</strong> when the pattern matches
+  its own argv (exit 144), and the rest of a compound command silently never
+  runs. That is how a <code>cp</code> restoring a config got skipped, making a working
+  config knob read as broken. <strong>Kill by PID.</strong></li>
+<li><strong><code>SIGHUP</code> is not a clean A/B.</strong> Reloading config in place leaves other state
+  moving between screenshots, so a whole-image pixel diff is worthless. Restart
+  per arm and compare only the region you care about.</li>
+<li><strong>A corrupt tail passes a prefix check.</strong> Verifying a USB write by comparing
+  the first N MB proves nothing about the rest — <code>cmp -n</code> the full length, or
+  compare the written medium's own package list.</li>
+<li><strong>Unmounting a loop device is not detaching it.</strong> Set <code>Loop.Autoclear</code> or
+  detach explicitly.</li>
+</ul>
+<h3 id="an-indented-heredoc-terminator-does-not-close-the-heredoc">An indented heredoc terminator does not close the heredoc</h3>
+<p><code>EOF</code> is body text. <code>&lt;&lt; EOF</code> runs on to the next line that is <strong>exactly</strong> the
+terminator at column 0 — and only <code>&lt;&lt;-</code> strips indentation, and only tabs, never
+spaces. In an installer this cost 70 lines: an indented terminator swallowed a
+bootloader install, an entire <code>elif</code> arm and a <code>mkdir</code>, so choosing one
+bootloader silently installed a different one.</p>
+<p><strong><code>bash -n</code> passes.</strong> The file still parses; it just isn't the program anyone
+wrote, and the block looks correctly indented in an editor. Two checks worth
+having in any repo with heredocs:</p>
+<div class="hl"><pre><span></span><code><span class="c1"># 1. no terminator may be indented</span>
+grep<span class="w"> </span>-oE<span class="w"> </span><span class="s1">&#39;&lt;&lt;[ \t]*&quot;?[A-Za-z_][A-Za-z0-9_]*&quot;?&#39;</span><span class="w"> </span>script.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/&lt;&lt;[ \t]*//; s/&quot;//g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>t<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>grep<span class="w"> </span>-nE<span class="w"> </span><span class="s2">&quot;^[[:space:]]+</span><span class="nv">$t</span><span class="s2">\$&quot;</span><span class="w"> </span>script.sh<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1"># 2. strip every heredoc BODY, then assert the commands that must run are still code</span>
+</code></pre></div>
+
+<p>The second is the one that catches the consequence: after stripping bodies, the
+commands you rely on should still be there. Ours had gone to <strong>zero</strong> occurrences
+while the file still looked right.</p>
+<h3 id="a-prompt-that-answers-itself">A prompt that answers itself</h3>
+<p>A long non-interactive step before a prompt — a package install, a build, a
+download — is a chance for the user to press a key. That keypress sits in the
+terminal's input buffer until the next <code>read</code> consumes it, so the menu is drawn
+and answered in the same frame and the program reports a choice nobody made.
+Everything typed after it answers the following prompts, in order.</p>
+<p>Fix it in the <strong>one helper every prompt prints through</strong>, not at the prompt where
+you noticed it:</p>
+<div class="hl"><pre><span></span><code>prompt<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-t<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w">                       </span><span class="c1"># only when stdin is a terminal —</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span>_junk<span class="w">                         </span><span class="c1"># a piped run&#39;s answers are real</span>
+<span class="w">        </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>-t<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-N<span class="w"> </span><span class="m">4096</span><span class="w"> </span>_junk<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s1">&#39;  %s &#39;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+</code></pre></div>
+
+<p>All three paths are testable without a disk: <code>printf '3\n' | script -qec …</code>
+proves queued input is dropped, <code>{ sleep 0.6; printf '3\n'; } | script -qec …</code>
+proves input typed after the prompt still reads, and a plain pipe proves
+automation survives.</p>
+<h3 id="grep--q-in-a-pipeline-under-pipefail-reports-failure-on-success"><code>grep -q</code> in a pipeline under <code>pipefail</code> reports failure on success</h3>
+<p><code>strip | grep -q pattern</code> exits <strong>141</strong> when <code>grep -q</code> matches early: it stops
+reading, the producer takes <code>SIGPIPE</code>, and <code>pipefail</code> propagates that. Any test
+written as <em>"this string must be ABSENT"</em> then passes whether the string is there
+or not — a whole class of checks that silently assert nothing.</p>
+<p>Match from a here-string instead: <code>grep -qF -- "$1" &lt;&lt;&lt;"$text"</code>. It also hides
+well: an interactive shell aliased to a <code>grep</code> implementation that does not exit
+early will show the check working, while the suite runs the one that does.</p>
+<p><strong>Rule: prove a negative check by making it fail.</strong> Inject the forbidden string,
+confirm exactly the expected check goes red, then restore and diff.</p>
+<h3 id="a-generator-that-cannot-parse-its-config-emits-nothing-quietly">A generator that cannot parse its config emits nothing, quietly</h3>
+<p>Config-driven generators tend to fail <em>open</em> and silent: a typo produces zero
+units, no error, and a machine that behaves exactly like one that was never
+configured. Shipping the package without the config file does the same thing.</p>
+<p>So verify the output, not the input — run the generator and assert the unit
+exists. Most have a test mode that makes this cheap (<code>ZRAM_GENERATOR_ROOT</code> for
+zram-generator), and it works against a target tree during an install.</p>
+<h3 id="a-checkbox-that-silently-un-ticks-itself-is-worse-than-one-never-offered">A checkbox that silently un-ticks itself is worse than one never offered</h3>
+<p>Making every package optional means a user can now deselect something another
+package hard-depends on. pacman resolves that anyway — the install works — so
+the temptation is to leave it alone.</p>
+<p>Don't. The summary, the package count and the service enablement are all
+computed from the selection, so an unresolved dependency makes <em>those</em> describe
+a machine that was not installed, and the one place the user reads what they are
+about to get becomes the one place that lies. Resolve it before the read-back,
+and print what was added and why.</p>
+<p>The rules must come from the real <code>depends=</code> lines, not from memory, and a test
+should assert exactly that — read the dependent's PKGBUILD and check the rule
+matches. A rule that fires unconditionally is indistinguishable from no rule at
+all, so test the other direction too: with nothing that needs it, it stays off.</p>
+<h3 id="a-helper-that-writes-to-a-shell-array-cannot-be-called-inside--">A helper that writes to a shell array cannot be called inside <code>$( )</code></h3>
+<p>Command substitution forks. A function that fills an associative array and is
+called as <code>out=$(resolve_deps)</code> has every write discarded the moment it returns,
+and the assertions after it read the values they started with — a test that
+reports the feature broken while the feature works, which costs more time than a
+real failure.</p>
+<p>Redirect to a file and read that back instead. The same trap applies to
+<code>printf … | interactive_function</code>: the right-hand side of a pipeline is a
+subshell too.</p>
+<h3 id="-15s-pads-a-short-string-and-does-nothing-to-a-long-one"><code>%-15s</code> pads a short string and does nothing to a long one</h3>
+<p>A fixed-width column built with <code>%-15s</code> is not a width limit — it is a minimum.
+A sixteenth character pushes the row past the terminal, the right-hand column
+wraps onto its own line, and the grid reads as a layout bug in a page nobody
+edited.</p>
+<p><code>%-15.15s</code> truncates. Use the precision as well as the width whenever the
+content is a table someone will add a row to later, and assert the widths in a
+test so the next row cannot break the page.</p>
+<h3 id="a-grep-based-drift-check-breaks-silently-when-the-thing-it-greps-for-moves">A grep-based drift check breaks silently when the thing it greps for moves</h3>
+<p><code>tools/preflight.sh</code> read the installer's package set out of <code>SEL_CORE="…"</code>
+literals. When those became computed from a table, the same grep found <code>core)</code>
+and <code>app)</code> — the arms of the <code>case</code> that builds them — and reported every real
+package as undelivered.</p>
+<p>That failure was loud, which was luck. The same shape fails <em>quiet</em> just as
+easily: a matcher that matches nothing prints <code>ok</code>. Anything that scrapes source
+needs a self-test that plants the fault and proves the detector still fires, and
+a count in its success line (<code>27 installer packages</code>) so a scrape that suddenly
+finds nothing is visible without reading the code.</p>
+<h3 id="parentmodeldata-in-a-qml-delegate-resolves-to-undefined-at-run-time"><code>parent.modelData</code> in a QML delegate resolves to undefined at run time</h3>
+<p>A <code>Repeater</code>'s parent is the layout it fills, and a <code>QQuickItem</code> has no
+<code>modelData</code>. <code>model: parent.parent.modelData.rows</code> type-checks as an unqualified
+lookup, resolves to <code>undefined</code>, and renders an empty group with no error
+anywhere — no warning in the log, no exception, just a section of the page that
+is not there.</p>
+<p>Give the delegates <code>id</code>s and reference those. <code>qmllint</code> names it
+(<code>Member "modelData" not found on type "QQuickItem"</code>); nothing else does, and
+<code>/usr/bin/qmllint</code> is <strong>not</strong> Qt's — use <code>/usr/lib/qt6/bin/qmllint</code>.</p>
+<hr />
+<h2 id="two-packet-filters-compose-as-the-stricter-one-never-the-looser">Two packet filters compose as the stricter one, never the looser</h2>
+<p>A container's guest could not get a DHCP lease. The runtime's own setup script
+inserts exactly the rule that would allow it — <code>iptables -I INPUT -i &lt;bridge&gt; -p
+udp --dport 67 -j ACCEPT</code> — and it made no difference, because that rule and
+ours are separate nftables base chains on the same hook. A packet traverses all
+of them; an <code>accept</code> only ends the chain it is in, while a <code>drop</code> is final. So
+one chain's <code>policy drop</code> overrides every other chain's ACCEPT, and reading
+<code>iptables -L</code> and seeing the rule present proves nothing at all.</p>
+<p>The rule: <strong>when two filters are loaded, the effective policy is the intersection.
+Never conclude a packet is allowed from one of them.</strong></p>
+<p>The second half was subtler. The filter trusts private source addresses, which
+covers the guest's whole life on the network — except its first packet, a DHCP
+request sent from <code>0.0.0.0</code> before it has an address to be trusted by. A trust
+rule keyed on identity has a hole exactly where identity is being acquired:
+DHCP, DAD, ARP, anything that runs before the peer is addressable.</p>
+<h3 id="and-interface-rules-must-match-by-name-not-by-index">…and interface rules must match by NAME, not by index</h3>
+<p>The fix adds per-bridge rules, and <code>iif "waydroid0"</code> is the obvious spelling. It
+resolves the name to an <strong>ifindex when the rule is loaded</strong> and errors with
+<code>Interface does not exist</code> otherwise — and container bridges are created when the
+container starts, hours after the firewall came up at boot. Because the chain is
+loaded in one atomic <code>nft -f</code>, that single line does not fail on its own: the
+whole transaction is rejected and <strong>the machine ends up with no table at all</strong>. A
+fix for one bridge that silently unfilters the box.</p>
+<p><code>iifname</code> is a string match and is happy to name an interface that does not exist
+yet. Verified rather than assumed, which took one command:</p>
+<div class="hl"><pre><span></span><code>unshare<span class="w"> </span>-rn<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;nft -f ruleset.nft &amp;&amp; nft list chain inet synnet input&quot;</span>
+</code></pre></div>
+
+<p>The rule: <strong>a rule that resolves a name at load time is a rule that can fail on a
+machine where that thing has not appeared yet — and inside an atomic load, one
+line's failure is every line's failure.</strong></p>
+<h2 id="one-hardcoded-colourway-is-wrong-on-half-the-themes">One hardcoded colourway is wrong on half the themes</h2>
+<p>The dendrite mark shipped as a single file in <code>#a78bfa</code>, a light violet drawn for
+dark grounds. It measures about 7.2:1 on a dark panel and about 2.4:1 on a pale
+one; the ink cut <code>#5b21b6</code> is the reverse, about 8:1 and 2.2:1. With thirteen
+themes, some light and some dark, <strong>there is no single file that is right</strong> —
+whichever is hardcoded is a smudge on half the installs.</p>
+<p>It showed up in three places at once on a light theme, and each was next to
+evidence: the start button's emblem sat beside a caret and a wordmark that both
+follow the theme, and the panel emblem beside a title that does. Everything
+around the mark was already solving this problem; only the mark opted out,
+because it was an image file rather than a colour.</p>
+<p>The fix is not a setting. Each caller asks the thing it <em>already</em> measures —
+the panel's own background against the same threshold its text ladder uses, the
+bar strip's own ink direction (so a transparent bar follows what is behind that
+span rather than the theme), the theme generator's existing contrast helper. No
+new threshold, and nothing extra to keep in step.</p>
+<p>The rule: <strong>an asset with a colour baked into it is a theme decision you have
+opted out of. If everything around it adapts and it does not, that is the bug —
+and the surface that draws it has already worked out the answer.</strong></p>
+<hr />
+<p>See also: <a href="/wiki/Building-and-Packaging">Building and Packaging</a>,
+<a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a>, <a href="/wiki/synui">synui</a>,
+<a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Cutting-an-ISO-Release"><span>Previous</span>Cutting an ISO Release</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes" aria-current="page">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Chibi — SynapseOS Wiki</title>
+<meta name="description" content="A voice-interactive AI companion, with a sentinel aspect over synguard&#x27;s security feed.">
+<link rel="canonical" href="https://soslinux.org/wiki/Chibi">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Chibi — SynapseOS Wiki">
+<meta property="og:description" content="A voice-interactive AI companion, with a sentinel aspect over synguard&#x27;s security feed.">
+<meta property="og:url" content="https://soslinux.org/wiki/Chibi">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#running-her">Running her</a></li>
+<li><a href="#whats-in-the-box">What&#x27;s in the box</a></li>
+<li><a href="#gotchas-we-already-hit">Gotchas we already hit</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Apps</p>
+      <h1>Chibi</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Chibi/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-17">2026-07-17</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>A voice-interactive AI companion, with a sentinel aspect over <code>synguard</code>'s
+security feed.</strong></p>
+<p>Chibi is a desktop companion: an animated avatar you can talk to. She listens
+(speech-to-text), thinks (through an LLM backend), and speaks back (text-to-speech
+in a "cute" voice). On SynapseOS her default brain is <strong><code>synapd</code></strong> — the same
+local model the rest of the OS uses — so she works with no API keys and no cloud.
+Her second job is <strong>security</strong>: she subscribes to <code>synguard</code>'s verdict feed and
+can surface threats out loud.</p>
+<p>Upstream: <a href="https://github.com/velle999/chibi-llm">velle999/chibi-llm</a>. Packaged
+for SynapseOS as <code>chibi</code> and shipped on the ISO.</p>
+<h2 id="running-her">Running her</h2>
+<div class="hl"><pre><span></span><code>chibi
+</code></pre></div>
+
+<p>The launcher exports <code>CHIBI_LLM_BACKEND=synapd</code> and points at synapd's socket,
+so she talks through the OS's own model. Override to use Ollama instead:</p>
+<div class="hl"><pre><span></span><code><span class="nv">CHIBI_LLM_BACKEND</span><span class="o">=</span>ollama<span class="w"> </span>chibi
+</code></pre></div>
+
+<h2 id="whats-in-the-box">What's in the box</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>STT</strong></td>
+<td><code>faster-whisper</code> (tiny model shipped on the ISO — she hears you with no network)</td>
+</tr>
+<tr>
+<td><strong>TTS</strong></td>
+<td><code>piper</code> with the <code>en_GB-cori-medium</code> voice, pitch-shifted via <code>sox</code> for the "cute" timbre; <code>espeak-ng</code> is the last-resort fallback</td>
+</tr>
+<tr>
+<td><strong>LLM</strong></td>
+<td><code>synapd</code> by default (<code>llm_client.py</code>), or Ollama</td>
+</tr>
+<tr>
+<td><strong>Sentinel</strong></td>
+<td>read-only subscriber to <code>synguard</code>'s <code>secfeed</code>; the security aspect never writes</td>
+</tr>
+<tr>
+<td><strong>Avatar</strong></td>
+<td>pygame/SDL2 sprite renderer</td>
+</tr>
+</tbody>
+</table></div>
+<p>Python deps are vendored under <code>/usr/lib/chibi/pydeps</code> with <code>pip --target</code>
+(not a venv — a venv bakes a build-time absolute path that breaks when installed
+elsewhere); the launcher puts that dir on <code>PYTHONPATH</code>.</p>
+<h2 id="gotchas-we-already-hit">Gotchas we already hit</h2>
+<ul>
+<li><strong>Silent and deaf with no error.</strong> ALSA's <code>default</code> PCM must route to PipeWire,
+  which is what the <code>pipewire-alsa</code> package's <code>/etc/alsa/conf.d</code> symlink does.
+  Without it <code>default</code> falls back to <code>dmix</code> on card 0 — and on a box whose card 0
+  is an HDMI-only GPU there is no device 0, so every <code>aplay</code>/<code>arecord</code> dies and
+  Chibi comes up mute. <code>pipewire-alsa</code> is a hard dependency for this reason; do
+  not drop it.</li>
+<li><strong>Text-only when you expected voice.</strong> The venv gives voice; system Python is
+  silently text-only. The packaged build vendors the deps so this is handled, but
+  a from-source run must use the right interpreter.</li>
+<li><strong><code>~/.local/bin</code> isn't on the synui session PATH</strong> — install launchers to
+  <code>/usr/bin</code> (the package does).</li>
+<li><strong>Three copies of every module.</strong> The upstream repo ships per-resolution app
+  trees; a fix applied to one copy but not the others drifts. The package builds
+  from the <code>1080x1920-linux</code> tree.</li>
+</ul>
+<p>See also: <a href="/wiki/synapd">synapd</a> (her brain), <a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a>
+(her security feed), and <a href="/wiki/Vibe">Vibe</a> (the coding-assistant sibling on the same
+model).</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Vibe"><span>Previous</span>Vibe</a><a class="next" href="/wiki/Tepris"><span>Next</span>TEPRIS</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi" aria-current="page">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

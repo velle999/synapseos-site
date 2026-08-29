@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Vibe — SynapseOS Wiki</title>
+<meta name="description" content="The desktop assistant — a chat window and a terminal REPL over the model already resident in synapd, with the run of the desktop.">
+<link rel="canonical" href="https://soslinux.org/wiki/Vibe">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Vibe — SynapseOS Wiki">
+<meta property="og:description" content="The desktop assistant — a chat window and a terminal REPL over the model already resident in synapd, with the run of the desktop.">
+<meta property="og:url" content="https://soslinux.org/wiki/Vibe">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#running-it">Running it</a></li>
+<li><a href="#what-it-can-touch">What it can touch</a></li>
+<li><a href="#the-confirmation-gate">The confirmation gate</a></li>
+<li><a href="#modes">Modes</a></li>
+<li><a href="#requests-that-never-reach-a-model">Requests that never reach a model</a></li>
+<li><a href="#it-is-also-a-shell">It is also a shell</a></li>
+<li><a href="#voice">Voice</a></li>
+<li><a href="#backends">Backends</a></li>
+<li><a href="#how-it-talks-to-synapd">How it talks to synapd</a></li>
+<li><a href="#expectations">Expectations</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Apps</p>
+      <h1>Vibe</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Vibe/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-29">2026-08-29</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>The desktop assistant — a chat window and a terminal REPL over the model
+already resident in <code>synapd</code>, with the run of the desktop.</strong></p>
+<p>Vibe opens folders, panels and applications, changes settings and applies them
+live, reads and edits files, answers questions about this machine, and runs
+shell commands you confirm. Its default backend is <strong><code>synapd</code></strong>, so it reuses
+the model already loaded on the GPU: no second model, no extra VRAM, no account.
+Give it a key and it will talk to <strong>Claude</strong> or <strong>OpenAI</strong> instead.</p>
+<p>Upstream: <a href="https://github.com/velle999/vibe">velle999/vibe</a>. Packaged for
+SynapseOS as <code>vibe</code>.</p>
+<h2 id="running-it">Running it</h2>
+<div class="hl"><pre><span></span><code>vibe<span class="w">                    </span><span class="c1"># the terminal REPL, in whatever directory you point it at</span>
+vibe<span class="w"> </span>gui<span class="w">                </span><span class="c1"># the chat window — the same assistant</span>
+</code></pre></div>
+
+<p>Or press the <strong>speech bubble in the bar</strong>, which toggles the window. It is one
+assistant either way: one conversation loop, one tool set, one set of
+confirmations.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vibe</code></td>
+<td>the REPL</td>
+</tr>
+<tr>
+<td><code>vibe gui</code></td>
+<td>the chat window</td>
+</tr>
+<tr>
+<td><code>vibe provider [name]</code></td>
+<td>show or set the backend — <code>synapd</code>, <code>ollama</code>, <code>llama_cpp</code>, <code>anthropic</code>, <code>openai</code></td>
+</tr>
+<tr>
+<td><code>vibe key [provider]</code></td>
+<td>where each API key lives; <code>vibe key anthropic</code> prompts, <code>-</code> reads stdin, <code>--forget</code> removes it</td>
+</tr>
+<tr>
+<td><code>vibe voice</code></td>
+<td>read answers aloud, and take dictation</td>
+</tr>
+<tr>
+<td><code>vibe wake on|off</code></td>
+<td>listen for its name</td>
+</tr>
+<tr>
+<td><code>vibe intents [line]</code></td>
+<td>what it answers directly, without a model — and which rule claims a line</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="what-it-can-touch">What it can touch</h2>
+<p>Alongside the file and shell tools it has always had:</p>
+<ul>
+<li><strong><code>desktop_open</code></strong> — a folder by the name you use for it (<code>downloads</code>,
+  <code>my pictures</code>, <code>home</code>), an application, a web address, or one of the desktop's
+  own panels: control panel, task manager, displays, network, bluetooth,
+  wallpaper, theme, widgets, clipboard history, emoji picker, calculator.</li>
+<li><strong><code>desktop_action</code></strong> — any of the compositor's own verbs, checked against
+  <code>synctl binds</code> so the list cannot drift from what this build answers to.</li>
+<li><strong><code>desktop_setting</code></strong> — whitelisted <code>synuirc</code> keys, applied live.</li>
+<li><strong><code>system_info</code></strong> — what this machine actually is, read off /proc, the DMI
+  tables, <code>lspci</code> and <code>nvidia-smi</code>. A field it cannot read is left out rather
+  than filled in.</li>
+</ul>
+<h2 id="the-confirmation-gate">The confirmation gate</h2>
+<p>The line is <strong>does it write</strong>, not <em>is it dangerous</em>. <code>bash</code>, <code>write_file</code>,
+<code>edit_file</code>, <code>desktop_action</code>, <code>desktop_setting</code> and <code>move_file</code> pause for a
+<strong>y / n / always</strong> prompt; <code>read_file</code>, <code>glob</code>, <code>grep</code>, <code>list_dir</code>,
+<code>desktop_open</code> and <code>system_info</code> never do.</p>
+<p>Opening a folder is not a decision worth interrupting for, and a confirmation on
+harmless things trains the hand to press Enter without reading — which is what
+makes the prompt worthless on the request that matters. <code>--yolo</code> disables the
+gate for a session.</p>
+<h2 id="modes">Modes</h2>
+<p><code>Auto</code> is the default and picks one of three per message, then behaves exactly
+as if you had chosen it:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ask</strong></td>
+<td>answers, with no tools at all — the fastest turn, and the right one for a question about the world</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>answers and acts, with the gate in front of anything that writes</td>
+</tr>
+<tr>
+<td><strong>Plan</strong></td>
+<td>read-only tools: it can look at the machine and change nothing, and the answer is the steps it would take</td>
+</tr>
+</tbody>
+</table></div>
+<p>The routing is evidence the process already has — whether <code>synsh</code> claims the
+line, whether the words name a file or a setting or <em>this machine</em> — not a
+question put to the model, which costs a round trip and is got wrong in exactly
+the cases that matter.</p>
+<h2 id="requests-that-never-reach-a-model">Requests that never reach a model</h2>
+<p>A line that plainly names a desktop action — "open downloads", "what's in my
+documents", "lock the screen", "pc stats" — is carried out directly. No model is
+loaded, no tokens are generated, and the answer is the tool's own words.</p>
+<p>This is not an optimisation. Measured end to end on "open downloads" with the
+model in the loop, the request reached the file manager in <strong>2 runs out of 8</strong>:
+the shipped 7B has no structured tool-calling, so the tools are prompt text and
+the calls are <code>&lt;tool_call&gt;</code> blocks a regex reads back — and it will announce a
+tool, ask permission for one that never asks, or write its own <em>Tool result:</em>
+and answer from the fiction. There is no prompt that fixes a request which
+should not have been put to a model at all.</p>
+<p><code>vibe intents</code> lists what is answered this way; <code>vibe intents "&lt;line&gt;"</code> says
+which rule claims a line and runs nothing.</p>
+<p>It claims <strong>whole lines only</strong>. <code>open</code>, <code>run</code>, <code>list</code> and <code>lock</code> are real
+programs as well as real English, so "how do I open my downloads from a script"
+still reaches the model.</p>
+<h2 id="it-is-also-a-shell">It is also a shell</h2>
+<p><code>synsh</code> answers everyday lines from a table in milliseconds — "what time is it",
+"is firefox installed", "open youtube" — and vibe asks it first. A line <code>synsh</code>
+recognises as a command is <strong>run</strong> rather than described, after showing you the
+command and waiting. See <a href="/wiki/synsh">synsh</a>.</p>
+<h2 id="voice">Voice</h2>
+<p>The voice stack is <a href="/wiki/Chibi">Chibi</a>'s, not a second copy: piper for speech,
+faster-whisper for dictation. <code>vibe voice</code> reads answers aloud and takes
+dictation; <code>vibe wake on</code> listens for its name, and the bar's assistant button
+changes while it is listening — a window you cannot see is not a disclosure that
+the microphone is open.</p>
+<p>The listener ships <strong>disabled</strong>, and an update never turns it on. The switches
+are in the control panel and in <code>syn-settings</code>, and the wake words are yours.</p>
+<h2 id="backends">Backends</h2>
+<div class="hl"><pre><span></span><code>vibe<span class="w"> </span>provider<span class="w"> </span>anthropic<span class="w">          </span><span class="c1"># persisted for the next start</span>
+<span class="nv">VIBE_BACKEND</span><span class="o">=</span>ollama<span class="w"> </span>vibe<span class="w">         </span><span class="c1"># or per-invocation</span>
+<span class="nv">VIBE_SYNAPD_HOST</span><span class="o">=</span><span class="m">10</span>.0.0.153<span class="w"> </span>vibe<span class="w"> </span><span class="c1"># synapd&#39;s TCP bridge on another host</span>
+</code></pre></div>
+
+<p><code>synapd</code> is the default and needs no account. <code>ollama</code> and <code>llama_cpp</code> are for
+local setups you already run. <strong><code>anthropic</code></strong> goes through the official SDK
+rather than an OpenAI-compatible shim, so adaptive thinking, tool-use blocks and
+the refusal stop reason survive; <strong><code>openai</code></strong> reuses the chat-completions path.</p>
+<p>Keys live in your keyring where there is one and a 0600 file where there is not.
+<code>syn-settings ▸ Assistant</code> sets the backend and stores the key from a window —
+the field is masked, and the key never becomes a command-line argument at any
+point.</p>
+<h2 id="how-it-talks-to-synapd">How it talks to synapd</h2>
+<p>synapd is a single-shot request/response daemon with <strong>no structured
+tool-calling</strong>, so vibe drives its text tool path: the tools are described in
+the prompt, the model emits <code>&lt;tool_call&gt;{…}&lt;/tool_call&gt;</code> blocks, and vibe parses,
+executes and feeds the result back, looping until the task is done. It sends a
+<code>SYN_QF_RAW</code> query (see <a href="/wiki/synapd">synapd</a>) so it owns the whole chat template and
+is not capped at synapd's short default answer length.</p>
+<p>Owning the template matters: SynapseOS ships a <strong>Mistral</strong>, whose template has
+no system role and rejects one, so the system prompt folds into the first user
+turn. Emitting somebody else's turn markers at it produces an assistant that
+invents its own.</p>
+<h2 id="expectations">Expectations</h2>
+<p>The stock model is a 7B — fine for questions about your files and this machine,
+small edits and scaffolding, and mediocre at <em>agentic</em> tool-calling. That is why
+the desktop requests above do not go through it at all. Swap in a stronger GGUF
+(drop it in as <code>/var/lib/synapd/models/synapse.gguf</code> and restart synapd), point
+vibe at a larger backend over the bridge, or give it a cloud key.</p>
+<p>It is pure Python — <code>python-rich</code> and <code>python-prompt_toolkit</code> come from the Arch
+repos, so there is no venv. The app lives at <code>/usr/lib/vibe/app</code>, the launcher at
+<code>/usr/bin/vibe</code>, and the chat window is quickshell rendering
+<code>/usr/share/vibe/vibe.qml</code> in its own process.</p>
+<p>See also: <a href="/wiki/synapd">synapd</a> (the backend and wire protocol), <a href="/wiki/synsh">synsh</a> (the
+shell it asks first) and <a href="/wiki/Chibi">Chibi</a> (the voice it borrows).</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/synsh"><span>Previous</span>synsh</a><a class="next" href="/wiki/Chibi"><span>Next</span>Chibi</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe" aria-current="page">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

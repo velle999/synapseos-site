@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The Desktop — SynapseOS Wiki</title>
+<meta name="description" content="The bar, the desktop widgets, the desktop icons and the theme manager. All of it is drawn by SynapseOS itself — waybar is gone, replaced by a native quickshell bar in synui…">
+<link rel="canonical" href="https://soslinux.org/wiki/The-Desktop">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="The Desktop — SynapseOS Wiki">
+<meta property="og:description" content="The bar, the desktop widgets, the desktop icons and the theme manager. All of it is drawn by SynapseOS itself — waybar is gone, replaced by a native quickshell bar in synui…">
+<meta property="og:url" content="https://soslinux.org/wiki/The-Desktop">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-bar">The bar</a></li>
+<li class="sub"><a href="#two-shells-synapse-and-antiquity">Two shells: synapse and antiquity</a></li>
+<li class="sub"><a href="#why-waybar-was-replaced">Why waybar was replaced</a></li>
+<li class="sub"><a href="#the-mixer">The mixer</a></li>
+<li class="sub"><a href="#theming-is-live">Theming is live</a></li>
+<li><a href="#desktop-widgets">Desktop widgets</a></li>
+<li class="sub"><a href="#turning-them-on">Turning them on</a></li>
+<li class="sub"><a href="#how-the-toggle-works">How the toggle works</a></li>
+<li class="sub"><a href="#traps-worth-knowing">Traps worth knowing</a></li>
+<li><a href="#desktop-icons">Desktop icons</a></li>
+<li><a href="#the-file-manager">The file manager</a></li>
+<li><a href="#the-terminal">The terminal</a></li>
+<li><a href="#the-start-menu">The start menu</a></li>
+<li><a href="#screensaver-lock-screen-and-do-not-disturb">Screensaver, lock screen and Do Not Disturb</a></li>
+<li class="sub"><a href="#what-else-is-on-that-screen">What else is on that screen</a></li>
+<li class="sub"><a href="#do-not-disturb">Do Not Disturb</a></li>
+<li><a href="#themes">Themes</a></li>
+<li class="sub"><a href="#synapse-prism">SYNAPSE Prism</a></li>
+<li class="sub"><a href="#glass">Glass</a></li>
+<li class="sub"><a href="#what-a-fresh-install-ships">What a fresh install ships</a></li>
+<li class="sub"><a href="#a-clear-bar">A clear bar</a></li>
+<li class="sub"><a href="#rgb-lighting">RGB lighting</a></li>
+<li class="sub"><a href="#text">Text</a></li>
+<li><a href="#scale--making-the-whole-desktop-bigger">Scale — making the whole desktop bigger</a></li>
+<li><a href="#screens">Screens</a></li>
+<li class="sub"><a href="#screen-audio">Screen audio</a></li>
+<li><a href="#layouts">Layouts</a></li>
+<li class="sub"><a href="#monocle">Monocle</a></li>
+<li class="sub"><a href="#niri">niri</a></li>
+<li><a href="#animations">Animations</a></li>
+<li><a href="#per-app-window-geometry">Per-app window geometry</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>The Desktop</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The bar, the desktop widgets, the desktop icons and the theme manager. All of it
+is drawn by SynapseOS itself — <strong>waybar is gone</strong>, replaced by a native
+<a href="https://quickshell.org/">quickshell</a> bar in synui pkgrel 154.</p>
+<p>For the compositing side (glass, blur, shadows, CRT filters) see
+<a href="/wiki/Window-Effects">Window Effects</a>.</p>
+<hr />
+<h2 id="the-bar">The bar</h2>
+<p>One bar per monitor, live across hotplug (<code>Variants</code> over <code>Quickshell.screens</code>).
+Modules, left to right: workspaces, window title, media, then on the right
+tray · network · bluetooth · volume · CPU · memory · battery · game mode · clock.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Do this</th>
+<th>Get that</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tap <code>Super</code>, or click the ◢ SYNAPSE badge</td>
+<td>Start menu</td>
+</tr>
+<tr>
+<td>Right-click the bar</td>
+<td>Bar settings — position, auto-hide, per monitor</td>
+</tr>
+<tr>
+<td>Click the clock</td>
+<td>Calendar</td>
+</tr>
+<tr>
+<td>Click volume / network / bluetooth</td>
+<td>The relevant panel</td>
+</tr>
+<tr>
+<td><strong>Right-click volume</strong></td>
+<td><strong>Mixer</strong> — per-device and per-application levels</td>
+</tr>
+</tbody>
+</table></div>
+<p>Settings are <strong>per monitor</strong>. Auto-hide reveals on a dwell at the screen edge,
+not instantly, so crossing the edge on the way somewhere else does not flap it
+open.</p>
+<h3 id="two-shells-synapse-and-antiquity">Two shells: <code>synapse</code> and <code>antiquity</code></h3>
+<p>SynapseOS ships <strong>two complete bars</strong>, and <code>bar_shell</code> picks between them —
+either in <code>~/.config/synui/synuirc</code> or from <strong>Control panel ▸ Desktop ▸ Bar
+shell</strong>.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th><code>bar_shell</code></th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synapse</code> <em>(default)</em></td>
+<td>Everything described above — start menu, tray, mixer, widgets</td>
+</tr>
+<tr>
+<td><code>antiquity</code></td>
+<td>A radial taskbar, a sidebar, and a tarot-card power menu</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Antiquity is a port of <a href="https://github.com/diinki/linux-antiquity">linux-antiquity</a>
+by <a href="https://github.com/diinki">diinki</a></strong> — her design, her QML, and the three
+wallpapers the theme was built around. It is redistributed here under the MIT
+licence she released it under (© 2026 diinki), with her notice kept intact in
+the tree as <code>LICENSE.antiquity</code>. She publishes the wallpapers separately too, in
+<a href="https://github.com/diinki/wallpapers">diinki/wallpapers</a>, under the name
+<em>Celestial Antiquity</em>.</p>
+<p>The two trees are independent by design — no shared QML. They disagree about
+nearly every visual decision, and a common base would only be a third thing to
+keep working.</p>
+<blockquote>
+<p><strong>Changing <code>bar_shell</code> does nothing until the bar restarts</strong>, i.e. the next
+login. synui parses the key so there is one spelling of it and so the control
+panel can persist it, but the compositor does not start the bar — <code>synui-bar</code>
+reads the setting for itself.</p>
+</blockquote>
+<p>Antiquity keeps its settings in <code>~/.config/synui/antiquity/</code>, not beside the
+shell: the shell itself lives under <code>/usr/share</code>, which you cannot write to.</p>
+<p>Fonts bundled with it are documented in <code>quickshell-antiquity/FONTS.md</code>, which
+exists partly to satisfy a licence: <strong>Boska, Recia and Quilon are © <a href="https://www.indiantypefoundry.com/">Indian Type
+Foundry</a></strong>, and their embedded terms require
+naming the faces and crediting ITF's ownership wherever they are used. Three of
+the nine fonts upstream bundles were not redistributable and were removed rather
+than shipped.</p>
+<h3 id="why-waybar-was-replaced">Why waybar was replaced</h3>
+<p><code>menu.c</code> — synui's in-compositor start menu — existed for one reason: <strong>waybar's
+GTK was never handed keyboard focus</strong>, so a menu drawn by the bar could not be
+arrow-navigated. That turned out to be a GTK/waybar limitation, not a layer-shell
+or synui one.</p>
+<p>Verified end to end before committing to the port: a
+<code>PanelWindow { focusable: true }</code> with <code>WlrKeyboardFocus.Exclusive</code> received
+<strong>20 real key events</strong> and arrow-navigated its list on a live session. So a QML
+start menu was viable, and the start button, menu and everything else moved into
+the bar. <code>menu.c</code> was moved in and then deleted (pkgrel 163).</p>
+<p>Of the 14 Wayland protocols quickshell's module uses, synui advertises 12 —
+checked with <code>wayland-info</code>, not by reading code. The two missing are
+<code>zwp_keyboard_shortcuts_inhibit_manager_v1</code> (so <code>ShortcutInhibitor</code> is unusable)
+and <code>ext_image_copy_capture_manager_v1</code> (screencopy v3 covers it).</p>
+<h3 id="the-mixer">The mixer</h3>
+<p>Right-clicking the volume module opens a <strong>native mixer</strong> (synui pkgrel 197) —
+output and input devices with a <code>(•)</code> radio that sets the default, then
+per-application playback streams, then capture streams when there are any.</p>
+<p>It is drawn by the bar itself rather than launching <code>pavucontrol</code>, which is not
+installed. That is the actual history: the tooltip advertised "right-click for
+mixer" while the handler ran a command that did not exist, so the right-click
+did nothing, silently. The fix was to write the mixer, not to add the dependency.</p>
+<blockquote>
+<p><strong>quickshell's <code>Pipewire.nodes</code> is empty until something tracks an object</strong> —
+the service does not open its connection until a first consumer asks. And an
+untracked node reports its name and type but an <strong>empty <code>properties</code> map</strong> with
+placeholder volumes, so the panel tracks its whole node set continuously
+instead of on open; otherwise every slider draws at 100% for a frame and snaps.</p>
+</blockquote>
+<h3 id="theming-is-live">Theming is live</h3>
+<p><code>synui-apply-theme</code> writes <code>~/.config/synui/theme.json</code>, and <code>Theme.qml</code> reads it
+with <code>FileView { watchChanges: true }</code>. A theme switch repaints the running bar
+with <strong>no restart</strong> — verified by rewriting the palette under a live process.</p>
+<blockquote>
+<p><strong>QML <code>color</code> cannot parse CSS <code>rgba()</code></strong> — only <code>#RRGGBB</code> and SVG names. The
+bar therefore can never just read the generated waybar CSS; it would fall back
+silently and look fixed while doing nothing. The JSON carries <code>[r,g,b]</code> triples
+plus a <strong>separate alpha</strong>, which is why the theme script keeps <code>bar_base</code> and
+<code>bar_alpha</code> apart instead of pre-baking <code>rgba()</code> strings.</p>
+</blockquote>
+<p>Written temp + <code>rename()</code>: <code>watchChanges</code> fires on a partial write otherwise, and
+the bar repaints from half a palette.</p>
+<p>State colours (green = charging, red = dying battery) are deliberately <strong>not</strong>
+themed — they only switch on light/dark, because the pastels are unreadable on a
+pale bar.</p>
+<hr />
+<h2 id="desktop-widgets">Desktop widgets</h2>
+<p>Nine optional widgets: an audio <strong>visualiser</strong>, a <strong>system monitor</strong>, a <strong>big
+clock</strong>, an <strong>analog clock</strong>, a <strong>music</strong> card, a <strong>quick-launch</strong> strip, a
+<strong>post-it</strong> note, a <strong>pizza</strong>, and <strong>Tux</strong>. They sit on the <code>Bottom</code> layer —
+wallpaper under them, any window over them.</p>
+<p><strong>All off by default</strong>, and <code>~/.config/synui/widgets.state</code> does not exist until
+one is switched on. Decoration must not appear on an upgrade nobody asked for.</p>
+<h3 id="turning-them-on">Turning them on</h3>
+<p><code>Super</code>+<code>Shift</code>+<code>A</code> opens the <strong>widget manager</strong> — one row per widget. <code>Space</code>
+from any row is a group flip: <strong>all off if any is on</strong>, so one key is always a
+reliable "clear the desktop".</p>
+<p>From the command line:</p>
+<div class="hl"><pre><span></span><code>synui-widgets                     show the current state
+synui-widgets sysmon on           turn one on
+synui-widgets visualizer toggle   flip one
+synui-widgets all off             turn everything off
+synui-widgets toggle              group flip (all off if any is on, else all on)
+</code></pre></div>
+
+<p>Widgets: <code>visualizer</code> <code>sysmon</code> <code>clock</code> <code>analog</code> <code>music</code> <code>launcher</code> <code>postit</code>
+<code>pizza</code> <code>tux</code>. <code>synui-widgets home &lt;widget&gt;</code> puts a dragged one back where it
+started.</p>
+<p><strong>The analog clock has four faces</strong> — <code>minimal</code> (four strokes and six dots),
+<code>classic</code> (a full railway dial), <code>roman</code> (XII … IIII, the numerals real dials
+use) and <code>neon</code> (an accent glow ring with bloomed hands). Set it at Control panel
+▸ Desktop ▸ <em>Analog clock face</em>, and resize the widget by its corner.</p>
+<blockquote>
+<p>It is deliberately <strong>not</strong> click-to-cycle. Taking clicks would make it
+<code>interactive</code>, and a widget that takes clicks is one the desktop right-click
+menu cannot be opened <em>through</em> — a price the quick-launch strip and the
+post-it pay on purpose, and a clock has no business paying.</p>
+</blockquote>
+<p><strong>The music card</strong> picks a source and starts the music rather than only reporting
+what is already playing, draws a YouTube playlist's tracks by name, and fetches
+their cover art.</p>
+<p>The visualiser needs <strong>cava</strong> (an optdepend); without it the widget stays dark
+however the state file is set.</p>
+<h3 id="how-the-toggle-works">How the toggle works</h3>
+<p><code>synui-widgets</code> is the <strong>single writer</strong> of <code>widgets.state</code>, and <code>WidgetState.qml</code>
+watches that file with <code>FileView.watchChanges</code> — so a toggle repaints the desktop
+live, with <strong>no restart and no IPC</strong>. The keybind, the manager panel and the
+control panel row all <em>run the command</em> rather than writing the file themselves:
+one format, one bug surface. Written temp + rename, because the bar is watching.</p>
+<h3 id="traps-worth-knowing">Traps worth knowing</h3>
+<p><strong>Every widget needs <code>mask: Region {}</code>.</strong> Without it a widget is an invisible
+rectangle that eats every click over it — for the visualiser, a full-width strip
+along the bottom of the screen. <strong>QuickLaunch is the deliberate exception</strong>
+(it has things to click), and the price is that the desktop right-click menu is
+unreachable underneath it.</p>
+<p><strong>The visualiser needs cava because quickshell's PipeWire exposes a single
+<code>peak</code></strong> — no spectrum, no FFT. cava's config is written at spawn into
+<code>$XDG_RUNTIME_DIR/synui-cava.conf</code> rather than installed, so it works identically
+from the packaged tree or a user copy. It repaints at 60fps for as long as it is
+visible (cava emits zeros in silence, not nothing), so cava is stopped when the
+widget hides.</p>
+<p><strong>Widgets defer instead of duplicating.</strong> QuickLaunch's app-menu and wallpaper
+rows run <code>synctl dispatch menu</code> / <code>synctl dispatch wallpaper</code> — the exact keybind
+actions, so they cannot drift. BigClock is driven by <code>synui-clock</code>, for the same
+reason the bar's clock is: formatting a date in QML would strand the Date &amp; Time
+panel's toggles.</p>
+<p><strong>Primary output only</strong>, re-probed on <code>Quickshell.onScreensChanged</code> — but still
+instantiated per screen, so unplugging the primary cannot strand a widget.</p>
+<hr />
+<h2 id="desktop-icons">Desktop icons</h2>
+<p>Off by default. <code>desktop_icons = on</code> in <code>synuirc</code>, or the tick in the desktop
+right-click menu (which persists across sessions).</p>
+<ul>
+<li><strong>Drag to place.</strong> A placement is stored as <code>pin_x</code>/<code>pin_y</code> and survives the
+  session.</li>
+<li><strong>Arrange</strong> by name, type, size or date from the right-click menu.</li>
+</ul>
+<blockquote>
+<p><strong>The bar reserves its strip <em>after</em> startup.</strong> Icon layout pass 1 therefore
+saw the whole output and packed icons under where the bar was about to be. The
+layout re-runs once the exclusive zone lands.</p>
+</blockquote>
+<p>Dropping a file onto the desktop from a file manager works, and it is a move
+within your own session or a copy from another application — never a silent
+delete of somebody else's data.</p>
+<hr />
+<h2 id="the-file-manager">The file manager</h2>
+<p>A folder opens in <strong>Files</strong> (<code>synfiles</code>), SynapseOS's own — tabs, a split view,
+thumbnails from the shared cache, search, the XDG trash, undo of anything that
+changed files, and a properties pane that reports image and video resolution.
+It replaced Dolphin as the default in August 2026, and Dolphin came off the
+image entirely shortly after — <code>synpkg install dolphin</code> is one command for
+anyone who wants the KDE one back.</p>
+<p>Both file managers read the same <code>kio/servicemenus</code>, so the Extract / Crop /
+Mount ISO / Run with Wine / <strong>Set as Wallpaper</strong> entries <code>synui</code> installs appear
+in either one. A helper written once shows up in both.</p>
+<p>Its own page: <strong><a href="/wiki/Files">Files</a></strong>.</p>
+<hr />
+<h2 id="the-terminal">The terminal</h2>
+<p><code>Super</code>+<code>Return</code> opens <strong><code>syntty</code></strong>, SynapseOS's own, and the default since
+synui 0.1.0-359. It links no GL at all — which is why it is also the terminal
+that still opens on a machine whose GPU stack does not.</p>
+<p>Nothing in SynapseOS opens <code>kitty</code> any more; a <code>synuirc</code> written between synui
+215 and 358 still names it and that is treated as a real choice rather than
+overwritten.</p>
+<p>Its own page: <strong><a href="/wiki/Terminal">Terminal</a></strong>.</p>
+<hr />
+<h2 id="the-start-menu">The start menu</h2>
+<p>Tap <code>Super</code>, or click the ◢ SYNAPSE badge. Applications by category, with search.</p>
+<p><strong>It lists applications, not everything with a <code>.desktop</code> file.</strong> A Wine prefix
+invents new junk per installer — uninstallers, readmes, registration forms,
+"Visit SimCity Exchange", thirty-odd DirectX SDK tools — and on one machine the
+Wine page was 65 entries of which 15 were programs.</p>
+<p>Two filters do it, because the two problems are different shapes:</p>
+<ul>
+<li><strong>Patterns</strong>, for what cannot be enumerated: an <code>Exec</code> that opens a document
+  or a URL, uninstallers, SDK trees, and the vendor-shortcut vocabulary.</li>
+<li><strong>A shipped list</strong> (<code>menu-hidden.conf</code>), for what can: the diagnostic
+  satellites a library installs for its own developers and that arrive as
+  somebody else's dependency. Your own file is read second, so <code>!name</code> puts one
+  back. Qt Designer, Linguist, Assistant and CMake are development tools, not
+  satellites, and stay listed.</li>
+</ul>
+<blockquote>
+<p><strong>Filtered entries are hidden from search as well as from the pages.</strong> That is
+the part that is more than tidying: typing "sims" and being offered <em>Uninstall
+The Sims</em> one row above <em>The Sims</em> is a dangerous list to arrow through.</p>
+</blockquote>
+<hr />
+<h2 id="screensaver-lock-screen-and-do-not-disturb">Screensaver, lock screen and Do Not Disturb</h2>
+<p><code>Super</code>+<code>Z</code> is one panel for what the screen shows when nobody is at it — the
+screensaver, and the appearance of the lock and login screens.</p>
+<p>Five modes — <code>blank</code>, <code>clock</code>, <code>starfield</code>, <code>slideshow</code>, <code>matrix</code> — and it is
+<strong>off by default</strong>: with no timeout set, nothing about an existing install's
+idle behaviour changes until you ask.</p>
+<p><code>Up</code>/<code>Down</code> moves between rows, <code>Left</code>/<code>Right</code> changes the value under the
+cursor, <code>p</code> previews the current mode straight away rather than making you wait
+out the timeout, <code>s</code> saves, <code>Escape</code> closes. The mouse does the same job — hover
+selects, left click steps a value on, right click steps it back.</p>
+<div class="hl"><pre><span></span><code><span class="na">screensaver</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">starfield</span><span class="w">   </span><span class="c1"># or blank / clock / slideshow / matrix, or off</span>
+<span class="na">screensaver_timeout</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">300</span><span class="w">         </span><span class="c1"># seconds; 0 = never</span>
+<span class="na">screensaver_lock</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">on</span><span class="w">          </span><span class="c1"># lock the session when it is dismissed</span>
+<span class="na">screensaver_dir</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">~/Pictures</span><span class="w">  </span><span class="c1"># slideshow source (default: the wallpapers)</span>
+<span class="na">screensaver_interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">30</span><span class="w">          </span><span class="c1"># slideshow seconds per image</span>
+
+<span class="na">lock_background</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">desktop</span><span class="w">     </span><span class="c1"># or black, or image</span>
+<span class="na">lock_dim</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s">55</span><span class="w">          </span><span class="c1"># percent</span>
+<span class="na">lock_blur</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s">16</span><span class="w">          </span><span class="c1"># pixels</span>
+<span class="na">lock_accent</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="c1">#00e5ff     # naming one stops it following the theme</span>
+
+<span class="na">lock_media</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">on</span><span class="w">          </span><span class="c1"># now playing, with ⏮ ⏯ ⏭</span>
+<span class="na">lock_weather</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">off</span><span class="w">         </span><span class="c1"># ⚠ the only part of this screen that uses</span>
+<span class="w">                                   </span><span class="c1">#   the network</span>
+<span class="na">lock_weather_unit</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">        </span><span class="c1"># auto reads the locale; or c / f</span>
+<span class="na">lock_layout</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">        </span><span class="c1"># the keyboard-layout chip; auto = only when</span>
+<span class="w">                                   </span><span class="c1">#   xkb_layout names more than one</span>
+</code></pre></div>
+
+<p>The saver is the <strong>fifth idle stage</strong>, so the power panel arms it: with power
+saving off (<code>Super</code>+<code>P</code>) nothing here can fire, and an application holding an
+idle inhibitor — a video, mpv, Steam — holds it off exactly as it holds off the
+screen blanking. The panel says which of those is happening rather than showing
+a countdown that cannot run.</p>
+<p>The lock screen defaults to your <strong>desktop wallpaper, blurred and dimmed</strong>, and
+otherwise follows the desktop theme — the greeter inherits all of it, because
+<strong>the greeter <em>is</em> the lock screen</strong>. <code>lock_background = image</code> means the
+picture on the panel's <strong>Lock image</strong> row, which <code>Left</code>/<code>Right</code> walks through
+the same wallpapers <code>Super</code>+<code>W</code> browses.</p>
+<p>A pick in the panel writes <code>~/.config/synui/saver.state</code>, which overrides those
+keys the way <code>wallpaper.state</code> does; delete it to hand control back to
+<code>synuirc</code>.</p>
+<h3 id="what-else-is-on-that-screen">What else is on that screen</h3>
+<p>Three things sit on the lock panel besides the clock, and because the login
+screen <em>is</em> the lock screen, all three are on the login screen too.</p>
+<p><strong>Now playing</strong> — title, artist, and ⏮ ⏯ ⏭, read over MPRIS from the same
+player the bar's media module and <code>playerctl</code> talk to. Click the buttons, or use
+the media keys on your keyboard: they reach the player while the screen is
+locked instead of typing invisible characters into the password field. Nothing
+is drawn when nothing is playing. <code>lock_media = off</code> removes it.</p>
+<p><strong>The weather</strong> is <strong>off</strong> until you ask for it — it is the one thing here that
+goes to the network. On, it asks Open-Meteo (no account, no key) every twenty
+minutes and caches the answer, so a lock screen shows a temperature in its first
+frame; with no network it keeps showing the last reading, dimmed and labelled
+with its age rather than pretending to be current.</p>
+<p>There is <strong>one location on this machine</strong> and it is not set in <code>synuirc</code>. It is
+the file every weather widget here already reads:</p>
+<div class="hl"><pre><span></span><code>omarchy-weather-location<span class="w"> </span>--set<span class="w"> </span><span class="s2">&quot;Oslo&quot;</span><span class="w"> </span><span class="m">59</span>.9139,10.7522
+omarchy-weather-location<span class="w">                      </span><span class="c1"># what it is now</span>
+omarchy-weather-location<span class="w"> </span>--clear<span class="w">              </span><span class="c1"># back to IP detection</span>
+</code></pre></div>
+
+<p><strong>The keyboard-layout chip</strong>, top right. This one is a fix rather than a
+feature:</p>
+<blockquote>
+<p>A password typed in the wrong layout is rejected <strong>exactly like a wrong
+password</strong>, and nothing on the login screen could say which had happened.
+Worse, the login screen only ever had the <em>system</em> layout — so a password
+needing your second layout could not be typed there at all.</p>
+</blockquote>
+<p><code>xkb_layout = us,no</code> gives you two. Click the chip, or press <code>Super</code>+<code>Space</code>, to
+walk them; it appears on its own only when there is more than one to choose
+between. On the desktop the same walk is <code>synctl layout next</code>, or a bind:</p>
+<div class="hl"><pre><span></span><code><span class="na">xkb_layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">us,no</span>
+<span class="na">bind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">super+shift+space kbd_layout next</span><span class="w">   </span><span class="c1"># ⚠ not layout_cycle — that tiles</span>
+</code></pre></div>
+
+<p>Your session <strong>publishes</strong> your layouts for the login screen the same way it
+publishes the lock wallpaper: the greeter runs as another account and can read
+neither your config nor your home. A brand-new install therefore logs in once on
+the system layout before the login screen knows about the second one.</p>
+<h3 id="do-not-disturb">Do Not Disturb</h3>
+<p><code>Super</code>+<code>Shift</code>+<code>M</code> hides the toasts <strong>and</strong> mutes the chime. Suppressing only
+the drawing would leave the half people actually notice. Its own confirmation
+still shows, so the key never looks dead.</p>
+<hr />
+<h2 id="themes">Themes</h2>
+<p><code>Super</code>+<code>T</code> opens the theme manager. Themes are a full palette applied across the
+stack — synui's own chrome, the bar, GTK, Qt/KDE, the terminal, and Firefox — by
+<code>synui-apply-theme</code>.</p>
+<p><strong>Fifteen of them:</strong></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Theme</th>
+<th><code>theme =</code> in synuirc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SYNAPSE Prism</strong> <em>(what a fresh install boots into)</em>, <strong>Prism Light</strong></td>
+<td><code>prism</code>, <code>prism-light</code></td>
+</tr>
+<tr>
+<td>SYNAPSE (neon), Dark</td>
+<td><code>synapse</code>, <code>dark</code></td>
+</tr>
+<tr>
+<td>Windows XP, Windows 95</td>
+<td><code>winxp</code>, <code>win95</code></td>
+</tr>
+<tr>
+<td><strong>macOS 26</strong>, <strong>Aqua</strong>, <strong>Platinum</strong> — a Mac from three eras, new in 0.2.9</td>
+<td><code>macos26</code>, <code>aqua</code>, <code>platinum</code></td>
+</tr>
+<tr>
+<td>Catppuccin Mocha, Gruvbox, Tokyo Night, Nord, Dracula, Bubblegum</td>
+<td><code>catppuccin</code>, <code>gruvbox</code>, <code>tokyonight</code>, <code>nord</code>, <code>dracula</code>, <code>bubblegum</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>A theme is a <em>style</em>, not just a palette.</strong> What makes a window read as a Mac
+is that its controls are on the <strong>left</strong> and its caption is <strong>centred</strong>; after
+that it is per-era — Tahoe's flat glass, Aqua's pinstripes and glossy traffic
+lights, Platinum's racing stripes. Same precedent as XP and 95: the 95 theme
+uses <code>SYN_CHROME_BEVEL</code> chrome, which returns a shadow of 0, because a Win95
+window legitimately has no drop shadow.</p>
+<h3 id="synapse-prism">SYNAPSE Prism</h3>
+<p>The house theme, and the one a fresh install comes up in.</p>
+<p><strong>Prism has no colour of its own.</strong> It is one dark, desaturated, near-neutral
+surface at low alpha, and <strong>the wallpaper supplies the colour through it</strong> —
+measured live, on every wallpaper change. That is the whole theme. A greyscale
+wallpaper has no hue to give, and Prism falls back to the house cyan and says so
+in the journal.</p>
+<p>Everything that is <em>not</em> the accent is fixed, and that is deliberate: a theme
+whose chrome colour also came off the wallpaper would be a different theme on
+every picture, and the glass would have nothing constant to be glass <em>against</em>.</p>
+<p><strong>Prism Light</strong> is the same theme with the surface inverted and deliberately
+nothing else changed — the same glass, the same accent off the wallpaper. Two
+things could not simply be inverted: the fallback accent measures 1.7:1 on a
+near-white panel, so it drops four stops to the same hue at 5.0:1, and the
+surface is <code>#EEF1F6</code> rather than white so the contrast correctors have somewhere
+to work.</p>
+<blockquote>
+<p>Dark is the default rather than light, and that is an argument about defaults
+rather than a claim that light cannot work. Glass over an arbitrary photograph
+is a contrast problem, and a pale glass over a white beach is a panel with no
+edges.</p>
+</blockquote>
+<h3 id="glass">Glass</h3>
+<p>One slider for the whole desktop's see-through-ness, under
+<strong>Control panel ▸ Appearance</strong>, plus the switches around it.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>glass_level</code></td>
+<td><code>auto</code> <code>off</code> <code>0</code>–<code>100</code></td>
+<td>How much you see through. <code>auto</code> lets the theme answer</td>
+</tr>
+<tr>
+<td><code>glass_sync</code></td>
+<td><code>on</code> (default)</td>
+<td>Every surface below follows the slider. Change one by hand and it keeps its own until you switch this back on</td>
+</tr>
+<tr>
+<td><code>glass_pinned</code></td>
+<td><code>bar_opacity dock_opacity …</code></td>
+<td>The rows taken <strong>off</strong> the slider. Written for you when you drag a driven row</td>
+</tr>
+<tr>
+<td><code>glass_legibility</code></td>
+<td><code>on</code> (default)</td>
+<td>A surface may raise its own alpha until its text clears AA against what is behind it. Off draws exactly what was asked, including nothing at all</td>
+</tr>
+<tr>
+<td><code>scene_ink</code></td>
+<td><code>on</code> (default)</td>
+<td>Menus and panels ink themselves off the <strong>window</strong> behind them rather than the wallpaper it covers</td>
+</tr>
+<tr>
+<td><code>wallpaper_accent</code></td>
+<td><code>auto</code> <code>off</code> <code>on</code></td>
+<td>Take the accent off the wallpaper instead of the theme. <code>auto</code> is the two Prisms and nothing else</td>
+</tr>
+<tr>
+<td><code>widget_glass</code></td>
+<td><code>auto</code> <code>off</code> <code>on</code></td>
+<td>Desktop widgets take the dock's glass instead of the HUD panel</td>
+</tr>
+</tbody>
+</table></div>
+<p>The slider drives five surfaces, each with the number that surface needs — the
+two window opacities, the terminal, the bar and the dock. They are not
+proportional to each other: the same alpha that is pleasant on a 1200px window
+makes a dense panel row unreadable.</p>
+<p>Two actions do the whole thing at once:</p>
+<ul>
+<li><strong>Appearance ▸ Make it all solid</strong> — glass off and windows opaque, in one
+  press. Doing it by hand was three controls and the third was invisible until
+  it bit.</li>
+<li><strong>Appearance ▸ Make it all clear</strong> — the mirror of it.</li>
+</ul>
+<blockquote>
+<p><strong>The Glass slider no longer bottoms out at nothing.</strong> At the top of the range
+the bar and the dock land on the thinnest surface that is still a surface
+(0.05), because the difference between 0.00 and 0.05 is not five percent of
+anything — it is whether the surface <em>exists</em>. At 0.00 the backdrop blur has
+nothing to mask and frosts each <strong>glyph</strong> instead of the strip; the legibility
+walk has no alpha to walk from; and a strip you can see straight through is
+one whose extent you cannot find. A genuinely clear bar is a thing to ask for
+— the row, or <em>Make it all clear</em> — rather than something two of the three
+glass themes handed you.</p>
+</blockquote>
+<h3 id="what-a-fresh-install-ships">What a fresh install ships</h3>
+<p>Since 0.2.9.4 a new install boots into the house desktop rather than into Prism
+with everything else left at the compositor's defaults:</p>
+<div class="hl"><pre><span></span><code><span class="na">theme</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s">prism</span>
+<span class="na">glass_level</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">       </span><span class="c1"># the theme&#39;s own answer — see below</span>
+<span class="na">transparency</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">on</span>
+<span class="na">bar_shape</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">floating-pill</span>
+<span class="na">dock_radius</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">64</span><span class="w">         </span><span class="c1"># clamped to a capsule</span>
+<span class="na">widget_glass</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">on</span>
+<span class="na">wallpaper_accent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">on</span>
+<span class="na">scene_ink</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">on</span>
+<span class="na">wallpaper</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">/usr/share/backgrounds/commons-st-louis-night.jpg</span>
+</code></pre></div>
+
+<p><strong><code>auto</code> is the whole point.</strong> On Prism it resolves to the frosted 0.05 surface
+for the bar, the dock and the panels, and windows draw at the 0.90/0.84 pair the
+theme carries in its own preset. On Gruvbox, Win95 or any of the other twelve it
+resolves to whatever <em>that</em> theme was tuned with. Switch theme and the desktop
+follows, for ever, with nothing to undo.</p>
+<blockquote>
+<p><strong>This shipped as <code>glass_level = 100</code> for one release, and that was a
+workaround rather than a decision.</strong> <code>auto</code> was not auto: a glass theme's
+panels fell through to a tuned <em>ladder</em> where an explicit level returned an
+absolute, and the dock had no way to ask its theme at all — so a Prism desktop
+left on <code>auto</code> came up with a see-through bar, see-through windows and a solid
+slab of a dock. Writing the number down was the only way to get the look the
+theme was drawn for, at the cost of pinning that look onto every other theme.
+Both halves are fixed in synui 467; <code>auto</code> and <code>glass_level = 100</code> now produce
+the same desktop on Prism.</p>
+</blockquote>
+<p>The two exceptions are <code>bar_opacity</code> and <code>dock_opacity</code>, which a fresh install
+writes as <code>0.05</code>. They are <strong>not</strong> the glass level in disguise — the compositor
+resolves both from the theme and needs neither. The bar and the desktop widgets
+are a separate process (quickshell), and they read those keys out of
+<code>theme.state</code>, then <code>settings.state</code>, then <code>synuirc</code>. A machine that has only
+ever been <em>told</em> <code>theme = prism</code> has neither of the first two, because
+<code>theme.state</code> is written when somebody <strong>picks</strong> a theme. It is the same gap
+<code>widget_glass = on</code> works around, with the same way out: set them to <code>auto</code> once
+you have picked any theme from the manager.</p>
+<h3 id="a-clear-bar">A clear bar</h3>
+<p><code>bar_opacity</code> is yours to set under <strong>any</strong> of the fifteen — it used to be the
+theme's to decide, so the only way to see through the bar was to run macOS 26
+and the only way to stop was to leave it.</p>
+<div class="hl"><pre><span></span><code><span class="c1"># ~/.config/synui/synuirc</span>
+<span class="na">bar_opacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span><span class="w">      </span><span class="c1"># 0 = no background at all; `auto` = the theme decides</span>
+<span class="na">bar_shape</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">full-width | rounded-ends | floating-pill</span>
+</code></pre></div>
+
+<p>With the strip gone, the bar's <strong>ink is measured off the wallpaper</strong> underneath,
+so the clock stays legible over a bright picture instead of being whatever the
+palette said. The dock and the desktop widgets render through the same
+compositor glass.</p>
+<p><code>bar_shape</code> is what the bar does with the corner radius: <code>rounded-ends</code> curves
+the two corners facing the desktop, <code>floating-pill</code> also lifts it off the edge
+and insets it from both sides, closing it into a capsule. <strong>All three are no-ops
+with the corners off</strong> (radius 0, or a retro chrome) — it is "what shape when
+rounded", not a second switch.</p>
+<blockquote>
+<p>Two wallpaper choices paint no picture there is anything to measure — <code>none</code>
+(a solid colour) and <code>matrix</code> (rendered into a GPU buffer the painter never
+sees). The bar keeps a solid strip on those rather than guessing.</p>
+</blockquote>
+<h3 id="rgb-lighting">RGB lighting</h3>
+<p>The desktop already decides one colour per wallpaper — synui measures the
+picture and the bar, the dock and the icons wear it. <strong><code>syn-rgb</code></strong> carries the
+same colour out to whatever <a href="https://openrgb.org/">OpenRGB</a> can see: the RAM,
+the board, the keyboard.</p>
+<div class="hl"><pre><span></span><code>syn-rgb<span class="w"> </span>on<span class="w">                </span><span class="c1"># follow the wallpaper&#39;s accent</span>
+syn-rgb<span class="w"> </span>colour<span class="w"> </span>8B00FF<span class="w">     </span><span class="c1"># or pin one</span>
+syn-rgb<span class="w"> </span>follow<span class="w"> </span>theme<span class="w">      </span><span class="c1"># or follow the theme instead of the picture</span>
+syn-rgb<span class="w"> </span>status<span class="w">            </span><span class="c1"># what it thinks, and whether openrgb is there</span>
+syn-rgb<span class="w"> </span>dark<span class="w">              </span><span class="c1"># lights off — a different thing from `off`</span>
+</code></pre></div>
+
+<p>Control panel ▸ Appearance ▸ <strong>RGB lights</strong> is the same switch.</p>
+<p>It is a bridge and nothing more: read the colour this desktop already chose,
+hand it to OpenRGB, get out of the way.</p>
+<blockquote>
+<p><strong>The watching is systemd's.</strong> A path unit fires when the measured palette
+changes, so there is no daemon, nothing polling, and nothing running at all
+between one wallpaper and the next.</p>
+</blockquote>
+<p><code>openrgb</code> is an <strong>optional dependency</strong> — a desktop with nothing in it that
+glows should not pull in a lighting daemon — and <code>syn-rgb</code> names the missing
+package rather than failing silently. A <strong>fresh install has this on</strong>; an
+existing machine keeps it off until asked, because hardware currently doing what
+its owner asked is not something an upgrade may take over.</p>
+<blockquote>
+<p>A greyscale wallpaper is an <em>answer</em>, not a failure: there is no hue to
+follow, so the lights keep the last colour they were given rather than
+snapping to something invented.</p>
+</blockquote>
+<h3 id="text">Text</h3>
+<p>Family <strong>and</strong> scale, desktop-wide, under <strong>Control panel ▸ Appearance</strong>. Both
+live in <code>font.state</code>, which <code>synui</code>, <code>synfiles</code>, <code>syntty</code> and the rest of the
+suite all read — there is deliberately no second copy in <code>synuirc</code>. Leaving a
+font row <strong>applies</strong> it; closing the panel is "I am done", not "I changed my
+mind".</p>
+<blockquote>
+<p>There <em>was</em> a second copy — <code>ui_font</code> in <code>synuirc</code>, which the compositor
+applied to everything it drew itself. So a font changed from any other window
+in the suite moved every application on the desktop and left the dock, the
+control panel, the notifications and the window titles on the previous face
+until the next login. It is retired: one setting, one file, every window.</p>
+</blockquote>
+<p><strong>Fifteen families ship with every install</strong> — sans, serif and mono, all OFL or
+Apache. A picker is only a setting if there is something in it, and a stock
+install used to carry Noto, DejaVu and a console face, which made "choose the
+font this desktop is drawn in" a choice between two. Studio's title lettering
+reads the same list.</p>
+<p><code>synui-apply-font --size</code> / <code>--scale</code> is the same thing from a script.</p>
+<p><code>Super</code>+<code>W</code> is the <strong>wallpaper picker</strong>: built-in Synapse (static) and Matrix
+(animated GLES2 rain), a browser for <code>~/Pictures</code>, per-monitor scoping on <code>Tab</code>,
+and Steam Workshop wallpapers when that package is installed — all of it on its
+own page, <strong><a href="/wiki/Wallpapers">Wallpapers</a></strong>.</p>
+<blockquote>
+<p><strong><code>synui-apply-theme</code> hardcodes <code>$HOME</code>.</strong> A nested test compositor started
+with a scratch <code>XDG_CONFIG_HOME</code> will still re-theme the <strong>live</strong> desktop, so
+stub it on <code>PATH</code> before any nested-session testing. See
+<a href="/wiki/Development-Notes#testing-the-compositor-without-a-real-seat">Development Notes</a>.</p>
+</blockquote>
+<hr />
+<h2 id="scale--making-the-whole-desktop-bigger">Scale — making the whole desktop bigger</h2>
+<p><code>Super</code>+<code>Ctrl</code>+<code>=</code> and <code>Super</code>+<code>Ctrl</code>+<code>-</code>; <code>Super</code>+<code>Ctrl</code>+<code>0</code> returns to 100%.
+Also <em>Control panel ▸ Display ▸ Scale everything</em>, and
+<code>synctl dispatch display_scale 1.5</code>.</p>
+<p>This is an <strong>output scale</strong> — the same control GNOME puts under Display ▸ Scale
+and macOS under Displays. The compositor's own panels, every application and the
+cursor all grow <strong>together</strong>, drawn at the larger size rather than magnified,
+and synui advertises <code>wp_fractional_scale_v1</code> so 125% and 150% are as sharp as
+200%. It is remembered in <code>outputs.conf</code>, so it survives a login.</p>
+<p>It applies to <strong>every screen at once</strong>. Growing one monitor of three has not
+made the desktop bigger — it has made the desk inconsistent and left you to find
+the other two. Per-monitor scale is <code>−</code> and <code>+</code> in <code>Super</code>+<code>D</code>, where you are
+looking at one screen on purpose.</p>
+<blockquote class="warn"><p>⚠ <strong>This is not <em>Text scale</em>.</strong> That setting, under Appearance, sizes the
+words inside SynapseOS's own windows; it cannot reach a panel the compositor
+draws itself, and it cannot reach Firefox. Both are real settings and neither
+is the other's spelling. If you want everything bigger, you want the scale on
+this page.</p>
+</blockquote>
+<p><strong>A scale that would leave the screen too small is refused, out loud.</strong> The
+Displays panel is 990px wide and the control panel 860, both laid out in
+columns — below about 1010 logical pixels they do not clip, they put their
+values and their key legend off the screen. Those are the panels you would use
+to undo a scale you regret, so the step is refused with the reason rather than
+doing nothing. On a 2560-wide monitor that allows up to 200%; on a 1366-wide
+laptop panel, up to 125%.</p>
+<h2 id="screens">Screens</h2>
+<p><code>Super</code>+<code>D</code> is the display panel: resolution, refresh rate, arrangement, <code>p</code> to
+set the <strong>primary</strong> output, and <code>m</code> to cycle the display mode.</p>
+<div class="hl"><pre><span></span><code><span class="na">display_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">extend</span><span class="w">      </span><span class="c1"># or mirror, or external</span>
+<span class="na">hdmi_audio</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">        </span><span class="c1"># or on, or off</span>
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>extend</code></td>
+<td>one desktop across every screen — the default</td>
+</tr>
+<tr>
+<td><code>mirror</code></td>
+<td>every screen at the same origin <strong>and</strong> forced to the largest resolution they all share</td>
+</tr>
+<tr>
+<td><code>external</code></td>
+<td>the built-in panel off and detached; refuses when there is no external screen</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Mirror forces the shared resolution on purpose.</strong> Overlapping a 1080p laptop
+and a 720p projector without that is not duplication — it shows the projector a
+crop and calls it mirroring.</p>
+<p><strong><code>external</code> re-runs itself on every hotplug</strong>, so unplugging the television
+gives a laptop its own screen back rather than leaving a machine with nothing
+lit and no way to say so.</p>
+<p>So "switch the laptop panel off and use the television" is a mode you set
+once, not something to redo at each plug-in: <code>external</code> is remembered, and the
+hotplug re-run is what applies it to whatever you plug in next and takes it
+back off when you unplug. On a laptop the <strong>display key</strong> (<code>XF86Display</code> —
+<code>Fn</code>+<code>F7</code> on a ThinkPad) cycles the three, which is the one way in that does
+not make you open a menu on the screen you are trying to switch off. The
+control panel's <em>Display ▸ Screens</em> row and <code>synctl dispatch display_mode
+[name]</code> are the other two.</p>
+<blockquote>
+<p><strong>A disabled output stays in the compositor's layout.</strong> wlroots' "which screen
+is at this point" answers for a dark screen as readily as a lit one, so saved
+window geometry kept re-homing windows onto a blanked laptop panel — the
+application opened, took focus, and was invisible. A detached output is
+removed from the layout now, and the windows on it are swept to a surviving
+screen, the same way an unplugged monitor's are.</p>
+</blockquote>
+<h3 id="screen-audio">Screen audio</h3>
+<p><code>hdmi_audio = auto</code> moves audio to a screen that can take it — on by default
+where it is wanted (a machine with a battery) and off where it is a nuisance (a
+desk whose monitors never leave). <code>synui-hdmi-audio(1)</code> does the graph work.</p>
+<p><strong>It keys off the ALSA ELD, never the sink name.</strong> "Switch to the sink with
+<em>hdmi</em> in its name" is the obvious rule and it is wrong: a GPU advertises an
+HDMI sink per pin whether or not anything is plugged into it. A pin with a
+display that can take audio reports <code>monitor_present 1</code> and <code>eld_valid 1</code>, and
+carries the display's own name.</p>
+<p>It waits for the sink rather than checking once — the ELD fill and wireplumber's
+profile switch take a second or two after the connector appears — and it will
+not move audio off a sink you chose by hand since it last acted.</p>
+<hr />
+<h2 id="layouts">Layouts</h2>
+<p><code>Super</code>+<code>Tab</code> cycles the <strong>current desktop</strong> through seven layouts, in this
+order, and a toast names the one you land on:</p>
+<p><strong>tiling → floating → monocle → AI → niri → spiral → cascade →</strong> back to tiling</p>
+<p><strong>niri</strong> is scrollable tiling: one endless horizontal strip of columns per
+desktop and monitor, scrolled so the focused column is on screen. A new window
+does not shrink the others — the strip just gets longer. <code>Super</code>+<code>,</code> pulls the
+focused window into the column on its left and <code>Super</code>+<code>.</code> pushes it back out
+into a column of its own; <code>Super</code>+<code>H</code> / <code>Super</code>+<code>Shift</code>+<code>L</code> set a column's
+width, the same keys that size the master area on tiling.</p>
+<p>Each of the nine desktops has its own layout, so you can keep one tiled and
+another floating — <strong>and the choice survives a restart.</strong> It is written the
+moment you change it and read back at startup, per desktop.</p>
+<p><code>Super</code>+<code>Shift</code>+<code>T</code> (<strong>retile</strong>) jumps straight back to tiling from anywhere,
+which is usually what you want instead of pressing <code>Super</code>+<code>Tab</code> three more
+times.</p>
+<p>It is also in the <strong>control panel</strong> (<code>Super</code>+<code>C</code> ▸ Desktop ▸ <strong>Layout</strong>), which
+is the easier way in if you have not memorised the key. The row reads the
+current layout and which desktop it belongs to — <code>tiling · desktop 1</code> — and
+Enter cycles it exactly as <code>Super</code>+<code>Tab</code> does.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tiling</strong></td>
+<td>Master/stack. The first window takes the left 60%, the rest share the right. <code>Super</code>+<code>H</code> / <code>Super</code>+<code>Shift</code>+<code>L</code> move the split.</td>
+</tr>
+<tr>
+<td><strong>Floating</strong></td>
+<td>Nothing is placed for you — windows go where you put them.</td>
+</tr>
+<tr>
+<td><strong>Monocle</strong></td>
+<td>One window at a time per monitor, filling the screen. See below.</td>
+</tr>
+<tr>
+<td><strong>AI</strong></td>
+<td>Asks <code>synapd</code> where the windows should go, based on what they are. Falls back to tiling if the AI is unavailable.</td>
+</tr>
+<tr>
+<td><strong>niri</strong></td>
+<td>Scrollable tiling: an endless horizontal strip of columns, scrolled to the focused one. A new window lengthens the strip instead of shrinking the others. See below.</td>
+</tr>
+<tr>
+<td><strong>Spiral</strong></td>
+<td>Fibonacci tiling. Each window takes half of what is left, the cut alternating and the side rotating clockwise, so the windows wind inward. Past three windows it trades area for <strong>shape</strong>: master-stack's slots get shorter without getting narrower, the spiral's stay roughly between 1:1 and 2:1. Its smallest window is smaller, not bigger — pick it when you want windows you can use, not when you want the last one to be roomy.</td>
+</tr>
+<tr>
+<td><strong>Cascade</strong></td>
+<td>Overlapping cards, each offset down-and-right so every titlebar stays reachable, dealt into several piles rather than one long slide off the desk. The only layout whose windows overlap on purpose. <code>Super</code>+<code>Shift</code>+<code>Y</code> goes straight there.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Floating, maximized and fullscreen windows sit outside all of this — every
+layout skips them. That is worth knowing because dragging a window to move it,
+snapping it to a screen edge and maximizing it <em>all</em> mark a window floating, so
+a tiling desktop can quietly end up with nothing left to tile. <code>Super</code>+<code>F</code>
+clears one window; retile clears the lot.</p>
+<h3 id="monocle">Monocle</h3>
+<p>Monocle shows you <strong>one window per monitor</strong> and hides that monitor's others.
+The one you see is the one with focus, so on a three-monitor desk you get three
+windows, one filling each screen — not one window and two blank screens.</p>
+<ul>
+<li><strong>Change which one with the normal focus keys.</strong> <code>Alt</code>+<code>Tab</code> (most recently
+  used), <code>Super</code>+<code>J</code> / <code>Super</code>+<code>K</code> (stacking order), or clicking the window in
+  the dock. There is no separate monocle-only switcher.</li>
+<li><strong>Floating windows are exempt</strong> — they stay visible, on top, at their own
+  size. So <code>Super</code>+<code>F</code> is how you get a second thing on screen: float the
+  dialog, the video or the terminal you want to keep an eye on, and it sits
+  over the full-screen window instead of replacing it.</li>
+<li><strong>It is not fullscreen.</strong> The bar, the dock and any panels keep their space,
+  and windows keep their titlebars. For real fullscreen use
+  <code>Super</code>+<code>Shift</code>+<code>F</code>.</li>
+<li><strong>Minimized windows are skipped</strong> and never become the shown one.</li>
+<li>Monocle is one of the two layouts (with floating) that still honours
+  <strong>remembered per-app geometry</strong> — see below. Tiling, niri and AI ignore it,
+  because they place windows themselves.</li>
+</ul>
+<h3 id="niri">niri</h3>
+<p>Scrollable tiling. Instead of dividing the screen up, it lays your windows out
+in <strong>one endless horizontal strip of columns</strong> — per desktop <em>and</em> per monitor —
+and scrolls the strip so the focused column is on screen.</p>
+<p>The point is what happens when you open something: <strong>a new window does not
+shrink the others.</strong> It gets a fresh column beside the one you were in and the
+strip simply gets longer, so a column is the same width whether you have two
+windows or ten. On tiling, every new window takes space off the stack.</p>
+<ul>
+<li><strong><code>Super</code>+<code>,</code> pulls the focused window into the column on its left</strong>, and
+  <strong><code>Super</code>+<code>.</code> pushes it back out</strong> into a column of its own. Those two are
+  the only moves that are not just walking along the strip, and they are what
+  columns are for — stack a terminal under an editor, then pull them apart.</li>
+<li><strong><code>Super</code>+<code>Shift</code>+<code>J</code> / <code>Super</code>+<code>Shift</code>+<code>K</code> walk the strip</strong>; the normal focus
+  keys move the focus and the strip scrolls to follow.</li>
+<li><strong><code>Super</code>+<code>H</code> / <code>Super</code>+<code>Shift</code>+<code>L</code> set the focused column's width</strong> — the
+  same keys that move the master split on tiling.</li>
+<li><strong>You never see half a column.</strong> A column that does not fit entirely on the
+  monitor is not drawn at all, rather than being cut off at the edge. On a
+  multi-monitor desk a partially drawn column would spill onto the screen next
+  door, so it waits until the strip scrolls it fully into view.</li>
+<li>Like tiling and AI, niri places windows itself, so it <strong>ignores remembered
+  per-app geometry</strong>.</li>
+</ul>
+<hr />
+<h2 id="animations">Animations</h2>
+<p>Two things animate, and each is its own setting — in the control panel under
+<strong>Windows ▸ Animation</strong>, or in <code>synuirc</code>.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Values</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anim_window</code></td>
+<td><code>off</code>, <code>fade</code>, <code>rise</code> (fades <strong>and</strong> glides up into place)</td>
+<td><code>fade</code></td>
+</tr>
+<tr>
+<td><code>anim_window_ms</code></td>
+<td>0–1000 ms; <code>0</code> is off. Also times the niri strip slide</td>
+<td>140</td>
+</tr>
+<tr>
+<td><code>anim_rise_px</code></td>
+<td>how far a rising window travels</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>anim_workspace</code></td>
+<td><code>off</code>, <code>fade</code> (cross-fade), <code>slide</code></td>
+<td><code>fade</code></td>
+</tr>
+<tr>
+<td><code>anim_workspace_ms</code></td>
+<td>0–1000 ms; a slide wants longer than a fade</td>
+<td>140</td>
+</tr>
+<tr>
+<td><code>anim_curve</code></td>
+<td><code>ease-out</code>, <code>linear</code>, <code>ease-in-out</code>, <code>ease-in</code> — shared by both</td>
+<td><code>ease-out</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Slide</strong> sends both desks off in the direction you switched: going to a
+higher-numbered desktop sends the old one off to the left, the way a pager
+reads. The windows keep full opacity while they go — they are leaving, not
+dissolving.</p>
+<p>The curve is deliberately shared rather than per-event. Two easings on one
+desktop read as two different desktops, and the niri strip slide is on it too.</p>
+<blockquote>
+<p><strong>A window <em>closing</em> is never animated</strong>, and cannot be here: the client's
+buffer is gone the moment it unmaps, so there is nothing left to fade. Nothing
+resizes a window to animate it either — that would re-configure the client
+every frame — so what moves, moves at a fixed size.</p>
+</blockquote>
+<p><code>animation_ms</code> still works and sets both lengths at once; it is what these two
+replaced.</p>
+<h2 id="per-app-window-geometry">Per-app window geometry</h2>
+<p><code>remember_geometry = on</code> reopens a floating window at the box it had last time,
+per application.</p>
+<p>Two bugs are baked into the current design as guard rails:</p>
+<ol>
+<li>The geometry table was <strong>written but never read</strong> for two pkgrels — the
+   persist path looked complete from the writing side alone.</li>
+<li>The restore then asked the <strong>new view</strong> whether it was floating, and a view
+   that has just mapped is not floating yet, so nothing ever restored. The
+   floating state is persisted alongside the box (<code>floating=</code>) for exactly this
+   reason.</li>
+</ol>
+<blockquote>
+<p><strong>The table answers a question about <em>opening</em> a window, and only that.</strong> Its
+coordinates are absolute, so an entry names a <strong>monitor</strong> as much as a
+position — and the entry is written when the app last <em>closed</em>. Leaving
+fullscreen used to consult it, which on a laptop plugged into a television
+meant un-fullscreening a video threw the window back onto the built-in panel,
+because that is where the browser had last been shut down. A window coming out
+of fullscreen now goes back to the box, and the screen, it had before it went
+in — nothing is looked up.</p>
+</blockquote>
+<hr />
+<p>See also: <a href="/wiki/Wallpapers">Wallpapers</a>, <a href="/wiki/Window-Effects">Window Effects</a>,
+<a href="/wiki/Sound-Themes">Sound Themes</a>, <a href="/wiki/Cursor-Themes">Cursor Themes</a>, <a href="/wiki/synui">synui</a>,
+<a href="/wiki/Keybindings">Keybindings</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Troubleshooting"><span>Previous</span>Troubleshooting</a><a class="next" href="/wiki/The-Dock"><span>Next</span>The Dock</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop" aria-current="page">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

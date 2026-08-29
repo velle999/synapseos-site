@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Secure Boot — SynapseOS Wiki</title>
+<meta name="description" content="SynapseOS ships a policy tool, syn-secureboot, whose design rule is &quot;assume Secure Boot is on, fall back safely if it is not.&quot; It manages kernel module signature enforcement…">
+<link rel="canonical" href="https://soslinux.org/wiki/Secure-Boot">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Secure Boot — SynapseOS Wiki">
+<meta property="og:description" content="SynapseOS ships a policy tool, syn-secureboot, whose design rule is &quot;assume Secure Boot is on, fall back safely if it is not.&quot; It manages kernel module signature enforcement…">
+<meta property="og:url" content="https://soslinux.org/wiki/Secure-Boot">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-rule-never-enable-secure-boot-first">The rule: never enable Secure Boot first</a></li>
+<li><a href="#setup-mode-the-part-that-trips-everyone">Setup Mode: the part that trips everyone</a></li>
+<li class="sub"><a href="#confirming-the-state-yourself">Confirming the state yourself</a></li>
+<li class="sub"><a href="#clearing-the-keys--asus-ami-bios">Clearing the keys — ASUS (AMI BIOS)</a></li>
+<li><a href="#enrollment-start-to-finish">Enrollment, start to finish</a></li>
+<li><a href="#module-signature-enforcement">Module signature enforcement</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Secure Boot</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Secure-Boot/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-12">2026-07-12</time>
+      </p>
+
+      <div class="wiki-body">
+<p>SynapseOS ships a policy tool, <strong><code>syn-secureboot</code></strong>, whose design rule is
+<em>"assume Secure Boot is on, fall back safely if it is not."</em> It manages kernel
+<strong>module signature enforcement</strong> (<code>module.sig_enforce=1</code>) and it will only ever
+turn enforcement on when doing so is provably safe — so a machine with no Secure
+Boot, or one where you later switched SB off, still boots and still loads its
+nvidia and <code>synapse_kmod</code> modules.</p>
+<div class="hl"><pre><span></span><code>syn-secureboot<span class="w"> </span>status<span class="w">   </span><span class="c1"># read-only, safe anywhere</span>
+syn-secureboot<span class="w"> </span>enroll<span class="w">   </span><span class="c1"># guided key enrollment (real hardware)</span>
+syn-secureboot<span class="w"> </span>apply<span class="w">    </span><span class="c1"># turn on enforcement iff trusted (runs each boot)</span>
+</code></pre></div>
+
+<hr />
+<h2 id="the-rule-never-enable-secure-boot-first">The rule: never enable Secure Boot first</h2>
+<p>Sign everything and verify it green <strong>while SB is still off</strong>, and only then
+flip SB on in firmware. That way the first boot with SB enabled is guaranteed to
+succeed rather than being the moment you find out something was unsigned.</p>
+<p><strong>You can always get back in.</strong> Secure Boot is a firmware toggle, never a
+permanent lockout. If a boot fails, enter firmware setup at power-on (Del / F2 —
+that always works regardless of SB), turn Secure Boot off, save, and you boot
+normally again. Keep a live USB as a second net anyway.</p>
+<hr />
+<h2 id="setup-mode-the-part-that-trips-everyone">Setup Mode: the part that trips everyone</h2>
+<p><code>sbctl enroll-keys</code> only works when the firmware is in <strong>Setup Mode</strong>, and:</p>
+<blockquote>
+<p><strong>Setup Mode means the firmware holds no Platform Key (PK).</strong></p>
+</blockquote>
+<p>That's the whole definition. With a PK present, the firmware rejects any key
+enrollment that isn't signed by that PK — so no tool running in Linux can talk
+its way in. <strong>You enter Setup Mode only by deleting the PK from inside firmware
+setup.</strong></p>
+<p>This matters because sbctl's own error message is misleading:</p>
+<div class="hl"><pre><span></span><code>Your system is not in Setup Mode! Please reboot your machine and reset secure
+boot keys before attempting to enroll the keys.
+</code></pre></div>
+
+<p>It reads as though rebooting is the fix. <strong>It is not, and it never can be — a
+reboot does not remove a Platform Key.</strong> You will reboot, get the identical
+error, and be exactly where you started. The "reset secure boot keys" it refers
+to happens in the BIOS menu, not in the OS.</p>
+<p><code>syn-secureboot enroll</code> checks this for you before printing anything else:</p>
+<div class="hl"><pre><span></span><code>Firmware state:
+  Secure Boot: off (correct for enrolling)
+  Setup Mode:  DISABLED — the firmware still holds a Platform Key.
+
+  ==&gt; STOP. `sbctl enroll-keys` CANNOT succeed in this state, and REBOOTING
+      WILL NOT CHANGE IT.
+</code></pre></div>
+
+<h3 id="confirming-the-state-yourself">Confirming the state yourself</h3>
+<div class="hl"><pre><span></span><code>sbctl<span class="w"> </span>status<span class="w">     </span><span class="c1"># &quot;Setup Mode: ✓ Disabled&quot; means NOT in setup mode (confusing wording)</span>
+
+<span class="c1"># the ground truth, straight out of efivars — 1 = in Setup Mode, 0 = not:</span>
+od<span class="w"> </span>-An<span class="w"> </span>-t<span class="w"> </span>u1<span class="w"> </span>-j4<span class="w"> </span>/sys/firmware/efi/efivars/SetupMode-8be4df61-93ca-11d2-aa0d-00e098032b8c
+</code></pre></div>
+
+<p>If a <code>PK-8be4df61-…</code> variable exists and has real content (a few hundred bytes),
+a Platform Key is enrolled and you are not in Setup Mode.</p>
+<h3 id="clearing-the-keys--asus-ami-bios">Clearing the keys — ASUS (AMI BIOS)</h3>
+<ol>
+<li><strong>Del</strong> at power-on → <strong>F7</strong> for Advanced Mode.</li>
+<li><strong>Boot → Secure Boot → Key Management</strong>.</li>
+<li><strong>Clear Secure Boot Keys</strong>.
+   - <strong>Not</strong> <em>Restore Factory Keys</em> — that re-installs the vendor PK and puts
+     you straight back where you started. It is the opposite operation.</li>
+<li>Still in the Secure Boot menu, set <strong>OS Type = Windows UEFI mode</strong>.
+   - ASUS's <strong>"Other OS"</strong> silently disables SB enforcement. You would enroll
+     keys, see no errors, and still boot unsigned — looking protected while
+     protecting nothing.</li>
+<li><strong>F10</strong> to save and reboot.</li>
+</ol>
+<p>On other vendors the menu lives under Boot or Security and is called <em>Key
+Management</em> / <em>Expert Key Management</em>; you want whichever item <strong>erases /
+clears / deletes</strong> the keys.</p>
+<hr />
+<h2 id="enrollment-start-to-finish">Enrollment, start to finish</h2>
+<p>With Secure Boot <strong>off</strong> and Setup Mode <strong>enabled</strong>:</p>
+<div class="hl"><pre><span></span><code>pacman<span class="w"> </span>-S<span class="w"> </span>sbctl
+sbctl<span class="w"> </span>create-keys
+sbctl<span class="w"> </span>enroll-keys<span class="w"> </span>-m<span class="w">          </span><span class="c1"># -m ALSO enrolls Microsoft&#39;s UEFI CA</span>
+</code></pre></div>
+
+<p><strong>Do not skip <code>-m</code> on a machine with a discrete GPU.</strong> Microsoft's CA is what
+signs the nvidia GPU option ROM; without it the card may not initialise under
+Secure Boot and you get no display.</p>
+<div class="hl"><pre><span></span><code>sbctl<span class="w"> </span>sign<span class="w"> </span>-s<span class="w"> </span>/boot/efi/EFI/SynapseOS/grubx64.efi
+sbctl<span class="w"> </span>sign<span class="w"> </span>-s<span class="w"> </span>/boot/vmlinuz-linux
+sbctl<span class="w"> </span>verify<span class="w">                  </span><span class="c1"># EVERYTHING must show signed. This is the green light.</span>
+</code></pre></div>
+
+<p>Only once <code>sbctl verify</code> is fully green: reboot into BIOS, <strong>enable Secure
+Boot</strong>, save. Back in SynapseOS:</p>
+<div class="hl"><pre><span></span><code>syn-secureboot<span class="w"> </span>status<span class="w">         </span><span class="c1"># should now show Secure Boot enabled</span>
+syn-secureboot<span class="w"> </span>apply<span class="w">          </span><span class="c1"># enables module.sig_enforce=1 when trusted</span>
+</code></pre></div>
+
+<p>Re-sign after every GRUB or kernel update (a pacman hook can automate this).</p>
+<hr />
+<h2 id="module-signature-enforcement">Module signature enforcement</h2>
+<p>Separate from boot signing. <code>syn-secureboot apply</code> turns on
+<code>module.sig_enforce=1</code> <strong>only if</strong> Secure Boot is on <em>and</em> every currently
+loaded out-of-tree module carries a signature the kernel trusts. It decides the
+second half by reading <code>TAINT_UNSIGNED_MODULE</code> (bit 13 of
+<code>/proc/sys/kernel/tainted</code>): if that bit is clear, everything loaded so far was
+trusted, so enforcement will not lock anything out.</p>
+<p>To get <code>synapse_kmod</code> and nvidia's DKMS modules trusted, import the DKMS key:</p>
+<div class="hl"><pre><span></span><code>mokutil<span class="w"> </span>--import<span class="w"> </span>/var/lib/dkms/mok.pub<span class="w">   </span><span class="c1"># reboot, enroll at the blue MOK screen</span>
+</code></pre></div>
+
+<p>Skipping this is fine — Secure Boot still protects boot, and <code>syn-secureboot</code>
+simply holds module enforcement off, which is the safe fallback.</p>
+<blockquote>
+<p><strong>A note on this machine (dual-boot):</strong> it boots GRUB alongside batocera. Any
+<em>other</em> OS sharing the disk must also be Secure-Boot-signed or it stops
+booting once SB is on. That's why SB enablement here has been treated as
+optional and deferred rather than a default.</p>
+</blockquote>
+<p>See also: <a href="/wiki/Troubleshooting">Troubleshooting</a>,
+<a href="/wiki/synguard-and-synapse_kmod">synguard and synapse_kmod</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/DaVinci-Resolve"><span>Previous</span>DaVinci Resolve</a><a class="next" href="/wiki/Troubleshooting"><span>Next</span>Troubleshooting</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot" aria-current="page">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

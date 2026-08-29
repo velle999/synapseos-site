@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Commands — SynapseOS Wiki</title>
+<meta name="description" content="The command-line surface of SynapseOS, and the short list of privileged actions the desktop is allowed to run without a password.">
+<link rel="canonical" href="https://soslinux.org/wiki/Commands">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Commands — SynapseOS Wiki">
+<meta property="og:description" content="The command-line surface of SynapseOS, and the short list of privileged actions the desktop is allowed to run without a password.">
+<meta property="og:url" content="https://soslinux.org/wiki/Commands">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#command-line-tools">Command-line tools</a></li>
+<li class="sub"><a href="#the-firewall">The firewall</a></li>
+<li class="sub"><a href="#desktop-helpers">Desktop helpers</a></li>
+<li><a href="#privileged-desktop-actions-sudo--n">Privileged desktop actions (sudo -n)</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Commands</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The command-line surface of SynapseOS, and the short list of privileged actions
+the desktop is allowed to run without a password.</p>
+<hr />
+<h2 id="command-line-tools">Command-line tools</h2>
+<p>Every tool is prefixed <code>syn</code> and self-documents with <code>--help</code> (or <code>help</code>).</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>syn</code></td>
+<td>Top-level CLI — <code>syn status</code>, <code>syn info</code>, <code>syn model/net/guard/nix …</code>, <code>syn shell</code>, <code>syn ui</code>, <code>syn install</code>, and <code>syn game &lt;cmd…&gt;</code> to launch something with the MangoHud overlay and gamemode (<code>syn game hud on|off</code> decides whether the overlay loads in every Vulkan client or only in what the launcher starts). See <a href="/wiki/Gaming">Gaming</a></td>
+</tr>
+<tr>
+<td><code>syn nix</code></td>
+<td>The optional Nix layer — <code>apply</code>, <code>build</code>, <code>update</code>, <code>facts</code>, <code>edit</code>, <code>rollback</code>, <code>profile</code>, <code>init</code>. Present only if you took Nix at install time; see <strong><a href="/wiki/Nix">Nix</a></strong></td>
+</tr>
+<tr>
+<td><code>syn resolve</code></td>
+<td>DaVinci Resolve support — <code>doctor</code>, <code>setup</code> (OpenCL runtime and launch environment), <code>install</code>, <code>transcode</code> (rewrap footage the free edition cannot decode), <code>launch</code>, and <code>gui</code> — the <strong>DaVinci Doctor</strong> window, which walks the whole thing. See <strong><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></strong></td>
+</tr>
+<tr>
+<td><code>synsh</code></td>
+<td>Natural-language shell — type plain English or normal commands; <code>--no-ai</code> for pure shell, <code>--intent-check</code> to test an intent</td>
+</tr>
+<tr>
+<td><code>syn-model</code></td>
+<td>Model manager — <code>download [mistral-7b|phi3|tiny]</code>, <code>list</code>, <code>status</code>, <code>remove</code></td>
+</tr>
+<tr>
+<td><code>syn-install</code></td>
+<td>Install SynapseOS to disk (the live-ISO installer). <code>syn-install-gui</code> is the same installer as a window — it writes an answer file and runs <code>syn-install --config</code>. <code>--list-disks</code>, <code>--list-locales</code>, <code>--list-timezones</code>, <code>--list-keymaps</code>, <code>--list-xkb-layouts</code> print the records either front-end renders. See <strong><a href="/wiki/Installation">Installation</a></strong></td>
+</tr>
+<tr>
+<td><code>synpkg</code></td>
+<td>The package manager — <code>search</code> (<code>--all</code> searches every source at once), <code>install</code>, <code>remove</code>, <code>upgrade</code>, <code>updates</code>, <code>installed</code>, <code>orphans</code>, <code>info</code>, <code>about</code>. Other sources are subcommands: <code>synpkg aur …</code>, <code>synpkg flatpak …</code>, <code>synpkg arsenal …</code>, <code>synpkg system …</code>. <code>synpkg tui</code> browses in the terminal, <code>synpkg gui [tab]</code> opens the window. See <a href="/wiki/Software">Software</a></td>
+</tr>
+<tr>
+<td><code>synfiles</code></td>
+<td>The file manager — <code>list</code>, <code>info</code>, <code>du</code>, <code>find</code>, <code>trash</code>, <code>copy</code>, <code>move</code>, <code>rename</code>, <code>mkdir</code>, <code>compress</code>, <code>undo</code>, <code>places</code>, <code>recent</code>, <code>volumes</code>, <code>mount</code>. <code>synfiles gui [dir]</code> opens the window and <code>synfiles tui [dir]</code> browses with arrow keys in the terminal; <code>--rec</code> prints the records it parses. See <a href="/wiki/Files">Files</a></td>
+</tr>
+<tr>
+<td><code>syn-settings</code></td>
+<td>System settings — <code>gui [pane]</code> opens the window (display, region, time, network, bluetooth, power, apps, kernel, system); <code>--rec &lt;pane&gt;</code> prints what that pane reads, as TSV; <code>set keymap/xkb/locale/timezone/ntp/time-format/date-format/hostname/app …</code> changes one thing; <code>pkg</code>, <code>boot</code> and <code>default</code> manage kernels. <code>-n</code> dry-runs anything. See <a href="/wiki/Settings">Settings</a></td>
+</tr>
+<tr>
+<td><code>syntty</code></td>
+<td><strong>The terminal</strong>, and the default one — <code>syntty</code> for a shell, <code>-e CMD</code> to run one, <code>--hold</code> to keep the output after it exits, <code>--config FILE</code> / <code>--no-config</code> for the config file. See <strong><a href="/wiki/Terminal">Terminal</a></strong></td>
+</tr>
+<tr>
+<td><code>syn-edit</code></td>
+<td>The text editor — <code>syn-edit file</code> opens the terminal editor, <code>gui</code> the window, and <code>run -k KEYS</code> / <code>ex -c CMD</code> apply edits with no terminal at all. <code>langs</code>, <code>highlight</code>, <code>config</code>. See <a href="/wiki/Editor">Editor</a></td>
+</tr>
+<tr>
+<td><code>synstudio</code></td>
+<td>The photo darkroom and video editor — <code>probe</code>, <code>keys</code>, <code>get</code>/<code>set</code>/<code>reset</code> a photograph's sidecar, <code>mask</code>, <code>look</code>, <code>lut</code>, <code>render</code>, <code>match</code>, <code>histogram</code>/<code>scope</code>, and the whole <code>timeline …</code> family for cutting video. <code>synstudio gui [file]</code> opens the window; <code>kind FILE</code> says what a file is. See <a href="/wiki/Studio">Studio</a></td>
+</tr>
+<tr>
+<td><code>syn-disks</code></td>
+<td>The disk utility — drives, partitions, SMART health, mounting, safe removal, formatting and partitioning. <code>syn-disks gui</code> opens the window. Formatting anything that shares a disk with <code>/</code> is refused outright</td>
+</tr>
+<tr>
+<td><code>syn-arcade</code></td>
+<td>The game assistant — <code>hud toggle</code>/<code>cycle</code>/<code>position</code>/<code>set</code>/<code>path</code>/<code>adopt</code> drive the MangoHud overlay <strong>inside a game that is already running</strong>; <code>pads list</code>/<code>info</code>/<code>test</code>/<code>rumble</code>/<code>calibrate</code>/<code>save</code> cover controllers outside Steam; <code>map learn</code>/<code>add</code>/<code>remove</code> override SDL button mappings; <code>fit new</code>/<code>run</code> wraps a low-resolution game in gamescope so it fills the screen; <code>binds install</code>/<code>ensure</code> put the gaming keys in <code>synuirc</code>; and <code>big start</code>/<code>big music …</code> drive <strong><a href="/wiki/Big-Screen">big screen mode</a></strong>. <code>syn-arcade gui</code> opens the window. See <a href="/wiki/Gaming">Gaming</a></td>
+</tr>
+<tr>
+<td><code>syn-arsenal</code></td>
+<td>Browse and install BlackArch security tooling by category — a window by default, <code>--tui</code> in the terminal, <code>--enable-repo</code> to add the repository (needs root)</td>
+</tr>
+<tr>
+<td><code>syn-confine</code></td>
+<td>Run a command inside a kernel-enforced allowlist (Landlock) — <code>--rw</code>/<code>--ro</code>/<code>--rx</code> paths, outbound TCP denied unless a port is named, <code>--isolate-net</code> for no network at all, <code>--print</code> to see the resolved policy without running it</td>
+</tr>
+<tr>
+<td><code>syn-calc</code></td>
+<td>The calculator behind <code>Super</code>+<code>X</code>, on the command line — <code>syn-calc 'sqrt(2) * 100'</code>; <code>--funcs</code> lists what it knows. Quote the expression or the shell eats <code>*</code> and <code>( )</code> first</td>
+</tr>
+<tr>
+<td><code>syn-update</code></td>
+<td>Update the SynapseOS components on an installed system — <code>check</code> (default, read-only), <code>apply</code>, <code>status</code>. <strong>Not</strong> a replacement for <code>synpkg upgrade</code>, which covers Arch; see <a href="/wiki/Updating">Updating</a></td>
+</tr>
+<tr>
+<td><code>synctl</code></td>
+<td>Talk to the running <code>synui</code> compositor over its control socket — <code>synctl clients</code>, <code>workspaces</code>, <code>outputs</code>, <code>activewindow</code>, <code>cursor</code> (the pointer's layout position), <code>recent</code> (what has been opened, kept by the compositor at the one moment every launch has in common: a window turns up), <code>binds</code> (the whole bind table, each chord spelled the way a keyboard says it — this is what the welcome guide reads its key column out of), <code>layout</code> (the keyboard layouts <code>xkb_layout</code> compiled, which one is typing, and <code>layout next</code> / <code>layout prev</code> / <code>layout &lt;name&gt;</code> to move — the CLI half of the lock screen's layout chip), <code>dispatch &lt;action&gt; [arg]</code></td>
+</tr>
+<tr>
+<td><code>synui-welcome</code></td>
+<td><strong><a href="/wiki/Welcome-Guide">The welcome guide</a></strong> — <code>toggle</code> (the default), <code>show [output]</code>, <code>hide</code>, <code>page N</code>. Also <code>Super</code>+<code>Escape</code> and the <em>Welcome Guide</em> entry in the applications menu</td>
+</tr>
+<tr>
+<td><code>syn-gfn</code></td>
+<td><strong>GeForce NOW</strong> — no arguments opens it in the first Chromium-family browser it finds, in a profile of its own. <code>--list-browsers</code> says what it found and which one it would use. See <a href="/wiki/Gaming">Gaming</a></td>
+</tr>
+<tr>
+<td><code>syn-crypt</code></td>
+<td>Manage LUKS2 disk encryption on an installed system — <code>status</code>, <code>add-key</code>, <code>change-key</code>, <code>remove-key</code>, <code>backup-header</code></td>
+</tr>
+<tr>
+<td><code>syn-secureboot</code></td>
+<td>Enroll Secure Boot keys (checks for real Setup Mode first — see <a href="/wiki/Secure-Boot">Secure Boot</a>)</td>
+</tr>
+<tr>
+<td><code>synui-ai-backend</code></td>
+<td>Switch <code>synapd</code>'s inference device — <code>gpu</code> / <code>cpu</code> / <code>off</code> / <code>toggle</code> / <code>status</code> (see <a href="/wiki/synapd#switching-the-inference-device-gpu--cpu--off">synapd</a>)</td>
+</tr>
+<tr>
+<td><code>synapd</code> · <code>synguard</code> · <code>synnet</code> · <code>synui</code></td>
+<td>The daemons and compositor — normally started by systemd, not by hand</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="the-firewall">The firewall</h3>
+<p><code>synnet</code> is the packet filter as well as the network policy daemon. There is no
+<code>ufw</code> and no <code>firewalld</code> here, and <code>nftables.service</code> is disabled — advice written
+for another distribution will not apply.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synnet --status</code></td>
+<td>What the firewall is, which container bridges are trusted, and — as root — the live ruleset</td>
+</tr>
+<tr>
+<td><code>sudo synnet --firewall</code></td>
+<td>Load the input chain now, without restarting the daemon</td>
+</tr>
+<tr>
+<td><code>sudo synnet --firewall on</code> / <code>off</code></td>
+<td>Turn ingress filtering on or off <strong>and remember it</strong>. Off is also a switch in Settings ▸ Network</td>
+</tr>
+<tr>
+<td><code>sudo synnet --trust-if &lt;iface&gt;</code></td>
+<td>Accept DHCP and DNS on a container or VM bridge this machine is the gateway for — see <a href="/wiki/Troubleshooting#a-container-or-virtual-machine-has-no-network">Troubleshooting</a></td>
+</tr>
+<tr>
+<td><code>sudo synnet --untrust-if &lt;iface&gt;</code></td>
+<td>Take one back off the list</td>
+</tr>
+<tr>
+<td><code>synnet --block &lt;ip&gt;</code> / <code>--allow &lt;ip&gt;</code></td>
+<td>Add or remove one address in the outbound blocklist</td>
+</tr>
+</tbody>
+</table></div>
+<p>The default is a <strong>default-drop input chain</strong> that accepts loopback, replies to
+connections this machine started, ICMP and ICMPv6, anything from a private
+address (so the whole home network stays reachable without listing ports), and
+DHCP replies. Everything unsolicited from a public address is dropped, which is
+what makes this laptop safe on café Wi-Fi.</p>
+<p>⚠ <strong>After a <code>syn-update</code> that brings a new <code>synnet</code>, restart it.</strong> pacman replaces
+the binary but does not restart the unit, so the running daemon can be older than
+the file on disk — and <code>synnet --status</code> will report on the old one.</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>synnet
+</code></pre></div>
+
+<h3 id="desktop-helpers">Desktop helpers</h3>
+<p>These are the command-line side of the <code>synui</code> panels. In every case the panel
+and the keybind <strong>run the command</strong> rather than writing state themselves, so
+there is one format and one place a setting can be wrong.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+<th>Panel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synui-sound</code></td>
+<td>Event sounds — <code>&lt;event&gt; on|off</code>, <code>test</code>, <code>theme</code>, <code>sound</code>, <code>volume</code>, <code>install</code>, <code>remove</code>. See <strong><a href="/wiki/Sound-Themes">Sound Themes</a></strong></td>
+<td><code>Super</code>+<code>S</code></td>
+</tr>
+<tr>
+<td><code>synui-cursor</code></td>
+<td>Cursor themes — <code>list</code>, <code>current</code>, <code>install</code>, <code>build</code>, <code>set</code>. See <strong><a href="/wiki/Cursor-Themes">Cursor Themes</a></strong></td>
+<td><code>Super</code>+<code>Shift</code>+<code>P</code></td>
+</tr>
+<tr>
+<td><code>synui-widgets</code></td>
+<td>Desktop widgets — <code>&lt;widget&gt; on|off|toggle</code>, <code>all off</code>, <code>home</code> to put a dragged one back. Visualiser, sysmon, big clock, analog clock, music, quick-launch, post-it, Tuxagotchi. See <strong><a href="/wiki/The-Desktop#desktop-widgets">The Desktop</a></strong></td>
+<td><code>Super</code>+<code>Shift</code>+<code>A</code></td>
+</tr>
+<tr>
+<td><code>synui-plugins</code></td>
+<td>Third-party bar widgets, in Omarchy's plugin format — <code>browse [text]</code> what you can install (around nine hundred community widgets; <code>refresh</code> fetches the list now), <code>add &lt;id|git-url&gt;</code>, <code>&lt;id&gt; on|off|toggle</code>, <code>order &lt;id&gt;…</code> to arrange them, <code>remove</code>, <code>list</code> (which says why anything is refused), <code>check</code> (whether what is installed can actually draw), <code>scan</code>. <code>tui</code> in the terminal, <code>gui</code> in a window. See <strong><a href="/wiki/Bar-Plugins">Bar Plugins</a></strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>syn-rgb</code></td>
+<td>The wallpaper's accent on RGB hardware — <code>on</code>, <code>off</code>, <code>status</code>, <code>devices</code>, <code>colour RRGGBB</code>, <code>follow accent|theme|fixed</code>, <code>brightness</code>, <code>dark</code>. Needs <code>openrgb</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>synui-apply-theme</code></td>
+<td>Apply a theme across synui, the bar, GTK, Qt/KDE, the terminals (<code>syntty</code>, and <code>kitty</code>/<code>foot</code> where present) and Firefox</td>
+<td><code>Super</code>+<code>T</code></td>
+</tr>
+<tr>
+<td><code>synui-apply-font</code></td>
+<td>The desktop-wide text setting — <code>--size</code> and <code>--scale</code>, written to <code>font.state</code> and applied to every window in the suite</td>
+<td>Control panel ▸ Appearance</td>
+</tr>
+<tr>
+<td><code>synui-hdmi-audio</code></td>
+<td>Move audio to a screen that can take it, keyed off the ALSA ELD rather than the sink name (<code>hdmi_audio = auto|on|off</code>)</td>
+<td><code>Super</code>+<code>D</code></td>
+</tr>
+<tr>
+<td><code>synui-wpengine</code></td>
+<td>Steam Workshop wallpapers — <code>list</code>, <code>set &lt;id&gt; [output|all]</code>, <code>off [output|all]</code>, <code>restore</code>, <code>status</code>. See <strong><a href="/wiki/Wallpapers#wallpaper-engine-steam-workshop">Wallpapers</a></strong></td>
+<td><code>Super</code>+<code>W</code></td>
+</tr>
+<tr>
+<td><code>synui-glass</code> · <code>synui-firefox-glass</code></td>
+<td>Window glass; the Firefox one also sets/reverts <code>browser.tabs.allow_transparent_browser</code></td>
+<td><code>Super</code>+<code>E</code></td>
+</tr>
+<tr>
+<td><code>synui-screenshot</code></td>
+<td><code>region</code> / <code>full</code> — to <code>~/Pictures/Screenshots</code> <strong>and</strong> the clipboard</td>
+<td><code>Print</code></td>
+</tr>
+<tr>
+<td><code>synui-record</code></td>
+<td>Start / stop screen recording (<code>wf-recorder</code>) — constant 60 fps to <code>~/Videos</code>; <code>--edit</code> records a DNxHR <code>.mov</code> an editor reads directly, <code>--audio[=system|mic]</code> adds sound</td>
+<td><code>Super</code>+<code>Shift</code>+<code>R</code></td>
+</tr>
+<tr>
+<td><code>synui-clock</code></td>
+<td>Formats the clock for the bar and the BigClock widget</td>
+<td><code>Super</code>+<code>Shift</code>+<code>T</code></td>
+</tr>
+<tr>
+<td><code>synui-game-run</code> · <code>synui-game-status</code></td>
+<td>Launch wrapper (MangoHud/gamemode/gamescope) and indicator — see <strong><a href="/wiki/Gaming">Gaming</a></strong></td>
+<td><code>Super</code>+<code>G</code></td>
+</tr>
+<tr>
+<td><code>synui-wine-run</code></td>
+<td>Run-with-Wine wrapper (also a right-click action in <a href="/wiki/Files">Files</a>, and in Dolphin — both read the same service menus)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>synui-iso-mount</code> · <code>synui-iso-write</code></td>
+<td>Mount an ISO (udisks2, no root) / write one to a USB stick</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>synui-bar</code></td>
+<td>Launch the quickshell bar</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>synui-wpengine</code> is the one helper that does <strong>not</strong> ship with <code>synui</code> — it comes
+with the <code>linux-wallpaperengine</code> package, which is on the ISO as of 0.2.1.</p>
+<p>Two of these install untrusted archives off the internet — <code>synui-cursor install</code>
+and <code>synui-sound install</code>. Both re-resolve every extracted path against the
+extraction root and refuse anything that escapes it, and neither ever runs
+anything from the archive. <code>synui-cursor build</code>, which <em>does</em> run the archive's
+own makefile, is a separate command that prompts first.</p>
+<p>Check the daemons and kernel module:</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd<span class="w">      </span><span class="c1"># AI inference daemon</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synguard<span class="w">    </span><span class="c1"># security monitor</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synnet<span class="w">      </span><span class="c1"># network policy</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>synapse_kmod<span class="w">    </span><span class="c1"># kernel module</span>
+cat<span class="w"> </span>/sys/kernel/synapse/status
+</code></pre></div>
+
+<hr />
+<h2 id="privileged-desktop-actions-sudo--n">Privileged desktop actions (<code>sudo -n</code>)</h2>
+<p><code>synui</code> runs as the <strong>session user</strong> — under a greetd session it is <em>not</em> root —
+and the target has <strong>no polkit agent</strong> to prompt for a password. So the handful
+of desktop actions that genuinely need root are granted passwordless through
+tightly-scoped <code>/etc/sudoers.d</code> rules (written by <code>syn-install</code>). Each helper
+self-escalates with <code>sudo -n</code>, and these are the <strong>only</strong> commands <code>%wheel</code> may
+run without a password:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Rule file</th>
+<th>Triggered by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sudo -n systemctl reboot</code> · <code>poweroff</code></td>
+<td><code>power-menu</code></td>
+<td>Start-menu Reboot / Shut Down</td>
+</tr>
+<tr>
+<td><code>sudo -n systemctl stop synapd</code> · <code>start synapd</code></td>
+<td><code>synapd-gamemode</code></td>
+<td><a href="/wiki/synui">Game mode</a> (<code>Super</code>+<code>G</code>) frees the GPU</td>
+</tr>
+<tr>
+<td><code>sudo -n synui-ai-backend gpu|cpu|off|toggle</code></td>
+<td><code>synapd-backend</code></td>
+<td>"AI backend" row (control panel / <code>Super</code>+<code>Escape</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Everything else still prompts for a password (<code>%wheel ALL=(ALL:ALL) ALL</code>). When
+<code>synui</code> instead runs as root via <code>synui.service</code>, the <code>sudo -n</code> re-exec is a
+no-op — the helpers already hold the privilege they need.</p>
+<blockquote>
+<p><strong>Why not polkit?</strong> There is no authentication agent in the session (see
+<a href="/wiki/Troubleshooting">Troubleshooting</a>), so an interactive <code>pkexec</code>/polkit prompt
+would hang with nothing to answer it. A <code>sudo -n</code> NOPASSWD rule, scoped to one
+exact command, is the deliberate substitute.</p>
+</blockquote>
+<p>See also: <a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/synapd">synapd</a>, <a href="/wiki/synui">synui</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Keybindings"><span>Previous</span>Keybindings</a><a class="next" href="/wiki/Configuration"><span>Next</span>Configuration</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands" aria-current="page">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

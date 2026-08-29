@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>DaVinci Resolve — SynapseOS Wiki</title>
+<meta name="description" content="Resolve is not shipped with SynapseOS — it is proprietary and the download is behind a registration form. What SynapseOS ships is syn resolve, which handles the parts after the…">
+<link rel="canonical" href="https://soslinux.org/wiki/DaVinci-Resolve">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="DaVinci Resolve — SynapseOS Wiki">
+<meta property="og:description" content="Resolve is not shipped with SynapseOS — it is proprietary and the download is behind a registration form. What SynapseOS ships is syn resolve, which handles the parts after the…">
+<meta property="og:url" content="https://soslinux.org/wiki/DaVinci-Resolve">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#what-this-does-not-do-because-upstream-already-does">What this does not do, because upstream already does</a></li>
+<li><a href="#installing-it">Installing it</a></li>
+<li class="sub"><a href="#the-version-mismatch-trap">The version-mismatch trap</a></li>
+<li><a href="#opencl--the-one-that-actually-breaks-installs">OpenCL — the one that actually breaks installs</a></li>
+<li><a href="#the-launch-environment">The launch environment</a></li>
+<li><a href="#codecs-what-the-free-edition-can-read">Codecs: what the free edition can read</a></li>
+<li class="sub"><a href="#variable-rate-sources">Variable-rate sources</a></li>
+<li><a href="#the-davinci-doctor-window">The DaVinci Doctor window</a></li>
+<li><a href="#related">Related</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>DaVinci Resolve</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/DaVinci-Resolve/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Resolve is not shipped with SynapseOS — it is proprietary and the download is
+behind a registration form. What SynapseOS ships is <code>syn resolve</code>, which handles
+the parts <em>after</em> the download that otherwise cost an afternoon.</p>
+<div class="hl"><pre><span></span><code>syn resolve doctor              What is installed, what is missing (default)
+sudo syn resolve setup          Apply the fixes: OpenCL runtime + launch environment
+syn resolve install [zip]       Build the AUR package from a downloaded zip
+syn resolve transcode &lt;file&gt;…   Rewrap footage the free edition can read
+syn resolve launch [args]       Run Resolve with the SynapseOS launch environment
+syn resolve gui                 The same, as a window (DaVinci Doctor)
+</code></pre></div>
+
+<p>Start with <code>syn resolve doctor</code>. It is read-only and it answers, in order, every
+question people actually ask when Resolve misbehaves. <strong>DaVinci Doctor</strong> in the
+start menu is the same thing as a window — see below.</p>
+<hr />
+<h2 id="what-this-does-not-do-because-upstream-already-does">What this does <em>not</em> do, because upstream already does</h2>
+<p>Most "Resolve on Arch" advice is about problems the AUR <code>davinci-resolve</code>
+package already solves. It deletes the bundled <code>libglib</code>/<code>libgio</code>/<code>libgmodule</code>/
+<code>libgobject</code>/<code>libc++</code> that shadow the system copies and symlinks the real ones
+in, patches an RPATH onto every ELF it ships, and installs Blackmagic's udev
+rules for panels, keyboards and DeckLink cards.</p>
+<p>Re-applying any of that by hand fights the package. <code>syn resolve</code> deliberately
+covers only what is left.</p>
+<hr />
+<h2 id="installing-it">Installing it</h2>
+<p>The download is manual and always will be — Blackmagic require a registration
+and a licence acceptance that nothing should click through on your behalf. Get
+the <strong>Linux</strong> <code>.zip</code> from
+<a href="https://www.blackmagicdesign.com/support/family/davinci-resolve-and-fusion">Blackmagic</a>,
+leave it in <code>~/Downloads</code>, then:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>resolve<span class="w"> </span>install
+</code></pre></div>
+
+<p>It finds the newest <code>DaVinci_Resolve*_Linux.zip</code>, works out from the filename
+whether it is the free or Studio edition (they are separate AUR packages and
+they conflict), clones the right AUR repo, stages the archive and builds it.
+Pass a path explicitly if the zip is elsewhere.</p>
+<p>It stops and asks before building, because building an AUR package means running
+its <code>PKGBUILD</code> as a script.</p>
+<h3 id="the-version-mismatch-trap">The version-mismatch trap</h3>
+<p>The AUR PKGBUILD pins <strong>both</strong> <code>pkgver</code> and the archive's <code>sha256</code>. Download a
+version it does not expect and <code>makepkg</code> fails deep inside on a checksum error
+that names neither cause.</p>
+<p><strong>The AUR routinely lags Blackmagic by days</strong>, so this is common, and "download
+the older version instead" is usually the wrong advice. <code>syn resolve install</code>
+catches it up front and prints the exact two lines to change:</p>
+<div class="hl"><pre><span></span><code>VERSION MISMATCH — makepkg would fail this on a checksum:
+    your archive  : 20.1.1
+    PKGBUILD wants: 20.1.0
+
+    pkgver=20.1.1
+    sha256sums=(&#39;…&#39;   # first entry, the .zip
+</code></pre></div>
+
+<p>The hash is computed for you, because it is the only part you cannot look up and
+on a 4 GB archive it is the slow half of the answer. Nothing else in the PKGBUILD
+is version-specific.</p>
+<hr />
+<h2 id="opencl--the-one-that-actually-breaks-installs">OpenCL — the one that actually breaks installs</h2>
+<p><strong>If Resolve installs cleanly and then refuses to start, this is why.</strong></p>
+<p><code>/opt/resolve/bin/resolve</code> has <code>libOpenCL.so.1</code> in its <code>NEEDED</code>. OpenCL is not
+optional acceleration here, it is a link-time dependency. The AUR package asks
+for the <strong>virtual</strong> <code>opencl-driver</code>, which several packages provide — and a
+virtual dependency with more than one provider is resolved by picking one, not
+by asking. Install non-interactively and a machine can end up holding an ICD for
+a GPU it does not have.</p>
+<p>It fails late and quietly: the package installs perfectly, and Resolve then
+refuses to start and blames the GPU.</p>
+<p><code>syn resolve setup</code> installs the concrete one for the GPU actually present:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA</td>
+<td><code>opencl-nvidia</code></td>
+</tr>
+<tr>
+<td>AMD</td>
+<td><code>rocm-opencl-runtime</code></td>
+</tr>
+<tr>
+<td>Intel</td>
+<td><code>intel-compute-runtime</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The test is the ICD file, not the package.</strong> <code>/etc/OpenCL/vendors/*.icd</code> is
+what the OpenCL loader actually reads, so that is what <code>doctor</code> checks — a
+package can be installed and still leave no usable ICD, and an ICD can be
+present from something else entirely. <code>doctor</code> warns about that case specifically:
+a runtime present, but not the one matching your GPU.</p>
+<div class="hl"><pre><span></span><code>ls<span class="w"> </span>/etc/OpenCL/vendors/<span class="w">        </span><span class="c1"># what the loader will find</span>
+clinfo<span class="w"> </span>-l<span class="w">                      </span><span class="c1"># what it resolves to, if clinfo is installed</span>
+</code></pre></div>
+
+<p>Resolve also needs a real GPU. <code>doctor</code> says so if it finds no PCI display
+controller at all, which is the usual answer in a VM.</p>
+<hr />
+<h2 id="the-launch-environment">The launch environment</h2>
+<p><code>sudo syn resolve setup</code> writes
+<code>/usr/local/share/applications/DaVinciResolve.desktop</code>, which <strong>shadows</strong> the
+entry the AUR package installs into <code>/usr/share/applications</code>. <code>/usr/local/share</code>
+comes first in <code>XDG_DATA_DIRS</code>, so the override wins for menu launches.</p>
+<p>Shadowing rather than editing, for three reasons: an upgrade cannot revert it,
+deleting one file undoes it completely, and editing the packaged entry would
+fight pacman on every upgrade. A wrapper in <code>/usr/bin</code> was not an option either
+— it would file-conflict with the AUR package's own symlink.</p>
+<p>The override changes exactly one line: <code>Exec=</code> becomes
+<code>/usr/lib/syn/syn-resolve launch</code>. Everything else — <code>Name</code>, <code>Icon</code>,
+<code>MimeType</code>, <code>StartupWMClass</code> — survives untouched. The rewrite is anchored to
+<code>^Exec=</code>, so a <code>TryExec</code> line is deliberately left pointing at the real binary
+where one exists: that is the menu's "is this actually installed" probe, and
+redirecting it would make the entry claim Resolve is present whenever <code>syn</code> is.</p>
+<p>So the environment lives in <code>syn resolve launch</code>, which means running that
+command by hand gets you an identical launch to clicking the menu entry. It:</p>
+<ul>
+<li><strong>exports <code>QT_QPA_PLATFORM=xcb</code>.</strong> Resolve is X11-only Qt5, so it lands on
+  Xwayland regardless — this makes it a decision rather than a fallback, so
+  every launch is the same launch.</li>
+<li><strong>unsets <code>QT_QPA_PLATFORMTHEME</code> and <code>QT_STYLE_OVERRIDE</code>.</strong> SynapseOS exports
+  the first session-wide so Qt apps pick up the theme. Resolve bundles its own
+  Qt 5.15 and ships no platformthemes plugin, so the variable can only point it
+  at the system's. Measured rather than assumed, and <strong>weaker than the guides
+  claim</strong>: the bundled Qt's compiled-in prefix is a dead build path and
+  <code>QT_PLUGIN_PATH</code> is unset, so today it almost certainly reaches nothing.
+  Cleared anyway, because it costs one line and the day it <em>does</em> resolve it
+  would mean two different Qt 5.15 builds in one process.</li>
+</ul>
+<p>Two things it deliberately does <strong>not</strong> touch. <code>MANGOHUD</code> is exported
+session-wide and looks like it must reach an application this GPU-heavy, but
+MangoHud's implicit layer is Vulkan-only and Resolve links <code>libGL</code> and
+<code>libOpenCL</code> with no Vulkan anywhere — so clearing it would be a fix for nothing.
+And no Qt scaling variables are set: Resolve has its own UI scaling preference
+(<strong>Preferences ▸ User ▸ UI Settings</strong>), and Qt scaling applied underneath it
+fights that setting rather than helping.</p>
+<p>A pacman hook re-runs <code>syn resolve setup --quiet</code> after upgrades, so the override
+survives. That path only ever <em>reports</em> — it never installs anything, because
+pacman holds its database lock for the whole transaction and a hook shelling out
+to pacman would deadlock against the transaction that invoked it.</p>
+<hr />
+<h2 id="codecs-what-the-free-edition-can-read">Codecs: what the free edition can read</h2>
+<p><strong>The free edition of Resolve on Linux decodes neither H.264 nor H.265, nor
+AAC.</strong> Footage from phones, most cameras, and any ordinary screen recording
+imports as <em>media offline</em>.</p>
+<p>This is a licensing limit inside Resolve, not a missing codec on your system.
+No package you install changes it. Studio does decode H.264/H.265, and <code>doctor</code>
+says which edition you have.</p>
+<p>The way round it is to rewrap:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>resolve<span class="w"> </span>transcode<span class="w"> </span>~/Videos/clip.mp4
+</code></pre></div>
+
+<p>That writes a DNxHR <code>.mov</code> into a <code>DNxHR/</code> folder beside the original — import
+that. Audio becomes PCM in the same pass, which matters for the same reason: an
+<code>.mov</code> with AAC in it is as unimportable as the H.264 was.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--profile dnxhr_lb</code></td>
+<td>Proxy/offline grade — much smaller</td>
+</tr>
+<tr>
+<td><code>--profile dnxhr_sq</code></td>
+<td>Standard quality (default)</td>
+</tr>
+<tr>
+<td><code>--profile dnxhr_hq</code></td>
+<td>High quality</td>
+</tr>
+<tr>
+<td><code>--profile dnxhr_hqx</code></td>
+<td>10-bit; needs a 10-bit source</td>
+</tr>
+<tr>
+<td><code>--out &lt;dir&gt;</code></td>
+<td>Write somewhere other than <code>DNxHR/</code></td>
+</tr>
+<tr>
+<td><code>--fps &lt;rate&gt;</code></td>
+<td>Override the frame rate it conforms to</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="variable-rate-sources">Variable-rate sources</h3>
+<p>Screen recordings are captured on damage — a frame only when the screen changes
+— so they have no single frame rate, and no timeline can hold that. <code>transcode</code>
+conforms them to the nearest standard rate and says what it did:</p>
+<div class="hl"><pre><span></span><code>variable rate (avg 67.20 fps) → constant 60
+313 frames → 281 at 60 fps
+</code></pre></div>
+
+<p>Frames genuinely are dropped when an oddly-rated source becomes 60, and that is
+the point: uniformly, instead of wherever the source happened to be dense.</p>
+<p>SynapseOS recordings are captured at a constant 60 fps as of 0.2.7, so new ones
+conform without losing anything. If a recording is going straight into an edit,
+<strong>Control panel ▸ Sound ▸ Record for editing</strong> captures DNxHR directly and skips
+the conversion — and the extra compression generation — at about 1 GB a minute.
+See <a href="/wiki/The-Desktop">The Desktop</a> and
+<a href="/wiki/Troubleshooting#screen-recording">Troubleshooting</a>.</p>
+<hr />
+<h2 id="the-davinci-doctor-window">The DaVinci Doctor window</h2>
+<p>Everything above as a window, for when you would rather not start from a command
+you have to already know exists. <strong>DaVinci Doctor</strong> in the start menu, or:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>resolve<span class="w"> </span>gui
+</code></pre></div>
+
+<p>Drop the Blackmagic installer zip onto it, or point it at one, and it walks the
+rest: it reads the same checks <code>syn resolve doctor</code> prints, shows each as a card
+with what to do about it, and has <strong>Re-check</strong> and <strong>Launch Resolve</strong> buttons.</p>
+<p>It reads <code>syn resolve doctor --porcelain</code> — tab-separated <code>key</code>, <code>state</code>, <code>text</code>
+from the same emitter the terminal report uses, so the window and the command can
+never disagree about the state of the machine.</p>
+<p>⚠ <strong>The steps that need root open a terminal instead of running in the window.</strong>
+Building the AUR package and installing an OpenCL runtime mean <code>makepkg</code> and
+<code>pacman</code>, and <code>sudo</code> with no controlling terminal cannot prompt for a password —
+so doing it in-window would fail at the install step every time, minutes into a
+four-gigabyte build. The alternative, a passwordless <code>pacman</code> rule, is a hole
+rather than a convenience. So the window owns the read-only half and hands the
+rest to <a href="/wiki/Terminal">syntty</a>, where <code>sudo</code> works and you can watch the build. Same
+split as SynapseOS Updates.</p>
+<p>It needs <code>quickshell</code>. Without it the window says so in a dialog and tells you
+to use <code>syn resolve doctor</code> in a terminal, rather than being a menu entry that
+does nothing when clicked.</p>
+<hr />
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="/wiki/Troubleshooting#screen-recording">Troubleshooting</a> — symptom-first entries for
+  recordings that will not import</li>
+<li><a href="/wiki/Studio">Studio</a> — <code>synstudio</code>, the editor SynapseOS ships. It reads H.264
+  and AAC without any of this, so it is worth trying before a four-gigabyte
+  download</li>
+<li><a href="/wiki/Commands">Commands</a> — the rest of the <code>syn</code> command-line surface</li>
+<li><a href="/wiki/Gaming">Gaming</a> — the other place GPU drivers and OpenCL/Vulkan runtimes matter</li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Big-Screen"><span>Previous</span>Big Screen</a><a class="next" href="/wiki/Secure-Boot"><span>Next</span>Secure Boot</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve" aria-current="page">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

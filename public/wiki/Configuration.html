@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Configuration — SynapseOS Wiki</title>
+<meta name="description" content="~/.config/synui/synuirc is the compositor&#x27;s config file. One key = value per line, # for a comment. It is read at startup and on Super+Shift+R.">
+<link rel="canonical" href="https://soslinux.org/wiki/Configuration">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Configuration — SynapseOS Wiki">
+<meta property="og:description" content="~/.config/synui/synuirc is the compositor&#x27;s config file. One key = value per line, # for a comment. It is read at startup and on Super+Shift+R.">
+<meta property="og:url" content="https://soslinux.org/wiki/Configuration">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#where-a-setting-can-come-from">Where a setting can come from</a></li>
+<li><a href="#keyboard">Keyboard</a></li>
+<li><a href="#pointer">Pointer</a></li>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#blur">Blur</a></li>
+<li><a href="#animation">Animation</a></li>
+<li><a href="#layout">Layout</a></li>
+<li><a href="#transparency">Transparency</a></li>
+<li><a href="#lock-screen-and-screensaver">Lock screen and screensaver</a></li>
+<li><a href="#panels">Panels</a></li>
+<li><a href="#the-desktop">The desktop</a></li>
+<li><a href="#crt-effects">CRT effects</a></li>
+<li><a href="#the-ai">The AI</a></li>
+<li><a href="#power-and-the-lid">Power and the lid</a></li>
+<li><a href="#alt-tab">Alt-Tab</a></li>
+<li><a href="#game-mode">Game mode</a></li>
+<li><a href="#odds-and-ends">Odds and ends</a></li>
+<li><a href="#wallpaper-per-monitor">Wallpaper, per monitor</a></li>
+<li><a href="#commands-synui-shells-out-to">Commands synui shells out to</a></li>
+<li><a href="#keys">Keys</a></li>
+<li><a href="#read-here-acted-on-by-the-bar">Read here, acted on by the bar</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Configuration</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Configuration/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>~/.config/synui/synuirc</code> is the compositor's config file. One <code>key = value</code> per
+line, <code>#</code> for a comment. It is read at startup and on <code>Super</code>+<code>Shift</code>+<code>R</code>.</p>
+<p><strong>Most of these have a panel, and the panel is usually the better door</strong> —
+Control panel (<code>Super</code>+<code>C</code>) writes <code>settings.state</code>, which is read <em>after</em>
+<code>synuirc</code> and therefore wins. This page is the complete list of what the parser
+accepts, for the things no panel reaches and for anyone configuring a machine
+from a file.</p>
+<blockquote>
+<p>The authoritative copy is the header comment at the top of
+<a href="https://github.com/velle999/SYNAPSE/blob/main/synui/src/config.c"><code>synui/src/config.c</code></a>.
+If this page and that file disagree, the file is right.</p>
+</blockquote>
+<h2 id="where-a-setting-can-come-from">Where a setting can come from</h2>
+<p>Later sources win:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>compiled defaults</td>
+<td><code>config_set_defaults()</code></td>
+</tr>
+<tr>
+<td><code>/etc/synui/synuirc</code></td>
+<td>system-wide — what the <strong>live ISO</strong> ships</td>
+</tr>
+<tr>
+<td><code>~/.config/synui/synuirc</code></td>
+<td>yours</td>
+</tr>
+<tr>
+<td>the <code>.state</code> files</td>
+<td>written by the panels — <code>settings.state</code>, <code>dock.state</code>, <code>binds.state</code>, <code>power.state</code>, …</td>
+</tr>
+</tbody>
+</table></div>
+<p>That ordering is why a panel beats a config line: a <code>.state</code> file is a thing you
+did, and a <code>synuirc</code> line is a thing you set up.</p>
+<hr />
+<h2 id="keyboard">Keyboard</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xkb_layout</code></td>
+<td><code>us</code></td>
+<td>The layout <strong>synui</strong> uses. A <strong>comma-separated list</strong> (<code>us,no</code>) is a keyboard with more than one: the lock and login screens grow a chip saying which is typing (<code>Super</code>+<code>Space</code>, or click it), and on the desktop it is <code>synctl layout next</code> or a <code>kbd_layout</code> bind. See <a href="/wiki/The-Desktop#what-else-is-on-that-screen">The Desktop</a></td>
+</tr>
+<tr>
+<td><code>xkb_variant</code></td>
+<td><code>colemak</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>xkb_model</code></td>
+<td><code>pc105</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>xkb_options</code></td>
+<td><code>ctrl:nocaps</code></td>
+<td>Comma-separated</td>
+</tr>
+<tr>
+<td><code>xkb_rules</code></td>
+<td><code>evdev</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>repeat_delay</code></td>
+<td><code>600</code></td>
+<td>ms held before a key repeats</td>
+</tr>
+<tr>
+<td><code>repeat_rate</code></td>
+<td><code>25</code></td>
+<td>repeats per second once it does</td>
+</tr>
+<tr>
+<td><code>numlock</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>at login</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="warn"><p>⚠ <strong>The console keymap does not reach Wayland.</strong> <code>vconsole.conf</code> is a separate
+answer — which is why the installer asks once and writes both.</p>
+</blockquote>
+<h2 id="pointer">Pointer</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>accel_speed</code></td>
+<td><code>-1.0</code>–<code>1.0</code></td>
+<td>0 is the driver's own</td>
+</tr>
+<tr>
+<td><code>accel_profile</code></td>
+<td><code>default</code> <code>flat</code> <code>adaptive</code></td>
+<td>the acceleration <strong>curve</strong> — not the same question as the speed above</td>
+</tr>
+<tr>
+<td><code>pointer_smoothing</code></td>
+<td><code>0</code>–<code>10</code></td>
+<td>steadies a shaky or noisy pointer; 0 is off</td>
+</tr>
+<tr>
+<td><code>natural_scroll</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>unset follows the device default</td>
+</tr>
+<tr>
+<td><code>left_handed</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>swaps the buttons</td>
+</tr>
+<tr>
+<td><code>tap</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>tap-to-click</td>
+</tr>
+<tr>
+<td><code>focus_mode</code></td>
+<td><code>click</code> <code>sloppy</code> <code>strict</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>focus_delay_ms</code></td>
+<td><code>0</code>–<code>3000</code></td>
+<td>how long the pointer rests before focus follows</td>
+</tr>
+<tr>
+<td><code>cursor_theme</code></td>
+<td><code>Adwaita</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cursor_size</code></td>
+<td><code>8</code>–<code>256</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>snap_zone</code></td>
+<td><code>2</code>–<code>200</code> px</td>
+<td>how close to an edge a <strong>drag</strong> arms the snap</td>
+</tr>
+<tr>
+<td><code>panel_follow_pointer</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>does a panel open on the pointer's monitor</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><code>focus_mode</code>: <strong>Click</strong> — only a click focuses. <strong>Sloppy</strong> and <strong>Strict</strong> both
+follow the pointer; over the <em>desktop</em>, Strict drops focus and Sloppy keeps the
+last window.</p>
+<p><code>accel_profile</code> vs <code>accel_speed</code>: <strong>adaptive</strong> moves the cursor further the
+faster your hand goes, so one movement can be precise and the next can cross
+the screen; <strong>flat</strong> is a constant 1:1, which is what a game wants; <strong>default</strong>
+leaves whatever libinput picked for the device (for an ordinary mouse, already
+adaptive). <code>accel_speed</code> only <em>scales</em> whichever curve is in use — turning the
+speed up never turns acceleration on, and turning it down never turns it off.
+A device that supports only one curve ignores the request rather than
+half-applying it.</p>
+<p><code>pointer_smoothing</code> is synui's own; libinput has no smoothing to ask for. It
+averages the cursor's path over the last few reports, for a pointer that will
+not hold still — a low-DPI or worn sensor whose counts rattle, a cheap wireless
+mouse, an unsteady hand. <strong>A smoothed movement arrives late, never short:</strong>
+every delta is paid out eventually and a settle timer applies the remainder one
+frame after the reports stop, so the pointer still lands exactly where you put
+it. The cost is latency in proportion — 2–4 takes the wobble out without the
+cursor feeling detached. The number is a <em>time constant</em>, not a per-report
+fraction, so it means the same thing on a 125 Hz office mouse and a 1000 Hz
+gaming one. It reaches the <strong>cursor only</strong>: a game holding a locked pointer
+still reads raw motion, and a tablet stays under its stylus.</p>
+</blockquote>
+<h2 id="windows">Windows</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>border_width</code></td>
+<td><code>0</code>–<code>32</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>border_color_norm</code></td>
+<td><code>#RRGGBB</code></td>
+<td>unfocused frame</td>
+</tr>
+<tr>
+<td><code>border_color_focus</code></td>
+<td><code>#RRGGBB</code></td>
+<td>focused</td>
+</tr>
+<tr>
+<td><code>border_color_ai</code></td>
+<td><code>#RRGGBB</code></td>
+<td>a window the AI is holding context for</td>
+</tr>
+<tr>
+<td><code>border_color_warn</code></td>
+<td><code>#RRGGBB</code></td>
+<td>one synguard has flagged</td>
+</tr>
+<tr>
+<td><code>titlebar_height</code></td>
+<td><code>0</code>, or <code>14</code>–<code>64</code></td>
+<td>0 removes it; below 14 there is no room for a button</td>
+</tr>
+<tr>
+<td><code>titlebar_color</code> / <code>titlebar_color_focus</code></td>
+<td><code>#RRGGBB</code></td>
+<td>caption, unfocused / focused</td>
+</tr>
+<tr>
+<td><code>titlebar_text</code> / <code>titlebar_text_focus</code></td>
+<td><code>#RRGGBB</code></td>
+<td>caption text</td>
+</tr>
+<tr>
+<td><code>corner_radius</code></td>
+<td><code>0</code>–<code>48</code></td>
+<td>forced square while maximized</td>
+</tr>
+<tr>
+<td><code>shadow</code></td>
+<td><code>on</code> <code>off</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>shadow_color</code> <code>_opacity</code> <code>_blur_sigma</code> <code>_spread</code> <code>_offset_x</code> <code>_offset_y</code></td>
+<td></td>
+<td><code>spread</code> is <strong>solid</strong> shadow before the falloff — what gives it weight</td>
+</tr>
+<tr>
+<td><code>remember_geometry</code></td>
+<td><code>on</code> <code>off</code></td>
+<td>reopen each app where and how big it was</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="warn"><p>⚠ <strong>The four border colours are overridden by the theme.</strong> Every preset carries
+its own, so a line here only shows on a desktop whose theme has not spoken —
+which is none of the fifteen. They are the pre-theme mechanism, kept because a
+pushed custom palette still uses them.</p>
+</blockquote>
+<h2 id="blur">Blur</h2>
+<p><code>blur = on|off</code>, then <code>blur_radius</code> (1–20), <code>blur_passes</code> (1–5), <code>blur_noise</code>,
+<code>blur_brightness</code>, <code>blur_contrast</code>, <code>blur_saturation</code>, and <code>glass_halo</code> (0–64 —
+how far the blur reaches <strong>past</strong> the window).</p>
+<blockquote>
+<p>Blur frosts what is behind a <strong>translucent</strong> window. An opaque one costs
+nothing: there is nothing to see through.</p>
+</blockquote>
+<h2 id="animation">Animation</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anim_window</code></td>
+<td><code>fade</code> <code>rise</code> <code>scale</code> <code>none</code></td>
+</tr>
+<tr>
+<td><code>anim_window_ms</code></td>
+<td>0 jumps straight to the end state</td>
+</tr>
+<tr>
+<td><code>anim_rise_px</code></td>
+<td><code>0</code>–<code>200</code> — Rise only</td>
+</tr>
+<tr>
+<td><code>anim_workspace</code></td>
+<td><code>fade</code> <code>slide</code> <code>none</code></td>
+</tr>
+<tr>
+<td><code>anim_workspace_ms</code></td>
+<td>a slide wants longer than a fade</td>
+</tr>
+<tr>
+<td><code>anim_curve</code></td>
+<td><code>linear</code> <code>ease-in</code> <code>ease-out</code> <code>ease-in-out</code></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>Closing is not animated, and cannot be</strong>: the client's buffer is gone the
+moment it unmaps, so there is nothing left to animate.</p>
+</blockquote>
+<h2 id="layout">Layout</h2>
+<p><code>gap</code> (0–128), <code>master_factor</code> (share the master window takes), <code>float_inset</code>
+(0–40 % kept clear at each edge by the floating grid), <code>float_gap</code> (0–256 px
+between those tiles), <code>cascade_stack_max</code> (windows per pile).</p>
+<h2 id="transparency">Transparency</h2>
+<p><code>transparency = on|off</code> is the <strong>master switch</strong> for see-through windows — off,
+the rest do nothing. Then <code>active_opacity</code>, <code>inactive_opacity</code>, and <code>foot_alpha</code>
+for the terminal, which needs its own number because foot and syntty draw their
+own background with the glyphs left opaque.</p>
+<p>The desktop-wide glass slider and its switches are on
+<strong><a href="/wiki/The-Desktop#glass">The Desktop → Glass</a></strong>.</p>
+<h2 id="lock-screen-and-screensaver">Lock screen and screensaver</h2>
+<p><code>lock_background</code> (<code>wallpaper</code> <code>colour</code> <code>blur</code>), <code>lock_blur</code> (0–64), <code>lock_dim</code>
+(0–100 %), <code>lock_accent</code>.</p>
+<p><code>lock_media</code> (<code>on</code> <code>off</code> — now playing, with ⏮ ⏯ ⏭), <code>lock_weather</code>
+(<strong>off</strong> by default: the only part of that screen that uses the network; the
+place is <code>omarchy-weather-location</code>, not a key here), <code>lock_weather_unit</code>
+(<code>auto</code> <code>c</code> <code>f</code>), <code>lock_layout</code> (<code>auto</code> <code>on</code> <code>off</code> — the keyboard-layout chip;
+<code>auto</code> shows it only when <code>xkb_layout</code> names more than one).</p>
+<p><code>screensaver</code> (<code>on</code> <code>off</code>), <code>screensaver_timeout</code> (idle seconds),
+<code>screensaver_interval</code> (5–600 s per slide), <code>screensaver_dir</code>,
+<code>screensaver_lock</code> (does dismissing it need the password).</p>
+<h2 id="panels">Panels</h2>
+<p><code>ctlpanel_close</code>, <code>taskmgr_close</code> and <code>calc_close</code> each take <code>window</code>,
+<code>clickoff</code> or <code>button</code>.</p>
+<blockquote>
+<p><strong>Window</strong>: drag it by the header, click elsewhere freely.
+<strong>Clickoff</strong>: it closes the moment you click away. <code>Esc</code> always closes.</p>
+</blockquote>
+<h2 id="the-desktop">The desktop</h2>
+<p><code>desktop_icons</code>, <code>desktop_icon_arrange</code> (<code>name</code> <code>type</code> <code>date</code> <code>size</code>),
+<code>welcome_at_startup</code>, <code>start_overlay</code>, <code>cat</code> + <code>cat_breed</code>,
+<code>widget_clock_face</code> (<code>minimal</code> <code>classic</code> <code>roman</code> <code>neon</code>), <code>notif_dnd</code>
+and <code>theme</code> (one of the fifteen).</p>
+<blockquote>
+<p><strong>The font is one setting, and it is not in this file.</strong> Family, point size
+and text scale live in <code>~/.config/synui/font.state</code>, which the compositor,
+the bar, synfiles, syn-settings, syn-disks, syn-update, syn-arsenal and
+synpkg all read. Set it from the font picker, from Control panel ▸
+<strong>Appearance</strong>, or with <code>synui-apply-font</code>; whichever you use, the whole
+desktop moves together.</p>
+<p>⛔ <code>ui_font =</code> was synui's own copy of the family and is <strong>obsolete and
+ignored</strong> as of 0.1.0-472 — it logs a line saying so. It was a second place
+the font was declared, and it won at the next config load, so a font changed
+from any other window in the suite moved every application and left the
+compositor's own dock, panels and window titles on the old face.</p>
+</blockquote>
+<h2 id="crt-effects">CRT effects</h2>
+<p><code>effects = on|off</code> is the master switch. Then <code>effect_scanline</code>,
+<code>effect_curvature</code>, <code>effect_aberration</code>, <code>effect_bloom</code>, <code>effect_glitch</code>,
+<code>effect_phosphor</code> (<code>off</code> <code>amber</code> <code>green</code> <code>white</code>), <code>effect_mono</code> (blend toward
+that tint — <strong>bloom only bites once this is up</strong>), <code>effect_hue</code> and
+<code>effect_lift</code>.</p>
+<p>Full write-up: <strong><a href="/wiki/Window-Effects">Window Effects</a></strong>.</p>
+<h2 id="the-ai">The AI</h2>
+<p><code>ai_layout</code> — let the AI decide where a <strong>new</strong> window goes.
+<code>ai_ctx_decor</code> — tint a window's border while the AI holds context for it.</p>
+<h2 id="power-and-the-lid">Power and the lid</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>power_enabled</code></td>
+<td>the master switch</td>
+</tr>
+<tr>
+<td><code>power_dim_timeout</code></td>
+<td>idle seconds before the screen dims</td>
+</tr>
+<tr>
+<td><code>power_blank_timeout</code></td>
+<td>…before it blanks</td>
+</tr>
+<tr>
+<td><code>power_lock_timeout</code></td>
+<td>…before it locks. <strong><code>0</code> is never</strong>, which is what the live ISO sets</td>
+</tr>
+<tr>
+<td><code>power_suspend_timeout</code></td>
+<td>…before it suspends</td>
+</tr>
+<tr>
+<td><code>power_lock_cmd</code> <code>power_suspend_cmd</code></td>
+<td>what those two run</td>
+</tr>
+<tr>
+<td><code>lid_close_action</code></td>
+<td>on battery</td>
+</tr>
+<tr>
+<td><code>lid_close_ac_action</code></td>
+<td>on mains</td>
+</tr>
+<tr>
+<td><code>lid_close_docked_action</code></td>
+<td>with an external monitor attached</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Each timeout is measured from the <strong>last input event</strong>, so they are
+independent rather than cumulative. <code>Super</code>+<code>P</code> edits them live and writes
+<code>power.state</code>, which then overrides these lines — delete that file to hand
+control back to <code>synuirc</code>.</p>
+</blockquote>
+<h2 id="alt-tab">Alt-Tab</h2>
+<p><code>alt_tab_style</code>, <code>alt_tab_preview</code>, <code>alt_tab_minimized</code> (does the switcher
+include minimized windows) and <code>alt_tab_all_desktops</code> (does it reach past this
+workspace).</p>
+<h2 id="game-mode">Game mode</h2>
+<p>Detection, and what gets stood down while a game is running.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>game_mode</code></td>
+<td>the master switch</td>
+</tr>
+<tr>
+<td><code>game_exclude</code></td>
+<td>space-separated <code>app_id</code>s that are <strong>not</strong> games — <strong>replaces</strong> the built-in list. This is what stops a fullscreen Firefox video suspending the AI</td>
+</tr>
+<tr>
+<td><code>game_include</code></td>
+<td>Wayland-<strong>native</strong> <code>app_id</code>s that <strong>are</strong> games; also replaces. An allow-list, because "any fullscreen Wayland client" would make every fullscreen video a game</td>
+</tr>
+<tr>
+<td><code>game_output</code></td>
+<td><code>primary</code> <code>focused</code> <code>ask</code> — which monitor a detected game is put on</td>
+</tr>
+<tr>
+<td><code>game_suspend_ai</code> <code>game_stop_bar</code> <code>game_pause_wallpaper</code> <code>game_quiet_kmod</code> <code>game_drop_effects</code> <code>game_inhibit_idle</code></td>
+<td>what to stand down</td>
+</tr>
+<tr>
+<td><code>game_ai_stop_cmd</code> / <code>game_ai_start_cmd</code></td>
+<td>and the command pairs that do it</td>
+</tr>
+<tr>
+<td><code>game_bar_stop_cmd</code> / <code>game_bar_start_cmd</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>game_wp_stop_cmd</code> / <code>game_wp_start_cmd</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>game_kmod_quiet_cmd</code> / <code>game_kmod_restore_cmd</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="warn"><p>⚠ <strong>Change one of a pair and you must change the other.</strong> These are
+fire-and-forget: a stop that works paired with a start that does not leaves the
+desktop in the half-state and says nothing. <code>game_ai_*</code> also needs its
+<code>/etc/sudoers.d</code> grant to match the whole command line — synapd is a <em>system</em>
+unit, so a plain <code>systemctl stop</code> from the session user is bounced by polkit,
+invisibly.</p>
+</blockquote>
+<p>More on all of it: <strong><a href="/wiki/Gaming">Gaming</a></strong>.</p>
+<h2 id="odds-and-ends">Odds and ends</h2>
+<p><code>launcher_style</code> (<code>text</code> <code>logo</code> — the start button), <code>start_menu_style</code>
+(<code>menu</code> <code>app-overlay</code> <code>rofi</code>), <code>lock_fingerprint</code>, <code>bar_icon_theme</code>,
+<code>record_audio</code>, <code>record_edit</code>, <code>news_source</code> and <code>news_refresh</code>.</p>
+<h2 id="wallpaper-per-monitor">Wallpaper, per monitor</h2>
+<div class="hl"><pre><span></span><code><span class="na">wallpaper_output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">DP-1 matrix</span>
+<span class="na">wallpaper_output_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">DP-1 fit</span>
+</code></pre></div>
+
+<p>Same token vocabulary as the global <code>wallpaper</code> / <code>wallpaper_mode</code>, so there is
+one thing to learn. Lines are read <strong>in order</strong>, and an override inherits
+whatever the global keys hold when it is first named.</p>
+<h2 id="commands-synui-shells-out-to">Commands synui shells out to</h2>
+<p><code>terminal</code>, <code>about_cmd</code>, <code>network_cmd</code>, <code>bar_start_cmd</code> / <code>bar_stop_cmd</code>, and
+game mode's <code>game_bar_*</code>, <code>game_wp_*</code>, <code>game_kmod_*</code>, <code>game_ai_*</code> pairs.</p>
+<blockquote class="warn"><p>⚠ <strong>Each pair must match.</strong> These are fire-and-forget, so a stop that works
+paired with a start that does not leaves the desktop in the half-state and
+says nothing.</p>
+</blockquote>
+<h2 id="keys">Keys</h2>
+<p><code>bind = super+Return term</code> and <code>unbind = super+Return</code>. <code>tap_key</code> is which
+modifier opens the start menu when tapped alone (<code>super</code> <code>ctrl</code> <code>alt</code> <code>shift</code>
+<code>none</code>) and <code>tap_action</code> is what it opens. <code>autostart = synui-bar</code>, repeated for
+more than one.</p>
+<blockquote class="warn"><p>⛔ <code>super_space</code> is <strong>obsolete and ignored</strong>, with a line in the journal saying
+so. Rebind it in the palette (<code>Super</code>+<code>/</code>, then <code>F2</code>).</p>
+</blockquote>
+<p>Every shipped shortcut: <strong><a href="/wiki/Keybindings">Keybindings</a></strong>.</p>
+<h2 id="read-here-acted-on-by-the-bar">Read here, acted on by the bar</h2>
+<p>A few keys are parsed by the compositor and consumed by quickshell, so that each
+has one spelling and one clamp: <code>bar_enabled</code>, <code>bar_shell</code>, <code>bar_edge</code>,
+<code>bar_opacity</code>, <code>bar_shape</code>, <code>dock_opacity</code>, <code>widget_glass</code>, <code>widget_clock_face</code>.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a> · <a href="/wiki/The-Dock">The Dock</a> · <a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Settings">Settings</a> — the control panel, which writes most of this for you</li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Commands"><span>Previous</span>Commands</a><a class="next" href="/wiki/Nix"><span>Next</span>Nix</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration" aria-current="page">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

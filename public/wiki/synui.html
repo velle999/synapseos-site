@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>synui — SynapseOS Wiki</title>
+<meta name="description" content="The Wayland compositor, on wlroots 0.20, rendering through scenefx 0.5&#x27;s fx_renderer. Written for this system rather than adapted to it: it draws its own display, wallpaper,…">
+<link rel="canonical" href="https://soslinux.org/wiki/synui">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="synui — SynapseOS Wiki">
+<meta property="og:description" content="The Wayland compositor, on wlroots 0.20, rendering through scenefx 0.5&#x27;s fx_renderer. Written for this system rather than adapted to it: it draws its own display, wallpaper,…">
+<meta property="og:url" content="https://soslinux.org/wiki/synui">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#start-here">Start here</a></li>
+<li><a href="#what-it-does">What it does</a></li>
+<li class="sub"><a href="#shell">Shell</a></li>
+<li class="sub"><a href="#look">Look</a></li>
+<li class="sub"><a href="#hardware">Hardware</a></li>
+<li class="sub"><a href="#ai-and-security">AI and security</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#working-on-synui">Working on synui</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Components</p>
+      <h1>synui</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synui/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The Wayland compositor, on <strong>wlroots 0.20</strong>, rendering through <strong>scenefx 0.5</strong>'s
+<code>fx_renderer</code>. Written <em>for</em> this system rather than adapted to it: it draws its
+own display, wallpaper, dock, cursor, sound and control panels, renders an
+optional CRT post-process pass, and holds live subscriptions to <code>synguard</code>'s
+verdict feed and <code>synapd</code>'s activity.</p>
+<p><strong>Five layouts</strong> — tiling, floating, monocle, AI and niri — with per-output
+workspaces, layer-shell, and XWayland for the X11-only apps that still need it.
+What each one does:
+<a href="/wiki/The-Desktop#layouts">The Desktop → Layouts</a>. Every shortcut:
+<a href="/wiki/Keybindings">Keybindings</a>.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>If you want</th>
+<th>Go to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The bar, widgets, desktop icons, layouts</td>
+<td><a href="/wiki/The-Desktop">The Desktop</a></td>
+</tr>
+<tr>
+<td>Glass, blur, shadows, the CRT pass</td>
+<td><a href="/wiki/Window-Effects">Window Effects</a></td>
+</tr>
+<tr>
+<td>Wallpapers, including Steam Workshop</td>
+<td><a href="/wiki/Wallpapers">Wallpapers</a></td>
+</tr>
+<tr>
+<td>Cursors · event sounds</td>
+<td><a href="/wiki/Cursor-Themes">Cursor Themes</a> · <a href="/wiki/Sound-Themes">Sound Themes</a></td>
+</tr>
+<tr>
+<td>Every keybinding</td>
+<td><a href="/wiki/Keybindings">Keybindings</a></td>
+</tr>
+<tr>
+<td>Working on the code</td>
+<td><a href="/wiki/Development-Notes#compositor-traps">Development Notes</a></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="start-here">Start here</h2>
+<p><code>Super</code>+<code>C</code> opens the <strong>control panel</strong> — the front door. It lists every
+shortcut, generated from the <strong>live bind table</strong>, so it cannot drift from the
+actual bindings, and every setting sits beside them. <code>Super</code>+<code>/</code> is the same
+list as a search box. Tapping <strong><code>Super</code></strong> alone opens the start menu.</p>
+<p>If you remember two keys, remember those.</p>
+<hr />
+<h2 id="what-it-does">What it does</h2>
+<h3 id="shell">Shell</h3>
+<p><strong>The bar</strong> — a native <a href="https://quickshell.org/">quickshell</a> bar, one per
+monitor, with per-monitor settings, a right-click menu and auto-hide. It
+replaced waybar, and the start button and menu now live in it.
+See <a href="/wiki/The-Desktop#the-bar">The Desktop</a>.</p>
+<p><strong>Dock</strong> — auto-hide with hover-slide and a reveal dwell, right-click context
+menu, runtime pin/unpin, and drag to any edge (vertical on left and right).</p>
+<p><strong>Desktop</strong> — optional <code>~/Desktop</code> icons with drag-to-place, persistent
+placement and arrange by name/type/size/date; a right-click menu; and four
+optional widgets (visualiser, sysmon, big clock, quick-launch), all off by
+default.</p>
+<p><strong>Mixer</strong> — right-click the bar's volume module for per-device and
+per-application levels, drawn by the bar itself.
+See <a href="/wiki/The-Desktop#the-mixer">The Desktop</a>.</p>
+<p><strong>System tray</strong> (SNI), <strong>clipboard history</strong> (<code>Super</code>+<code>V</code>), <strong>news reader</strong>
+(<code>Super</code>+<code>R</code>), and an <strong>ISO mounter</strong> that uses udisks2 and needs no root.</p>
+<h3 id="look">Look</h3>
+<p><strong>Themes</strong> (<code>Super</code>+<code>T</code>) — SYNAPSE / Dark / XP / 95 plus six riced palettes,
+applied across synui's own chrome, the bar, GTK, Qt/KDE, the terminals
+(<code>syntty</code>, and <code>kitty</code>/<code>foot</code> where present) and Firefox.</p>
+<p><strong>Window effects</strong> — glass, backdrop blur, rounded corners, drop shadows with a
+<code>shadow_spread</code> knob, an optional <code>glass_halo</code> ring, and <code>clip_csd_margin</code> for
+clients that paint their own shadow. Plus the CRT pass (<code>Super</code>+<code>E</code>): scanline,
+curvature, aberration, glitch, and amber/green/white phosphor with bloom.
+<strong>Everything here is off by default.</strong> See <a href="/wiki/Window-Effects">Window Effects</a>.</p>
+<p><strong>Wallpapers</strong> (<code>Super</code>+<code>W</code>) — built-in <strong>Synapse</strong> (static) and <strong>Matrix</strong>
+(animated GLES2 rain), a browser for <code>~/Pictures</code> and friends, per-monitor
+choices, scaling modes on <code>Tab</code>, and <strong>Steam Workshop</strong> wallpapers through the
+optional <code>linux-wallpaperengine</code> package. See <a href="/wiki/Wallpapers">Wallpapers</a>.</p>
+<p><strong>Cursor themes</strong> (<code>Super</code>+<code>Shift</code>+<code>P</code>) and <strong>event sounds</strong> (<code>Super</code>+<code>S</code>) —
+ten events, all silent until you turn them on.</p>
+<p><strong>Animations</strong> — a window opening can be <code>off</code>, <code>fade</code> or <code>rise</code>; switching
+desktop can be <code>off</code>, <code>fade</code> or <code>slide</code>. Separate lengths, one shared easing
+curve. See <a href="/wiki/The-Desktop#animations">The Desktop → Animations</a>.</p>
+<h3 id="hardware">Hardware</h3>
+<p><strong>Display</strong> (<code>Super</code>+<code>D</code>) — per-output mode, position, scale, 10-bit colour, and
+<strong>HDR detected from the EDID</strong> rather than from the plane's bit depth. Monitor
+grid with aligned columns; night light is part of the output state.</p>
+<p><strong>Power</strong> (<code>Super</code>+<code>P</code>) — compositor-native dim, blank, lock and suspend, which
+retired <code>swayidle</code> entirely. Includes <strong>media idle-inhibit</strong>: it will not blank
+the screen while audio is playing. Explicit laptop lid policy, brightness keys,
+battery.</p>
+<p><strong>Lock screen</strong> (<code>Super</code>+<code>L</code>) and a <strong>graphical greeter</strong> over greetd IPC, drawn
+in-process and mirroring the lock screen.</p>
+<h3 id="ai-and-security">AI and security</h3>
+<p><strong>Neural overlay</strong> (<code>Super</code>+<code>A</code>) — live from <code>synapd</code>. <strong>Security feed</strong> — live
+from <code>synguard</code>. The <strong>AI layout</strong> asks <code>synapd</code> where windows should go and
+falls back to tiling when it cannot answer.</p>
+<p><strong>Task manager</strong> (<code>Ctrl</code>+<code>Alt</code>+<code>Delete</code>) — process table with a CPU/RAM/GPU
+overview and <strong>per-process VRAM</strong> through NVML, <code>dlopen</code>'d so no CUDA headers
+are needed to build.</p>
+<p><strong><a href="/wiki/Gaming">Game mode</a></strong> (<code>Super</code>+<code>G</code>) — detects a fullscreen Xwayland client,
+stops <code>synapd</code> to free its VRAM, and holds off idle. The bar shows an indicator.</p>
+<p><strong>Screenshots and recording</strong> — <code>Print</code> and friends
+(<a href="/wiki/Keybindings#screenshots">Keybindings</a>); <code>Super</code>+<code>Shift</code>+<code>R</code> records, to
+<code>~/Videos</code> at a constant 60 fps. Capturing at a fixed rate rather than only when
+the screen changes is what keeps the file usable by a video editor — see
+<a href="/wiki/Troubleshooting#a-screen-recording-will-not-open-in-my-video-editor">Troubleshooting</a>
+for the whole story, and <strong>Control panel ▸ Sound ▸ Record for editing</strong> for the
+switch that records an editable mezzanine instead.</p>
+<p>And <strong>cat mode</strong> (<code>Super</code>+<code>Shift</code>+<code>C</code>) — a procedurally drawn cairo kitty that
+wanders your monitors on top of everything, because why not.</p>
+<hr />
+<h2 id="config">Config</h2>
+<p><code>~/.config/synui/synuirc</code>, or <code>/etc/synui/synuirc</code> for the system-wide default.
+Monitor layout is separate, in <code>outputs.conf</code>, where <code>primary=1</code> marks the
+primary output for Xwayland — which is what stops SDL games opening on the wrong
+monitor. Its x/y are taken <strong>verbatim</strong>; synui does not repack them into rows.</p>
+<p>State files live beside it — <code>wallpaper.state</code>, <code>wpengine.state</code>, <code>dock.state</code>,
+<code>power.state</code>, <code>filters.state</code>, <code>welcome.state</code>, <code>cursor.state</code>, <code>cursor.env</code>,
+<code>sounds.state</code>, <code>widgets.state</code>, <code>theme.json</code>, <code>layouts.state</code>.</p>
+<blockquote>
+<p><strong>A state file wins over <code>synuirc</code>.</strong> That is deliberate: it is what makes a
+choice you made in a panel survive both a restart and a packaged config
+update. If an edit to <code>synuirc</code> appears to do nothing, a panel has already
+written that setting — change it in the panel, or delete the state file.
+<a href="/wiki/Wallpapers#per-monitor-wallpapers">Wallpapers</a> is the one people meet first.</p>
+<p><strong>The file is <code>synuirc</code>, not <code>synui.conf</code>.</strong> Everything under that directory
+resolves through one helper, so <code>XDG_CONFIG_HOME</code> is honoured consistently.</p>
+</blockquote>
+<p>Rebinding keys, and the <code>bind =</code> syntax:
+<a href="/wiki/Keybindings#rebinding">Keybindings → Rebinding</a>.</p>
+<hr />
+<h2 id="working-on-synui">Working on synui</h2>
+<p>The compositor-specific traps that cost real days — event-loop deadlocks,
+popup grabs, <code>exclusiveZone</code> ordering, stale swapchains, the seam rule — are in
+<strong><a href="/wiki/Development-Notes#compositor-traps">Development Notes → Compositor traps</a></strong>,
+alongside the cross-cutting ones.</p>
+<p>Most rendering work is verified in a nested headless compositor rather than on a
+real seat, which has its own three non-negotiable rules (scenefx is GLES2-only
+so software rendering must be forced; <code>synui-apply-theme</code> has to be stubbed or a
+nested session re-themes the live desktop; and you must confirm which compositor
+you are talking to before trusting a result). Full recipe:
+<a href="/wiki/Development-Notes#testing-the-compositor-without-a-real-seat">Development Notes → Testing the compositor without a real seat</a>.</p>
+<p>Building and packaging: <a href="/wiki/Building-and-Packaging">Building and Packaging</a>.
+Roadmap: <a href="https://github.com/velle999/SYNAPSE/blob/main/synui/ROADMAP.md"><code>synui/ROADMAP.md</code></a>.</p>
+<hr />
+<p>See also: <a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/The-Desktop">The Desktop</a>,
+<a href="/wiki/Window-Effects">Window Effects</a>, <a href="/wiki/Architecture">Architecture</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/synapd"><span>Previous</span>synapd</a><a class="next" href="/wiki/synguard-and-synapse_kmod"><span>Next</span>synguard + kmod</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui" aria-current="page">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

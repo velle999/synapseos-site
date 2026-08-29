@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Software — SynapseOS Wiki</title>
+<meta name="description" content="synpkg is SynapseOS&#x27;s package manager — one program over the five places software on this system comes from. It is a single C binary built on libalpm (the library pacman itself…">
+<link rel="canonical" href="https://soslinux.org/wiki/Software">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Software — SynapseOS Wiki">
+<meta property="og:description" content="synpkg is SynapseOS&#x27;s package manager — one program over the five places software on this system comes from. It is a single C binary built on libalpm (the library pacman itself…">
+<meta property="og:url" content="https://soslinux.org/wiki/Software">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-five-sources">The five sources</a></li>
+<li class="sub"><a href="#searching-all-of-them-at-once">Searching all of them at once</a></li>
+<li><a href="#everyday-use">Everyday use</a></li>
+<li class="sub"><a href="#two-things-pacman-has-never-done">Two things pacman has never done</a></li>
+<li class="sub"><a href="#exit-codes">Exit codes</a></li>
+<li><a href="#the-graphical-browser">The graphical browser</a></li>
+<li><a href="#flatpak-notes">Flatpak notes</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Software</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Software/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-24">2026-08-24</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>synpkg</code> is SynapseOS's package manager — one program over the five places
+software on this system comes from. It is a single C binary built on <code>libalpm</code>
+(the library <code>pacman</code> itself uses), with three front-ends that all read the same
+code paths, so they cannot disagree about what is installed:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Front-end</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Graphical browser</td>
+<td><strong>Software Manager</strong> in the start menu, or <code>synpkg gui</code></td>
+</tr>
+<tr>
+<td>Terminal browser</td>
+<td><code>synpkg tui</code> (or bare <code>synpkg</code> on a terminal)</td>
+</tr>
+<tr>
+<td>Command line</td>
+<td><code>synpkg search</code>, <code>synpkg install</code>, …</td>
+</tr>
+</tbody>
+</table></div>
+<p>It works over SSH and on a headless machine — the GUI is an optional extra, and
+each front-end degrades to the one below it rather than failing.</p>
+<hr />
+<h2 id="the-five-sources">The five sources</h2>
+<p>Every source gets <strong>its own tab</strong> in the GUI, and every row carries a coloured
+badge naming where it came from. That is deliberate: these are not
+interchangeable, and installing from one is not the same act as installing from
+another.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>What it is</th>
+<th>What actually installs it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>All sources</strong></td>
+<td>Not a source — one search across every one of them at once</td>
+<td>whichever source the row came from</td>
+</tr>
+<tr>
+<td><strong>Repositories</strong></td>
+<td>Arch's <code>core</code>, <code>extra</code>, <code>multilib</code>, plus SynapseOS's own <code>[synapseos]</code></td>
+<td><code>pacman</code>. Signed binaries, built by Arch or by us.</td>
+</tr>
+<tr>
+<td><strong>AUR</strong></td>
+<td>The Arch User Repository — build <em>recipes</em>, not binaries</td>
+<td><code>makepkg</code>, on your machine. Opens a terminal so you can read the <code>PKGBUILD</code> first.</td>
+</tr>
+<tr>
+<td><strong>Flathub</strong></td>
+<td>Sandboxed applications shipping their own runtimes</td>
+<td><code>flatpak</code>, with its own permission prompts. Installed alongside your system, not into it.</td>
+</tr>
+<tr>
+<td><strong>Arsenal</strong></td>
+<td>~5000 BlackArch security tools, browsable by category</td>
+<td><code>pacman</code>, once the BlackArch repo is enabled.</td>
+</tr>
+<tr>
+<td><strong>SynapseOS</strong></td>
+<td>This system's own components</td>
+<td><code>syn-update</code>, which rebuilds them from git. See <a href="/wiki/Updating">Updating</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="searching-all-of-them-at-once">Searching all of them at once</h3>
+<p><strong>All sources</strong> asks the repositories, BlackArch, the AUR and Flathub the same
+question and puts the answers in one list, each row badged with where it came
+from. It is the tab to reach for when you do not already know <em>which</em> source
+has the thing — which is most of the time.</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>search<span class="w"> </span>--all<span class="w"> </span>firefox<span class="w">      </span><span class="c1"># the same list, on the command line</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code>extra/firefox 148.0-1 [installed]
+    Standalone web browser from mozilla.org
+blackarch/firefox-decrypt 1.1.1-2
+    Tool to extract passwords from Mozilla profiles
+aur/firefox-nightly 156.0a1-1 (412 votes)
+    Standalone web browser from Mozilla — nightly build
+flathub/org.mozilla.firefox  Firefox 154.0
+    Fast, Private &amp; Safe Web Browser
+</code></pre></div>
+
+<p>The three single-source tabs stay, because "search only the AUR" is a real
+question and answering it out of four hundred rows from everywhere is not the
+same thing.</p>
+<blockquote>
+<p><strong>Every source fails alone.</strong> No network, no <code>flatpak</code>, no Flathub remote and
+no BlackArch repo are all ordinary, and none of them stops the others
+answering — the repository hits are on screen while the slow halves are still
+working. If BlackArch is not enabled, <code>--all</code> says so rather than returning
+nothing and letting you conclude it had nothing.</p>
+</blockquote>
+<p><strong>Two of these are off until you turn them on.</strong> A source that is switched off
+looks exactly like a source with nothing in it, so <code>synpkg about</code> reports the
+state of each one, and the GUI offers a button where the fix is a command.</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>about<span class="w">                     </span><span class="c1"># which sources are wired up on this machine</span>
+synpkg<span class="w"> </span>flatpak<span class="w"> </span>enable-flathub<span class="w">    </span><span class="c1"># add the Flathub remote and fetch its index</span>
+synpkg<span class="w"> </span>arsenal<span class="w"> </span>enable-repo<span class="w">       </span><span class="c1"># bootstrap BlackArch (keys, mirrors)</span>
+</code></pre></div>
+
+<blockquote>
+<p>Enabling Flathub also downloads its application index. Without that index
+<code>flatpak search</code> returns nothing <strong>and reports no error</strong> — which reads as
+"Flathub is empty" rather than "this is not ready yet". <code>enable-flathub</code> does
+both steps so that cannot happen to you.</p>
+</blockquote>
+<hr />
+<h2 id="everyday-use">Everyday use</h2>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>search<span class="w"> </span>firefox<span class="w">        </span><span class="c1"># the repositories</span>
+synpkg<span class="w"> </span>install<span class="w"> </span>firefox
+synpkg<span class="w"> </span>remove<span class="w"> </span>firefox<span class="w">        </span><span class="c1"># takes its unneeded dependencies with it</span>
+synpkg<span class="w"> </span>upgrade<span class="w">               </span><span class="c1"># full system upgrade (refreshes first)</span>
+synpkg<span class="w"> </span>updates<span class="w">               </span><span class="c1"># what an upgrade would change, read-only</span>
+synpkg<span class="w"> </span>installed<span class="w"> </span>--explicit<span class="w">  </span><span class="c1"># what you asked for, as opposed to what came along</span>
+synpkg<span class="w"> </span>orphans<span class="w"> </span>--remove<span class="w">      </span><span class="c1"># dependencies nothing needs any more</span>
+synpkg<span class="w"> </span>info<span class="w"> </span>firefox
+</code></pre></div>
+
+<p>Other sources are subcommands, so the source is always visible in what you
+typed:</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>aur<span class="w"> </span>search<span class="w"> </span>&lt;term&gt;<span class="w">         </span><span class="c1"># and: aur install, aur installed, aur updates</span>
+synpkg<span class="w"> </span>flatpak<span class="w"> </span>search<span class="w"> </span>&lt;term&gt;<span class="w">     </span><span class="c1"># and: flatpak install/remove/updates/remotes</span>
+synpkg<span class="w"> </span>arsenal<span class="w"> </span>categories<span class="w">        </span><span class="c1"># and: arsenal packages &lt;category&gt;, arsenal installed</span>
+synpkg<span class="w"> </span>system<span class="w"> </span>check<span class="w">              </span><span class="c1"># SynapseOS&#39;s own components (via syn-update)</span>
+</code></pre></div>
+
+<p><strong>SynapseOS's own components count as updates.</strong> The Updates page used to see
+they were out of date and offer nothing that acted on them — it did not count
+them and "Upgrade all" skipped them — so the half of the system no other updater
+covers was the half with no way to update it.</p>
+<p><code>synpkg upgrade</code> is the same engine <code>pacman -Syu</code> is, and <code>pacman</code> keeps
+working — use whichever you prefer. Both refresh the databases before they
+upgrade, which is what stops you from ending up with a <strong>partial upgrade</strong>: a
+system whose package databases are newer than its packages, where every later
+install fails on a filename the mirror has already rotated away.</p>
+<h3 id="two-things-pacman-has-never-done">Two things pacman has never done</h3>
+<p><strong>An upgrade is gated on the Arch news.</strong> Arch announces manual-intervention
+notices there and nowhere else — a package that needs a key imported, a config
+moved, a repository renamed — and a graphical Update button makes that matter
+more, not less: nobody reads a news feed before pressing a button. <code>synpkg</code>
+fetches the headlines, and an upgrade that would walk into one stops and shows
+it.</p>
+<p><strong>A kernel move offers a reboot.</strong> The running kernel keeps its modules in a
+directory the upgrade has just replaced, so after a kernel upgrade the machine
+can no longer load a module it did not already have — a USB device plugged in
+afterwards, a filesystem mounted for the first time. <code>synpkg</code> says so at the end
+of the transaction rather than leaving it to be discovered.</p>
+<p><code>synpkg status</code> reports the kernel <strong>staged for boot</strong> as well as the installed
+and running ones. Those are three different files and only one of them strands a
+machine: an entry can exist for a kernel whose modules are gone, and "installed"
+does not mean "bootable" does not mean "booted".</p>
+<h3 id="exit-codes">Exit codes</h3>
+<p>Every list command returns <code>100</code> for "nothing to do", distinct from <code>1</code> for
+failure — so a status bar or a script can tell "you are up to date" from "the
+check broke" without parsing any output.</p>
+<hr />
+<h2 id="the-graphical-browser">The graphical browser</h2>
+<p><strong>Software Manager</strong> in the start menu, or <code>synpkg gui</code>. <code>synpkg gui &lt;tab&gt;</code>
+opens straight onto one tab (<code>updates</code>, <code>suggested</code>, <code>all</code>, <code>repo</code>, <code>aur</code>,
+<code>flathub</code>, <code>arsenal</code>, <code>system</code>, <code>about</code>).</p>
+<p>Every row carries its application's <strong>icon</strong>, or a monogram tinted by the row's
+source where there is none — most packages are not applications and have no
+icon at all, so a column that appeared for some rows and not others would read
+as icons failing to load rather than as a library not having one.</p>
+<ul>
+<li><strong>All sources</strong> searches every source at once, each row badged. Search-only:
+  "browse" would mean listing four repositories together, and "installed"
+  already has a page per source.</li>
+<li><strong>Updates</strong> is the union of all three updatable sources — repositories, AUR
+  and Flathub — with each row badged, so you can see at a glance which half of
+  the system is behind.</li>
+<li><strong>Suggested</strong> is a curated list of applications worth having, grouped by
+  category, with the ones you already have marked.</li>
+<li><strong>Repositories</strong>, <strong>AUR</strong> and <strong>Flathub</strong> each have a <em>Search</em> and an
+  <em>Installed</em> view.</li>
+<li><strong>Arsenal</strong> lists BlackArch by category, plus an "Installed tools" view — so
+  a tool can be removed without remembering which of ~50 categories it came
+  from.</li>
+<li><strong>About</strong> reports what is enabled and offers to fix what is not.</li>
+</ul>
+<p>Two things happen in a terminal rather than in the window, on purpose:</p>
+<ul>
+<li><strong>A full system upgrade.</strong> It downloads for minutes and prints as it goes; a
+  window with a spinner and no output is where people force-quit mid-transaction.</li>
+<li><strong>Any AUR install.</strong> An AUR package is arbitrary code that builds on your
+  machine. <code>synpkg</code> shows you the <code>PKGBUILD</code> and asks before running <code>makepkg</code>,
+  which needs a terminal to ask in — and which refuses to run as root, correctly.</li>
+</ul>
+<p>Everything else escalates through polkit when it needs to, so the GUI itself
+never runs privileged.</p>
+<hr />
+<h2 id="flatpak-notes">Flatpak notes</h2>
+<p>Flatpak applications are identified by an <strong>application id</strong> — <code>org.mozilla.firefox</code>,
+not <code>firefox</code>. The GUI shows the human name with the id beside it; the command
+line takes the id.</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>flatpak<span class="w"> </span>search<span class="w"> </span>boxes
+synpkg<span class="w"> </span>flatpak<span class="w"> </span>install<span class="w"> </span>org.gnome.Boxes
+synpkg<span class="w"> </span>flatpak<span class="w"> </span>remotes<span class="w">           </span><span class="c1"># which remotes are configured</span>
+</code></pre></div>
+
+<p>Anything <code>synpkg</code> does not wrap is passed through to <code>flatpak</code> unchanged, so
+<code>synpkg flatpak permissions &lt;id&gt;</code> works without needing us to have thought of it.</p>
+<hr />
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="/wiki/Updating">Updating</a></strong> — the SynapseOS half of keeping current</li>
+<li><strong><a href="/wiki/Commands">Commands</a></strong> — the whole command-line surface</li>
+<li><strong><a href="/wiki/Building-and-Packaging">Building and Packaging</a></strong> — building components yourself</li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Updating"><span>Previous</span>Updating</a><a class="next" href="/wiki/Files"><span>Next</span>Files</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software" aria-current="page">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

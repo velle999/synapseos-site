@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SynapseOS Wiki</title>
+<meta name="description" content="Where the kernel thinks. An Arch-based operating system with a local LLM wired into the system layer — a shell, a Wayland compositor, a security monitor, a network policy…">
+<link rel="canonical" href="https://soslinux.org/wiki/">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="SynapseOS Wiki">
+<meta property="og:description" content="Where the kernel thinks. An Arch-based operating system with a local LLM wired into the system layer — a shell, a Wayland compositor, a security monitor, a network policy…">
+<meta property="og:url" content="https://soslinux.org/wiki/">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#start-here">Start here</a></li>
+<li><a href="#making-it-yours">Making it yours</a></li>
+<li><a href="#components">Components</a></li>
+<li><a href="#apps">Apps</a></li>
+<li><a href="#the-one-paragraph-that-saves-the-most-time">The one paragraph that saves the most time</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Wiki</p>
+      <h1>SynapseOS Wiki</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Home/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-29">2026-08-29</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>Where the kernel thinks.</strong></p>
+<p>An Arch-based operating system with a local LLM wired into the system layer —
+a shell, a Wayland compositor, a security monitor, a network policy daemon and a
+kernel module that all talk to one inference daemon over a Unix socket.</p>
+<p>This wiki is the <strong>operator's manual</strong>: how to install it, how to build it, how
+to cut a release, and — most usefully — the failure modes we have already hit so
+you don't have to rediscover them. For the project pitch and the component
+overview, see the <a href="https://github.com/velle999/SYNAPSE#readme">README</a>.</p>
+<blockquote>
+<p><strong>Status: alpha (0.2.x).</strong> Actively developed and daily-driven by the author,
+but early and fast-moving. Try it in a VM before you give it a disk.</p>
+<p><strong>Upgrading from an ISO older than 0.2.3?</strong> Your SynapseOS components have
+never received an update — <code>pacman -Syu</code> only ever covered the Arch half, and
+it failed silently. <strong><a href="/wiki/Updating">Updating</a></strong> explains what happened and how
+<code>syn-update</code> fixes it.</p>
+</blockquote>
+<hr />
+<h2 id="start-here">Start here</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="/wiki/Installation">Installation</a></strong></td>
+<td>Boot the ISO, install to disk, try it in QEMU</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Welcome-Guide">Welcome Guide</a></strong></td>
+<td><code>Super</code>+<code>Escape</code> — the six pages a new desktop opens with, and how to turn them off</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Updating">Updating</a></strong></td>
+<td><code>syn-update</code> — keeping an installed system current. Not the same as a plain Arch upgrade</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Software">Software</a></strong></td>
+<td><code>synpkg</code> — installing things, from the repositories, the AUR, Flathub or BlackArch</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Files">Files</a></strong></td>
+<td><code>synfiles</code> — the file manager a folder opens in: trash, undo, split view, properties</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Settings">Settings</a></strong></td>
+<td><code>syn-settings</code> — displays, region, date and time, network, Bluetooth, power, kernels, default apps</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Editor">Editor</a></strong></td>
+<td><code>syn-edit</code> — the text editor: a modal one in a terminal, an ordinary one in a window, and a scriptable one with neither</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Studio">Studio</a></strong></td>
+<td><code>synstudio</code> — the photo darkroom and video editor: RAW develop, masks, looks, and a graded timeline</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Terminal">Terminal</a></strong></td>
+<td><code>syntty</code> — the default terminal: tabs, images, prompt marks, and no GL</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Keybindings">Keybindings</a></strong></td>
+<td>Every <code>synui</code> shortcut</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Commands">Commands</a></strong></td>
+<td>The <code>syn*</code> command-line surface, and the privileged desktop actions</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></strong></td>
+<td>Installing it, the OpenCL trap, and footage the free edition can read</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Nix">Nix</a></strong></td>
+<td>The optional Nix + Home Manager layer, and installing from a profile</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Gaming">Gaming</a></strong></td>
+<td>Game mode, <code>syn game</code>, MangoHud, GeForce NOW, controllers, Proton</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Big-Screen">Big Screen</a></strong></td>
+<td><code>syn-arcade</code> — the ten-foot interface for a television, and the music on it</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Architecture">Architecture</a></strong></td>
+<td>How the pieces fit and how they talk</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Secure-Boot">Secure Boot</a></strong></td>
+<td>Enrolling keys, Setup Mode, module signature policy</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Building-and-Packaging">Building and Packaging</a></strong></td>
+<td>Build from source; the <code>makepkg</code> traps</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></strong></td>
+<td>The release pipeline, end to end</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Development-Notes">Development Notes</a></strong></td>
+<td>Engineering lessons — the silent failures, and the rules they left</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Troubleshooting">Troubleshooting</a></strong></td>
+<td>Something's broken — symptom-first fixes</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="making-it-yours">Making it yours</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="/wiki/The-Desktop">The Desktop</a></strong></td>
+<td>The two bars, the mixer, desktop widgets, desktop icons, themes and glass</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Configuration">Configuration</a></strong></td>
+<td>Every <code>synuirc</code> key the compositor accepts — keyboard, pointer, windows, blur, animation, effects</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/The-Dock">The Dock</a></strong></td>
+<td>The icon row — edges, pins, the clock/apps/power cells, its right-click menu</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Bar-Plugins">Bar Plugins</a></strong></td>
+<td>Third-party bar widgets, in Omarchy's plugin format</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Wallpapers">Wallpapers</a></strong></td>
+<td>The picker, per-monitor wallpapers, Steam Workshop via <code>synui-wpengine</code></td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Window-Effects">Window Effects</a></strong></td>
+<td>Glass, blur, shadows, rounded corners, the CRT pass</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Cursor-Themes">Cursor Themes</a></strong></td>
+<td><code>synui-cursor</code> — installing themes from any archive</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Sound-Themes">Sound Themes</a></strong></td>
+<td><code>synui-sound</code> — event sounds, off by default</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="components">Components</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="/wiki/synapd">synapd</a></strong></td>
+<td>The LLM daemon; GPU offload; the wire protocol</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/synui">synui</a></strong></td>
+<td>The wlroots compositor: layouts, dock, filters, screenshots</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/synguard-and-synapse_kmod">synguard and synapse_kmod</a></strong></td>
+<td>Syscall telemetry, threat scoring, worm/keylogger detection</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/synsh">synsh</a></strong></td>
+<td>The AI-native shell</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="apps">Apps</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="/wiki/Vibe">Vibe</a></strong></td>
+<td>The desktop assistant — a chat window and a terminal REPL, with the run of the desktop</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Chibi">Chibi</a></strong></td>
+<td>Voice companion with a security-sentinel aspect over <code>synguard</code>'s feed</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Tepris">TEPRIS</a></strong></td>
+<td>The bundled block game</td>
+</tr>
+<tr>
+<td><strong><a href="/wiki/Nexus-Chat">Nexus P2P</a></strong></td>
+<td>Peer-to-peer chat</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="the-one-paragraph-that-saves-the-most-time">The one paragraph that saves the most time</h2>
+<p>Almost every hard bug in this project's history has been a <strong>silent</strong> failure —
+something that kept exiting 0 while doing nothing. A stale DKMS module that
+<code>dkms status</code> cheerfully called "installed". Hand-copied <code>.so</code> files in
+<code>/usr/lib</code> that shadowed the real ones. A <code>/etc</code> systemd unit shadowing the
+hardened packaged one. A GPU layer count that was hardcoded and never read the
+GPU. When something here "works but doesn't", <strong>do not trust the status command —
+go look at the running process</strong>: <code>/proc/&lt;pid&gt;/maps</code>, <code>systemctl show -p
+FragmentPath</code>, <code>modinfo</code>'s vermagic against <code>uname -r</code>. <a href="/wiki/Troubleshooting">Troubleshooting</a>
+is a catalogue of these.</p>
+      </div>
+
+
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

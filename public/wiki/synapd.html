@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>synapd — SynapseOS Wiki</title>
+<meta name="description" content="The local LLM inference daemon (llama.cpp). It owns the model — every other component reaches it over a Unix socket rather than linking llama.cpp itself. See Architecture for…">
+<link rel="canonical" href="https://soslinux.org/wiki/synapd">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="synapd — SynapseOS Wiki">
+<meta property="og:description" content="The local LLM inference daemon (llama.cpp). It owns the model — every other component reaches it over a Unix socket rather than linking llama.cpp itself. See Architecture for…">
+<meta property="og:url" content="https://soslinux.org/wiki/synapd">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-model">The model</a></li>
+<li><a href="#gpu-offload">GPU offload</a></li>
+<li class="sub"><a href="#verify-it-never-assume-it">Verify it. Never assume it.</a></li>
+<li class="sub"><a href="#the-gpu-saga-resolved-2026-07-11-37ce3da--3333-layers-on-cuda0">The GPU saga (resolved 2026-07-11, 37ce3da) — 33/33 layers on CUDA0</a></li>
+<li class="sub"><a href="#building-cuda">Building CUDA</a></li>
+<li><a href="#vram-and-game-mode">VRAM and game mode</a></li>
+<li><a href="#switching-the-inference-device-gpu--cpu--off">Switching the inference device (GPU / CPU / off)</a></li>
+<li><a href="#talking-to-synapd-directly">Talking to synapd directly</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Components</p>
+      <h1>synapd</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The local LLM inference daemon (llama.cpp). It <strong>owns the model</strong> — every other
+component reaches it over a Unix socket rather than linking llama.cpp itself.
+See <a href="/wiki/Architecture#the-wire-protocol">Architecture</a> for the protocol.</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd
+</code></pre></div>
+
+<hr />
+<h2 id="the-model">The model</h2>
+<p><strong>The ISO carries no model</strong> since 0.2.8, so on live media <code>synapd</code> starts in
+<em>shell-assist mode</em> with nothing to load — <code>syn status</code> reporting
+"model ✗ not installed" there is expected, not a fault. The <strong>installer</strong> asks
+which model to download onto the target: Mistral 7B Instruct (Q4_K_M, ~4.4 GB,
+recommended), Phi-3 Mini, Qwen2 0.5B, or none. <code>archiso/build.sh --with-model</code>
+puts one back on the image.</p>
+<p>To drop one in by hand:</p>
+<div class="hl"><pre><span></span><code>cp<span class="w"> </span>your-model.gguf<span class="w"> </span>/var/lib/synapd/models/synapse.gguf
+systemctl<span class="w"> </span>restart<span class="w"> </span>synapd
+</code></pre></div>
+
+<p>Any GGUF that llama.cpp can load works. <strong>Mistral 7B Instruct is what the prompts
+are tuned against</strong> — swapping models may need prompt work.</p>
+<hr />
+<h2 id="gpu-offload">GPU offload</h2>
+<p>The llama.cpp libraries <code>synapd</code> links are packaged per backend; each GPU build
+<code>provides</code> + <code>conflicts</code> <code>synapse-llama</code>, so <strong>pacman refuses a silent downgrade
+to the CPU build</strong>. That design exists because of the bug below.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Hardware</th>
+<th>Backend</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synapse-llama</code></td>
+<td>any</td>
+<td>CPU</td>
+<td>the default; what the ISO ships</td>
+</tr>
+<tr>
+<td><code>synapse-llama-cuda</code></td>
+<td>NVIDIA</td>
+<td>CUDA</td>
+<td>hard-links <code>libcuda.so.1</code> — cannot start without the driver, so never on the ISO</td>
+</tr>
+<tr>
+<td><code>synapse-llama-vulkan</code></td>
+<td>AMD / Intel</td>
+<td>Vulkan</td>
+<td>links only the Vulkan loader; <strong>one build runs on any AMD (GCN/RDNA/APU) or Intel GPU</strong>, and loads even with no GPU (falls back to CPU)</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>syn-install</code> swaps in the right one for the detected card (<code>-cuda</code> on NVIDIA,
+<code>-vulkan</code> on AMD/Intel); switch by hand any time with the <strong>AI backend</strong> row or
+<code>synui-ai-backend gpu</code>. <strong>Vulkan</strong> is the portable AMD/Intel choice — no
+per-architecture compile and only the mesa ICD at runtime — and is competitive
+with ROCm for token generation. ROCm/HIP stays an opt-in for a known-supported
+AMD card: <code>build.sh --gpu=rocm</code>.</p>
+<h3 id="verify-it-never-assume-it">Verify it. Never assume it.</h3>
+<div class="hl"><pre><span></span><code><span class="c1"># NVIDIA / CUDA:</span>
+grep<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps<span class="w">               </span><span class="c1"># 0 = you are on the CPU</span>
+<span class="c1"># AMD / Intel / Vulkan:</span>
+grep<span class="w"> </span>-Ec<span class="w"> </span><span class="s1">&#39;libvulkan|radv|amdgpu|libggml-vulkan&#39;</span><span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps
+</code></pre></div>
+
+<p>A log line claiming GPU offload is not evidence. Check the mapped libraries of
+the <strong>running process</strong> (needs <code>sudo</code> — <code>synapd</code> runs as its own user).</p>
+<h3 id="the-gpu-saga-resolved-2026-07-11-37ce3da--3333-layers-on-cuda0">The GPU saga (resolved 2026-07-11, <code>37ce3da</code>) — 33/33 layers on CUDA0</h3>
+<p>synapd ran on the CPU for the entire life of the project while appearing to be on
+the GPU. Rebuilding CUDA alone would <strong>not</strong> have fixed it. There were <strong>three
+stacked silent failures</strong>:</p>
+<ol>
+<li><strong>Unowned <code>.so</code> files in <code>/usr/lib</code></strong> — hand-<code>cp</code>'d at some point, owned by no
+   package, silently winning the <code>ld.so</code> cache over the real build.</li>
+<li><strong><code>ld.so.conf</code> pointed at <code>$HOME</code></strong> — so even the right libraries resolved from
+   the wrong place.</li>
+<li><strong><code>detect_gpu_layers()</code> returned a hardcoded <code>28</code></strong>, derived from an <code>lspci</code>
+   probe rather than from the GPU. <em>This is why it stayed invisible:</em> the number
+   looked plausible, so nothing ever contradicted the assumption.</li>
+</ol>
+<p>The lesson is #3. A plausible hardcoded value is worse than a crash — it produces
+a system that lies to you consistently.</p>
+<h3 id="building-cuda">Building CUDA</h3>
+<p>llama.cpp pinned at <strong><code>b10241</code></strong>, with a <strong>CCCL 3.4 <code>cub</code> patch</strong> (CUDA 13 broke
+the API). Verified clean with <strong>gcc 16 + nvcc 13.3</strong>.</p>
+<blockquote>
+<p><strong>The ISO ships a CPU build on purpose.</strong> A CUDA-linked <code>synapd</code> needs
+<code>libcuda.so.1</code>, which doesn't exist on a machine with no NVIDIA driver — it
+would fail to start on most hardware. <code>build.sh</code> with no <code>--gpu</code> flag (the ISO default)
+builds CPU-only with <code>GGML_NATIVE=OFF</code> so it runs on baseline x86-64. See
+<a href="/wiki/Building-and-Packaging">Building and Packaging</a>.</p>
+</blockquote>
+<hr />
+<h2 id="vram-and-game-mode">VRAM and game mode</h2>
+<p><a href="/wiki/synui">Game mode</a> (<code>Super</code>+<code>G</code>) <strong>stops <code>synapd</code></strong> to hand its VRAM to
+the game. Two bugs worth knowing, both silent:</p>
+<ul>
+<li>The stop <strong>failed on polkit</strong> — <code>synapd</code> is a <em>system</em> unit and the stop was a
+  fire-and-forget spawn, so it silently did nothing and synapd kept the VRAM. Now
+  uses <code>sudo -n</code> with a dedicated <code>/etc/sudoers.d/synapd-gamemode</code>.</li>
+<li>Stopping <code>synapd</code> <strong>also killed <code>synnet</code></strong>, which carried <code>Requires=synapd</code>.
+  It is <code>Wants=</code> now, so <code>synnet</code> survives game mode and reconnects on its own.</li>
+</ul>
+<p>Per-process VRAM is visible in the <a href="/wiki/synui">task manager</a>
+(<code>Ctrl</code>+<code>Alt</code>+<code>Delete</code>), which reads NVML via <code>dlopen</code> — no CUDA headers needed at
+build time.</p>
+<hr />
+<h2 id="switching-the-inference-device-gpu--cpu--off">Switching the inference device (GPU / CPU / off)</h2>
+<p>The control panel's (and <code>Super</code>+<code>Escape</code> menu's) <strong>"AI backend"</strong> row cycles
+<code>synapd</code> between <strong>GPU → CPU → off</strong>. It runs <code>synui-ai-backend</code>, which rewrites
+<code>synapd</code>'s <code>--gpu-layers</code> via a systemd drop-in, restarts it, and records the
+choice in <code>/run/synapd/backend</code> (which the row reads back for its label):</p>
+<div class="hl"><pre><span></span><code>synui-ai-backend<span class="w"> </span>gpu<span class="w">      </span><span class="c1"># --gpu-layers -1  (auto-detect; offload to the GPU)</span>
+synui-ai-backend<span class="w"> </span>cpu<span class="w">      </span><span class="c1"># --gpu-layers 0   (force CPU-only)</span>
+synui-ai-backend<span class="w"> </span>off<span class="w">      </span><span class="c1"># stop synapd — frees all its RAM/VRAM</span>
+synui-ai-backend<span class="w"> </span>toggle<span class="w">   </span><span class="c1"># cycle to the next state</span>
+synui-ai-backend<span class="w"> </span>status<span class="w">   </span><span class="c1"># print the current device</span>
+</code></pre></div>
+
+<p>Same privilege story as game mode: the compositor runs as the session user with
+no polkit agent, so the helper <strong>self-escalates with <code>sudo -n</code></strong> for the
+mutating verbs, allowed by a scoped <code>/etc/sudoers.d/synapd-backend</code> rule. Without
+it the row was silently stuck reading <strong>"auto"</strong> — nothing to select. (<code>status</code>
+stays unprivileged; it only reads a world-readable file.)</p>
+<hr />
+<h2 id="talking-to-synapd-directly">Talking to synapd directly</h2>
+<p><code>chibi</code> (the assistant) has an optional <strong><code>synapd</code> backend</strong> in <code>llm_client.py</code>
+that talks straight to the Unix socket instead of an HTTP LLM server — verified
+live. It's the reference example of writing a synapd client.</p>
+<p>See also: <a href="/wiki/Architecture">Architecture</a>, <a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Architecture"><span>Previous</span>Architecture</a><a class="next" href="/wiki/synui"><span>Next</span>synui</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd" aria-current="page">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

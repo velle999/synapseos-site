@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Keybindings — SynapseOS Wiki</title>
+<meta name="description" content="synui&#x27;s defaults. Override in ~/.config/synui/synuirc or /etc/synui/synuirc.">
+<link rel="canonical" href="https://soslinux.org/wiki/Keybindings">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Keybindings — SynapseOS Wiki">
+<meta property="og:description" content="synui&#x27;s defaults. Override in ~/.config/synui/synuirc or /etc/synui/synuirc.">
+<meta property="og:url" content="https://soslinux.org/wiki/Keybindings">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#launching-and-the-ai">Launching and the AI</a></li>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#look-and-feel">Look and feel</a></li>
+<li><a href="#system">System</a></li>
+<li><a href="#media-and-hardware-keys">Media and hardware keys</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+<li><a href="#rebinding">Rebinding</a></li>
+<li class="sub"><a href="#the-gaming-keys">The gaming keys</a></li>
+<li><a href="#two-things-that-will-confuse-you-if-you-hit-them">Two things that will confuse you if you hit them</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Keybindings</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>synui</code>'s defaults. Override in <code>~/.config/synui/synuirc</code> or
+<code>/etc/synui/synuirc</code>.</p>
+<p><strong>Lost?</strong> <code>Super</code>+<code>C</code> opens the <strong>control panel</strong> — the front door, listing every
+shortcut, generated from the live bind table so it can't drift from reality.
+Tapping <strong><code>Super</code></strong> alone opens the start menu.</p>
+<hr />
+<h2 id="launching-and-the-ai">Launching and the AI</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code> (tapped alone)</td>
+<td>Start menu (the bar's SYNAPSE badge)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>/</code></td>
+<td><strong>Shortcut palette</strong>, and the hotkey manager — not only the bindings on this page but every action with <em>no</em> key yet, and your installed applications. <code>F2</code> on a row gives one a key or moves it; <code>Delete</code> takes it away, and the row stays so you can put it back</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>C</code></td>
+<td><strong>Control panel</strong> — every shortcut plus the settings</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Return</code></td>
+<td>Open a terminal — <strong><a href="/wiki/Terminal"><code>syntty</code></a></strong> since synui 0.1.0-359</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Space</code></td>
+<td><strong>Command bar</strong> — <code>synsh</code> intents and output capture</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>=</code></td>
+<td><strong>Application launcher</strong> (<a href="https://github.com/davatorium/rofi">rofi</a>)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Backspace</code></td>
+<td><strong>Ask the AI</strong></td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>A</code></td>
+<td>Neural activity overlay (live <code>synapd</code> feed)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Escape</code></td>
+<td><strong><a href="/wiki/Welcome-Guide">Welcome guide</a></strong> — six pages on what this desktop does and which keys do it. Also <code>synui-welcome</code>, and the <em>Welcome Guide</em> entry in the applications menu</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>X</code></td>
+<td><strong>Calculator</strong> — a whole expression (<code>(1440-32)*0.8</code>), not a four-function chain. <code>pi</code>, <code>e</code>, <code>ans</code> and <code>sqrt</code>/<code>ln</code>/<code>log</code>/<code>sin</code>… work, <code>Up</code>/<code>Down</code> recall the tape, <code>Ctrl</code>+<code>C</code> copies the answer, <code>Ctrl</code>+<code>V</code> pastes one in. <code>syn-calc</code> is the same evaluator on the command line</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>semicolon</code></td>
+<td><strong>Emoji picker</strong> — type to search, <code>Tab</code> for categories, <code>Enter</code> inserts</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>I</code></td>
+<td><strong>Image viewer</strong> — also what a file manager opens a picture with</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong><code>Super</code>+<code>Space</code> is the command bar</strong> — the one that takes <code>synsh</code> intents and
+shows command output. It sits next to <code>Super</code>+<code>Backspace</code> so the two AI popups
+are side by side on the keyboard.</p>
+<p><strong><code>Super</code>+<code>=</code> is rofi</strong>, the application launcher — it lists your installed
+apps and starts one. <strong>Pressing the key again while it is up closes it</strong>, so it
+behaves like the panels below it. Clicking away does not dismiss it, because
+rofi's Wayland backend cannot see clicks outside its own surface; <code>Escape</code>
+closes it too. A brief flicker as it opens is upstream's — it detects the
+monitor scale late.</p>
+<p>The toggle is <code>spawn_toggle</code> in the bind table, and it is a general thing: any
+bind written <code>spawn_toggle &lt;command&gt;</code> closes what it started if the key comes
+back while it is still running. Plain <code>spawn</code> stays fire-and-forget, which is
+what you want from the terminal bind — the second press should give you a
+second terminal.</p>
+<p><strong>Want them the other way round?</strong> They are ordinary binds with one owner —
+swap them in the shortcut palette (<code>Super</code>+<code>/</code>, then <code>F2</code> on each), or with two
+<code>bind =</code> lines in <code>synuirc</code>. A bind on a combo that already has one replaces
+it, so the swap is two lines.</p>
+<p>⛔ There used to be a <strong>Super+Space opens</strong> row in the control panel, and a
+<code>super_space = launcher|cmdbar</code> key to go with it. Both are gone as of synui
+0.1.0-338: they were a <em>second</em> place a keybinding was declared and they beat
+the first, re-seating the pair at the end of every config load — so a chord you
+moved in the palette was put back at the next login. The key is still parsed,
+only to log that it is ignored.</p>
+</blockquote>
+<p>rofi follows the desktop theme — a theme switch rewrites its palette, and since
+rofi starts fresh on every keypress it picks the new colours up immediately.</p>
+<blockquote>
+<p><strong><code>Super</code>+<code>/</code> is the one to remember if you remember nothing else.</strong> It is the
+same list as this page, filtered as you type, built from the live bind table —
+so it includes anything you have rebound and cannot go stale. It also answers
+to <code>Super</code>+<code>?</code>: on a US layout that is <code>Super</code>+<code>Shift</code>+<code>/</code>, and the keyboard
+hands the compositor a <em>different symbol</em> when Shift is down, so both are
+bound to the same action. Reach for it either way.</p>
+</blockquote>
+<h2 id="windows">Windows</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>Q</code> / <code>Super</code>+<code>Shift</code>+<code>Q</code></td>
+<td>Close window / quit compositor</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>J</code> / <code>Super</code>+<code>K</code></td>
+<td>Focus next / previous</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>J</code> / <code>Super</code>+<code>Shift</code>+<code>K</code></td>
+<td>Move window up / down the stack</td>
+</tr>
+<tr>
+<td><code>Alt</code>+<code>Tab</code> / <code>Alt</code>+<code>Shift</code>+<code>Tab</code></td>
+<td><strong>Most-recently-used</strong> cycle — "the window I was just in"</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>H</code> / <code>Super</code>+<code>Shift</code>+<code>L</code></td>
+<td>Shrink / grow the master area — and a <strong>niri</strong> column's width</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>,</code> / <code>Super</code>+<code>.</code></td>
+<td><strong>niri only</strong> — pull the window into the column on its left / push it back out into its own column</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>F</code> / <code>Super</code>+<code>M</code> / <code>Super</code>+<code>N</code></td>
+<td>Float / maximize / minimize</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>N</code></td>
+<td>Restore the last minimized window</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Left</code> / <code>Super</code>+<code>Right</code> / <code>Super</code>+<code>Up</code> / <code>Super</code>+<code>Down</code></td>
+<td><strong>Move the window</strong> left / right / up / down — or earlier / later in the layout</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Ctrl</code>+<code>Up</code> / <code>Super</code>+<code>Ctrl</code>+<code>Left</code></td>
+<td><strong>Fill the screen height / width</strong>, and press again to put it back</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>F</code></td>
+<td><strong>Fullscreen</strong> (forces it — for games that only do "borderless")</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>D</code></td>
+<td>Toggle window decorations (titlebar)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Tab</code></td>
+<td><strong>Cycle this desktop's layout</strong> — tiling → floating → monocle → AI → niri → spiral → cascade</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>Y</code></td>
+<td><strong>Cascade</strong> — straight to the overlapping-cards layout from wherever you are</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>T</code></td>
+<td><strong>Retile</strong> — back to tiling, and put every window back in it</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>G</code></td>
+<td><strong>Arrange</strong> without leaving the layout you are on — every window you have dragged goes back where the layout wants it. On a floating desktop that is the inset grid ("G for grid"), and it is the one tidy-up that leaves a floating desktop floating</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>O</code> / <code>Super</code>+<code>Shift</code>+<code>O</code></td>
+<td>Move window to next / previous monitor</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>1</code>–<code>9</code></td>
+<td>Switch workspace</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>1</code>–<code>9</code></td>
+<td>Move window to workspace</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><code>Super</code>+<code>J</code>/<code>K</code> walk <strong>stacking order</strong>; <code>Alt</code>+<code>Tab</code> walks <strong>MRU</strong>. That
+difference is the whole reason both exist.</p>
+<p><code>Super</code>+<code>Tab</code> does <strong>not</strong> switch windows — it switches <em>layouts</em>. The seven
+and what each one does are in <a href="/wiki/The-Desktop#layouts">The Desktop → Layouts</a>.</p>
+<p><code>Super</code>+<code>,</code> and <code>Super</code>+<code>.</code> are the only two keys that do nothing on six of
+the seven layouts, and that is not a bug: the others have no columns to move a
+window between. On <strong>niri</strong> they are the whole point — everything else is
+walking along the strip, which <code>Super</code>+<code>Shift</code>+<code>J</code>/<code>K</code> already does.</p>
+</blockquote>
+<h2 id="look-and-feel">Look and feel</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>T</code></td>
+<td><strong>Theme manager</strong> — fifteen: <strong>Prism</strong> and <strong>Prism Light</strong> (the house theme, and what a fresh install boots into), SYNAPSE, Dark, XP, 95, <strong>macOS 26, Aqua, Platinum</strong>, and six riced palettes</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>W</code> / <code>Super</code>+<code>Shift</code>+<code>W</code></td>
+<td><strong><a href="/wiki/Wallpapers">Wallpaper picker</a></strong> / reload wallpaper (<code>Tab</code> scopes it to one monitor, <code>m</code> cycles the scaling mode)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>E</code></td>
+<td>Visual effects panel (scanline / curvature / aberration / glitch / phosphor)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>P</code></td>
+<td><strong>Cursor theme picker</strong> ("P for pointer")</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>S</code></td>
+<td><strong>Event sounds</strong></td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>A</code></td>
+<td><strong>Desktop widgets</strong> manager — visualiser, sysmon, big clock, analog clock (four faces), music, quick-launch, post-it, Tuxagotchi</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>B</code></td>
+<td>Night light ("blue light")</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>X</code></td>
+<td><strong>Crop an image</strong> ("X for cut") — opens on your recent images from Pictures, Wallpapers and Downloads</td>
+</tr>
+</tbody>
+</table></div>
+<p>See <a href="/wiki/The-Desktop">The Desktop</a>, <a href="/wiki/Wallpapers">Wallpapers</a>,
+<a href="/wiki/Window-Effects">Window Effects</a>, <a href="/wiki/Cursor-Themes">Cursor Themes</a>,
+<a href="/wiki/Sound-Themes">Sound Themes</a>.</p>
+<h2 id="system">System</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>Ctrl</code>+<code>=</code> / <code>Super</code>+<code>Ctrl</code>+<code>-</code></td>
+<td><strong>Scale the whole desktop</strong> — panels, apps and cursor together</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Ctrl</code>+<code>0</code></td>
+<td>Back to 100%</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>D</code></td>
+<td>Display settings (<code>p</code> sets the <strong>primary</strong> output — see below; <code>m</code> cycles <code>display_mode</code>: extend / mirror / external)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>I</code></td>
+<td>Network / Wi-Fi</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>B</code></td>
+<td>Bluetooth</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>P</code></td>
+<td>Power saving panel</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>L</code></td>
+<td>Lock screen</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Space</code> <em>(on the lock/login screen only)</em></td>
+<td>Walk the <strong>keyboard layouts</strong>. Compositor binds are off while locked, so this chord means only this there. Clicking the chip does the same. On the desktop it is <code>synctl layout next</code> or a <code>kbd_layout</code> bind</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Z</code></td>
+<td><strong>Screensaver and lock-screen appearance</strong> — five modes, off by default. <code>Up</code>/<code>Down</code> picks a row, <code>Left</code>/<code>Right</code> changes it, <code>p</code> previews, <code>s</code> saves</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>G</code></td>
+<td><a href="/wiki/Gaming">Game mode</a></td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>V</code></td>
+<td>Clipboard history</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>R</code></td>
+<td>News feed (R for RSS — <code>Super</code>+<code>N</code> is minimize)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>R</code></td>
+<td>Start / stop screen recording</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>M</code></td>
+<td>Do not disturb — no toasts, no chimes (its own confirmation still shows, so the key never looks dead)</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Alt</code>+<code>Delete</code></td>
+<td>Task manager (processes, CPU/RAM/GPU)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>C</code></td>
+<td>Cat mode 🐈</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong><code>Super</code>+<code>T</code> used to be the task manager.</strong> It is the theme manager now — the
+task manager had two binds and needed one, and <code>Ctrl</code>+<code>Alt</code>+<code>Delete</code> is the one
+everybody already reaches for. (logind's <code>Ctrl</code>+<code>Alt</code>+<code>Del</code> handling is a
+VT/console thing, so inside a Wayland session the key reaches the compositor.)</p>
+</blockquote>
+<h2 id="media-and-hardware-keys">Media and hardware keys</h2>
+<p>Bare keys, no modifier — they are dedicated keys and nothing else claims them.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>XF86AudioRaiseVolume</code> / <code>LowerVolume</code> / <code>Mute</code></td>
+<td>Volume, with an OSD</td>
+</tr>
+<tr>
+<td><code>XF86MonBrightnessUp</code> / <code>Down</code></td>
+<td>Backlight</td>
+</tr>
+<tr>
+<td><code>XF86Display</code></td>
+<td>Cycle <code>display_mode</code> — extend / duplicate / built-in off. The laptop key with the two monitors on it (<code>Fn</code>+<code>F7</code> on a ThinkPad)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Bare-key binds matter for hardware like USB volume knobs, which report plain
+<code>KEY_VOLUMEUP</code>/<code>KEY_VOLUMEDOWN</code>/<code>KEY_MUTE</code> with no modifier held. Before synui
+had audio binds, those events reached the bind table and matched nothing.</p>
+</blockquote>
+<h2 id="screenshots">Screenshots</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Print</code></td>
+<td>Screenshot the monitor you're on</td>
+</tr>
+<tr>
+<td><code>Shift</code>+<code>Print</code> / <code>Super</code>+<code>Shift</code>+<code>S</code></td>
+<td>Screenshot an area (drag it out)</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Print</code></td>
+<td>Screenshot every monitor at once</td>
+</tr>
+</tbody>
+</table></div>
+<p>Screenshots land in <code>~/Pictures/Screenshots</code> <strong>and</strong> on the clipboard, so you can
+paste one straight into a chat without opening the file.</p>
+<blockquote>
+<p>Note: <code>Print</code> arrives as <strong><code>Sys_Req</code></strong> when <code>Alt</code> is held — that's an X11ism, not
+a bug.</p>
+</blockquote>
+<hr />
+<h2 id="rebinding">Rebinding</h2>
+<div class="hl"><pre><span></span><code>bind = super+shift+z spawn my-script
+</code></pre></div>
+
+<p>in <code>synuirc</code>. Actions are the names the default table uses (<code>term</code>, <code>cmdbar</code>,
+<code>theme</code>, <code>sounds</code>, <code>widgets</code>, <code>cursor</code>, <code>alt_tab</code>, …), plus <code>spawn &lt;command&gt;</code>.</p>
+<blockquote>
+<p><strong>No comma.</strong> The line is split on the <em>first whitespace</em> — everything before
+it is the combo, everything after is the action and its argument. A trailing
+comma becomes part of the key name, and <code>z,</code> is not a keysym, so the whole
+bind is dropped (synui logs <code>bind: bad key</code>).</p>
+<p><strong>Punctuation keys are spelled by name</strong>, because the combo is split on <code>+</code>
+and a literal <code>=</code> or <code>+</code> cannot be the key. Use the XKB keysym name:
+<code>equal</code>, <code>minus</code>, <code>comma</code>, <code>period</code>, <code>slash</code>. The command bar's default is
+<code>bind = super+equal cmdbar</code> — <code>super+=</code> does <strong>not</strong> work.</p>
+<p><strong>A duplicate combo is not a conflict anyone sees — it is the older feature
+silently going dead.</strong> <code>handle_keybinding</code> takes the <strong>first</strong> match. synui
+logs <code>DUPLICATE default bind</code> at startup for exactly this reason: adding
+<code>night_light</code> on <code>super+shift+n</code> once killed <code>minimize_restore</code>, and it only
+turned up because the table happened to get grepped.</p>
+</blockquote>
+<h3 id="the-gaming-keys">The gaming keys</h3>
+<p><strong>They are there on a fresh install</strong> as of 0.2.9 — your session runs
+<code>syn-arcade binds ensure</code>, which refreshes the block in <code>synuirc</code> if there is
+one and writes it if there is not. Before that they lived only in a <code>synuirc</code>
+somebody had run <code>binds install</code> against, so <code>Super</code>+<code>F10</code>, <code>F11</code> and <code>F12</code> did
+nothing at all on a machine nobody had configured.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>F10</code></td>
+<td><strong><a href="/wiki/Big-Screen">Big screen mode</a></strong> — the ten-foot interface</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>F11</code></td>
+<td>Toggle the MangoHud overlay, inside a running game</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>F12</code></td>
+<td>Move it</td>
+</tr>
+</tbody>
+</table></div>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>binds<span class="w">                             </span><span class="c1"># are they installed, and which</span>
+syn-arcade<span class="w"> </span>binds<span class="w"> </span>install<span class="w"> </span>--toggle<span class="o">=</span>super+u<span class="w"> </span>--cycle<span class="o">=</span>super+y<span class="w">     </span><span class="c1"># or pick your own</span>
+syn-arcade<span class="w"> </span>binds<span class="w"> </span>remove<span class="w">                      </span><span class="c1"># and a block you removed stays removed</span>
+</code></pre></div>
+
+<p>They land in <code>synuirc</code> as ordinary <code>bind =</code> lines, which is deliberate: it makes
+them defaults like any other, so the <code>Super</code>+<code>/</code> palette can rebind them and
+<code>Ctrl</code>+<code>Shift</code>+<code>R</code> does not wipe them the way it would a palette rebind.</p>
+<p>They toggle the overlay <strong>inside a game that is already running</strong> — see
+<a href="/wiki/Gaming#the-overlay-is-hidden-until-you-ask">Gaming</a> for why that is possible.</p>
+<hr />
+<h2 id="two-things-that-will-confuse-you-if-you-hit-them">Two things that will confuse you if you hit them</h2>
+<p><strong><code>Super</code>+<code>Shift</code>+<code>F</code> exists because "fullscreen" is a lie.</strong> Some games (Doom KEX
+with <code>v_windowmode=1</code>) are <em>borderless windowed</em> and never send
+<code>_NET_WM_STATE_FULLSCREEN</code>, so the compositor correctly tiles them and you assume
+synui is broken. Either set the game to true fullscreen (<code>v_windowmode=2</code>) or
+force it with <code>Super</code>+<code>Shift</code>+<code>F</code>.</p>
+<p><strong>Set a primary output if games open on the wrong monitor.</strong> Xwayland used to mark
+no primary output, so SDL fell back to connector order and games opened on
+whichever panel happened to be first. <code>Super</code>+<code>D</code> → <code>p</code>, or <code>primary=1</code> in
+<code>outputs.conf</code>.</p>
+<p>See also: <a href="/wiki/synui">synui</a>, <a href="/wiki/Commands">Commands</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Terminal"><span>Previous</span>Terminal</a><a class="next" href="/wiki/Commands"><span>Next</span>Commands</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings" aria-current="page">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

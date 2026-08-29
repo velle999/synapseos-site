@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Troubleshooting — SynapseOS Wiki</title>
+<meta name="description" content="Things that go wrong on a running SynapseOS, and what to do about them. Symptom first.">
+<link rel="canonical" href="https://soslinux.org/wiki/Troubleshooting">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Troubleshooting — SynapseOS Wiki">
+<meta property="og:description" content="Things that go wrong on a running SynapseOS, and what to do about them. Symptom first.">
+<meta property="og:url" content="https://soslinux.org/wiki/Troubleshooting">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#quick-checks">Quick checks</a></li>
+<li><a href="#sound">Sound</a></li>
+<li class="sub"><a href="#event-sounds-are-switched-on-and-nothing-plays">Event sounds are switched on and nothing plays</a></li>
+<li class="sub"><a href="#no-audio-anywhere-or-audio-apps-keep-dying">No audio anywhere, or audio apps keep dying</a></li>
+<li><a href="#cursors">Cursors</a></li>
+<li class="sub"><a href="#i-installed-a-cursor-theme-and-it-isnt-in-the-picker">I installed a cursor theme and it isn&#x27;t in the picker</a></li>
+<li class="sub"><a href="#the-cursor-is-right-on-the-desktop-but-wrong-or-huge-in-a-game">The cursor is right on the desktop but wrong (or huge) in a game</a></li>
+<li><a href="#the-desktop">The desktop</a></li>
+<li class="sub"><a href="#the-bar-is-gone">The bar is gone</a></li>
+<li class="sub"><a href="#part-of-the-desktop-wont-accept-clicks">Part of the desktop won&#x27;t accept clicks</a></li>
+<li class="sub"><a href="#desktop-icons-sit-under-the-bar">Desktop icons sit under the bar</a></li>
+<li class="sub"><a href="#firefox-cant-be-resized-by-dragging-its-edges">Firefox can&#x27;t be resized by dragging its edges</a></li>
+<li class="sub"><a href="#a-window-has-a-heavy-square-cornered-shadow-unlike-everything-else">A window has a heavy, square-cornered shadow unlike everything else</a></li>
+<li class="sub"><a href="#everything-looks-flat--no-blur-no-shadows">Everything looks flat — no blur, no shadows</a></li>
+<li class="sub"><a href="#a-window-leaves-a-ghost-outline-after-resizing">A window leaves a ghost outline after resizing</a></li>
+<li class="sub"><a href="#i-need-to-get-at-my-files-and-the-desktop-will-not-start">I need to get at my files and the desktop will not start</a></li>
+<li><a href="#wallpapers">Wallpapers</a></li>
+<li class="sub"><a href="#my-workshop-wallpaper-is-gone-after-waking-from-standby">My Workshop wallpaper is gone after waking from standby</a></li>
+<li class="sub"><a href="#a-workshop-wallpaper-is-just-black">A Workshop wallpaper is just black</a></li>
+<li class="sub"><a href="#the-picker-doesnt-list-my-workshop-wallpapers">The picker doesn&#x27;t list my Workshop wallpapers</a></li>
+<li class="sub"><a href="#my-wallpaper-reverts-every-login-ignoring-synuirc">My wallpaper reverts every login, ignoring synuirc</a></li>
+<li class="sub"><a href="#one-monitor-has-the-wrong-wallpaper">One monitor has the wrong wallpaper</a></li>
+<li><a href="#displays-and-games">Displays and games</a></li>
+<li class="sub"><a href="#a-game-opens-on-the-wrong-monitor">A game opens on the wrong monitor</a></li>
+<li class="sub"><a href="#a-game-wont-go-fullscreen--it-stays-tiled">A game won&#x27;t go fullscreen — it stays tiled</a></li>
+<li class="sub"><a href="#a-window-opens-somewhere-i-cannot-see-it">A window opens somewhere I cannot see it</a></li>
+<li class="sub"><a href="#an-old-game-is-a-postage-stamp-in-the-middle-of-the-screen">An old game is a postage stamp in the middle of the screen</a></li>
+<li class="sub"><a href="#a-game-window-is-the-right-size-but-renders-nothing">A game window is the right size but renders nothing</a></li>
+<li class="sub"><a href="#mangohud-never-appears">MangoHud never appears</a></li>
+<li class="sub"><a href="#the-display-panel-says-a-monitor-isnt-hdr">The display panel says a monitor isn&#x27;t HDR</a></li>
+<li><a href="#screen-recording">Screen recording</a></li>
+<li class="sub"><a href="#a-screen-recording-will-not-open-in-my-video-editor">A screen recording will not open in my video editor</a></li>
+<li class="sub"><a href="#an-old-recording-loses-frames-or-stutters-when-i-edit-it">An old recording loses frames or stutters when I edit it</a></li>
+<li class="sub"><a href="#my-recordings-are-suddenly-enormous">My recordings are suddenly enormous</a></li>
+<li><a href="#power-locking-and-suspend">Power, locking and suspend</a></li>
+<li class="sub"><a href="#the-screen-blanks-while-im-watching-something">The screen blanks while I&#x27;m watching something</a></li>
+<li class="sub"><a href="#the-screen-never-blanks">The screen never blanks</a></li>
+<li class="sub"><a href="#black-screen-after-resuming-from-suspend-on-nvidia">Black screen after resuming from suspend, on NVIDIA</a></li>
+<li class="sub"><a href="#the-screen-is-black-after-waking-but-the-machine-is-alive">The screen is black after waking, but the machine is alive</a></li>
+<li class="sub"><a href="#im-locked-out-and-cant-switch-to-a-text-console">I&#x27;m locked out and can&#x27;t switch to a text console</a></li>
+<li><a href="#updates-and-packages">Updates and packages</a></li>
+<li class="sub"><a href="#pacman--s-404s-while-fetching-a-dependency">pacman -S 404s while fetching a dependency</a></li>
+<li class="sub"><a href="#after-a-kernel-upgrade-the-kernel-module-wont-load">After a kernel upgrade the kernel module won&#x27;t load</a></li>
+<li class="sub"><a href="#the-ai-stopped-responding-after-an-upgrade">The AI stopped responding after an upgrade</a></li>
+<li><a href="#apps-and-integration">Apps and integration</a></li>
+<li class="sub"><a href="#superreturn-opens-a-terminal-i-do-not-recognise">Super+Return opens a terminal I do not recognise</a></li>
+<li class="sub"><a href="#pressing-ctrld-in-a-terminal-opens-another-terminal">Pressing Ctrl+D in a terminal opens another terminal</a></li>
+<li class="sub"><a href="#the-package-manager-will-not-remove-kitty">The package manager will not remove kitty</a></li>
+<li class="sub"><a href="#a-usb-stick-will-not-format-or-comes-back-read-only">A USB stick will not format, or comes back read-only</a></li>
+<li class="sub"><a href="#an-app-that-needs-root-does-nothing-when-launched-from-the-menu">An app that needs root does nothing when launched from the menu</a></li>
+<li class="sub"><a href="#a-folder-opens-in-the-wrong-application">A folder opens in the wrong application</a></li>
+<li class="sub"><a href="#open-with-is-empty-in-dolphin-and-every-file-opens-the-chooser">&quot;Open With&quot; is empty in Dolphin and every file opens the chooser</a></li>
+<li class="sub"><a href="#a-video-shows-no-resolution-in-properties">A video shows no resolution in Properties</a></li>
+<li class="sub"><a href="#a-command-in-localbin-isnt-found-in-the-session">A command in ~/.local/bin isn&#x27;t found in the session</a></li>
+<li class="sub"><a href="#a-tray-icon-disappears-when-i-close-my-terminal">A tray icon disappears when I close my terminal</a></li>
+<li class="sub"><a href="#the-printer-installs-but-prints-nothing">The printer installs but prints nothing</a></li>
+<li><a href="#network">Network</a></li>
+<li class="sub"><a href="#a-container-or-virtual-machine-has-no-network">A container or virtual machine has no network</a></li>
+<li class="sub"><a href="#something-on-the-local-network-cannot-reach-a-server-on-this-machine">Something on the local network cannot reach a server on this machine</a></li>
+<li class="sub"><a href="#i-want-to-check-the-firewall-is-actually-on">I want to check the firewall is actually on</a></li>
+<li><a href="#boot-and-secure-boot">Boot and Secure Boot</a></li>
+<li class="sub"><a href="#the-usb-stick-does-not-boot-or-the-live-session-dies-partway-in">The USB stick does not boot, or the live session dies partway in</a></li>
+<li class="sub"><a href="#secure-boot-key-enrollment-fails-no-matter-how-many-times-i-reboot">Secure Boot key enrollment fails no matter how many times I reboot</a></li>
+<li class="sub"><a href="#i-encrypted-the-disk-and-now-i-cant-unlock-it">I encrypted the disk and now I can&#x27;t unlock it</a></li>
+<li><a href="#still-stuck">Still stuck?</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Troubleshooting</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Things that go wrong on a running SynapseOS, and what to do about them.
+Symptom first.</p>
+<p>Working <em>on</em> the system rather than <em>with</em> it? The engineering counterpart is
+<a href="/wiki/Development-Notes">Development Notes</a>.</p>
+<blockquote>
+<p><strong>The one habit worth having: don't trust a status command.</strong> Most of what
+breaks here breaks <em>quietly</em> — a service that reports success while doing
+nothing, a switch that is on with nothing behind it. When something "works but
+doesn't", go and look at the thing that is actually running.</p>
+</blockquote>
+<hr />
+<h2 id="quick-checks">Quick checks</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Don't ask</th>
+<th>Ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is the AI actually on my GPU?</td>
+<td>the log line</td>
+<td><code>grep -c nvidia /proc/$(pidof synapd)/maps</code> — <code>0</code> means CPU</td>
+</tr>
+<tr>
+<td>Is the kernel module loaded and current?</td>
+<td><code>dkms status</code></td>
+<td><code>modinfo synapse_kmod | grep vermagic</code> vs <code>uname -r</code></td>
+</tr>
+<tr>
+<td>Is my package actually installed?</td>
+<td>that you built it</td>
+<td><code>pacman -Q synui</code> — compare the pkgrel</td>
+</tr>
+<tr>
+<td>Is a setting live?</td>
+<td>the panel</td>
+<td>the state file under <code>~/.config/synui/</code></td>
+</tr>
+<tr>
+<td>Is a service running the config I edited?</td>
+<td>the file you edited</td>
+<td><code>systemctl show -p FragmentPath &lt;unit&gt;</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Everything should be up after boot:</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd<span class="w"> </span>synguard<span class="w"> </span>synnet
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>synapse_kmod
+cat<span class="w"> </span>/sys/kernel/synapse/status
+</code></pre></div>
+
+<hr />
+<h2 id="sound">Sound</h2>
+<h3 id="event-sounds-are-switched-on-and-nothing-plays">Event sounds are switched on and nothing plays</h3>
+<p>Run <code>synui-sound</code> with no arguments and read the <strong>theme</strong> line.</p>
+<div class="hl"><pre><span></span><code>  theme            alsa  &lt;-- NOT a sound theme, nothing will play
+                   pick one of: freedesktop ocean
+</code></pre></div>
+
+<p>If you see that, the selected directory is not a sound theme — it holds no
+XDG-named samples, so every lookup misses and every event is silent no matter
+what its switch says. <code>/usr/share/sounds/alsa</code> is the usual culprit: it is nine
+channel-test <code>.wav</code> files dropped there by <code>alsa-utils</code>.</p>
+<div class="hl"><pre><span></span><code>synui-sound<span class="w"> </span>themes<span class="w">              </span><span class="c1"># what you can actually pick</span>
+synui-sound<span class="w"> </span>theme<span class="w"> </span>freedesktop
+</code></pre></div>
+
+<p>If the theme is fine but one event is silent, check its sample column — a
+<code>(not in &lt;theme&gt;)</code> there means that theme simply doesn't ship a sample for it.
+Pick one it does have:</p>
+<div class="hl"><pre><span></span><code>synui-sound<span class="w"> </span>samples
+synui-sound<span class="w"> </span>sound<span class="w"> </span>login<span class="w"> </span>bell
+</code></pre></div>
+
+<p>And if nothing plays at all, confirm the pieces are installed:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>sound-theme-freedesktop<span class="w"> </span>libcanberra
+synui-sound<span class="w"> </span><span class="nb">test</span><span class="w"> </span>login<span class="w">          </span><span class="c1"># plays regardless of any switch</span>
+</code></pre></div>
+
+<h3 id="no-audio-anywhere-or-audio-apps-keep-dying">No audio anywhere, or audio apps keep dying</h3>
+<p>Two independent causes, both quiet:</p>
+<ul>
+<li><strong>ALSA's <code>default</code> device is unrouted.</strong> Usually <code>pipewire-alsa</code> is missing, or
+  the default card genuinely has no playback device. Test with <code>aplay</code> directly
+  and <em>check its exit status</em> — a lot of software ignores it and turns a hard
+  failure into silence.</li>
+<li><strong>PipeWire clients killed by the kernel.</strong> If <code>xdg-desktop-portal</code> was started
+  before <code>rtkit</code> was installed, it holds a cached <code>RTTimeUSecMax=0</code>: clients get
+  realtime priority with a <strong>zero</strong> time budget and the kernel duly kills them.
+  <strong>Restart the portal</strong> (or reboot) after installing rtkit.</li>
+</ul>
+<hr />
+<h2 id="cursors">Cursors</h2>
+<h3 id="i-installed-a-cursor-theme-and-it-isnt-in-the-picker">I installed a cursor theme and it isn't in the picker</h3>
+<p>Almost always: what you downloaded is a <strong>source tree</strong>, not a built theme.
+Cursor sites ship both, and they look identical from the outside. A theme has a
+<code>cursors/</code> directory with files in it; a source tree has a makefile and needs
+compiling.</p>
+<p>Don't extract it into <code>~/.local/share/icons</code> by hand — that leaves a directory
+that nothing will ever see and nothing explains. Use the installer, which tells
+you which one you have:</p>
+<div class="hl"><pre><span></span><code>synui-cursor<span class="w"> </span>install<span class="w"> </span>~/Downloads/whatever.tar.gz
+</code></pre></div>
+
+<p>If it is a source tree, it stages it and prints the two commands to finish
+(<code>build</code>, then <code>install</code>). Building needs <code>xorg-xcursorgen</code> and <code>imagemagick</code>,
+and it runs that archive's own makefile as you — so it is a separate, explicit
+command. Only do it for an archive you trust.</p>
+<h3 id="the-cursor-is-right-on-the-desktop-but-wrong-or-huge-in-a-game">The cursor is right on the desktop but wrong (or huge) in a game</h3>
+<p>Games and other Xwayland clients read the theme from somewhere else. <code>synui-cursor
+set</code> writes all five locations, so use it rather than setting <code>XCURSOR_THEME</code> by
+hand:</p>
+<div class="hl"><pre><span></span><code>synui-cursor<span class="w"> </span><span class="nb">set</span><span class="w"> </span>&lt;theme&gt;<span class="w"> </span><span class="m">24</span>
+</code></pre></div>
+
+<p>A <strong>giant</strong> pointer in one app specifically means <code>XCURSOR_SIZE</code> is unset for it:
+libXcursor then computes a size from the X screen, and a multi-monitor Xwayland
+screen is thousands of pixels wide.</p>
+<p><strong>Already-running apps keep the old cursor until they restart.</strong> Nothing can
+change that — log out and back in if you want everything consistent.</p>
+<hr />
+<h2 id="the-desktop">The desktop</h2>
+<h3 id="the-bar-is-gone">The bar is gone</h3>
+<p>synui starts it once and does not respawn it, so if it was killed it stays gone:</p>
+<div class="hl"><pre><span></span><code>synui-bar<span class="w"> </span><span class="p">&amp;</span>
+</code></pre></div>
+
+<p>If it starts but the <strong>tray</strong> is empty, tray apps register with whichever process
+owns the tray service — restart the app after the bar, not the other way round.</p>
+<h3 id="part-of-the-desktop-wont-accept-clicks">Part of the desktop won't accept clicks</h3>
+<p>If you have the <strong>quick-launch widget</strong> on, the desktop right-click menu is
+unreachable underneath it — that widget accepts clicks by design. Turn it off, or
+right-click somewhere else:</p>
+<div class="hl"><pre><span></span><code>synui-widgets<span class="w"> </span>launcher<span class="w"> </span>off
+synui-widgets<span class="w"> </span>all<span class="w"> </span>off<span class="w">        </span><span class="c1"># clear the desktop entirely</span>
+</code></pre></div>
+
+<p><code>Super</code>+<code>Shift</code>+<code>A</code> does the same from a panel.</p>
+<h3 id="desktop-icons-sit-under-the-bar">Desktop icons sit under the bar</h3>
+<p>The bar reserves its strip slightly after startup, so a very early layout can
+place icons where the bar is about to be. Toggle icons off and on, or re-arrange
+them from the desktop right-click menu.</p>
+<h3 id="firefox-cant-be-resized-by-dragging-its-edges">Firefox can't be resized by dragging its edges</h3>
+<p>Firefox doesn't use server-side decorations, so it keeps an invisible margin
+around itself that swallows the resize grab. <code>clip_csd_margin = on</code> (the default)
+crops it. If you turned it off, that's the trade.</p>
+<h3 id="a-window-has-a-heavy-square-cornered-shadow-unlike-everything-else">A window has a heavy, square-cornered shadow unlike everything else</h3>
+<p>That is the <em>application's</em> own shadow, not synui's. Same cause as above: apps
+that ignore server-side decorations paint their own. <code>clip_csd_margin = on</code> makes
+every window use synui's. See <a href="/wiki/Window-Effects">Window Effects</a>.</p>
+<h3 id="everything-looks-flat--no-blur-no-shadows">Everything looks flat — no blur, no shadows</h3>
+<p>Window effects ship <strong>off</strong> on a fresh install. Turn them on with <code>Super</code>+<code>E</code>, or
+in <code>~/.config/synui/synuirc</code>. Note that blur only shows where a window is
+translucent, so <code>transparency = on</code> is usually what you actually want first.</p>
+<h3 id="a-window-leaves-a-ghost-outline-after-resizing">A window leaves a ghost outline after resizing</h3>
+<p>Cosmetic, and it clears on the next repaint. Toggling blur off and on resets it.</p>
+<h3 id="i-need-to-get-at-my-files-and-the-desktop-will-not-start">I need to get at my files and the desktop will not start</h3>
+<p>You do not need the desktop for that. From a text console (<code>Ctrl</code>+<code>Alt</code>+<code>F2</code>) or
+over SSH:</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>tui<span class="w"> </span>~
+</code></pre></div>
+
+<p>Arrow keys move, <code>→</code> opens, <code>←</code> goes up, <code>t</code> trashes, <code>m</code> and <code>y</code> move and copy,
+<code>q</code> quits. It is the same file manager as the window — the same trash, the same
+journal, so <code>synfiles undo</code> afterwards reverses what you did here. It never turns
+on mouse reporting or an alternate screen, so a session interrupted halfway
+cannot leave your shell reading pointer movement as typed input.</p>
+<p>See <strong><a href="/wiki/Files#in-a-terminal">Files ▸ In a terminal</a></strong>.</p>
+<hr />
+<h2 id="wallpapers">Wallpapers</h2>
+<h3 id="my-workshop-wallpaper-is-gone-after-waking-from-standby">My Workshop wallpaper is gone after waking from standby</h3>
+<p>The engine cannot re-create a layer surface it has lost, so it stays running and
+paints nothing while synui's own wallpaper shows through. synui restarts it for
+you on resume; if it ever doesn't:</p>
+<div class="hl"><pre><span></span><code>synui-wpengine<span class="w"> </span>restore
+</code></pre></div>
+
+<p><code>synui-wpengine status</code> will show it running with the saved wallpapers listed —
+running is not the same as painting, which is exactly what makes this one
+confusing. See <a href="/wiki/Wallpapers#the-engine-cannot-survive-losing-its-surfaces">Wallpapers</a>.</p>
+<h3 id="a-workshop-wallpaper-is-just-black">A Workshop wallpaper is just black</h3>
+<p><strong>Web-type wallpapers do not work.</strong> They initialise and then render an empty
+texture — an upstream bug in the engine's CEF→GL path, not something a setting
+here fixes. <code>synui-wpengine list</code> shows each wallpaper's type; pick a <code>scene</code> or
+<code>video</code> one.</p>
+<h3 id="the-picker-doesnt-list-my-workshop-wallpapers">The picker doesn't list my Workshop wallpapers</h3>
+<p>In order:</p>
+<div class="hl"><pre><span></span><code>pacman<span class="w"> </span>-Q<span class="w"> </span>linux-wallpaperengine<span class="w">                      </span><span class="c1"># is the package installed?</span>
+ls<span class="w"> </span>~/.local/share/Steam/steamapps/common/wallpaper_engine/assets<span class="w">   </span><span class="c1"># is WE installed?</span>
+synui-wpengine<span class="w"> </span>list<span class="w">                                  </span><span class="c1"># does it see subscriptions?</span>
+</code></pre></div>
+
+<p>Wallpaper Engine itself must be installed through Steam — the engine reads its
+<code>assets/</code> tree, which is not redistributable and so is not part of any package.
+Entries that <em>are</em> subscribed but never appear are usually <strong>presets</strong> or
+<strong>asset packs</strong> rather than wallpapers; those are skipped deliberately.</p>
+<h3 id="my-wallpaper-reverts-every-login-ignoring-synuirc">My wallpaper reverts every login, ignoring <code>synuirc</code></h3>
+<p>That is <code>~/.config/synui/wallpaper.state</code> doing its job — the picker's choice
+overrides the config file on purpose. Delete it to hand control back:</p>
+<div class="hl"><pre><span></span><code>rm<span class="w"> </span>~/.config/synui/wallpaper.state
+</code></pre></div>
+
+<h3 id="one-monitor-has-the-wrong-wallpaper">One monitor has the wrong wallpaper</h3>
+<p>You have a per-monitor override. Open <code>Super</code>+<code>W</code>, press <code>Tab</code> until the scope
+says <strong>All monitors</strong>, and pick — that clears every override at once.</p>
+<hr />
+<h2 id="displays-and-games">Displays and games</h2>
+<h3 id="a-game-opens-on-the-wrong-monitor">A game opens on the wrong monitor</h3>
+<p>Set a primary output — <code>Super</code>+<code>D</code> then <code>p</code>, or <code>primary=1</code> in
+<code>~/.config/synui/outputs.conf</code>. Without one, SDL falls back to connector order.</p>
+<h3 id="a-game-wont-go-fullscreen--it-stays-tiled">A game won't go fullscreen — it stays tiled</h3>
+<p>Some games' "fullscreen" is <em>borderless windowed</em>, which never tells the
+compositor it is fullscreen, so synui correctly tiles it. Either set true
+fullscreen in the game (Doom KEX: <code>v_windowmode=2</code>, not <code>1</code>), or force it with
+<code>Super</code>+<code>Shift</code>+<code>F</code>.</p>
+<h3 id="a-window-opens-somewhere-i-cannot-see-it">A window opens somewhere I cannot see it</h3>
+<p>If a screen was switched off from <code>Super</code>+<code>D</code> rather than unplugged, windows
+whose saved position was on it could still be placed there — the application
+opened, took the keyboard, and was invisible. Fixed in synui 0.1.0-376: a
+disabled output is detached from the layout and anything on it is swept to a
+surviving screen.</p>
+<p>If it happens on an older build, re-enable the screen, move the window, and
+switch the screen off again — or delete the saved geometry for that application
+(<code>~/.config/synui/geom.state</code>).</p>
+<h3 id="an-old-game-is-a-postage-stamp-in-the-middle-of-the-screen">An old game is a postage stamp in the middle of the screen</h3>
+<p>It renders at 640×480 or 1024×768 and has no idea what a 1440p monitor is.
+<code>syn-arcade fit</code> wraps it in gamescope, which gives it a display of exactly the
+size it expects and upscales the result — see
+<strong><a href="/wiki/Gaming#fitting-an-old-game-to-the-screen">Gaming</a></strong>.</p>
+<h3 id="a-game-window-is-the-right-size-but-renders-nothing">A game window is the right size but renders nothing</h3>
+<p>Usually the game, not the compositor. Unity titles persist a screen-resolution
+<strong>index</strong>, not a resolution — move the game between monitors with different mode
+lists and the saved index can point outside the new list, giving a 1×1 viewport
+inside a correctly sized window. Delete or fix the game's prefs entry.</p>
+<p>A blank window at the <em>right size</em> is a client resolution bug far more often than
+a compositor bug.</p>
+<h3 id="mangohud-never-appears">MangoHud never appears</h3>
+<p>Two reasons, and the first is new since 0.2.9.4.</p>
+<p><strong><code>MANGOHUD=1</code> is no longer exported for the session.</strong> It used to be, and that
+one variable loaded the overlay layer into every Vulkan client on the machine —
+a browser, a video player, any Qt application that touched QtMultimedia — where
+on AMD it segfaults the client inside its own <code>vkCreateDevice</code> hook. The overlay
+comes from the launcher now:</p>
+<div class="hl"><pre><span></span><code>syn game ./game.x86_64          # or, as a Steam launch option:
+syn game -- %command%
+</code></pre></div>
+
+<p><code>syn game hud on</code> puts the old session-wide behaviour back if your machine has
+never seen that crash; <code>syn game hud</code> says which it currently is.</p>
+<p><strong>And <code>MANGOHUD=1</code> only ever hooked Vulkan.</strong> OpenGL games need the wrapper
+either way:</p>
+<div class="hl"><pre><span></span><code>mangohud %command%
+</code></pre></div>
+
+<p>in the launcher's command-line options — which is what <code>syn game</code> does for you.</p>
+<h3 id="the-display-panel-says-a-monitor-isnt-hdr">The display panel says a monitor isn't HDR</h3>
+<p>It reads the monitor's EDID rather than the plane's bit depth, so a 10-bit
+monitor that is not actually HDR is reported honestly. Full HDR10 output is not
+implemented yet.</p>
+<hr />
+<h2 id="screen-recording">Screen recording</h2>
+<h3 id="a-screen-recording-will-not-open-in-my-video-editor">A screen recording will not open in my video editor</h3>
+<p>If the editor is DaVinci Resolve, it most likely imported as <strong>media offline</strong>
+rather than failing outright — and the file is fine. It plays in any ordinary
+player.</p>
+<p>The free edition of Resolve on Linux <strong>decodes neither H.264 nor AAC</strong>, which is
+exactly what a normal recording contains. That is a licensing limit inside
+Resolve, not a missing codec on your machine, so no package you install will
+change it. Convert the recording instead:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>resolve<span class="w"> </span>transcode<span class="w"> </span>~/Videos/synui-20260101-120000.mp4
+</code></pre></div>
+
+<p>That writes a DNxHR <code>.mov</code> into a <code>DNxHR/</code> folder beside the original — import
+that one. <code>--profile dnxhr_lb</code> is proxy-grade and much smaller, <code>--profile
+dnxhr_hq</code> is heavier for grading, and <code>--fps</code> overrides the rate it conforms to.
+<strong><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></strong> covers the rest — installing it, and the
+OpenCL dependency that is the usual reason it installs fine and then will not
+start at all.</p>
+<p>If you know before you press record that the take is going into an edit, skip
+the conversion entirely: <strong>Control panel ▸ Sound ▸ Record for editing</strong> captures
+that format directly. It also avoids compressing the footage twice, which fine
+text and sharp UI edges will show. Expect roughly 1 GB per minute, and turn it
+back off when you are done.</p>
+<h3 id="an-old-recording-loses-frames-or-stutters-when-i-edit-it">An old recording loses frames or stutters when I edit it</h3>
+<p>Recordings made before SynapseOS 0.2.7 were captured at a <em>variable</em> frame
+rate — a frame only when the screen changed. They play correctly, but they have
+no single frame rate for a timeline to sit on, so an editor conforms them on
+import and drops frames unevenly doing it.</p>
+<p>Nothing can put those frames back, but <code>syn resolve transcode</code> will at least
+conform the clip to a real rate uniformly rather than leaving the editor to
+guess. New recordings are captured at a constant 60 fps and do not have the
+problem; <code>SYNUI_RECORD_FPS</code> changes that rate if you want your display's own.</p>
+<h3 id="my-recordings-are-suddenly-enormous">My recordings are suddenly enormous</h3>
+<p><strong>Control panel ▸ Sound ▸ Record for editing</strong> is on. The row itself tells you
+which mode you are in — it reads <code>DNxHR ~1.1 GB/min</code> when enabled and
+<code>off (H.264 mp4)</code> when not.</p>
+<p>That format exists to be edited, not stored or shared. An ordinary recording of
+the same length is a tiny fraction of the size, so switch back once the edit is
+done and convert individual takes with <code>syn resolve transcode</code> as you need them.</p>
+<hr />
+<h2 id="power-locking-and-suspend">Power, locking and suspend</h2>
+<h3 id="the-screen-blanks-while-im-watching-something">The screen blanks while I'm watching something</h3>
+<p>It shouldn't — synui holds an idle inhibit while audio is playing. If it still
+blanks, the player may not be routing through PipeWire. Adjust or disable the
+timeouts in <code>Super</code>+<code>P</code>.</p>
+<h3 id="the-screen-never-blanks">The screen never blanks</h3>
+<p>Check <code>Super</code>+<code>P</code>; a stuck idle inhibitor from a crashed app can also hold it
+awake. Restarting the offending app clears it.</p>
+<h3 id="black-screen-after-resuming-from-suspend-on-nvidia">Black screen after resuming from suspend, on NVIDIA</h3>
+<p>The <code>nvidia-suspend</code>, <code>nvidia-resume</code> and <code>nvidia-hibernate</code> services must be
+<strong>enabled</strong>. They preserve video memory across suspend; without them the GPU
+comes back with nothing to display.</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>nvidia-suspend<span class="w"> </span>nvidia-resume<span class="w"> </span>nvidia-hibernate
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>nvidia-suspend<span class="w"> </span>nvidia-resume<span class="w"> </span>nvidia-hibernate
+</code></pre></div>
+
+<h3 id="the-screen-is-black-after-waking-but-the-machine-is-alive">The screen is black after waking, but the machine is alive</h3>
+<p>If the lock screen was up when it suspended, the lock pane may not have been
+re-added for the output. Type your password blind and press Enter — it usually
+unlocks. A monitor plugged in <em>during</em> a lock is the common trigger.</p>
+<h3 id="im-locked-out-and-cant-switch-to-a-text-console">I'm locked out and can't switch to a text console</h3>
+<p>If VT switching is unavailable there is no way back in but a hard reboot, and
+repeated failed password attempts make it worse: <code>pam_faillock</code> starts locking
+the account after a few tries, so retrying faster locks you out for longer.
+<strong>Stop retrying.</strong> Reboot, and if the account is locked:</p>
+<div class="hl"><pre><span></span><code>faillock<span class="w"> </span>--user<span class="w"> </span>&lt;name&gt;<span class="w"> </span>--reset<span class="w">      </span><span class="c1"># from a root shell or recovery</span>
+</code></pre></div>
+
+<hr />
+<h2 id="updates-and-packages">Updates and packages</h2>
+<h3 id="pacman--s-404s-while-fetching-a-dependency"><code>pacman -S</code> 404s while fetching a dependency</h3>
+<p>Your local package database is stale relative to the mirror — the version your DB
+wants has already been superseded and deleted. It is <strong>not</strong> a bad mirror, and
+switching mirrors won't help.</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-Syu
+</code></pre></div>
+
+<p><strong>Check what's in the upgrade set first.</strong> If a kernel, NVIDIA driver or DKMS
+bump is in there, expect module rebuilds — don't start it five minutes before you
+need the machine.</p>
+<h3 id="after-a-kernel-upgrade-the-kernel-module-wont-load">After a kernel upgrade the kernel module won't load</h3>
+<div class="hl"><pre><span></span><code>modinfo<span class="w"> </span>synapse_kmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>vermagic<span class="w">     </span><span class="c1"># must match `uname -r`</span>
+sudo<span class="w"> </span>dkms<span class="w"> </span>autoinstall
+</code></pre></div>
+
+<p><code>dkms status</code> reporting "installed" is <strong>not</strong> a health check — it only confirms
+a <code>.ko</code> exists somewhere, not that it matches the running kernel.</p>
+<h3 id="the-ai-stopped-responding-after-an-upgrade">The AI stopped responding after an upgrade</h3>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd
+grep<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps
+</code></pre></div>
+
+<p>A GPU-linked <code>synapd</code> cannot start at all if the driver it was built against is
+missing or was just upgraded out from under it. Switching back to CPU gets you
+running again while you sort the driver out:</p>
+<div class="hl"><pre><span></span><code>synui-ai-backend<span class="w"> </span>cpu
+</code></pre></div>
+
+<hr />
+<h2 id="apps-and-integration">Apps and integration</h2>
+<h3 id="superreturn-opens-a-terminal-i-do-not-recognise"><code>Super</code>+<code>Return</code> opens a terminal I do not recognise</h3>
+<p>That is <strong><code>syntty</code></strong>, SynapseOS's own, and it has been the default since synui
+0.1.0-359 — see <strong><a href="/wiki/Terminal">Terminal</a></strong>. <code>foot</code> ships alongside it as the
+rescue terminal. <code>kitty</code> is <strong>not installed any more</strong> (syn-install 0.1.0-100):
+<code>synpkg install kitty</code> puts it back, and <code>terminal = kitty</code> in
+<code>~/.config/synui/synuirc</code> then makes it the one <code>Super</code>+<code>Return</code> opens.</p>
+<h3 id="pressing-ctrld-in-a-terminal-opens-another-terminal">Pressing <code>Ctrl</code>+<code>D</code> in a terminal opens another terminal</h3>
+<p>Fixed in synui 0.1.0-374. The terminal key ran a fallback chain
+(<code>syntty || kitty || foot || …</code>) so that a machine whose terminal package failed
+to install still opens <em>something</em> — but <code>||</code> means "the previous one exited
+non-zero", and a terminal's exit status is the exit status of the shell inside
+it. Exiting a shell after a failed command therefore looked like a terminal that
+would not start, and the next one on the list opened.</p>
+<h3 id="the-package-manager-will-not-remove-kitty">The package manager will not remove <code>kitty</code></h3>
+<p>Fixed in synpkg 0.1.0-29 / synui 0.1.0-369. Two separate faults: <code>kitty</code> was
+still load-bearing months after it stopped being the default (synui's config, the
+<code>--hold</code> call sites), and the window swallowed the failed transaction instead of
+saying why. Both are gone — the last <code>--hold</code> pin moved to <code>syntty</code> in 0.1.0-370.</p>
+<h3 id="a-usb-stick-will-not-format-or-comes-back-read-only">A USB stick will not format, or comes back read-only</h3>
+<p>Three different things that look identical:</p>
+<ul>
+<li><strong>The stick's write-protect switch is set.</strong> <code>syn-disks</code> checks before the dry
+  run now and says so, instead of failing at <code>mke2fs</code> with "Read-only file
+  system while setting up superblock" — a sentence that reads like a dead stick
+  and means a switch on the side of one.</li>
+<li><strong>The stick latched itself read-only mid-write.</strong> Some cheap drives answer
+  "write protect off" at plug-in and flip after the first failed write. There is
+  no switch to look for; the drive is failing.</li>
+<li><strong>It formatted fine and will not mount.</strong> Check the filesystem is one <em>this
+  kernel</em> can mount — a stick formatted exFAT on a kernel with no exFAT support
+  is a perfect format that mounts nowhere. <code>syn-disks</code> only offers filesystems
+  it can both create and mount.</li>
+</ul>
+<p>A stick you format now also <strong>belongs to you</strong> afterwards: <code>mkfs</code> runs as root
+through polkit, so the new filesystem's root directory used to be root-owned and
+the drive came back mounted and unwritable to whoever had just formatted it.</p>
+<h3 id="an-app-that-needs-root-does-nothing-when-launched-from-the-menu">An app that needs root does nothing when launched from the menu</h3>
+<p>Nothing appears and nothing errors, because there is no terminal to print to.
+Two usual causes: no polkit authentication agent in the session to prompt you,
+and — for X11 apps — root not being allowed to open the Xwayland display.
+<strong>Reproduce it from a terminal</strong> before concluding the launcher is broken; you
+will usually get the real error immediately.</p>
+<h3 id="a-folder-opens-in-the-wrong-application">A folder opens in the wrong application</h3>
+<p>Which application opens a folder is decided by <strong><code>mimeapps.list</code></strong>, not by which
+programs are capable of it. SynapseOS ships its answer in
+<code>/usr/share/applications/mimeapps.list</code> — the <em>distribution</em> default, which is
+<code>synfiles</code> — and any choice of your own outranks it, because yours lands in
+<code>~/.config/mimeapps.list</code>.</p>
+<div class="hl"><pre><span></span><code>xdg-mime<span class="w"> </span>query<span class="w"> </span>default<span class="w"> </span>inode/directory<span class="w">              </span><span class="c1"># what actually runs</span>
+xdg-mime<span class="w"> </span>default<span class="w"> </span>org.kde.dolphin.desktop<span class="w"> </span>inode/directory<span class="w">   </span><span class="c1"># prefer Dolphin</span>
+xdg-mime<span class="w"> </span>default<span class="w"> </span>synfiles.desktop<span class="w"> </span>inode/directory<span class="w">          </span><span class="c1"># prefer Files</span>
+</code></pre></div>
+
+<p>Deleting the <code>inode/directory</code> line from <code>~/.config/mimeapps.list</code> falls back to
+the system default rather than to nothing.</p>
+<p>If a folder opens in a <em>terminal</em>, that is the same mechanism with no entry
+anywhere: with nothing to consult, the winner comes from <code>mimeinfo.cache</code> — that
+is, "whichever installed program declared the type first" — and a terminal
+emulator that declares <code>inode/directory</code> can win it. Setting a default fixes it
+permanently.</p>
+<h3 id="open-with-is-empty-in-dolphin-and-every-file-opens-the-chooser">"Open With" is empty in Dolphin and every file opens the chooser</h3>
+<p>KDE's application index is empty. SynapseOS ships
+<code>/etc/xdg/menus/applications.menu</code>; if it is missing or malformed the index can't
+build. Rebuild it with <code>kbuildsycoca6</code>. <strong>Files</strong> does not use that index — it
+reads <code>mimeinfo.cache</code> itself — so a difference between the two menus is this,
+not a missing application.</p>
+<h3 id="a-video-shows-no-resolution-in-properties">A video shows no resolution in Properties</h3>
+<p>Images, MP4 and MOV are read by <strong>Files</strong> itself. Matroska (<code>.mkv</code>), WebM and
+AVI are handed to <code>ffprobe</code>, which is an optional dependency: <code>synpkg install
+ffmpeg</code> and the row appears. Without it there is no row rather than a guessed
+one.</p>
+<h3 id="a-command-in-localbin-isnt-found-in-the-session">A command in <code>~/.local/bin</code> isn't found in the session</h3>
+<p>The session's <code>PATH</code> is built in more than one place and <code>~/.local/bin</code> isn't
+always on it. Log out and back in after changing shell profiles, or call it by
+full path to confirm that's the problem.</p>
+<h3 id="a-tray-icon-disappears-when-i-close-my-terminal">A tray icon disappears when I close my terminal</h3>
+<p>Some tray applications tie themselves to a login record and exit when the last
+one goes away. Run it as a supervised user service instead of from a terminal.</p>
+<h3 id="the-printer-installs-but-prints-nothing">The printer installs but prints nothing</h3>
+<p>Check that the driver's filter and its libraries are where CUPS expects them, and
+that <code>cups.service</code> is running. <code>journalctl -u cups</code> names the missing piece.</p>
+<hr />
+<h2 id="network">Network</h2>
+<h3 id="a-container-or-virtual-machine-has-no-network">A container or virtual machine has no network</h3>
+<p>Waydroid, libvirt, Docker and Podman all work the same way: they hang a bridge
+off this machine, run a DHCP and DNS server on it, and hand the guest an address
+in a private range. The firewall trusts private addresses, so everything the
+guest sends is accepted — <strong>once it has one</strong>. The request that asks for one is
+not: it is sent from <code>0.0.0.0</code>, before the guest has any address at all, and the
+default-drop policy eats it.</p>
+<p>The guest then comes up with no network, and nothing in any log mentions the
+firewall. It looks like a broken container, a DNS problem, or a bad bridge.</p>
+<p>Name the bridge and it works:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>synnet<span class="w"> </span>--trust-if<span class="w"> </span>waydroid0<span class="w">     </span><span class="c1"># libvirt: virbr0 · Docker: docker0 · Podman: podman0</span>
+synnet<span class="w"> </span>--status<span class="w">                      </span><span class="c1"># lists what is trusted</span>
+</code></pre></div>
+
+<p>That takes effect immediately and is remembered in <code>/etc/synnet/trusted-ifaces</code>.
+Settings ▸ Network shows the same list under <strong>container links</strong>.</p>
+<p>The bridge does not have to exist yet — these interfaces are only created when
+the container starts, and the rule is matched by name, so it starts working the
+moment the bridge appears.</p>
+<p>⚠ <strong>The container runtime's own firewall rule does not cover this.</strong> Waydroid, for
+one, inserts an <code>iptables</code> rule to accept DHCP on its bridge, and it makes no
+difference: that lands in a separate chain, and where two filters disagree the
+stricter one wins. Seeing the runtime's ACCEPT rule in <code>iptables -L</code> is not
+evidence the packet gets through.</p>
+<p>⚠ <strong>Editing <code>/etc/synnet/trusted-ifaces</code> by hand does not change the running
+firewall.</strong> The daemon only rebuilds a chain that has gone missing; one that is
+merely out of date looks healthy to it. Run <code>sudo synnet --firewall</code> after
+editing, or use <code>--trust-if</code>, which does it for you. Settings ▸ Network warns
+when the two have drifted apart.</p>
+<h3 id="something-on-the-local-network-cannot-reach-a-server-on-this-machine">Something on the local network cannot reach a server on this machine</h3>
+<p>It can, and that is usually not the problem — the firewall accepts anything from
+a private address, which is every machine on a home or office network. Look at
+the service first.</p>
+<p>What it does drop is unsolicited traffic from a <strong>public</strong> address, which is the
+point: this machine answers nothing on café or hotel Wi-Fi that it did not ask
+for. There is no per-port rule to add for the LAN case, and no <code>ufw</code> to add it
+with — see <a href="/wiki/Commands#the-firewall">Commands</a>.</p>
+<h3 id="i-want-to-check-the-firewall-is-actually-on">I want to check the firewall is actually on</h3>
+<div class="hl"><pre><span></span><code>synnet<span class="w"> </span>--status
+</code></pre></div>
+
+<p>It answers without root, because the daemon publishes what it applied. Settings ▸
+Network reports the same thing, plus whether <code>synnet</code> itself is running — the
+rules outlive the daemon, so a stopped <code>synnet</code> leaves the last ruleset loaded
+and stops maintaining it.</p>
+<p>⚠ If it says <strong>not asserted</strong> on a machine that is otherwise fine, the running
+daemon is probably older than the installed binary: <code>syn-update</code> replaces the
+file but does not restart the unit. <code>sudo systemctl restart synnet</code>.</p>
+<hr />
+<h2 id="boot-and-secure-boot">Boot and Secure Boot</h2>
+<h3 id="the-usb-stick-does-not-boot-or-the-live-session-dies-partway-in">The USB stick does not boot, or the live session dies partway in</h3>
+<p>If you downloaded the release on Windows, suspect the <strong>join</strong> before the stick
+or the machine. The ISO ships as <code>.part*</code> files and the two usual mistakes both
+produce a file that looks finished:</p>
+<ul>
+<li><strong><code>copy</code> without <code>/b</code>.</strong> In text mode <code>copy</code> stops at the first <code>0x1A</code> byte,
+  a few hundred KB into the image. You get a short file and no error at all.</li>
+<li><strong>A wildcard source</strong> (<code>copy /b *.part* out.iso</code>). <code>copy</code> takes wildcards in
+  directory order, which is not guaranteed to be sorted. Parts joined out of
+  order give a file of exactly the right size that is corrupt throughout.</li>
+</ul>
+<p>Either way the stick may still start to boot and then fail once it reaches the
+squashfs, which reads as a broken image or bad hardware. Check the ISO against
+the published checksum before anything else:</p>
+<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">&#39;\s+&#39;</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
+</code></pre></div>
+
+<p><code>False</code> means re-join it, naming every part in order — see
+<a href="/wiki/Installation">Installation</a>. On Linux or macOS the same check is
+<code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code>.</p>
+<p>If the checksum is <strong>right</strong> and it still will not boot, the next two things to
+try are writing with <strong>DD Image mode</strong> rather than ISO mode (Rufus asks; this is
+a hybrid image), and switching Secure Boot off — see below.</p>
+<h3 id="secure-boot-key-enrollment-fails-no-matter-how-many-times-i-reboot">Secure Boot key enrollment fails no matter how many times I reboot</h3>
+<p>Keys can only be enrolled while the firmware is in <strong>Setup Mode</strong>, and
+<strong>rebooting will never put it there</strong> — whatever the error message implies. You
+have to clear the Platform Key from the BIOS/firmware menu yourself.</p>
+<p><code>syn-secureboot enroll</code> checks for real Setup Mode before trying, so it tells you
+this instead of failing obscurely. See <a href="/wiki/Secure-Boot">Secure Boot</a>.</p>
+<h3 id="i-encrypted-the-disk-and-now-i-cant-unlock-it">I encrypted the disk and now I can't unlock it</h3>
+<p>If the passphrase is right and it still fails, the LUKS header may be damaged —
+and a damaged header means the data is unrecoverable <em>even with the correct
+passphrase</em>. This is what <code>syn-crypt backup-header</code> is for; take one now if you
+haven't.</p>
+<div class="hl"><pre><span></span><code>syn-crypt<span class="w"> </span>status
+syn-crypt<span class="w"> </span>backup-header<span class="w"> </span>/path/on/removable/media/luks-header.img
+</code></pre></div>
+
+<p>Keep the backup <strong>off</strong> the encrypted disk.</p>
+<hr />
+<h2 id="still-stuck">Still stuck?</h2>
+<p>Two commands worth attaching to any report:</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>--failed
+journalctl<span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>err<span class="w"> </span>--no-pager<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-50
+</code></pre></div>
+
+<p>Note that the compositor's own output does <strong>not</strong> go to the journal — if synui
+or something it launched is misbehaving, the error is on <strong>tty1</strong>
+(<code>Ctrl</code>+<code>Alt</code>+<code>F1</code>).</p>
+<p>See also: <a href="/wiki/Installation">Installation</a>, <a href="/wiki/Commands">Commands</a>,
+<a href="/wiki/Development-Notes">Development Notes</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Secure-Boot"><span>Previous</span>Secure Boot</a><a class="next" href="/wiki/The-Desktop"><span>Next</span>The Desktop</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting" aria-current="page">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Cursor Themes — SynapseOS Wiki</title>
+<meta name="description" content="Super+Shift+P opens the cursor picker. synui-cursor is the command-line side, and it is the only way to install a theme — the picker selects, it does not install. That is…">
+<link rel="canonical" href="https://soslinux.org/wiki/Cursor-Themes">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Cursor Themes — SynapseOS Wiki">
+<meta property="og:description" content="Super+Shift+P opens the cursor picker. synui-cursor is the command-line side, and it is the only way to install a theme — the picker selects, it does not install. That is…">
+<meta property="og:url" content="https://soslinux.org/wiki/Cursor-Themes">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#quick-start">Quick start</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#the-thing-to-know-opendesktop-ships-two-shapes-that-look-identical">The thing to know: opendesktop ships two shapes that look identical</a></li>
+<li class="sub"><a href="#what-counts-as-a-theme">What counts as a theme</a></li>
+<li><a href="#why-the-picker-has-no-install-button">Why the picker has no install button</a></li>
+<li><a href="#untrusted-archives">Untrusted archives</a></li>
+<li><a href="#a-cursor-theme-has-to-be-written-in-five-places">A cursor theme has to be written in five places</a></li>
+<li class="sub"><a href="#xcursor_size-must-stay-pinned">XCURSOR_SIZE must stay pinned</a></li>
+<li><a href="#implementation-notes">Implementation notes</a></li>
+<li><a href="#before-this-existed">Before this existed</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>Cursor Themes</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cursor-Themes/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-26">2026-07-26</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>Super</code>+<code>Shift</code>+<code>P</code> opens the cursor picker. <code>synui-cursor</code> is the command-line
+side, and it is the <strong>only</strong> way to install a theme — the picker selects, it does
+not install. That is deliberate, not missing: see
+<a href="#why-the-picker-has-no-install-button">below</a>.</p>
+<blockquote>
+<p><code>Super</code>+<code>C</code> is the control panel and <code>Super</code>+<code>Shift</code>+<code>C</code> is cat mode, so <strong>P
+for pointer</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="quick-start">Quick start</h2>
+<div class="hl"><pre><span></span><code>synui-cursor<span class="w"> </span>list<span class="w">                              </span><span class="c1"># what&#39;s installed (name, path)</span>
+synui-cursor<span class="w"> </span>current<span class="w">                           </span><span class="c1"># active theme and size</span>
+synui-cursor<span class="w"> </span>install<span class="w"> </span>~/Downloads/some-theme.tar.gz
+synui-cursor<span class="w"> </span><span class="nb">set</span><span class="w"> </span>Some-Theme<span class="w"> </span><span class="m">32</span><span class="w">                 </span><span class="c1"># theme, size in px</span>
+</code></pre></div>
+
+<p>The change reaches the running compositor immediately (<code>synctl dispatch
+cursor_reload</code>). <strong>Already-running apps keep the old cursor until they restart</strong> —
+nothing can change that; X11 and GTK clients read the theme once.</p>
+<hr />
+<h2 id="commands">Commands</h2>
+<div class="hl"><pre><span></span><code>synui-cursor list                    installed themes (name&lt;TAB&gt;path)
+synui-cursor current                 active theme&lt;TAB&gt;size
+synui-cursor install &lt;archive|dir&gt;   install from .zip/.tar.*/a directory
+synui-cursor build &lt;dir&gt;             compile a source tree — runs ITS makefile
+synui-cursor set &lt;theme&gt; [size]      make a theme active everywhere
+</code></pre></div>
+
+<p><code>install</code> accepts <code>.zip</code>, <code>.tar.gz</code>, <code>.tar.xz</code>, <code>.tar.bz2</code>, <code>.tar.zst</code> or a
+directory, and installs into <code>~/.local/share/icons/&lt;name&gt;</code>. A pack shipping
+several themes side by side installs all of them.</p>
+<p><code>set</code> refuses a theme that is not installed. Setting a nonexistent one silently
+gives you the fallback X cursor everywhere with nothing explaining why.</p>
+<hr />
+<h2 id="the-thing-to-know-opendesktop-ships-two-shapes-that-look-identical">The thing to know: opendesktop ships two shapes that look identical</h2>
+<p>Cursor themes from opendesktop.org / gnome-look.org come in two forms, and
+telling them apart is most of what this tool does:</p>
+<div class="hl"><pre><span></span><code>ready-to-use    Theme/cursors/left_ptr, Theme/cursors/watch, …   -&gt; just move it
+source tree     makefile, src/*.in, config/*.in                   -&gt; must be compiled
+</code></pre></div>
+
+<p>Extracting a <strong>source tree</strong> into <code>~/.local/share/icons</code> — the obvious thing to
+do, and an easy mistake to make — leaves something that is <strong>not a cursor theme
+at all</strong>. No <code>cursors/</code> directory, so nothing will ever see it, and nothing says
+why.</p>
+<p><code>synui-cursor install</code> detects that case and tells you, instead of silently
+creating a dud:</p>
+<div class="hl"><pre><span></span><code>synui-cursor: &#39;some-cursors-3.1a.tar.gz&#39; is a cursor theme SOURCE TREE,
+              not a built theme. It has no cursors/ directory yet — it has to be
+              compiled first, which usually needs xcursorgen and imagemagick.
+              …
+                  synui-cursor build ~/.local/share/synui/cursor-src/some-cursors-3.1a
+                  synui-cursor install ~/.local/share/synui/cursor-src/some-cursors-3.1a
+</code></pre></div>
+
+<p>The extracted tree is <strong>staged somewhere permanent</strong> before that message prints,
+because otherwise the command it tells you to run would name a temp directory the
+tool is about to delete — advice that cannot be followed.</p>
+<p>Building needs <code>xorg-xcursorgen</code> and <code>imagemagick</code>.</p>
+<h3 id="what-counts-as-a-theme">What counts as a theme</h3>
+<p><strong>A directory with a <code>cursors/</code> subdirectory that has something in it.</strong></p>
+<p>Deliberately <strong>not</strong> <code>index.theme</code>: plenty of real themes ship without one, and
+some source trees ship an <code>index.theme</code> while having no cursors at all — so
+testing <code>index.theme</code> gets <em>both</em> cases backwards. An empty <code>cursors/</code> is a build
+that failed half way, and counts as not-a-theme rather than as a theme whose
+every cursor is missing.</p>
+<p>The same rule is implemented in the C picker and in the shell helper, on purpose,
+so the two can never disagree about whether something is installed.</p>
+<hr />
+<h2 id="why-the-picker-has-no-install-button">Why the picker has no install button</h2>
+<p><code>install</code> is safe to expose in a GUI; <strong><code>build</code> is not</strong>. Building runs the
+downloaded archive's own makefile, as you, with your privileges — arbitrary code
+execution from an untrusted download. So it is never automatic and never a
+button: it is a separate command that prompts for confirmation first.</p>
+<p>If the picker ever grows an install button, <code>build</code> stays CLI-only.</p>
+<hr />
+<h2 id="untrusted-archives">Untrusted archives</h2>
+<p>These come off the internet, so <code>install</code> treats extraction as hostile.</p>
+<p><strong>Path traversal.</strong> Nothing is ever used straight out of the extraction
+directory. Every theme path is re-resolved with <code>realpath</code> and refused if it no
+longer sits inside that directory — which defeats <code>../../</code> traversal ("zip slip")
+<strong>regardless of how the extractor behaves</strong>, rather than trusting <code>tar</code> and
+<code>unzip</code> to reject hostile member names. An archive member called
+<code>../../../.config/autostart/x</code> is otherwise a way to write anywhere you can.</p>
+<p><strong>Symlinks.</strong> Cursor themes legitimately use relative symlinks inside <code>cursors/</code>
+(<code>default -&gt; left_ptr</code>, and most of the hash-named aliases), so those <strong>must</strong>
+survive — copying them as files would multiply a 1 MB animated cursor across a
+dozen aliases. But an <strong>absolute</strong> symlink, or a relative one that climbs out of
+the theme, is either a mistake or an attempt to get a later read or write
+redirected. Both are dropped, and dropping one costs only that single alias.</p>
+<p><em>(Sound themes have no legitimate internal symlink, so
+<a href="/wiki/Sound-Themes#technical-notes"><code>synui-sound install</code></a> drops all of them. Same
+installer shape, different call on that one question.)</em></p>
+<p><strong>Theme names are attacker-controlled.</strong> A theme's name is a directory name from
+the archive, and it goes on to be a shell argument (the picker runs
+<code>synui-cursor set &lt;name&gt;</code>), a listing row, and an ini value. synui's <code>spawn()</code>
+runs <code>/bin/sh -c</code>, so a theme called <code>evil;curl …|sh</code> would execute when
+selected. Two independent layers:</p>
+<ol>
+<li>the helper <strong>refuses</strong> names with shell metacharacters, a leading dash
+   (half the tools downstream would read it as an option), path separators, or
+   control characters — refused outright rather than escaped three different
+   ways;</li>
+<li>the picker single-quotes the name anyway.</li>
+</ol>
+<p>Theme names are also third-party text on the render path, so they go through
+<code>draw_clipped</code> (→ <code>news_utf8_trim</code>), never bare <code>cairo_show_text</code> — a name with
+invalid UTF-8 in it would otherwise poison the cairo context.</p>
+<hr />
+<h2 id="a-cursor-theme-has-to-be-written-in-five-places">A cursor theme has to be written in five places</h2>
+<p>This is the part that surprises people. Each toolkit has its own idea of where
+the cursor theme lives, and disagreeing between them is exactly how you end up
+with one cursor over synui and a different one over an Xwayland game.
+<code>synui-cursor set</code> writes all five:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Where</th>
+<th>Who reads it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>~/.config/synui/cursor.state</code></td>
+<td>the compositor, at startup and on <code>cursor_reload</code>; the picker writes the same file</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>~/.config/synui/cursor.env</code></td>
+<td>the session wrapper at login (<code>XCURSOR_THEME</code>, <code>XCURSOR_SIZE</code>)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>~/.icons/default/index.theme</code></td>
+<td>X11 proper — an Xwayland client started <strong>without</strong> the env vars (a game launched from a <code>.desktop</code>)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>gsettings <strong>and</strong> <code>gtk-3.0/settings.ini</code>, <code>gtk-4.0/settings.ini</code></td>
+<td>GTK. gsettings reaches running apps live; <code>settings.ini</code> is what an app started outside the session bus reads</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>kcminputrc</code> (<code>kwriteconfig6</code>/<code>5</code>)</td>
+<td>Qt/KDE — Dolphin and friends read <code>kcminputrc</code> for this, <strong>not</strong> <code>kdeglobals</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Miss #3 and games get the fallback cursor. Miss the <code>settings.ini</code> half of #4 and
+the change appears to work until the next reboot.</p>
+<h3 id="xcursor_size-must-stay-pinned"><code>XCURSOR_SIZE</code> must stay pinned</h3>
+<p>With it unset, libXcursor computes a size from the <strong>X screen</strong>, and the Xwayland
+virtual screen spanning several monitors is thousands of pixels wide, so an
+Xwayland client can end up with a huge pointer while synui's own is 24 px.</p>
+<blockquote>
+<p>Session env vars live in <strong>three</strong> places: the live
+<code>/usr/local/bin/synui-session</code> and <strong>two</strong> blocks in <code>syn-install.sh</code>. The
+wrapper sources <code>~/.config/synui/cursor.env</code> after the defaults, so
+<code>XCURSOR_THEME</code> is no longer hardcoded to Adwaita. The greeter's copy is
+deliberately left alone — different user, pre-login.</p>
+</blockquote>
+<hr />
+<h2 id="implementation-notes">Implementation notes</h2>
+<p><strong>A theme is named after its own directory</strong> — except when an archive ships a
+bare <code>cursors/</code> at the top level with nothing wrapping it. Then the theme root
+<em>is</em> the extraction directory, whose name came from <code>mktemp</code>, and only in that
+case does the archive's filename supply the name. It still goes through the same
+validation as any other name.</p>
+<p><strong>The installer stops descending the moment a directory <em>is</em> a theme.</strong> Archives
+almost always wrap everything in one top-level directory, so it descends through
+single-child directories — but a theme with no <code>index.theme</code> has <code>cursors/</code> as
+its only child, and descending into that would put the theme "above" the
+extraction root and trip the escape guard on a perfectly good theme.</p>
+<p><strong>Anything that changes cursor settings reaches outside a sandbox.</strong> <code>gsettings</code>
+talks to dconf over the <strong>session bus</strong>, so it ignores a faked <code>$HOME</code> — a
+sandboxed test of <code>synui-cursor set</code> will rewrite your real GTK settings unless
+<code>gsettings</code> and <code>kwriteconfig*</code> are stubbed. See
+<a href="/wiki/Development-Notes#testing-the-compositor-without-a-real-seat">Development Notes</a>.</p>
+<hr />
+<h2 id="before-this-existed">Before this existed</h2>
+<p><code>wlr_xcursor_manager_create(NULL, 24)</code> — theme from the environment, size
+hardcoded, no setting anywhere. There was no cursor theme configuration at all.</p>
+<hr />
+<p>See also: <a href="/wiki/Sound-Themes">Sound Themes</a>, <a href="/wiki/synui">synui</a>,
+<a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/Commands">Commands</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Window-Effects"><span>Previous</span>Window Effects</a><a class="next" href="/wiki/Sound-Themes"><span>Next</span>Sound Themes</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes" aria-current="page">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

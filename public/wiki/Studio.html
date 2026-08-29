@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Studio — SynapseOS Wiki</title>
+<meta name="description" content="synstudio — the photo darkroom and video editor. One application with two rooms: develop a photograph, or cut a sequence. Studio in the start menu.">
+<link rel="canonical" href="https://soslinux.org/wiki/Studio">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Studio — SynapseOS Wiki">
+<meta property="og:description" content="synstudio — the photo darkroom and video editor. One application with two rooms: develop a photograph, or cut a sequence. Studio in the start menu.">
+<meta property="og:url" content="https://soslinux.org/wiki/Studio">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#photographs">Photographs</a></li>
+<li class="sub"><a href="#local-adjustments">Local adjustments</a></li>
+<li class="sub"><a href="#looks">Looks</a></li>
+<li class="sub"><a href="#making-one-shot-match-another">Making one shot match another</a></li>
+<li class="sub"><a href="#measuring-the-picture">Measuring the picture</a></li>
+<li><a href="#video">Video</a></li>
+<li class="sub"><a href="#editing">Editing</a></li>
+<li class="sub"><a href="#what-a-clip-can-do">What a clip can do</a></li>
+<li class="sub"><a href="#transitions-and-effects">Transitions and effects</a></li>
+<li class="sub"><a href="#sound">Sound</a></li>
+<li class="sub"><a href="#stabilising">Stabilising</a></li>
+<li class="sub"><a href="#watching-it-back">Watching it back</a></li>
+<li class="sub"><a href="#delivering">Delivering</a></li>
+<li class="sub"><a href="#undo-and-versions">Undo, and versions</a></li>
+<li><a href="#log-footage">Log footage</a></li>
+<li><a href="#related">Related</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Studio</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Studio/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>synstudio</code> — the photo darkroom and video editor. One application with two
+rooms: develop a photograph, or cut a sequence. <strong>Studio</strong> in the start menu.</p>
+<p>The point of it being one application is that both rooms decide colour in the
+same place. A grade you build on a still and a grade you build on a clip are the
+same stack of controls, and a clip's grade is baked to a 3D LUT and handed to the
+renderer, so the frame you graded and the frame that is delivered agree by
+construction rather than by care.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>gui<span class="w">            </span><span class="c1"># the window</span>
+synstudio<span class="w"> </span>gui<span class="w"> </span>FILE<span class="w">       </span><span class="c1"># open straight into a photograph or a project</span>
+synstudio<span class="w"> </span>--help<span class="w">         </span><span class="c1"># every command; there are a lot</span>
+</code></pre></div>
+
+<p>Everything the window does is a command underneath, so anything here can be
+scripted, and a batch of a hundred photographs is a loop rather than an
+afternoon.</p>
+<hr />
+<h2 id="photographs">Photographs</h2>
+<p>Open a picture and develop it. <strong>The original file is never written.</strong> Edits go
+to a sidecar next to it — <code>photo.jpg.synstudio</code> — so the negative stays a
+negative, and deleting the sidecar puts the picture back exactly as it was.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span><span class="nb">set</span><span class="w"> </span>photo.jpg<span class="w"> </span><span class="nv">exposure</span><span class="o">=</span><span class="m">0</span>.4<span class="w"> </span><span class="nv">contrast</span><span class="o">=</span><span class="m">15</span><span class="w"> </span><span class="nv">temp</span><span class="o">=</span><span class="m">200</span>
+synstudio<span class="w"> </span>render<span class="w"> </span>photo.jpg<span class="w"> </span>--out<span class="w"> </span>developed.jpg
+synstudio<span class="w"> </span>reset<span class="w"> </span>photo.jpg<span class="w">          </span><span class="c1"># throw the edits away</span>
+</code></pre></div>
+
+<p>RAW files open directly — Canon CR2/CR3, Nikon NEF, Sony ARW, Fuji RAF, Olympus
+ORF, Panasonic RW2, Pentax PEF and DNG — alongside JPEG, PNG, TIFF, WebP, AVIF
+and HEIF.</p>
+<p><code>synstudio keys</code> lists every develop control with its range. They fall into two
+kinds, and the difference matters more than it looks:</p>
+<ul>
+<li><strong>Pointwise</strong> — white balance, exposure, the tone regions, contrast, curves,
+  HSL, colour grading, vibrance. These depend only on the colour of the pixel,
+  so they can be baked into a LUT and reused on video.</li>
+<li><strong>Spatial</strong> — clarity, texture, dehaze, sharpening, noise reduction, vignette,
+  grain. These need to look at neighbouring pixels, so they are applied as
+  filters instead.</li>
+</ul>
+<h3 id="local-adjustments">Local adjustments</h3>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span class="w"> </span>add<span class="w"> </span>linear<span class="w">         </span><span class="c1"># or: radial</span>
+synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span class="w"> </span>list
+synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="nv">geom</span><span class="o">=</span><span class="m">0</span>,0.6,1,1,0.2<span class="w"> </span><span class="nv">exposure</span><span class="o">=</span>-0.5
+</code></pre></div>
+
+<p><code>geom</code> is <code>x0,y0,x1,y1,feather</code> in fractions of the frame.</p>
+<h3 id="looks">Looks</h3>
+<p>Twelve are installed — <code>noir</code>, <code>teal-orange</code>, <code>bleach-bypass</code>, <code>faded-film</code>,
+<code>portrait-warm</code>, <code>punch</code>, <code>moody-blue</code>, <code>high-key</code>, <code>cross-process</code>,
+<code>sunset-glow</code>, <code>mono</code> and <code>mono-red-filter</code>.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>look<span class="w"> </span>list<span class="w">                       </span><span class="c1"># name, label, what it does, where it is</span>
+synstudio<span class="w"> </span>look<span class="w"> </span>show<span class="w"> </span>noir<span class="w">                  </span><span class="c1"># exactly which controls it sets</span>
+synstudio<span class="w"> </span>look<span class="w"> </span>apply<span class="w"> </span>noir<span class="w"> </span>--to<span class="w"> </span>photo.jpg
+synstudio<span class="w"> </span>look<span class="w"> </span>save<span class="w"> </span><span class="s2">&quot;my look&quot;</span><span class="w"> </span>--from<span class="w"> </span>photo.jpg<span class="w"> </span><span class="o">[</span>--label<span class="w"> </span><span class="s2">&quot;My Look&quot;</span><span class="o">]</span>
+synstudio<span class="w"> </span>look<span class="w"> </span>remove<span class="w"> </span><span class="s2">&quot;my look&quot;</span>
+</code></pre></div>
+
+<p>A <code>.synlook</code> is <strong>not a lookup table</strong> — it is the develop stack written out as
+text, so you can read one, edit one, and see precisely what it changes. Yours
+live in <code>~/.config/synstudio/looks</code> and win over an installed one of the same
+name; <code>look remove</code> will only delete your own.</p>
+<p>Real LUTs are read too — <code>synstudio luts</code> lists what is in
+<code>~/.config/synstudio/luts</code>. <strong>None ship.</strong> A LUT is far more often somebody's
+licensed work than a slider position is, so the reader and the catalogue are
+here and the tables are yours to bring. To go the other way and bake your own:</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>lut<span class="w"> </span>--out<span class="w"> </span>mine.cube<span class="w"> </span>--from<span class="w"> </span>photo.jpg<span class="w"> </span>--size<span class="w"> </span><span class="m">33</span>
+</code></pre></div>
+
+<p>⚠ <code>look</code> and <code>luts</code> are missing from <code>synstudio --help</code>, which lists everything
+else. They work.</p>
+<h3 id="making-one-shot-match-another">Making one shot match another</h3>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>match<span class="w"> </span>photo.jpg<span class="w"> </span>--ref<span class="w"> </span>reference.jpg
+</code></pre></div>
+
+<p>Brightness, contrast and white balance, fitted <strong>through the engine</strong> rather than
+solved on paper — so the answer is one the develop stack can actually produce.
+The same thing exists for video: <code>synstudio timeline match PROJ T C REFT REFC</code>.</p>
+<h3 id="measuring-the-picture">Measuring the picture</h3>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>histogram<span class="w"> </span>photo.jpg<span class="w">                        </span><span class="c1"># 256 bins per channel</span>
+synstudio<span class="w"> </span>scope<span class="w"> </span>photo.jpg<span class="w"> </span>--out<span class="w"> </span>s.png<span class="w"> </span>--kind<span class="w"> </span>waveform<span class="w"> </span><span class="c1"># or parade, vector</span>
+synstudio<span class="w"> </span>pixel<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>--set<span class="w"> </span><span class="nv">exposure</span><span class="o">=</span><span class="m">1</span><span class="w">          </span><span class="c1"># one colour through the stack</span>
+</code></pre></div>
+
+<p>Scopes are computed by the engine, not by a display filter, so they cannot
+disagree with what is rendered.</p>
+<hr />
+<h2 id="video">Video</h2>
+<p>A project is a <strong>text document</strong>. Nothing is rendered until you export, and the
+document is small enough to read, diff and keep in version control.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>new<span class="w"> </span>cut.syntl<span class="w"> </span>--size<span class="w"> </span>1920x1080<span class="w"> </span>--fps<span class="w"> </span><span class="m">25</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>track<span class="w"> </span>cut.syntl<span class="w"> </span>video
+synstudio<span class="w"> </span>timeline<span class="w"> </span>clip<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span>shot.mp4<span class="w"> </span>--at<span class="w"> </span><span class="m">0</span><span class="w"> </span>--in<span class="w"> </span><span class="m">2</span><span class="w"> </span>--out-at<span class="w"> </span><span class="m">9</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span><span class="nb">export</span><span class="w"> </span>cut.syntl<span class="w"> </span>--out<span class="w"> </span>delivery.mp4
+</code></pre></div>
+
+<p>Opening a project in the window opens the cutting room: program monitor, scrub
+ruler, drag and trim, razor, lift and ripple delete, and an inspector for
+whichever clip is selected.</p>
+<p>⚠ <strong>The file's first line decides what it is, not its extension.</strong> A project
+saved as <code>.txt</code> is still a project, and a <code>.syntl</code> that turns out to be a
+photograph opens in the darkroom. <code>synstudio kind FILE</code> gives the answer.</p>
+<h3 id="editing">Editing</h3>
+<p><code>move</code>, <code>trim</code>, <code>split</code>, <code>delete</code> (with <code>--ripple</code> to close the gap), <code>copy</code>,
+<code>paste</code>, <code>duplicate</code>, and <code>at</code> to ask which clip is under a given second. None of
+them touch a frame — they rearrange intent.</p>
+<p><code>link</code> ties a shot to its sound so the pair moves, trims and deletes together.</p>
+<h3 id="what-a-clip-can-do">What a clip can do</h3>
+<p><code>synstudio timeline keys</code> lists every clip property. Beyond the obvious ones —
+opacity, gain, fades, speed — there is per-clip motion (scale, position,
+rotation, and a second set to animate towards, which is how a pan-and-zoom is
+built), retiming (<code>reverse</code>, <code>freeze</code>, and <code>retime=blend|flow</code> to invent the
+frames a slowdown needs), and generated title and solid clips.</p>
+<p>Titles come in five styles — plain, lower third, subtitle, heading and roll —
+and <code>synstudio fonts</code> lists what this machine can letter them in.</p>
+<p><strong>Keyframes</strong> come in two kinds. <code>timeline key</code> pins a whole grade at an instant,
+and two or more of them make the grade move between them. <code>timeline anim</code> keys a
+single property — opacity, gain, a scale, an angle — with an ease of <code>linear</code>,
+<code>in</code>, <code>out</code>, <code>inout</code> or <code>hold</code>.</p>
+<h3 id="transitions-and-effects">Transitions and effects</h3>
+<p>Sixty transitions. Dissolve and dip-to-colour, fades to black, white or grey at
+three speeds, wipes and slides and covers and reveals from each of four
+directions and each of four corners, circles and rectangles that open or close,
+diagonals, and the ones that are their own thing — blur, pixelize, radial,
+slice, squeeze, distance, noise, wind, zoom.
+<code>synstudio timeline transitions</code> lists every one with its name.</p>
+<p>Twenty-seven effects ship — blur, glow, halation, bloom, glitch, deband, duotone,
+lens distortion, chromatic aberration, luma and chroma keying with despill, and
+the rest. <code>synstudio fx list</code> names them and <code>fx show NAME</code> gives each one's
+parameters with their ranges.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>fx<span class="w"> </span>check<span class="w"> </span>blur<span class="w">      </span><span class="c1"># render one frame through it before you commit</span>
+</code></pre></div>
+
+<h3 id="sound">Sound</h3>
+<p>Per-track gain, pan, mute, solo — and <strong>ducking</strong>, where one track gets out of
+another's way, which is how a music bed sits under dialogue. There is a master
+fader after the mix, and fader automation in timeline seconds.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>track<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">1</span><span class="w"> </span>--duck<span class="w"> </span><span class="m">0</span><span class="w"> </span>--duck-amount<span class="w"> </span><span class="m">60</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>loudness<span class="w"> </span>cut.syntl<span class="w"> </span>--value<span class="w"> </span>-14
+synstudio<span class="w"> </span>timeline<span class="w"> </span>normalise<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">0</span>
+synstudio<span class="w"> </span>devices<span class="w">                       </span><span class="c1"># what can capture</span>
+synstudio<span class="w"> </span>record<span class="w"> </span>--out<span class="w"> </span>vo.wav<span class="w">           </span><span class="c1"># a take, with a live meter</span>
+</code></pre></div>
+
+<p><code>loudness</code> is what a delivery is normalised to: −23 LUFS is broadcast, −14 is
+what streaming platforms apply anyway. <code>synstudio loudness FILE</code> measures an
+existing file's integrated loudness, true peak and range.</p>
+<p>Subtitles import from <code>.srt</code> as one title per cue, or ship as a switchable
+stream at export rather than burnt into the picture.</p>
+<h3 id="stabilising">Stabilising</h3>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>stabilise<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>--dur<span class="w"> </span><span class="m">1</span>.5<span class="w"> </span>--size<span class="w"> </span><span class="m">5</span>
+</code></pre></div>
+
+<p>It watches the shot and writes the analysis beside the project. <code>--off</code> turns it
+off and <strong>keeps</strong> the measurement, so switching it back on is instant.</p>
+<h3 id="watching-it-back">Watching it back</h3>
+<p>The play button renders the same graph the export uses, small and fast, and
+plays that. It is not a second, cheaper preview that might disagree about colour
+— it is the delivery, at 960 wide. Any edit invalidates it and it re-renders.</p>
+<h3 id="delivering">Delivering</h3>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>presets<span class="w">     </span><span class="c1"># youtube-1080p, reel, instagram, square, proxy…</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>formats<span class="w">     </span><span class="c1"># mp4, mkv, mov, h265, webm, prores, png, exr</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span><span class="nb">export</span><span class="w"> </span>cut.syntl<span class="w"> </span>--out<span class="w"> </span>out.mp4<span class="w"> </span>--preset<span class="w"> </span>reel
+</code></pre></div>
+
+<p><code>--burn timecode|name|both</code> stamps a review copy, <code>--watermark F.png</code> puts a logo
+over the delivered frame, and <code>--format png</code> or <code>exr</code> with <code>--out dir/f_%04d.png</code>
+writes an image sequence instead of a movie.</p>
+<p>Renders can also be queued and run one at a time:</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>queue<span class="w"> </span>cut.syntl<span class="w"> </span>add<span class="w"> </span>--out<span class="w"> </span>final.mp4<span class="w"> </span>--preset<span class="w"> </span>youtube-4k
+synstudio<span class="w"> </span>timeline<span class="w"> </span>queue<span class="w"> </span>cut.syntl<span class="w"> </span>run
+</code></pre></div>
+
+<h3 id="undo-and-versions">Undo, and versions</h3>
+<p>Two different things, deliberately:</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>undo<span class="w"> </span>cut.syntl
+synstudio<span class="w"> </span>timeline<span class="w"> </span>redo<span class="w"> </span>cut.syntl
+synstudio<span class="w"> </span>timeline<span class="w"> </span><span class="nb">history</span><span class="w"> </span>cut.syntl
+synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>save<span class="w"> </span><span class="s2">&quot;rough cut&quot;</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>list
+synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>restore<span class="w"> </span><span class="s2">&quot;rough cut&quot;</span>
+</code></pre></div>
+
+<p>Undo is a ring and it expires. A <strong>version</strong> is a document you decided to keep,
+under a name, and nothing expires it.</p>
+<hr />
+<h2 id="log-footage">Log footage</h2>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>logcurve<span class="w"> </span>slog3<span class="w"> </span>--value<span class="w"> </span><span class="m">445</span>
+</code></pre></div>
+
+<p>What a camera's own curve means: a code value in, scene light out. Useful when
+you are deciding whether a shot is exposed where you think it is.</p>
+<hr />
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="/wiki/Files">Files</a> — what opens a photograph when you double-click it</li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a> — if you would rather use Resolve; they
+  coexist, and <code>syn resolve transcode</code> exists for footage the free edition
+  cannot read</li>
+<li><a href="/wiki/Commands">Commands</a></li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Editor"><span>Previous</span>Editor</a><a class="next" href="/wiki/Terminal"><span>Next</span>Terminal</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio" aria-current="page">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

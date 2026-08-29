@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nix — SynapseOS Wiki</title>
+<meta name="description" content="Two separate things share this page because they share a language, and it is worth being clear about which is which before either is useful:">
+<link rel="canonical" href="https://soslinux.org/wiki/Nix">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Nix — SynapseOS Wiki">
+<meta property="og:description" content="Two separate things share this page because they share a language, and it is worth being clear about which is which before either is useful:">
+<meta property="og:url" content="https://soslinux.org/wiki/Nix">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#turning-it-on">Turning it on</a></li>
+<li><a href="#the-configurator">The configurator</a></li>
+<li class="sub"><a href="#factsnix-is-the-bridge">facts.nix is the bridge</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#three-things-that-will-bite-you">Three things that will bite you</a></li>
+<li class="sub"><a href="#do-not-manage-synuirc-from-homenix">Do not manage synuirc from home.nix</a></li>
+<li class="sub"><a href="#etcsynapseosnix-is-deliberately-not-a-git-repository">/etc/synapseos/nix is deliberately not a git repository</a></li>
+<li class="sub"><a href="#packages-shadow-pacmans">Packages shadow pacman&#x27;s</a></li>
+<li><a href="#install-profiles">Install profiles</a></li>
+<li class="sub"><a href="#three-things-worth-knowing">Three things worth knowing</a></li>
+<li class="sub"><a href="#on-a-medium-without-nix">On a medium without nix</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Nix</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Nix/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-17">2026-08-17</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Two separate things share this page because they share a language, and it is
+worth being clear about which is which before either is useful:</p>
+<ol>
+<li><strong>A declarative user environment</strong> — Nix + Home Manager installed <em>beside</em>
+   pacman, managing packages and dotfiles for your account.</li>
+<li><strong>Install profiles</strong> — a file that answers the installer's questions, so an
+   install is reproducible instead of re-typed. Written in Nix, or in plain
+   <code>key=value</code>.</li>
+</ol>
+<p>Both are <strong>optional</strong>. Neither is on unless you asked for it.</p>
+<blockquote>
+<p><strong>This is not NixOS.</strong> SynapseOS is Arch. pacman owns the system — the
+compositor, the daemons, the drivers, the kernel — before you install Nix and
+after. Nix owns a <em>user</em> environment on top. If you are looking for
+"declare the whole machine in one file and rebuild it", that is NixOS the
+operating system, not Nix the package manager, and this is not that.</p>
+</blockquote>
+<hr />
+<h2 id="turning-it-on">Turning it on</h2>
+<p>At install time: pick <strong>Full</strong>, or answer yes to <em>"Nix + Home Manager"</em> in
+<strong>Custom</strong>. The installer installs <code>nix</code>, enables <code>nix-daemon.socket</code>, and
+writes the configurator to <code>/etc/synapseos/nix</code>.</p>
+<p>Afterwards, on a system that declined it:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>nix
+sudo<span class="w"> </span>syn<span class="w"> </span>nix<span class="w"> </span>init
+</code></pre></div>
+
+<p><code>syn nix init</code> is the same code the installer runs — there is one
+implementation, not two.</p>
+<p><strong>Nothing is built during the install.</strong> Setting the config up takes seconds;
+<em>realising</em> it is a multi-gigabyte download from <code>cache.nixos.org</code>, and the nix
+daemon is not running inside the installer's chroot anyway. So a fresh install
+leaves the layer ready and the first build is yours to start:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>nix<span class="w"> </span>apply<span class="w">        </span><span class="c1"># as your user, after a reboot — this is the download</span>
+</code></pre></div>
+
+<hr />
+<h2 id="the-configurator">The configurator</h2>
+<p><code>/etc/synapseos/nix</code>, owned by your account so you can edit it without <code>sudo</code>:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>File</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flake.nix</code></td>
+<td>The inputs, pinned by <code>flake.lock</code>. nixpkgs-unstable and the matching home-manager branch</td>
+</tr>
+<tr>
+<td><code>home.nix</code></td>
+<td><strong>Yours.</strong> Packages and dotfiles. <code>syn nix edit</code> opens it</td>
+</tr>
+<tr>
+<td><code>facts.nix</code></td>
+<td><strong>Generated.</strong> What this machine actually is — do not edit it</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="factsnix-is-the-bridge">facts.nix is the bridge</h3>
+<p>Nix on a foreign distro cannot see what pacman did. So SynapseOS probes the
+installed system and hands the result to your expressions as <code>facts</code>:</p>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">system</span>      <span class="o">=</span> <span class="s2">&quot;x86_64-linux&quot;</span><span class="p">;</span>
+  <span class="ss">version</span>     <span class="o">=</span> <span class="s2">&quot;0.2.7&quot;</span><span class="p">;</span>
+  <span class="ss">hostname</span>    <span class="o">=</span> <span class="s2">&quot;synapse&quot;</span><span class="p">;</span>
+  <span class="ss">username</span>    <span class="o">=</span> <span class="s2">&quot;syn&quot;</span><span class="p">;</span>
+  <span class="ss">desktop</span>     <span class="o">=</span> <span class="s2">&quot;synui&quot;</span><span class="p">;</span>          <span class="c1"># synui | kde | gnome | tty</span>
+  <span class="ss">gpu</span>         <span class="o">=</span> <span class="s2">&quot;nvidia&quot;</span><span class="p">;</span>         <span class="c1"># nvidia | amd | intel | vm | none</span>
+  <span class="ss">allowUnfree</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>             <span class="c1"># nvidia and Steam are unfree</span>
+  <span class="ss">want</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">model</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">bluetooth</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">printing</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">filemgr</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">wine</span>  <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">phone</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>     <span class="ss">steam</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>     <span class="ss">blackarch</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">nix</span>   <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>which lets one <code>home.nix</code> react to the machine instead of being edited per
+machine:</p>
+<div class="hl"><pre><span></span><code>home<span class="o">.</span><span class="ss">packages</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span> ripgrep fd <span class="p">]</span>
+  <span class="o">++</span> lib<span class="o">.</span>optionals facts<span class="o">.</span>want<span class="o">.</span>steam     <span class="p">[</span> protontricks <span class="p">]</span>
+  <span class="o">++</span> lib<span class="o">.</span>optionals facts<span class="o">.</span>want<span class="o">.</span>blackarch <span class="p">[</span> nmap <span class="p">]</span>
+  <span class="o">++</span> lib<span class="o">.</span>optionals <span class="p">(</span>facts<span class="o">.</span>gpu <span class="o">!=</span> <span class="s2">&quot;vm&quot;</span><span class="p">)</span>  <span class="p">[</span> vulkan-tools <span class="p">];</span>
+</code></pre></div>
+
+<p>The same probe runs at install time and any time afterwards:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>nix<span class="w"> </span>facts<span class="w">        </span><span class="c1"># re-derive it from this machine</span>
+</code></pre></div>
+
+<p>so it stays true. Install without Steam, add it with pacman a month later, run
+that, and the facts follow. It reads what is <strong>actually installed</strong> rather than
+what you once told the installer, which is why the two cannot disagree.</p>
+<hr />
+<h2 id="commands">Commands</h2>
+<div class="hl"><pre><span></span><code>syn nix status      daemon, store size, whether the flake is set up
+syn nix apply       build the config and activate it
+syn nix build       build it without activating
+syn nix update      bump flake.lock to current nixpkgs / home-manager
+syn nix facts       re-derive facts.nix from this machine
+syn nix edit        open home.nix in $EDITOR
+syn nix rollback    list home-manager generations
+syn nix profile F   render an install profile (see below) — unrelated to the above
+syn nix init        first-time setup (root; the installer does this for you)
+</code></pre></div>
+
+<hr />
+<h2 id="three-things-that-will-bite-you">Three things that will bite you</h2>
+<h3 id="do-not-manage-synuirc-from-homenix">Do not manage <code>synuirc</code> from <code>home.nix</code></h3>
+<p>It is tempting — declare <code>~/.config/synui/synuirc</code> and the desktop is
+declarative too. It does not work, and it fails in a shape that takes a while
+to recognise.</p>
+<p>Home Manager materialises the files it manages as <strong>read-only symlinks into
+<code>/nix/store</code></strong>. But <code>synuirc</code> is written <em>at runtime</em>, by synui itself and by
+<code>synctl</code>, every time a setting changes. Declaring it does not make your version
+win — it makes every write from the control panel fail, and that shows up as a
+panel whose toggles flip back a second later with no error anywhere you can see
+it.</p>
+<p>The same applies to anything else written live: the wallpaper engine's state,
+<code>kdeglobals</code> while a KDE app is running. <strong>Declare the packages; leave live
+state to whatever owns it.</strong></p>
+<h3 id="etcsynapseosnix-is-deliberately-not-a-git-repository"><code>/etc/synapseos/nix</code> is deliberately not a git repository</h3>
+<p>Flakes copy their directory into the store, and inside a git repo they copy
+only what git <strong>tracks</strong>. A freshly generated <code>facts.nix</code> would be invisible, so
+the build would either evaluate last week's facts or fail with "path does not
+exist" — and nothing in that error points anywhere near git.</p>
+<p>If you want it under version control, keep the repo elsewhere and symlink, or
+<code>git add facts.nix</code> after every regeneration.</p>
+<h3 id="packages-shadow-pacmans">Packages shadow pacman's</h3>
+<p><code>targets.genericLinux.enable</code> puts the Nix profile ahead of the system on
+<code>PATH</code>. That is what makes <code>.desktop</code> files from Nix packages show up in the
+launcher, and it also means anything you install here that pacman also provides
+will be the one you get. Sometimes that is the point (a newer version than Arch
+ships); usually it is two copies of one thing and a <code>pacman -Qo</code> that no longer
+explains which is running. Prefer packages pacman does not have.</p>
+<hr />
+<h2 id="install-profiles">Install profiles</h2>
+<p>Different feature, same language. <code>facts.nix</code> <em>describes</em> a machine that
+exists; an install profile <em>prescribes</em> one that does not yet.</p>
+<div class="hl"><pre><span></span><code>syn-install<span class="w"> </span>--config<span class="w"> </span>profile.nix<span class="w">       </span><span class="c1"># or a plain key=value file</span>
+</code></pre></div>
+
+<p><strong>Whatever the profile leaves out is still asked at the machine.</strong> Pinning just
+the disk layout and the package set is a perfectly good profile — this is not
+all-or-nothing, and a partial one is the normal case.</p>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">disk</span>          <span class="o">=</span> <span class="s2">&quot;vda&quot;</span><span class="p">;</span>
+  <span class="ss">install_mode</span>  <span class="o">=</span> <span class="s2">&quot;erase&quot;</span><span class="p">;</span>
+  <span class="ss">confirm_erase</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+
+  <span class="ss">filesystem</span> <span class="o">=</span> <span class="s2">&quot;btrfs&quot;</span><span class="p">;</span>
+  <span class="ss">bootloader</span> <span class="o">=</span> <span class="s2">&quot;limine&quot;</span><span class="p">;</span>
+  <span class="ss">snapshots</span>  <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+
+  <span class="ss">preset</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span><span class="p">;</span>
+  <span class="ss">want</span>   <span class="o">=</span> <span class="p">{</span> <span class="ss">steam</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="ss">blackarch</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">nix</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="p">};</span>
+
+  <span class="c1"># Since 0.2.9: every SynapseOS package is a `comp` key, and every program</span>
+  <span class="c1"># from the Arch repositories an `sw` one. Both are read only under</span>
+  <span class="c1"># preset = &quot;custom&quot;; omitted keys take the Standard default.</span>
+  <span class="ss">comp</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">synui</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">chibi</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="ss">tepris</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="p">};</span>
+  <span class="ss">sw</span>   <span class="o">=</span> <span class="p">{</span> <span class="ss">firefox</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">vlc</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">docker</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="p">};</span>
+
+  <span class="ss">username</span> <span class="o">=</span> <span class="s2">&quot;syn&quot;</span><span class="p">;</span>
+  <span class="ss">desktop</span>  <span class="o">=</span> <span class="s2">&quot;synui&quot;</span><span class="p">;</span>
+  <span class="ss">timezone</span> <span class="o">=</span> <span class="s2">&quot;America/Chicago&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>/usr/share/syn/nix/profile-example.nix</code> documents <strong>every</strong> key.</p>
+<blockquote>
+<p>A profile written before 0.2.9 still installs. Its <code>want.chibi</code> / <code>core.synapd</code>
+style app keys no longer answer anything, so they appear in the unused-key
+report at the end — which is exactly where a stale profile is meant to
+surface. The disk, region and option keys are unchanged.</p>
+</blockquote>
+<h3 id="three-things-worth-knowing">Three things worth knowing</h3>
+<p><strong>Keys are semantic, never menu positions.</strong> <code>filesystem = "btrfs"</code>, not
+<code>filesystem = 2</code>. A number means whatever that row happens to be on the day you
+install, and menus grow entries.</p>
+<p><strong>A key that answers nothing is reported by name</strong> at the end of the run.
+<code>bootlaoder = "limine"</code> is not a syntax error — it is silence, and silence is
+how this kind of file usually fails: you find out when the machine boots the
+wrong loader. The installer lists unused keys instead.</p>
+<p><strong>The destructive confirmations are separate keys on purpose.</strong>
+<code>confirm_erase</code>, <code>confirm_alongside</code> and <code>confirm_format</code> each have to be
+written out. An unattended install that erases a disk should have said so in
+writing; leave them out and the installer stops and asks, which is the right
+outcome for a profile that was not meant to run unattended.</p>
+<blockquote>
+<p><strong>Passwords.</strong> <code>password</code> and <code>luks_passphrase</code> are real keys, because an
+unattended install needs them. <code>chmod 600</code> the file. The installer warns if it
+is readable by other users, and it will not stop you.</p>
+</blockquote>
+<h3 id="on-a-medium-without-nix">On a medium without nix</h3>
+<p>The ISO ships <code>nix</code>, so <code>--config profile.nix</code> evaluates in place. Anywhere it
+does not, render the profile first on a machine that has it — the installer says
+so rather than failing obscurely:</p>
+<div class="hl"><pre><span></span><code>syn<span class="w"> </span>nix<span class="w"> </span>profile<span class="w"> </span>profile.nix<span class="w"> </span>&gt;<span class="w"> </span>install.conf
+syn-install<span class="w"> </span>--config<span class="w"> </span>install.conf
+</code></pre></div>
+
+<p>The <code>key=value</code> form is the same vocabulary, one per line, <code>#</code> for comments:</p>
+<div class="hl"><pre><span></span><code>disk = vda
+filesystem = btrfs
+want_steam = no
+</code></pre></div>
+
+<hr />
+<p>See also: <a href="/wiki/Installation">Installation</a>, <a href="/wiki/Commands">Commands</a>,
+<a href="/wiki/Updating">Updating</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Configuration"><span>Previous</span>Configuration</a><a class="next" href="/wiki/Gaming"><span>Next</span>Gaming</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix" aria-current="page">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

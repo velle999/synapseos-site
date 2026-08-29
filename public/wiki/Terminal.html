@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Terminal — SynapseOS Wiki</title>
+<meta name="description" content="Super+Return opens syntty, the terminal SynapseOS ships and the default one since synui 0.1.0-359. It is what xdg-open reaches for on anything marked Terminal=true, what the…">
+<link rel="canonical" href="https://soslinux.org/wiki/Terminal">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Terminal — SynapseOS Wiki">
+<meta property="og:description" content="Super+Return opens syntty, the terminal SynapseOS ships and the default one since synui 0.1.0-359. It is what xdg-open reaches for on anything marked Terminal=true, what the…">
+<meta property="og:url" content="https://soslinux.org/wiki/Terminal">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#why-there-is-one-at-all">Why there is one at all</a></li>
+<li><a href="#using-it">Using it</a></li>
+<li class="sub"><a href="#tabs">Tabs</a></li>
+<li class="sub"><a href="#the-keys-the-window-keeps">The keys the window keeps</a></li>
+<li class="sub"><a href="#selecting-copying-pasting">Selecting, copying, pasting</a></li>
+<li class="sub"><a href="#the-pointer">The pointer</a></li>
+<li class="sub"><a href="#images">Images</a></li>
+<li class="sub"><a href="#key-encoding">Key encoding</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li class="sub"><a href="#it-follows-the-desktop-theme">It follows the desktop theme</a></li>
+<li><a href="#prompt-marks-osc-133">Prompt marks (OSC 133)</a></li>
+<li><a href="#what-happened-to-kitty">What happened to kitty</a></li>
+<li><a href="#what-ships-instead-two-and-the-second-one-earns-it">What ships instead: two, and the second one earns it</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Terminal</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Terminal/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>Super</code>+<code>Return</code> opens <strong><code>syntty</code></strong>, the terminal SynapseOS ships and the
+default one since synui <code>0.1.0-359</code>. It is what <code>xdg-open</code> reaches for on
+anything marked <code>Terminal=true</code>, what the start menu opens, and what SYNAPSE
+Settings ▸ Default Applications offers first.</p>
+<hr />
+<h2 id="why-there-is-one-at-all">Why there is one at all</h2>
+<p><strong>It links no GL.</strong> wl_shm, xdg-shell, xkbcommon and libc — no EGL, no OpenGL,
+no toolkit, no cairo. Cells become pixels on the CPU, in the <code>XRGB8888</code> a
+Wayland compositor already wants, so the buffer crosses with no conversion and
+no library in between.</p>
+<p>That is the reason it belongs on the install media whatever your default is: a
+GL context is the one thing an installer image cannot count on across unfamiliar
+hardware, and a live session with no way to open a prompt is a rescue disk that
+cannot rescue anything.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Binary</td>
+<td><strong>359 KB</strong> (kitty: 65 MiB)</td>
+</tr>
+<tr>
+<td>Window on screen</td>
+<td><strong>5.8 ms</strong></td>
+</tr>
+<tr>
+<td>4K interactive edit</td>
+<td><strong>68× less work</strong> than a full repaint — same pixels</td>
+</tr>
+<tr>
+<td>Parse 2.56 MB</td>
+<td>96.1 ms → <strong>44.5 ms</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="using-it">Using it</h2>
+<div class="hl"><pre><span></span><code>syntty<span class="w">                        </span><span class="c1"># a shell</span>
+syntty<span class="w"> </span>-e<span class="w"> </span>htop<span class="w">                </span><span class="c1"># run one command — the flag every launcher emits</span>
+syntty<span class="w"> </span>--hold<span class="w"> </span>-e<span class="w"> </span>./build.sh<span class="w">   </span><span class="c1"># keep the output on screen after it exits</span>
+syntty<span class="w"> </span>--config<span class="w"> </span>~/other.conf<span class="w">  </span><span class="c1"># a different config</span>
+syntty<span class="w"> </span>--no-config<span class="w">            </span><span class="c1"># ignore the config file entirely</span>
+</code></pre></div>
+
+<p><code>--hold</code> is the one worth knowing: it keeps the tab open with the command's
+exit status once it finishes, for a window that was opened to run one thing and
+where the output is the point. Update System and System Status in the start menu
+both use it.</p>
+<h3 id="tabs">Tabs</h3>
+<p>A tab is a whole session — its own grid, its own parser, its own pty and its own
+child — sharing only the window, the font and the renderer. A second tab
+therefore costs tens of kilobytes rather than a second process with a second
+copy of everything in it.</p>
+<h3 id="the-keys-the-window-keeps">The keys the window keeps</h3>
+<p>These never reach the program running inside:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl</code>+<code>Shift</code>+<code>T</code> / <code>W</code></td>
+<td>new tab / close this one</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Shift</code>+<code>Left</code> / <code>Right</code></td>
+<td>the tab before or after</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Shift</code>+<code>1</code>…<code>9</code></td>
+<td>that tab by number (or click it in the bar)</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Shift</code>+<code>C</code> / <code>V</code></td>
+<td>copy the selection / paste the clipboard</td>
+</tr>
+<tr>
+<td><code>Shift</code>+<code>Insert</code></td>
+<td>paste the primary selection, as middle-click does</td>
+</tr>
+<tr>
+<td><code>Shift</code>+<code>PgUp</code> / <code>PgDn</code> / <code>Home</code> / <code>End</code></td>
+<td>the scrollback</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Shift</code>+<code>Up</code> / <code>Down</code></td>
+<td>jump to the previous or next prompt</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plain <code>Ctrl</code>+<code>C</code> stays <code>SIGINT</code>, as it must — that is why the clipboard pair
+carries <code>Shift</code>.</p>
+<h3 id="selecting-copying-pasting">Selecting, copying, pasting</h3>
+<p>Drag to select; double-click for a word, triple-click for a line. Shift-drag
+selects even while a program is reading the mouse. A program inside can read and
+write the clipboard through <strong>OSC 52</strong>, which is how a remote editor's yank
+reaches your local clipboard over SSH.</p>
+<blockquote>
+<p><strong>A paste is the dangerous direction.</strong> A terminal that writes the clipboard
+to the pty unchanged has turned a copy into an execution channel: copy a
+command off a web page and the page can append a newline, so the shell runs it
+before you have read it. <strong>Bracketed paste</strong> (<code>?2004</code>) exists to stop that, by
+telling the shell the text was pasted and its newlines are not Enter — but it
+is only as good as its wrapper, and a clipboard containing the end marker
+closes the bracket early. So <code>syntty</code> strips control bytes from the payload
+first, which makes the marker unforgeable, and it does that <strong>whether or not
+the program turned bracketed paste on</strong> — against an old shell or a plain
+<code>cat</code>, the stripping is the only protection there is.</p>
+</blockquote>
+<h3 id="the-pointer">The pointer</h3>
+<p>Selection <em>and</em> mouse reporting, and which one runs is never the terminal's
+choice: a program that asks for mouse events (vim, htop, less) gets them, and
+everything else leaves the pointer to you.</p>
+<h3 id="images">Images</h3>
+<p><code>syntty</code> speaks the <strong>kitty graphics protocol</strong>, so <code>icat</code> and anything else
+that emits it put a real image in the window. Despite the name it has nothing to
+do with the GPU — it is an escape sequence.</p>
+<h3 id="key-encoding">Key encoding</h3>
+<p>The <strong>kitty keyboard protocol</strong> is supported, which is what makes <code>Ctrl</code>+<code>I</code> and
+<code>Tab</code> — the same bytes in the legacy encoding — distinguishable at all. Key
+repeat is the client's job on Wayland (the compositor hands over the rate and
+delay once, and never sends a repeated event), and <strong>DECCKM</strong> is honoured, so
+full-screen programs get the arrow-key encoding they asked for.</p>
+<hr />
+<h2 id="configuration">Configuration</h2>
+<p><code>$XDG_CONFIG_HOME/syntty/syntty.conf</code>, or <code>~/.config/syntty/syntty.conf</code> when
+that is unset — <code>key = value</code>, one per line, no sections. Command-line flags win
+over the file, and <code>--no-config</code> ignores it entirely.</p>
+<div class="hl"><pre><span></span><code><span class="na">font</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">JetBrains Mono</span>
+<span class="na">font_size</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">10.5</span><span class="w">      </span><span class="c1"># points, the unit the rest of the desktop uses</span>
+<span class="na">columns</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">80</span><span class="w">        </span><span class="c1"># the size the window asks for, when it may choose</span>
+<span class="na">rows</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">24</span>
+<span class="na">scrollback</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">1000</span><span class="w">      </span><span class="c1"># lines of history, allocated as output scrolls off</span>
+<span class="na">scroll_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">3</span><span class="w">         </span><span class="c1"># lines per wheel notch</span>
+</code></pre></div>
+
+<p>The shipped file has every key commented out at its default, so it doubles as
+the reference. Colours are settable too (<code>foreground</code>, <code>background</code>, and the
+eight names), but the desktop theme sets them for you — see below.</p>
+<blockquote>
+<p>Text size is a <strong>desktop-wide</strong> setting: Control panel ▸ Appearance writes
+<code>font</code> and <code>font_size</code> here in place, alongside every other window in the
+suite. Editing this file by hand and changing it in the panel are the same
+change.</p>
+</blockquote>
+<h3 id="it-follows-the-desktop-theme">It follows the desktop theme</h3>
+<p>Colours come from the desktop theme rather than a palette of its own, so
+switching to Windows 95 or macOS 26 moves the terminal with everything else.
+Two consequences worth knowing:</p>
+<ul>
+<li><strong><code>dim</code> text stays legible on a pale theme.</strong> A fixed blend toward the
+  background darkens on a dark theme and <em>lightens</em> on a light one, which on
+  the silver themes made dim text nearly invisible.</li>
+<li><strong>It answers <code>ESC ] 11 ; ?</code> honestly</strong> — "what colour are you?" — so a program
+  that picks its own text colours against the background gets the right answer.
+  A terminal that does not reply at all is read as <em>dark</em> by convention, which
+  is how a light theme ends up with unreadable output.</li>
+</ul>
+<p>It also honours <strong>DECTCEM</strong>: a program that hid the cursor gets a window with no
+cursor drawn in it.</p>
+<hr />
+<h2 id="prompt-marks-osc-133">Prompt marks (OSC 133)</h2>
+<p><code>syntty</code> and <code>synsh</code> ship both halves of <strong>OSC 133</strong>, the de-facto
+semantic-prompt protocol — the shell marks where a prompt, its input and its
+output begin, and the terminal can then jump between commands and copy exactly
+one command's output.</p>
+<p>They are the standard's marks rather than ours, so any terminal that already
+speaks OSC 133 gets the same thing out of <code>synsh</code>, and any shell that emits them
+works here.</p>
+<hr />
+<h2 id="what-happened-to-kitty">What happened to kitty</h2>
+<p><strong>It is not installed any more.</strong> From syn-install 0.1.0-100 it is off the base
+set and off the ISO: a fresh box was getting three terminals and opening one of
+them, and kitty was 65 MiB of the three that nothing opens and no fresh
+<code>synuirc</code> names. On the live image it was worse than dead weight — kitty needs a
+working OpenGL context, which is the one thing a rescue disk cannot count on.</p>
+<p>It is still packaged, still works, and is one command away:</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>install<span class="w"> </span>kitty
+</code></pre></div>
+
+<p>Everything that used to reach for it still names it. Every terminal fallback
+chain in the system reads <code>syntty || kitty || foot || …</code>, and the installer
+still writes <code>~/.config/kitty/kitty.conf</code> in the SynapseOS palette — so a kitty
+you add lands looking like the rest of the desktop, and <strong>a machine installed
+before this keeps behaving exactly as it did.</strong></p>
+<p>A <code>synuirc</code> written between synui 215 and 358 still names <code>terminal = kitty</code>,
+and that is treated as a real choice rather than overwritten. To move:</p>
+<div class="hl"><pre><span></span><code><span class="c1"># ~/.config/synui/synuirc</span>
+<span class="na">terminal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">syntty</span>
+</code></pre></div>
+
+<h2 id="what-ships-instead-two-and-the-second-one-earns-it">What ships instead: two, and the second one earns it</h2>
+<p><code>syntty</code> is the default. <code>foot</code> is the rescue — and the reason it is there
+changed when kitty left. It used to be "kitty needs OpenGL and foot does not",
+which stopped being the point the day syntty became the default, because syntty
+links no GL either. What <code>foot</code> is now is a <strong>second implementation</strong>: 793 KiB
+of somebody else's code, so a bug that stops <code>syntty</code> opening still leaves a way
+to get a prompt and fix it.</p>
+<hr />
+<p>See also: <strong><a href="/wiki/Commands">Commands</a></strong> · <strong><a href="/wiki/The-Desktop">The Desktop</a></strong> ·
+<strong><a href="/wiki/Keybindings">Keybindings</a></strong> · <strong><a href="/wiki/synsh">synsh</a></strong></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Studio"><span>Previous</span>Studio</a><a class="next" href="/wiki/Keybindings"><span>Next</span>Keybindings</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal" aria-current="page">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

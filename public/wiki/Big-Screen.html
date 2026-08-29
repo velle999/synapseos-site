@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Big Screen — SynapseOS Wiki</title>
+<meta name="description" content="The couch face of the machine: one full-screen surface of tiles you drive with a controller, from four metres away, with the keyboard left on the table.">
+<link rel="canonical" href="https://soslinux.org/wiki/Big-Screen">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Big Screen — SynapseOS Wiki">
+<meta property="og:description" content="The couch face of the machine: one full-screen surface of tiles you drive with a controller, from four metres away, with the keyboard left on the table.">
+<meta property="og:url" content="https://soslinux.org/wiki/Big-Screen">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#what-is-on-it">What is on it</a></li>
+<li class="sub"><a href="#the-recent-bar">The Recent bar</a></li>
+<li><a href="#getting-in-and-out">Getting in and out</a></li>
+<li><a href="#music">Music</a></li>
+<li class="sub"><a href="#youtube-music-needs-no-account-to-play">YouTube Music needs no account to play</a></li>
+<li class="sub"><a href="#the-player">The player</a></li>
+<li class="sub"><a href="#the-visualizer">The visualizer</a></li>
+<li><a href="#driving-it">Driving it</a></li>
+<li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#the-shortcuts">The shortcuts</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Big Screen</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Big-Screen/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The couch face of the machine: one full-screen surface of tiles you drive with a
+controller, from four metres away, with the keyboard left on the table.</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>start<span class="w">           </span><span class="c1"># or Super+F10, or the pad&#39;s GUIDE button</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>autostart<span class="w"> </span>on<span class="w">    </span><span class="c1"># …and open it at login instead of the desktop</span>
+</code></pre></div>
+
+<p>A television is not a monitor with a bigger number. Every desktop convention —
+a titlebar, a 12-pixel close button, a menu you aim at — fails at sofa distance,
+so this is a separate interface rather than a scaled one.</p>
+<hr />
+<h2 id="what-is-on-it">What is on it</h2>
+<ul>
+<li><strong>Your installed Steam library</strong>, with its cover art, most recently played
+  first</li>
+<li><strong>Steam Big Picture</strong>, optionally through gamescope for a TV that is not your
+  desktop's resolution</li>
+<li><strong>GeForce NOW</strong>, wherever <code>syn-gfn</code> is installed — see <a href="/wiki/Gaming">Gaming</a>. It
+  takes both a pointer and a keyboard, unlike the launchers beside it: those are
+  applications with their own controller support, and this is a web page until a
+  game starts, so choosing one takes a cursor and signing in the first time takes
+  letters</li>
+<li>Whatever <strong>launchers and media players</strong> are actually on the machine</li>
+<li>A <strong>web browser</strong>, a <strong>terminal</strong> and the controller window</li>
+<li><strong>Music</strong> — see below</li>
+<li><strong>Headlines</strong></li>
+<li>The machine's own switches — desktop, sleep, restart, power off — behind
+  <strong>Start</strong></li>
+</ul>
+<p><strong>Nothing is listed that is not installed.</strong> A tile you can press is a tile that
+works.</p>
+<h3 id="the-recent-bar">The Recent bar</h3>
+<p>Across the top, newest first, capped at eight — the last things this machine
+opened.</p>
+<p>It is the <strong>desktop's</strong> list, not big screen mode's. That distinction is the
+whole feature: a tally of what had been launched from the television is empty for
+anybody who opens big screen mode, looks at it and goes back to the desktop,
+which is what "recently opened" plainly does not mean. <code>synui</code> keeps it at the
+one moment every launch has in common — a window turns up — so the start menu,
+the dock, the app grid, a desktop icon, the file manager and a terminal all
+count, and no launcher can forget to remember one. <code>synctl recent</code> prints it.</p>
+<p>It stores <strong>ids</strong> and looks each one up when the shelf is drawn, so a tile whose
+program has been removed is simply not drawn, and returns to its place if it
+comes back. The way out (<code>desktop</code>) and the machine's own switches are
+deliberately not entries — a "recently opened" row whose first item is "go back
+to the desktop" is a row nobody reads twice.</p>
+<p>It is a <strong>bar</strong>, first among Play/Media/Apps, rather than a shelf of its own: a
+whole row of a television for four tiles is exactly the mistake the shelf order
+was rearranged to undo.</p>
+<p>The Steam library is read the way Steam stores it, which is three questions and
+not one: <code>libraryfolders.vdf</code> for <strong>every drive</strong> Steam has been pointed at (a
+scanner that reads only your home directory finds the runtimes and none of the
+games), a manifest per installed app, and a cover-art cache that has had three
+on-disk layouts and still has all three on any machine that has run Steam for a
+few years. Proton and the Steam Linux Runtimes are dropped — <code>--all</code> puts them
+back.</p>
+<hr />
+<h2 id="getting-in-and-out">Getting in and out</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>F10</code></td>
+<td>start it, or show/hide it if it is already running</td>
+</tr>
+<tr>
+<td><strong>Guide</strong> on the pad</td>
+<td>the same, in both directions — from the desktop it brings big screen mode back, from inside it takes you to the desktop</td>
+</tr>
+<tr>
+<td><code>syn-arcade big stop</code></td>
+<td>close it for good</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>It steps aside rather than closing.</strong> Opening the browser, the terminal or the
+controller window unmaps the surface and leaves the shell running; it comes back
+when you close what you opened, or the moment you press Guide.</p>
+<p>That is why <code>big stop</code> exists as a separate verb. A layer-shell surface is not a
+toplevel — it appears in no dock and no window switcher, so without it the only
+exit was "hidden for the rest of the session".</p>
+<p><strong>A tile press fills the television.</strong> From a sofa, a titlebar and a strip of
+wallpaper around the edge are the whole difference between an appliance and
+somebody's computer left switched on, so launching from a tile fullscreens what
+it opened.</p>
+<hr />
+<h2 id="music">Music</h2>
+<p>The tile plays from a <strong>source</strong>, chosen once and remembered:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span><span class="nb">source</span><span class="w">          </span><span class="c1"># what is available, and which is picked</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span><span class="nb">source</span><span class="w"> </span>plex<span class="w">     </span><span class="c1"># choose one (see the ids below)</span>
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th><code>&lt;id&gt;</code></th>
+<th>Source</th>
+<th>What it needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plex</code></td>
+<td><strong>Plex</strong></td>
+<td>a server on your network — found by broadcast, no address to type</td>
+</tr>
+<tr>
+<td><code>ytmusic</code></td>
+<td><strong>YouTube Music</strong></td>
+<td>nothing, to play. See the note below</td>
+</tr>
+<tr>
+<td><code>spotify</code></td>
+<td><strong>Spotify</strong></td>
+<td>an account, through cliamp's own sign-in</td>
+</tr>
+<tr>
+<td><code>local</code></td>
+<td><strong>Local files</strong></td>
+<td>your music folder</td>
+</tr>
+<tr>
+<td><code>radio</code></td>
+<td><strong>Radio</strong></td>
+<td>nothing — cliamp carries the stations</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Spotify is browsed inside cliamp's own interface and nowhere else</strong>, so
+choosing it opens cliamp on the television rather than filling a queue from a
+tile. The other four are reachable from outside it, which is what lets the tile
+end in music.</p>
+<p>Jellyfin is not a <em>music</em> source — it appears as a media-server tile
+(<code>big media</code>), found on the network the same way.</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span>plex<span class="w">            </span><span class="c1"># the albums in the Plex library</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span>plex<span class="w"> </span>&lt;id&gt;<span class="w">       </span><span class="c1"># play one — the queue becomes that album</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span>play<span class="p">|</span>toggle<span class="p">|</span>next<span class="p">|</span>prev<span class="p">|</span>stop
+syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span>setup<span class="w">           </span><span class="c1"># cliamp&#39;s sign-in wizard, in a terminal</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>music<span class="w"> </span>install<span class="w"> </span>&lt;id&gt;<span class="w">    </span><span class="c1"># what a source needs before it can play</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>Choosing a source is a setting, not a transport command.</strong> Picking one on a
+silent machine used to start playing. It does restart the player, though —
+cliamp takes <code>--provider</code> at start-up and has no verb to change it afterwards,
+so switching source stops and restarts the music. There is no gentler
+mechanism, and a picker that quietly did nothing until the next reboot would
+be worse.</p>
+</blockquote>
+<h3 id="youtube-music-needs-no-account-to-play">YouTube Music needs no account to play</h3>
+<p>Signing in is a <strong>browser</strong> — Google cookies, not an API key or a Cloud project
+— and it is for <strong>browsing</strong>: your own playlists, and a search you can type from
+the sofa with the on-screen keyboard. Playback itself works signed out.</p>
+<p><code>syn-arcade big music install ytmusic</code> fetches what streaming needs (<code>yt-dlp</code>);
+without it the provider is present and returns nothing, which is the one failure
+that looks like an account problem and is not.</p>
+<h3 id="the-player">The player</h3>
+<p><code>cliamp</code> — and big screen mode <strong>drives</strong> it rather than launching it, over its
+own socket, so the Now Playing row in Start controls playback with nothing on
+screen. <code>music = cliamp</code> in <code>~/.config/syn-arcade/big.conf</code> is the default; any
+other player becomes a tile that opens a window somebody then has to get out of
+with a gamepad.</p>
+<p><code>big transport</code> is the other half and is <strong>not</strong> the same thing: it acts on
+whatever is making noise, over MPRIS — Spotify, a film, a browser tab — which is
+what the media buttons along the bottom of the screen use.</p>
+<h3 id="the-visualizer">The visualizer</h3>
+<p>projectM, listening to the monitor of whatever audio output is in use rather
+than to a microphone. It is a tile, a row in Start, and a <strong>chord</strong>: both stick
+clicks at once, or <code>V</code>.</p>
+<p>The chord exists because the visualizer is the one thing somebody turns on while
+something is already playing, and three rows into a menu is the wrong distance
+for that. L3 and R3 mean nothing on their own — only the pair says a word.</p>
+<p>Behind the Now Playing row, the meter is <code>cliamp</code>'s own FFT bands, streamed a
+frame per line.</p>
+<hr />
+<h2 id="driving-it">Driving it</h2>
+<p>Everything is <strong>words on a pipe</strong> — <code>up</code>, <code>accept</code>, <code>page-right</code>, one per line,
+read by exactly one process. Nothing is synthesised into the desktop, so a stray
+event cannot land in a window you left open, and stick drift cannot arrive as
+held arrow keys in every text field on the machine.</p>
+<p>A keyboard and a mouse work too, mapped onto the same words: the machine that is
+a television in the evening is a desktop in the afternoon. <strong>The wheel is one of
+them</strong> — it is accumulated into notches and sent as <code>up</code>/<code>down</code>, so it reaches
+the shelves, the Start menu, the media buttons and the on-screen keyboard without
+any of them knowing a wheel exists.</p>
+<p><strong>The one exception is a browser</strong>, which takes pointer events and cannot be
+driven with words. So while one is on screen:</p>
+<ul>
+<li><strong>the controller is a mouse</strong> — left stick moves the pointer, right stick
+  scrolls, <code>A</code> clicks, <code>X</code> right-clicks, the shoulders are Back and Forward</li>
+<li><strong>an on-screen keyboard</strong> — <strong>Start</strong> opens it, <code>A</code> types, <code>X</code> is backspace,
+  <code>Y</code> is space, the shoulders change layout, <code>B</code> closes it. There is an
+  <strong>Address</strong> key, which is <code>Ctrl</code>+<code>L</code>: a browser you cannot type a URL into can
+  only follow links somebody else opened</li>
+</ul>
+<p>Both stop the instant big screen mode comes back.</p>
+<hr />
+<h2 id="fitting-an-old-game-to-the-screen">Fitting an old game to the screen</h2>
+<p>A game that renders at 640×480 has no idea what a 1440p monitor is, and sits as
+a postage stamp in the middle of a black screen. gamescope fixes that, and the
+line is hard to remember:</p>
+<div class="hl"><pre><span></span><code>gamescope -w 1024 -h 768 -W 2560 -H 1440 -f -F fsr -- wine Sims.exe
+</code></pre></div>
+
+<p><code>syn-arcade fit</code> writes it for you and gives it a menu entry:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;The Sims&quot;</span><span class="w"> </span>--exec<span class="o">=</span><span class="s2">&quot;wine Sims.exe&quot;</span><span class="w"> </span>--game<span class="o">=</span>1024x768
+syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--from<span class="o">=</span>/usr/share/applications/thegame.desktop
+syn-arcade<span class="w"> </span>fit<span class="w">                  </span><span class="c1"># the wrappers you have made</span>
+syn-arcade<span class="w"> </span>fit<span class="w"> </span><span class="nb">command</span><span class="w"> </span>&lt;id&gt;<span class="w">     </span><span class="c1"># the command line it builds, to check or copy</span>
+syn-arcade<span class="w"> </span>fit<span class="w"> </span>run<span class="w"> </span>&lt;id&gt;<span class="w">         </span><span class="c1"># what the menu entry runs</span>
+</code></pre></div>
+
+<blockquote class="warn"><p>⚠ <strong><code>-w</code>/<code>--game</code> is what the GAME renders at; <code>-W</code>/<code>--screen</code> is the
+monitor.</strong> Getting them the wrong way round produces a wrapper that runs and
+looks worse than no wrapper.</p>
+</blockquote>
+<p><code>--screen</code> defaults to your primary monitor, <code>--filter</code> to FSR, and
+<code>--force-window</code>, <code>--grab</code>, <code>--overlay</code> and <code>--gamemode</code> are there for the games
+that need them.</p>
+<hr />
+<h2 id="configuration">Configuration</h2>
+<p><code>~/.config/syn-arcade/big.conf</code>:</p>
+<div class="hl"><pre><span></span><code><span class="na">output</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1</span><span class="w">   </span><span class="c1"># a connector name, `primary` or `focused`</span>
+<span class="na">music</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">cliamp</span>
+<span class="na">music_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">plex</span>
+</code></pre></div>
+
+<p>Without <code>output =</code> it opens on the <strong>primary</strong> screen. It used to resolve the
+screen as "wherever I am", which synui answers from the output under the
+<em>cursor</em> — so a <code>big start</code> typed in a terminal on the second monitor opened the
+ten-foot interface on the second monitor.</p>
+<hr />
+<h2 id="the-shortcuts">The shortcuts</h2>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>binds<span class="w">            </span><span class="c1"># whether the gaming keys are installed</span>
+syn-arcade<span class="w"> </span>binds<span class="w"> </span>install<span class="w">    </span><span class="c1"># add them to synuirc</span>
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>F10</code></td>
+<td>big screen mode</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>F11</code></td>
+<td>toggle the MangoHud overlay, inside a running game</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>F12</code></td>
+<td>move it</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are <strong>there on a fresh install</strong> since 0.2.9 — your session runs
+<code>binds ensure</code>, which refreshes a block that exists or writes one where there is
+none. A block you deliberately removed stays removed.</p>
+<p><code>syn-arcade big guide off</code> turns off the Guide-button watcher if you would
+rather the pad's Guide button went to Steam.</p>
+<hr />
+<p>See also: <strong><a href="/wiki/Gaming">Gaming</a></strong> for the overlay, controllers and Proton ·
+<strong><a href="/wiki/Commands">Commands</a></strong> · <strong><a href="/wiki/Keybindings">Keybindings</a></strong></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Gaming"><span>Previous</span>Gaming</a><a class="next" href="/wiki/DaVinci-Resolve"><span>Next</span>DaVinci Resolve</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen" aria-current="page">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Files — SynapseOS Wiki</title>
+<meta name="description" content="synfiles is SynapseOS&#x27;s file manager, and what a folder opens in. It is one C binary plus a quickshell window, in the same shape as synpkg: the binary does the work and prints…">
+<link rel="canonical" href="https://soslinux.org/wiki/Files">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Files — SynapseOS Wiki">
+<meta property="og:description" content="synfiles is SynapseOS&#x27;s file manager, and what a folder opens in. It is one C binary plus a quickshell window, in the same shape as synpkg: the binary does the work and prints…">
+<meta property="og:url" content="https://soslinux.org/wiki/Files">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-window">The window</a></li>
+<li class="sub"><a href="#copying-moving-and-deleting">Copying, moving and deleting</a></li>
+<li class="sub"><a href="#keyboard">Keyboard</a></li>
+<li><a href="#in-a-terminal">In a terminal</a></li>
+<li class="sub"><a href="#what-it-does-to-your-terminal">What it does to your terminal</a></li>
+<li class="sub"><a href="#piping-to-it">Piping to it</a></li>
+<li><a href="#the-trash-and-undo">The trash, and undo</a></li>
+<li><a href="#hovering-over-something">Hovering over something</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#sizes">Sizes</a></li>
+<li><a href="#the-right-click-menu">The right-click menu</a></li>
+<li><a href="#places-volumes-and-archives">Places, volumes and archives</a></li>
+<li><a href="#search">Search</a></li>
+<li><a href="#settings">Settings</a></li>
+<li><a href="#for-scripts---rec">For scripts: --rec</a></li>
+<li><a href="#getting-dolphin-back">Getting Dolphin back</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Files</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Files/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>synfiles</code> is SynapseOS's file manager, and what a folder opens in. It is one C
+binary plus a <a href="https://quickshell.org/">quickshell</a> window, in the same shape as
+<a href="/wiki/Software"><code>synpkg</code></a>: the binary does the work and prints records, the window
+only renders them. Nothing in the QML knows how to stat a file, and everything
+the window can do has a command-line half.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Front-end</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The window</td>
+<td><strong>Files</strong> in the start menu, double-clicking a folder, or <code>synfiles gui [dir]</code></td>
+</tr>
+<tr>
+<td>The terminal</td>
+<td><code>synfiles tui [dir]</code> — arrow keys, no desktop needed. See <a href="#in-a-terminal">In a terminal</a></td>
+</tr>
+<tr>
+<td>Command line</td>
+<td><code>synfiles list</code>, <code>synfiles find</code>, <code>synfiles trash</code>, …</td>
+</tr>
+</tbody>
+</table></div>
+<p>It has <strong>no dependency but libc</strong>. File types come from shared-mime-info's data
+files, mounting is delegated to <code>udisks2</code>, and the icon theme is resolved by the
+front-end that already has it loaded.</p>
+<blockquote>
+<p><strong>It replaced Dolphin as the default in August 2026.</strong> Dolphin is still
+installed and still works — it simply is not what a folder opens in. See
+<a href="#getting-dolphin-back">Getting Dolphin back</a>.</p>
+</blockquote>
+<hr />
+<h2 id="the-window">The window</h2>
+<ul>
+<li><strong>Tabs</strong> (<code>Ctrl</code>+<code>T</code>), each with its own history — Back and Forward are per
+  tab, because a shared history sends Back somewhere this tab has never been.</li>
+<li><strong>Split view</strong> (<code>F3</code>): two panes side by side, each with its own tabs,
+  selection and search. An accent line marks the active one. Drag between them.</li>
+<li><strong>Three view modes</strong> — Icons, Compact and Details — picked from the <strong>View</strong>
+  button. The default is <code>auto</code>, which follows the icon size: a details list for
+  small icons, a grid for large ones.</li>
+<li><strong>Thumbnails</strong>, from the shared freedesktop cache. Anything Dolphin, GTK or a
+  video player has already thumbnailed appears here for free, video and PDF
+  included, because it is the same cache keyed the same way.</li>
+<li><strong>Folder tree</strong>, toggleable, expanded one level at a time.</li>
+<li><strong>Address bar</strong>: breadcrumbs, or <code>Ctrl</code>+<code>L</code> to type a path.</li>
+<li><strong>Sidebar</strong> — pinned places, Recent, Trash, and your disks with fill meters.
+  <code>F9</code> puts it away (Dolphin's key, and Nautilus'), and that is remembered.</li>
+<li><strong>Drag and drop</strong> — between panes, between windows, onto the desktop, and out
+  to any other application. A drop from <em>another</em> application copies rather than
+  moves: moving would delete another program's data on a guess.</li>
+</ul>
+<h3 id="copying-moving-and-deleting">Copying, moving and deleting</h3>
+<p>Everything long says <strong>how long is left</strong>, in the unit that decides it. That is
+not decoration: emptying the trash of a folder off a USB stick is two or three
+minutes of work — an unlink there measures around 12 ms — and a GUI silent that
+long cannot be told from a hang.</p>
+<p>Recursive deletes report as they go rather than as one record at the end, and
+copies show a rate and an estimate.</p>
+<blockquote>
+<p><strong>Copying used to be 147× slower than <code>cp</code>.</strong> An <code>fsync</code> per file: 2000 small
+files took 12.25 s against <code>cp -r</code>'s 0.08 s on an SSD, and on a USB stick,
+where an fsync is tens of milliseconds, that was the whole of "copying seems
+slow". It is 0.08 s now. The fsync was there for a reason — a cross-filesystem
+<em>move</em> deletes the original — so the durability barrier stayed where it
+belongs and left the copy path alone.</p>
+</blockquote>
+<p>A <strong>USB stick with no partition table</strong> — a filesystem written straight to the
+device — appears under Removable Devices. One was mounted, browsable and
+invisible in the sidebar because the scan expected every filesystem to sit on a
+partition.</p>
+<h3 id="keyboard">Keyboard</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enter</code></td>
+<td>Open</td>
+</tr>
+<tr>
+<td><code>Alt</code>+<code>Enter</code></td>
+<td>Properties</td>
+</tr>
+<tr>
+<td><code>F2</code></td>
+<td>Rename, in place, in whichever view you are in</td>
+</tr>
+<tr>
+<td><code>F3</code></td>
+<td>Split view on/off</td>
+</tr>
+<tr>
+<td><code>Delete</code></td>
+<td>Move to trash</td>
+</tr>
+<tr>
+<td><code>Backspace</code></td>
+<td>Up one folder</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>F</code></td>
+<td>Search this folder and everything below it</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>L</code></td>
+<td>Edit the path</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>C</code> / <code>Ctrl</code>+<code>X</code> / <code>Ctrl</code>+<code>V</code></td>
+<td>Copy / cut / paste</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Z</code></td>
+<td>Undo the last thing that changed files</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>A</code></td>
+<td>Select all</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>N</code></td>
+<td>New folder</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>T</code> / <code>Ctrl</code>+<code>W</code></td>
+<td>New tab / close tab — closing the last tab folds the split, or closes the window if there is no split</td>
+</tr>
+<tr>
+<td><code>Escape</code></td>
+<td>Close a dialog, end a search, or clear the selection</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="in-a-terminal">In a terminal</h2>
+<p><code>synfiles tui [dir]</code> is the same file manager with a terminal for a front-end.
+It is the one to reach for over SSH, on a TTY, or on a machine whose desktop
+will not start — and it needs nothing installed that the window does not.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>tui<span class="w">               </span><span class="c1"># here</span>
+synfiles<span class="w"> </span>tui<span class="w"> </span>~/Downloads<span class="w">   </span><span class="c1"># somewhere else</span>
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>↑</code> <code>↓</code></td>
+<td>Move the highlighted row</td>
+</tr>
+<tr>
+<td><code>→</code> or <code>Enter</code></td>
+<td>Open — a folder is entered, a file goes to <code>xdg-open</code></td>
+</tr>
+<tr>
+<td><code>←</code> or <code>Backspace</code></td>
+<td>Up one folder, landing <strong>on</strong> the folder you just left</td>
+</tr>
+<tr>
+<td><code>PgUp</code> <code>PgDn</code>, <code>Home</code> <code>End</code></td>
+<td>Move a page, or to the ends</td>
+</tr>
+<tr>
+<td><code>i</code></td>
+<td>Properties for this row</td>
+</tr>
+<tr>
+<td><code>z</code></td>
+<td>Size of this row, walked (see <a href="#sizes">Sizes</a>)</td>
+</tr>
+<tr>
+<td><code>m</code> / <code>y</code></td>
+<td>Move / copy it somewhere, typed at a prompt</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>Trash it</td>
+</tr>
+<tr>
+<td><code>e</code></td>
+<td>The right-click menu — Open With and the service menus</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>Filter what is on screen; empty clears it</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td>Type a path to go to</td>
+</tr>
+<tr>
+<td><code>a</code> <code>s</code> <code>r</code></td>
+<td>Hidden files, sort, reverse</td>
+</tr>
+<tr>
+<td><code>h</code></td>
+<td>Home</td>
+</tr>
+<tr>
+<td><code>g</code></td>
+<td>Open the window on the folder you are in</td>
+</tr>
+<tr>
+<td><code>q</code> or <code>Esc</code></td>
+<td>Quit</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>y</code> is copy rather than <code>c</code>, which is already "cd" — two operations that ask the
+same question ("to:") should not be a shift away from each other.</p>
+<p><strong>It reimplements nothing.</strong> The listing is the scan <code>synfiles list</code> prints,
+properties are <code>synfiles info</code>, sizes are <code>synfiles du</code>, moving and copying are
+<code>synfiles move</code> and <code>synfiles copy</code>. So a move made here is in the same journal
+as a move made in the window, and <code>Ctrl</code>+<code>Z</code> — <code>synfiles undo</code> — reverses it. A
+browser that walked directories itself would be a second set of answers about
+symlinks, broken links and sort order, and the two would drift on the first bug
+fixed in one of them.</p>
+<p>A path you type is relative to <strong>what you are browsing</strong>, not to the shell's
+working directory: typing <code>alpha</code> while looking at a folder that plainly
+contains an <code>alpha</code> goes there. <code>~</code> works. Only a leading <code>/</code> is absolute.</p>
+<p><code>t</code> reaches the <strong>trash</strong>, never <code>synfiles delete</code> — the permanent one is gated
+behind <code>--yes</code> and no key here reaches it, exactly as in the window.</p>
+<h3 id="what-it-does-to-your-terminal">What it does to your terminal</h3>
+<p>It turns off echo and line-buffering so that arrow keys arrive without <code>Enter</code>,
+and <strong>nothing else</strong>:</p>
+<ul>
+<li><strong>No mouse reporting.</strong> That is the one that does real harm: a full-screen TUI
+  killed mid-flight never sends the sequence that turns it off, and the shell
+  underneath then reads every pointer movement as typed input.</li>
+<li><strong>No alternate screen.</strong> What you browsed stays in the scrollback.</li>
+<li><strong><code>Ctrl</code>+<code>C</code> still interrupts</strong>, rather than being swallowed as a keystroke.</li>
+</ul>
+<p>The settings are put back on exit, on <code>Ctrl</code>+<code>C</code>, and on <code>SIGTERM</code>, <code>SIGHUP</code> and
+<code>SIGQUIT</code>. The worst a <code>kill -9</code> can leave behind is a terminal with echo off,
+which <code>reset</code> fixes.</p>
+<h3 id="piping-to-it">Piping to it</h3>
+<p>If stdin is not a terminal, it runs a line protocol instead — the same browser
+driven a line at a time, which is what makes it scriptable and testable:</p>
+<div class="hl"><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="s1">&#39;1\nq\n&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>synfiles<span class="w"> </span>tui<span class="w">        </span><span class="c1"># open row 1, quit</span>
+</code></pre></div>
+
+<p>There, a bare row number opens, and the actions take the row as an argument:
+<code>i 2</code>, <code>z 2</code>, <code>t 2</code>, <code>m 3 ~/dest</code>, <code>y 3 ~/dest</code>, <code>c ~/Pictures</code>, <code>/ report</code>,
+<code>n</code>/<code>p</code> for pages.</p>
+<hr />
+<h2 id="the-trash-and-undo">The trash, and undo</h2>
+<p>These two are the whole safety design, and they are worth knowing before you
+need them.</p>
+<p><strong>Delete means the trash</strong> — the XDG trash, the same one Dolphin and Nautilus
+use, so what one of them put there is what you see here, and restoring puts a
+file back where it came from rather than in your home directory. A file on
+another disk goes to <em>that</em> disk's trash, because trashing is always a rename
+and never a copy.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>trash<span class="w"> </span>notes.txt<span class="w">      </span><span class="c1"># what Delete does</span>
+synfiles<span class="w"> </span>trash<span class="w"> </span>list
+synfiles<span class="w"> </span>trash<span class="w"> </span>restore<span class="w"> </span>notes.txt
+synfiles<span class="w"> </span>trash<span class="w"> </span>empty<span class="w"> </span>--yes
+</code></pre></div>
+
+<p>The permanent one is <code>synfiles delete --yes</code>, it is gated behind that flag, and
+<strong>no key or click in the window reaches it</strong>.</p>
+<p><strong>Anything that changed files can be undone</strong> — <code>Ctrl</code>+<code>Z</code>, or the chip in the
+toolbar, which says what it would reverse ("↶ Move of 2 items"). A recovery
+control that does not say what it undoes goes unpressed.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>undo<span class="w"> </span>list<span class="w">      </span><span class="c1"># what would be reversed</span>
+synfiles<span class="w"> </span>undo
+</code></pre></div>
+
+<p>Three rules it follows:</p>
+<ul>
+<li><strong>A batch is one thing.</strong> Moving six files undoes as one operation.</li>
+<li><strong>Undoing a copy trashes the copies</strong> rather than unlinking them. The copy may
+  have been edited since, and undo must never be a shorter road to losing work
+  than delete is.</li>
+<li><strong>It verifies, then refuses.</strong> If something else now occupies the old place,
+  undo stops rather than overwriting a file created <em>after</em> the operation being
+  undone. <code>delete --yes</code> is deliberately not journalled at all: an undo entry
+  that cannot undo would look like a safety net and not be one.</li>
+</ul>
+<hr />
+<h2 id="hovering-over-something">Hovering over something</h2>
+<p>Rest the pointer on a file or a folder, in the list or in the icon view, and a
+panel says what it is:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Line</th>
+<th>What it says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The name</td>
+<td>In full — the icon view elides it to the cell, and this is usually why you hovered</td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Its real name: <em>Tar archive (gzip-compressed)</em>, not <code>application/x-compressed-tar</code></td>
+</tr>
+<tr>
+<td><strong>Modified</strong></td>
+<td>When it last changed</td>
+</tr>
+<tr>
+<td><strong>Size</strong></td>
+<td>For a file, its size. For a <strong>folder</strong>, what it costs <strong>on disk</strong> — measured, not reported</td>
+</tr>
+<tr>
+<td><strong>Contents</strong></td>
+<td>Folders only: what the tree holds, and in how many files</td>
+</tr>
+<tr>
+<td><strong>Links to</strong></td>
+<td>Where a symlink points</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>stat</code> reports the size of the directory <em>entry</em> for a folder — a few hundred
+bytes for a tree holding an ISO — so the panel runs the same walk Properties
+does and shows the answer as it climbs. It starts when the panel appears rather
+than when the pointer arrives, so crossing a grid of folders costs nothing, and
+it stops when the panel goes. A finished measurement is remembered until the
+listing is next re-read; after a copy, a delete or <code>F5</code> it is measured again,
+because a remembered one would be wrong.</p>
+<p>The <strong>disk</strong> figure leads because it is the one that costs you something: a
+tree of small files takes a block each and occupies far more room than it
+contains.</p>
+<p>The type's name is <strong>shared-mime-info's own</strong>, read from the same database
+every other file manager on the machine reads, so a file is called the same
+thing here as it is anywhere else. It travels on the listing row, so hovering
+costs nothing — no lookup happens when the pointer arrives.</p>
+<p>The panel waits half a second before it appears. Crossing a grid of icons to
+reach something else brushes a dozen of them on the way, and a panel on each
+would be a strobe. Scrolling or clicking takes it down.</p>
+<hr />
+<h2 id="properties">Properties</h2>
+<p><code>Alt</code>+<code>Enter</code>, or <strong>Properties…</strong> in the right-click menu. The panel is a view
+over <code>synfiles info</code>, so the dialog and the command show the same list by
+construction — name, type, mime type and its human name, size, permissions,
+owner, the three timestamps, link target, and <strong>resolution</strong> for images and
+video. For a folder it also walks the tree and reports what it <strong>costs on
+disk</strong>, with what it contains beside it.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>info<span class="w"> </span>photo.jpg
+</code></pre></div>
+
+<p>Resolution is read from the file's <strong>magic bytes, never its extension</strong>, so a
+photo saved as <code>.txt</code> still reports its size and a text file named <code>.png</code> is not
+parsed into a plausible-looking lie. PNG, JPEG, GIF, BMP, WebP, TIFF, ICO, AVIF,
+HEIF, MP4 and MOV are read in-tree with no extra package. Matroska, WebM and AVI
+carry their size somewhere no small parser should go, so those are handed to
+<strong><code>ffprobe</code></strong> — install <code>ffmpeg</code> and the row appears; without it, those files
+simply have no resolution row rather than a guessed one.</p>
+<p>Selecting several files answers a different question instead: how many, and how
+much.</p>
+<blockquote>
+<p>Only <code>info</code> ever reads a file's content. A <strong>listing</strong> never does — opening
+four thousand files to draw four thousand rows is what makes a file manager
+hang on a network share.</p>
+</blockquote>
+<hr />
+<h2 id="sizes">Sizes</h2>
+<p>A folder's size is <strong>its contents</strong>, not the few hundred bytes of the directory
+entry that <code>stat</code> reports — which is the right answer to what <code>stat</code> was asked
+and the wrong answer to what anybody opening properties is asking.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>du<span class="w"> </span>~/Videos
+</code></pre></div>
+
+<p>It is a separate command from <code>info</code>, and deliberately: walking a large tree
+takes seconds, and folding it into <code>info</code> would freeze the properties panel on
+exactly the folders anyone would ask about. The panel draws first and the total
+arrives after, streaming as it counts, so there is a running number rather than
+"calculating…" and then a jump.</p>
+<p>Two totals, because they disagree and answer different questions: <strong>bytes</strong>
+(apparent size — what has to fit when you copy it) and <strong>disk</strong> (blocks — a tree
+of tiny files takes more, a sparse file less). Hard links are counted <strong>once</strong>: a
+4 GB file linked in twice is not 8 GB, and a package cache is full of them.
+Symlinks are never followed, which would double-count and hang on a cycle. Both
+totals agree with <code>du -sb</code> and <code>du -s</code> exactly, and the tests assert that against
+coreutils rather than against a remembered constant.</p>
+<p>Closing the properties panel stops the walk. One left running lands its records
+in whatever folder is asked about next.</p>
+<hr />
+<h2 id="the-right-click-menu">The right-click menu</h2>
+<p><strong>Open With</strong> comes from the desktop-entry index, and the Extract / Crop / Mount
+ISO / Run with Wine / Set as Wallpaper entries are <code>synui</code>'s own <strong>KIO service
+menus</strong>, read straight out of <code>$XDG_DATA_DIRS/kio/servicemenus</code>. That is where
+Dolphin reads them too, so a helper written once appears in both file managers.</p>
+<p>The window never builds a command line: it names an action, and the binary does
+the <code>Exec=</code> parsing and the <code>%F</code>/<code>%f</code>/<code>%U</code> substitution. Nothing goes to a shell.</p>
+<p>A mixed-type selection offers no service menus at all, because an action that
+applies to one kind of file and not another has no honest answer for the group.</p>
+<hr />
+<h2 id="places-volumes-and-archives">Places, volumes and archives</h2>
+<p><strong>Pinned places are Dolphin's own file</strong> — <code>~/.local/share/user-places.xbel</code>.
+Your existing sidebar is there the first time you open the window, and running
+both file managers does not fork your bookmarks into two diverging lists. Pin
+and unpin splice a single entry and take a one-time <code>.pre-synfiles</code> backup
+before first touching the file.</p>
+<p><strong>Volumes</strong> come from <code>lsblk</code>, <code>/proc/self/mounts</code> <em>and</em> systemd <code>.mount</code> units,
+which is more work than it sounds like it should be: an automounted disk shows
+no mount point in <code>lsblk</code> until something touches it, and a file manager that
+believes <code>lsblk</code> alone will call a working drive "not mounted" and offer to
+mount it a second time. Unmounted volumes are shown dimmed with a mount button;
+mounting and unmounting go through <code>udisksctl</code>, which owns the polkit rules that
+let a desktop user do it without root.</p>
+<p><strong>Archives</strong>: select, right-click, Compress — <code>tar.gz</code>, <code>tar.xz</code>, <code>tar.zst</code>,
+<code>zip</code> or <code>7z</code>. Every input must share one parent, and the tool runs with that
+parent as its working directory, or the archive stores absolute paths and
+unpacking it scatters files across the disk. Compressing is journalled, so
+<code>Ctrl</code>+<code>Z</code> puts a mistaken archive in the trash. Extraction is the service menu
+that was already there.</p>
+<hr />
+<h2 id="search">Search</h2>
+<p><code>Ctrl</code>+<code>F</code> searches the current folder and everything below it. The filter box
+does double duty and says which mode it is in — filtering is instant, searching
+walks the tree.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>find<span class="w"> </span>.<span class="w"> </span>--name<span class="o">=</span>iso<span class="w">                 </span><span class="c1"># no glob characters means &quot;contains&quot;</span>
+synfiles<span class="w"> </span>find<span class="w"> </span>~/src<span class="w"> </span>--name<span class="o">=</span><span class="s1">&#39;*.c&#39;</span><span class="w"> </span>--content<span class="o">=</span>TODO
+</code></pre></div>
+
+<ul>
+<li><strong>Never descends a symlink.</strong> A link to its own ancestor is a loop and one
+  pointing at <code>/</code> turns a search of a project folder into a search of the whole
+  machine. Links are reported, not followed.</li>
+<li><strong>Bounded</strong> — 1000 results and 16 levels by default, both adjustable.</li>
+<li><code>--name</code> and <code>--content</code> are ANDed; <code>--content</code> skips binary files and caps
+  each one at 8 MB.</li>
+<li>Every hit carries the folder it was found in. "config.json" appears eleven
+  times in a source tree, and which one it is is the only useful thing about it.</li>
+</ul>
+<hr />
+<h2 id="settings">Settings</h2>
+<p>Remembered in <code>~/.config/synfiles/settings</code>, written by the binary rather than
+by the window:</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>config<span class="w"> </span>list
+synfiles<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>view<span class="w"> </span>details
+synfiles<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>icon_size<span class="w"> </span><span class="m">48</span>
+synfiles<span class="w"> </span>config<span class="w"> </span>reset
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Values</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>view</code></td>
+<td><code>auto</code>, <code>icons</code>, <code>compact</code>, <code>details</code></td>
+<td><code>auto</code></td>
+</tr>
+<tr>
+<td><code>icon_size</code></td>
+<td>16–128</td>
+<td><code>20</code></td>
+</tr>
+<tr>
+<td><code>previews</code></td>
+<td>on/off</td>
+<td>on</td>
+</tr>
+<tr>
+<td><code>tree</code></td>
+<td>on/off</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td>on/off</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td><code>name</code>, <code>size</code>, <code>mtime</code>, <code>type</code></td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>reverse</code></td>
+<td>on/off</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>split</code></td>
+<td>on/off</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>text_scale</code></td>
+<td>75–175 (percent)</td>
+<td><code>100</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Numbers clamp; an unknown key or an invalid value is <strong>refused</strong> rather than
+stored, because a settings file that accepts anything accumulates typos that
+never read back. <code>sort</code>, <code>reverse</code> and <code>hidden</code> are per tab, so what is saved is
+the default a new tab starts from.</p>
+<hr />
+<h2 id="for-scripts---rec">For scripts: <code>--rec</code></h2>
+<p>Every command takes <code>--rec</code> and prints tab-separated records — the same ones the
+window parses.</p>
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>--rec<span class="w"> </span>list<span class="w"> </span>~/Downloads
+synfiles<span class="w"> </span>--rec<span class="w"> </span>info<span class="w"> </span>photo.jpg
+</code></pre></div>
+
+<p><strong>Every field carrying a name or a path is percent-encoded</strong>, and this is not
+decoration. A filename is any sequence of bytes except <code>/</code> and NUL: tabs,
+newlines, quotes and invalid UTF-8 are all legal, and a file called
+<code>notes&lt;TAB&gt;receipts</code> does not make a <em>broken</em> row in a naive TSV — it makes a
+plausible row naming a different file, which is then handed back to something
+that renames or deletes it.</p>
+<blockquote>
+<p><strong>The encoded form is the identity.</strong> Decode it for display only, and never
+hand the decoded string back to anything that touches the disk.</p>
+</blockquote>
+<p>Exit status is <code>0</code> for success, <code>1</code> for failure and <code>100</code> for "nothing to list",
+so a script can tell an empty folder from a broken command without parsing
+output.</p>
+<hr />
+<h2 id="getting-dolphin-back">Getting Dolphin back</h2>
+<p>One command, and it wins because it lands in your own config rather than in the
+distribution's:</p>
+<div class="hl"><pre><span></span><code>xdg-mime<span class="w"> </span>default<span class="w"> </span>org.kde.dolphin.desktop<span class="w"> </span>inode/directory
+</code></pre></div>
+
+<p>The reverse is <code>xdg-mime default synfiles.desktop inode/directory</code>, or delete
+the line from <code>~/.config/mimeapps.list</code> to fall back to the system default,
+which is <code>synfiles</code>.</p>
+<p>If Dolphin is not installed any more: <code>synpkg install dolphin</code>.</p>
+<hr />
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="/wiki/The-Desktop">The Desktop</a></strong> — the bar, widgets, desktop icons, themes</li>
+<li><strong><a href="/wiki/Commands">Commands</a></strong> — the whole command-line surface</li>
+<li><strong><a href="/wiki/Software">Software</a></strong> — <code>synpkg</code>, the package manager built the same way</li>
+<li><strong><a href="/wiki/Troubleshooting">Troubleshooting</a></strong> — when a folder opens in the wrong thing</li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Software"><span>Previous</span>Software</a><a class="next" href="/wiki/Settings"><span>Next</span>Settings</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files" aria-current="page">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

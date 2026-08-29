@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>TEPRIS — SynapseOS Wiki</title>
+<meta name="description" content="An arcade Tetris remix — CRT/VHS post-processing, gamepad support, screen shake, and a fake BIOS boot sequence.">
+<link rel="canonical" href="https://soslinux.org/wiki/Tepris">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="TEPRIS — SynapseOS Wiki">
+<meta property="og:description" content="An arcade Tetris remix — CRT/VHS post-processing, gamepad support, screen shake, and a fake BIOS boot sequence.">
+<meta property="og:url" content="https://soslinux.org/wiki/Tepris">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#running-it">Running it</a></li>
+<li><a href="#why-it-is-a-firefox-window-and-not-a-browser-tab">Why it is a Firefox window and not a browser tab</a></li>
+<li><a href="#sound">Sound</a></li>
+<li><a href="#packaging">Packaging</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Apps</p>
+      <h1>TEPRIS</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Tepris/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-27">2026-07-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>An arcade Tetris remix — CRT/VHS post-processing, gamepad support, screen
+shake, and a fake BIOS boot sequence.</strong></p>
+<p>Upstream: <a href="https://github.com/velle999/tepris">velle999/tepris</a>. Packaged for
+SynapseOS as <code>tepris</code>, and on the ISO.</p>
+<h2 id="running-it">Running it</h2>
+<div class="hl"><pre><span></span><code>tepris
+</code></pre></div>
+
+<p>Or <strong>TEPRIS</strong> in the start menu, under Games.</p>
+<p>It is a browser game, but not one you open in a browser: the launcher runs it as
+a <strong>dedicated app window</strong> through Firefox in app mode, against a private
+profile at <code>~/.local/share/tepris/profile</code>. Your high score lives in that
+profile's <code>localStorage</code>.</p>
+<p>Gamepads work — SynapseOS ships the udev rules, and the game reads the Gamepad
+API directly. See <a href="/wiki/Gaming">Gaming</a> for controller notes.</p>
+<h2 id="why-it-is-a-firefox-window-and-not-a-browser-tab">Why it is a Firefox window and not a browser tab</h2>
+<p>Three details make the difference, and each one was a bug first.</p>
+<p><strong>It is not <code>--kiosk</code>.</strong> The obvious way to get a chrome-free game window is
+kiosk mode, and it is the wrong one: kiosk is permanently fullscreen with no way
+out, which left the game with no working windowed state and no way to quit. The
+launcher runs an ordinary window and hides the tab strip and nav bar with
+<code>userChrome.css</code> instead — so the game's own buttons control fullscreen and
+quitting, and synui gives it a normal titlebar like any other app.</p>
+<p><strong>The URL ends in <code>#app</code>.</strong> That fragment is how the page knows it is running as
+a dedicated window rather than a tab, which is what enables its quit button. Open
+<code>index.html</code> without it and the button is correctly absent.</p>
+<p><strong><code>MOZ_APP_REMOTINGNAME=tepris</code></strong> sets Firefox's Wayland <code>app_id</code>. Without it
+every Firefox-backed app on the system would report <code>firefox</code>, and synui's dock —
+which matches <code>&lt;app_id&gt;.desktop</code> by basename — would give them all the same icon.</p>
+<h2 id="sound">Sound</h2>
+<p>The game was silent for a release, and the cause was not the game. A fresh
+Firefox profile <strong>blocks audible autoplay until a user gesture</strong>, so every sound
+effect and the background music were rejected before they played. The launcher
+now sets <code>media.autoplay.default=0</code> and <code>media.autoplay.blocking_policy=0</code>,
+which is safe here precisely because it is a dedicated single-app profile rather
+than a browser.</p>
+<p>There is deliberately <strong>no music on the attract screen</strong> — the BGM starts at
+game start. That is the game's design, not a leftover of the autoplay bug.</p>
+<blockquote>
+<p>The launcher <strong>regenerates <code>user.js</code> on every launch</strong> rather than seeding it
+once. It holds no user data (your high score is in <code>localStorage</code>), so
+rewriting it means new prefs self-heal onto profiles created by an older
+launcher instead of being stuck with whatever they were first given.</p>
+</blockquote>
+<h2 id="packaging">Packaging</h2>
+<p>The PKGBUILD pulls a <strong>pinned commit</strong> from the upstream repo rather than
+vendoring sources — roll the app by bumping <code>_commit</code> and <code>pkgrel</code>, which means
+the build needs network. The repo's Electron wrapper is Windows-only and
+deliberately not packaged.</p>
+<p>See also: <a href="/wiki/Nexus-Chat">Nexus P2P</a>, <a href="/wiki/Gaming">Gaming</a>,
+<a href="/wiki/Building-and-Packaging">Building and Packaging</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Chibi"><span>Previous</span>Chibi</a><a class="next" href="/wiki/Nexus-Chat"><span>Next</span>Nexus P2P</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris" aria-current="page">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

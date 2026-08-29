@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Wallpapers — SynapseOS Wiki</title>
+<meta name="description" content="synui draws the wallpaper itself — nothing is autostarted for it, and there is no swaybg in the session. Super+W opens the picker; Super+Shift+W reloads the current one.">
+<link rel="canonical" href="https://soslinux.org/wiki/Wallpapers">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Wallpapers — SynapseOS Wiki">
+<meta property="og:description" content="synui draws the wallpaper itself — nothing is autostarted for it, and there is no swaybg in the session. Super+W opens the picker; Super+Shift+W reloads the current one.">
+<meta property="og:url" content="https://soslinux.org/wiki/Wallpapers">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-picker-superw">The picker (Super+W)</a></li>
+<li class="sub"><a href="#scaling-modes">Scaling modes</a></li>
+<li><a href="#per-monitor-wallpapers">Per-monitor wallpapers</a></li>
+<li><a href="#wallpaper-engine-steam-workshop">Wallpaper Engine (Steam Workshop)</a></li>
+<li class="sub"><a href="#getting-it">Getting it</a></li>
+<li class="sub"><a href="#synui-wpengine">synui-wpengine</a></li>
+<li class="sub"><a href="#why-a-layer-shell-client-can-cover-the-wallpaper-at-all">Why a layer-shell client can cover the wallpaper at all</a></li>
+<li class="sub"><a href="#what-renders-and-what-doesnt">What renders and what doesn&#x27;t</a></li>
+<li class="sub"><a href="#the-engine-cannot-survive-losing-its-surfaces">The engine cannot survive losing its surfaces</a></li>
+<li class="sub"><a href="#three-traps-worth-knowing">Three traps worth knowing</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>Wallpapers</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-27">2026-07-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>synui</code> draws the wallpaper itself — nothing is autostarted for it, and there is
+no <code>swaybg</code> in the session. <code>Super</code>+<code>W</code> opens the picker; <code>Super</code>+<code>Shift</code>+<code>W</code>
+reloads the current one.</p>
+<p>Steam Workshop wallpapers (Wallpaper Engine) are supported through a separate,
+optional package — see <a href="#wallpaper-engine-steam-workshop">Wallpaper Engine</a>
+below.</p>
+<hr />
+<h2 id="the-picker-superw">The picker (<code>Super</code>+<code>W</code>)</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>↑</code> / <code>↓</code> (or <code>k</code> / <code>j</code>)</td>
+<td>Move the highlight — <strong>applies live</strong>, so you preview by scrolling</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>Cycle the scope: <strong>All monitors</strong>, or one screen at a time</td>
+</tr>
+<tr>
+<td><code>m</code></td>
+<td>Cycle the scaling mode</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>Rescan for images</td>
+</tr>
+<tr>
+<td><code>Enter</code> / <code>Esc</code> / <code>q</code></td>
+<td>Close</td>
+</tr>
+</tbody>
+</table></div>
+<p>The rows are, in order:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Synapse</strong></td>
+<td>The bundled image (<code>/usr/share/synui</code>)</td>
+</tr>
+<tr>
+<td><strong>Matrix</strong></td>
+<td>Animated kanji rain, rendered on the GPU (GLES2 only)</td>
+</tr>
+<tr>
+<td><strong>None</strong></td>
+<td>Flat <code>bg_color</code></td>
+</tr>
+<tr>
+<td><em>…images</em></td>
+<td>Every PNG/JPEG found in <code>~/Pictures</code>, <code>~/Wallpapers</code>, <code>/usr/share/backgrounds</code> and friends</td>
+</tr>
+<tr>
+<td><em>…Workshop</em></td>
+<td>Subscribed Wallpaper Engine wallpapers, when that package is installed</td>
+</tr>
+</tbody>
+</table></div>
+<p>The image scan re-runs every time the panel opens, so something dropped into
+<code>~/Pictures</code> shows up without a restart. There is no file chooser and no text
+entry on purpose: pointing the picker at the directories people already keep
+images in beats building a chooser or shelling out to a GTK dialog for one path.</p>
+<h3 id="scaling-modes">Scaling modes</h3>
+<p><code>fill</code> · <code>fit</code> · <code>stretch</code> · <code>center</code> · <code>tile</code>. The mode follows the scope, so
+one screen can <code>fill</code> while another <code>fit</code>s.</p>
+<hr />
+<h2 id="per-monitor-wallpapers">Per-monitor wallpapers</h2>
+<p><code>Tab</code> in the picker is the whole feature. With the scope on:</p>
+<ul>
+<li><strong>All monitors</strong> — the pick sets the global wallpaper <strong>and drops every
+  per-monitor override</strong>, so it is also how you get back to one wallpaper
+  everywhere.</li>
+<li><strong>a single screen</strong> — the pick becomes that monitor's override alone.</li>
+</ul>
+<p>The same thing from the config file, naming connectors the way <code>synctl outputs</code>
+spells them:</p>
+<div class="hl"><pre><span></span><code><span class="na">wallpaper</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s">default</span><span class="w">        </span><span class="c1"># default | matrix | none | /path/to/img</span>
+<span class="na">wallpaper_mode</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">fill</span><span class="w">           </span><span class="c1"># fill | fit | stretch | center | tile</span>
+
+<span class="na">wallpaper_output</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">DP-1 matrix</span>
+<span class="na">wallpaper_output</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1 ~/Pictures/ultrawide.jpg</span>
+<span class="na">wallpaper_output_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1 fit</span>
+</code></pre></div>
+
+<p>A monitor with no line of its own follows the global keys.</p>
+<blockquote>
+<p><strong><code>wallpaper.state</code> overrides <code>synuirc</code>, deliberately.</strong> The picker writes
+<code>~/.config/synui/wallpaper.state</code> and synui applies it <em>last</em>, which is what
+makes a pick survive a restart — a packaged <code>synuirc</code> update can't quietly
+take the wallpaper back. <strong>Delete that file</strong> to hand control to <code>synuirc</code>
+again.</p>
+</blockquote>
+<hr />
+<h2 id="wallpaper-engine-steam-workshop">Wallpaper Engine (Steam Workshop)</h2>
+<blockquote>
+<p><strong>Steam's own Wallpaper Engine cannot do this, and never will.</strong> Under Proton
+it renders into the Windows <code>Progman</code>/<code>WorkerW</code> desktop window, which does not
+exist here, and Wine cannot reach synui's scene graph regardless. Its "Apply"
+is a silent no-op on Wayland. Don't chase it.</p>
+</blockquote>
+<p>What works is <strong><a href="https://github.com/Almamu/linux-wallpaperengine">linux-wallpaperengine</a></strong>,
+a native reimplementation that reads the same Workshop assets and paints a
+<code>wlr-layer-shell</code> surface. SynapseOS packages it together with a control script,
+<strong><code>synui-wpengine</code></strong>, which is what the <code>Super</code>+<code>W</code> picker drives.</p>
+<h3 id="getting-it">Getting it</h3>
+<p><strong>It is on the ISO as of 0.2.1</strong> — installed already, nothing to build. On
+0.2.0 and earlier it was not, and had to be built from the repo:</p>
+<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>linux-wallpaperengine-pkg
+makepkg<span class="w"> </span>-si
+</code></pre></div>
+
+<p>It needs, at runtime:</p>
+<ul>
+<li><strong>Steam</strong>, with <strong>Wallpaper Engine</strong> installed (the engine reads Wallpaper
+  Engine's own <code>assets/</code> tree, which is not redistributable, so it stays where
+  Steam put it), and</li>
+<li>at least one <strong>subscribed</strong> wallpaper in
+  <code>~/.local/share/Steam/steamapps/workshop/content/431960</code>.</li>
+</ul>
+<p>With the package installed, subscribed wallpapers appear in the <code>Super</code>+<code>W</code>
+picker alongside the built-ins, and everything below is optional.</p>
+<h3 id="synui-wpengine"><code>synui-wpengine</code></h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>synui-wpengine list</code></td>
+<td>List subscribed Workshop wallpapers — id, type, title</td>
+</tr>
+<tr>
+<td><code>synui-wpengine set &lt;id&gt; [output|all]</code></td>
+<td>Apply a wallpaper and persist it (default: every output)</td>
+</tr>
+<tr>
+<td><code>synui-wpengine off [output|all]</code></td>
+<td>Stop the engine on one screen, or everywhere, and hand the background back to synui</td>
+</tr>
+<tr>
+<td><code>synui-wpengine restore</code></td>
+<td>Re-apply the saved state — the autostart and post-suspend path</td>
+</tr>
+<tr>
+<td><code>synui-wpengine status</code></td>
+<td>What is running, and what is saved</td>
+</tr>
+</tbody>
+</table></div>
+<div class="hl"><pre><span></span><code>synui-wpengine<span class="w"> </span>list<span class="w">                    </span><span class="c1"># 1234567890   scene   Some Wallpaper</span>
+synui-wpengine<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="m">1234567890</span><span class="w">          </span><span class="c1"># every monitor</span>
+synui-wpengine<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="m">1234567890</span><span class="w"> </span>DP-1<span class="w">     </span><span class="c1"># just that one</span>
+synui-wpengine<span class="w"> </span>off<span class="w"> </span>DP-1<span class="w">                </span><span class="c1"># synui&#39;s own wallpaper comes back there</span>
+synui-wpengine<span class="w"> </span>status
+</code></pre></div>
+
+<p>One engine process paints every screen named in the state file; a monitor with
+no entry keeps synui's own wallpaper, because the engine only creates layer
+surfaces for the ones it was asked for. That is also why <code>off &lt;output&gt;</code> is a
+restart without that line rather than a signal to a running process.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>File</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/.config/synui/wpengine.state</code></td>
+<td>One <code>&lt;output&gt; &lt;workshop-id&gt;</code> per line — the saved choice</td>
+</tr>
+<tr>
+<td><code>$XDG_RUNTIME_DIR/synui-wpengine.log</code></td>
+<td>The engine's stdout/stderr, <strong>truncated on every start</strong></td>
+</tr>
+<tr>
+<td><code>$XDG_RUNTIME_DIR/synui-wpengine.pid</code> · <code>.lock</code></td>
+<td>Pid tracking and the serialisation lock</td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SYNUI_WPENGINE_BIN</code></td>
+<td>Point at an uninstalled build tree instead of the packaged binary</td>
+</tr>
+<tr>
+<td><code>SYNUI_WPENGINE_FPS</code></td>
+<td>Engine frame rate (default <code>30</code>)</td>
+</tr>
+<tr>
+<td><code>STEAM_ROOT</code></td>
+<td>Non-default Steam library root</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="why-a-layer-shell-client-can-cover-the-wallpaper-at-all">Why a layer-shell client can cover the wallpaper at all</h3>
+<p><code>synui_main.c</code> creates <code>layer_tree[BACKGROUND]</code> <strong>after</strong> <code>wallpaper_init()</code>, so
+the background layer sits above <code>wallpaper_tree</code> and any layer-shell client
+covers what <code>wallpaper.c</code> drew. synui advertises everything the engine needs:
+layer-shell v4, xdg-output, foreign-toplevel. (<code>synuirc</code> already documented this
+for <code>swaybg</code>, which is what it was verified against before any of this was
+built.)</p>
+<h3 id="what-renders-and-what-doesnt">What renders and what doesn't</h3>
+<ul>
+<li><strong>Scene</strong> and <strong>video</strong> wallpapers render correctly, full-screen, across a
+  multi-monitor layout — including rotated outputs.</li>
+<li><strong>Web</strong> wallpapers render <strong>black</strong>. CEF initialises — the packaging bugs that
+  stopped it are fixed — but the texture comes back empty. It is upstream, in
+  the CEF→GL path: the engine's own <code>--screenshot</code> is black too.</li>
+<li>Some Workshop entries are <strong>presets</strong> or <strong>editor asset packs</strong>, not
+  wallpapers. They live in the same folder and can never render; the picker
+  reads <code>project.json</code> and skips them rather than offering a row that does
+  nothing.</li>
+<li>The occasional scene mis-frames itself (half scale, one quadrant). That is
+  that wallpaper's own <code>camera.projection.isAuto</code> estimate, not a general break.</li>
+</ul>
+<h3 id="the-engine-cannot-survive-losing-its-surfaces">The engine cannot survive losing its surfaces</h3>
+<p>After a suspend/resume, or a monitor going away and coming back, every screen
+would fall back to synui's static wallpaper with <code>linux-wallpaperengine</code> <strong>still
+running, at 0% CPU, blocked in <code>poll()</code> forever</strong>.</p>
+<p>That is not fixable from synui's side. In the engine, <code>handleGlobalRemoved</code> is a
+literal <code>// todo: outputs</code> no-op, <code>onLayerClose()</code> frees the viewport's EGL
+surface and layer surface and erases it, and the only caller of <code>setupLS()</code> runs
+once at init — so a <code>wl_output</code> that appears later gets a viewport but <strong>never a
+layer surface</strong>. Once it loses them it has none for the rest of its life.</p>
+<p>So <strong>synui re-runs <code>synui-wpengine restore</code></strong> (pkgrel 196) from two triggers —
+logind's <code>PrepareForSleep(false)</code>, and an output arriving after one was lost —
+coalesced into a single 2.5 s timer. The delay is not cosmetic: <code>restore</code> drops
+any state line naming an output <code>synctl outputs</code> can't see, so firing it
+mid-reprobe would persist a partial layout.</p>
+<p>If you ever see it anyway, the manual cure is one command:</p>
+<div class="hl"><pre><span></span><code>synui-wpengine<span class="w"> </span>restore
+</code></pre></div>
+
+<h3 id="three-traps-worth-knowing">Three traps worth knowing</h3>
+<p><strong><code>pgrep -x linux-wallpaperengine</code> never matches.</strong> <code>/proc/PID/comm</code> is capped at
+15 characters, so it reads <code>linux-wallpaper</code>. <code>synui-wpengine</code> keeps a pidfile
+and only falls back to the truncated name.</p>
+<p><strong><code>--silent</code> is not silent to PipeWire.</strong> It mutes the engine's own mixer; SDL
+still opens a playback stream that sits at <code>state: running</code>, which held synui's
+idle inhibitor forever and killed dim/blank/lock on every boot. Fixed on synui's
+side, in the media inhibitor (pkgrel 195), not here.</p>
+<p><strong>An <code>flock</code> belongs to the open file description, not to the fd.</strong> The engine is
+a daemon, and it inherited the script's lock fd — so every later pick sat out the
+full 30-second timeout and then proceeded unserialised anyway, which is the exact
+race the lock exists to prevent. The launch closes fd 9 explicitly (<code>9&gt;&amp;-</code>).</p>
+<p>Two more, both benign: <code>Failed to initialize GLEW: No GLX display</code> (it falls back
+to EGL), and NVIDIA needing <code>__GL_THREADED_OPTIMIZATIONS=0</code>, which the script
+sets for you.</p>
+<hr />
+<p>See also: <a href="/wiki/The-Desktop">The Desktop</a>, <a href="/wiki/Window-Effects">Window Effects</a>,
+<a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/Commands">Commands</a>,
+<a href="/wiki/Troubleshooting#wallpapers">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Bar-Plugins"><span>Previous</span>Bar Plugins</a><a class="next" href="/wiki/Window-Effects"><span>Next</span>Window Effects</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers" aria-current="page">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

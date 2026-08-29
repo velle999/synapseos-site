@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Sound Themes — SynapseOS Wiki</title>
+<meta name="description" content="SynapseOS boots silent. Every event sound is off, and ~/.config/synui/sounds.state does not exist until you turn one on. That is deliberate: a system that starts making noises…">
+<link rel="canonical" href="https://soslinux.org/wiki/Sound-Themes">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Sound Themes — SynapseOS Wiki">
+<meta property="og:description" content="SynapseOS boots silent. Every event sound is off, and ~/.config/synui/sounds.state does not exist until you turn one on. That is deliberate: a system that starts making noises…">
+<meta property="og:url" content="https://soslinux.org/wiki/Sound-Themes">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#quick-start">Quick start</a></li>
+<li><a href="#the-events">The events</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#getting-more-sounds">Getting more sounds</a></li>
+<li class="sub"><a href="#from-the-repos">From the repos</a></li>
+<li class="sub"><a href="#from-a-downloaded-pack">From a downloaded pack</a></li>
+<li class="sub"><a href="#a-folder-of-loose-files-is-enough">A folder of loose files is enough</a></li>
+<li class="sub"><a href="#hand-rolling-one">Hand-rolling one</a></li>
+<li class="sub"><a href="#removing-one">Removing one</a></li>
+<li><a href="#picking-the-sample-for-one-event">Picking the sample for one event</a></li>
+<li><a href="#technical-notes">Technical notes</a></li>
+<li class="sub"><a href="#why-several-spec-names-resolve-to-something-else">Why several spec names resolve to something else</a></li>
+<li class="sub"><a href="#usrsharesoundsalsa-is-a-ghost-theme">/usr/share/sounds/alsa is a ghost theme</a></li>
+<li class="sub"><a href="#the-volume-key-collision">The volume key collision</a></li>
+<li class="sub"><a href="#two-writers-one-file-no-drift">Two writers, one file, no drift</a></li>
+<li class="sub"><a href="#the-panels-cache-must-refresh-before-acting-not-after">The panel&#x27;s cache must refresh before acting, not after</a></li>
+<li class="sub"><a href="#the-udev-filter">The udev filter</a></li>
+<li class="sub"><a href="#playback-path">Playback path</a></li>
+<li class="sub"><a href="#checking-it-without-listening">Checking it without listening</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>Sound Themes</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Sound-Themes/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-26">2026-07-26</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>SynapseOS boots silent.</strong> Every event sound is off, and
+<code>~/.config/synui/sounds.state</code> does not exist until you turn one on. That is
+deliberate: a system that starts making noises after an upgrade is a system that
+gets its speakers muted, and then the notification you actually wanted is gone
+too.</p>
+<p>Turning them on is <code>Super</code>+<code>S</code> (the panel) or <code>synui-sound</code> (the command line).
+Both write the same file, and the file is the only state there is.</p>
+<hr />
+<h2 id="quick-start">Quick start</h2>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>sound-theme-freedesktop<span class="w"> </span>libcanberra<span class="w">   </span><span class="c1"># samples + the player</span>
+synui-sound<span class="w">                                          </span><span class="c1"># what is on right now</span>
+synui-sound<span class="w"> </span>all<span class="w"> </span>on<span class="w">                                   </span><span class="c1"># every event</span>
+synui-sound<span class="w"> </span>login<span class="w"> </span>on<span class="w">                                 </span><span class="c1"># or just one</span>
+synui-sound<span class="w"> </span><span class="nb">test</span><span class="w"> </span>login<span class="w">                               </span><span class="c1"># hear it, regardless of switches</span>
+</code></pre></div>
+
+<p><code>synui-sound</code> with no arguments prints the whole state — master switch, theme,
+volume, and one row per event showing <strong>the sample it would actually play</strong>:</p>
+<div class="hl"><pre><span></span><code>  master           on
+  theme            freedesktop
+  volume           70
+  login            on    service-login            (Login)
+  device_added     off   device-added             (Device plugged in)
+  lock             on    bell                     (Screen locked)
+  screenshot       on    (not in freedesktop)     (Screenshot)
+</code></pre></div>
+
+<p>That third column is the point of the tool. Read on for why.</p>
+<hr />
+<h2 id="the-events">The events</h2>
+<p>Ten of them, hooked into the compositor at the point the thing actually happens:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Fires when</th>
+<th>Hook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>login</code></td>
+<td>the session starts</td>
+<td><code>synui_main</code></td>
+</tr>
+<tr>
+<td><code>logout</code></td>
+<td>the session ends</td>
+<td><code>synui_destroy</code> — so <code>SIGTERM</code> and <code>^C</code> get it too, not just the quit action</td>
+</tr>
+<tr>
+<td><code>device_added</code> / <code>device_removed</code></td>
+<td>USB or block device plugged / unplugged</td>
+<td>the libudev monitor</td>
+</tr>
+<tr>
+<td><code>lock</code> / <code>unlock</code></td>
+<td>screen locked / unlocked</td>
+<td><code>lock.c</code></td>
+</tr>
+<tr>
+<td><code>notify</code></td>
+<td>a notification arrives</td>
+<td><code>notif.c</code>, <strong>only when <code>!replaces</code></strong></td>
+</tr>
+<tr>
+<td><code>screenshot</code></td>
+<td>a screenshot is taken</td>
+<td><code>input.c</code></td>
+</tr>
+<tr>
+<td><code>volume_change</code></td>
+<td>the volume OSD moves</td>
+<td><code>input.c</code> — <strong>not</strong> on mute</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>an alert</td>
+<td>wherever one is raised</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong><code>notify</code> fires only on a genuinely new notification.</strong> A client updating an
+existing one (<code>replaces_id</code> set) is a progress bar, and playing a chime per
+update turns a file copy into a machine gun.</p>
+</blockquote>
+<hr />
+<h2 id="commands">Commands</h2>
+<div class="hl"><pre><span></span><code>synui-sound                          show the current state
+synui-sound &lt;event&gt; [on|off|toggle]  one event
+synui-sound all [on|off|toggle]      every event at once
+synui-sound master [on|off|toggle]   the master switch alone
+synui-sound test &lt;event&gt;             play it once, ignoring every switch
+synui-sound volume [0-100]           master level
+synui-sound theme [&lt;name&gt;]           show or set the sound theme
+synui-sound themes                   list installed themes
+synui-sound samples [&lt;theme&gt;]        list the sample ids a theme ships
+synui-sound sound &lt;event&gt; [&lt;id&gt;|default]   pick the sample for one event
+synui-sound install &lt;archive|dir&gt;    install a theme
+synui-sound remove &lt;name&gt;            remove one you installed
+</code></pre></div>
+
+<p>Two behaviours worth knowing:</p>
+<ul>
+<li><strong><code>all toggle</code> turns everything OFF if anything is on.</strong> "Make it stop" is
+  always one predictable command, never a coin flip.</li>
+<li><strong>Turning any event on turns the master switch on.</strong> Otherwise <code>all on</code> is ten
+  switches flipped and still silence.</li>
+</ul>
+<hr />
+<h2 id="getting-more-sounds">Getting more sounds</h2>
+<h3 id="from-the-repos">From the repos</h3>
+<p>Each of these adds one theme to the picker:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>sound-theme-freedesktop<span class="w"> </span>ocean-sound-theme<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>sound-theme-elementary<span class="w"> </span>pop-sound-theme<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>deepin-sound-theme<span class="w"> </span>cosmic-sound-theme
+</code></pre></div>
+
+<p>Then <code>synui-sound theme ocean</code>, or the <strong>Sound theme</strong> row of the <code>Super</code>+<code>S</code>
+panel.</p>
+<h3 id="from-a-downloaded-pack">From a downloaded pack</h3>
+<div class="hl"><pre><span></span><code>synui-sound<span class="w"> </span>install<span class="w"> </span>~/Downloads/some-sound-theme.tar.gz
+synui-sound<span class="w"> </span>install<span class="w"> </span>~/my-sounds<span class="w">            </span><span class="c1"># a plain folder works too</span>
+</code></pre></div>
+
+<p>Accepted: <code>.zip</code>, <code>.tar.gz</code>, <code>.tar.xz</code>, <code>.tar.bz2</code>, <code>.tar.zst</code>, or a directory.
+It lands in <code>~/.local/share/sounds/&lt;name&gt;/</code> and appears in the theme row
+immediately. The installer prints the sample count, and <strong>warns if it is zero</strong> —
+a theme that ships no samples installs fine and is silent, which is otherwise
+indistinguishable from a broken switch.</p>
+<p>A pack that ships a light and a dark variant side by side installs <strong>both</strong>.</p>
+<h3 id="a-folder-of-loose-files-is-enough">A folder of loose files is enough</h3>
+<p>The most likely thing you have is a folder of <code>.oga</code>/<code>.ogg</code>/<code>.wav</code> files with no
+theme structure at all. Rather than refusing it over a missing <code>index.theme</code>, the
+installer <strong>stages a real theme around it</strong>: samples into <code>stereo/</code>, a generated
+<code>index.theme</code> naming it, and from there it is an ordinary install.</p>
+<h3 id="hand-rolling-one">Hand-rolling one</h3>
+<p>A theme is a directory:</p>
+<div class="hl"><pre><span></span><code>~/.local/share/sounds/mine/stereo/desktop-login.oga
+~/.local/share/sounds/mine/index.theme     # [Sound Theme] / Directories=stereo
+</code></pre></div>
+
+<p>The file names are <strong>XDG sound ids</strong> (freedesktop.org sound-naming spec), so a
+theme you make here works in GNOME and KDE unchanged. A theme need not be
+complete — pick any sample it <em>does</em> have for any event with
+<code>synui-sound sound &lt;event&gt; &lt;id&gt;</code>.</p>
+<h3 id="removing-one">Removing one</h3>
+<div class="hl"><pre><span></span><code>synui-sound<span class="w"> </span>remove<span class="w"> </span>mine
+</code></pre></div>
+
+<p>Only ever from <code>~/.local/share/sounds</code>. A theme under <code>/usr/share/sounds</code> came
+from a package and belongs to pacman — removing it here would leave the package
+database claiming files that are gone. If the theme you remove was the selected
+one, the selection moves to another installed theme, because a desktop that has
+silently gone quiet is worse than one that sounds different.</p>
+<hr />
+<h2 id="picking-the-sample-for-one-event">Picking the sample for one event</h2>
+<p>By default each event resolves through an <strong>automatic chain</strong>: the name the
+sound-naming spec gives the event first, then a fallback the freedesktop theme
+actually ships.</p>
+<div class="hl"><pre><span></span><code>synui-sound<span class="w"> </span>sound<span class="w"> </span>login<span class="w"> </span>bell<span class="w">        </span><span class="c1"># play &quot;bell&quot; for login instead</span>
+synui-sound<span class="w"> </span>sound<span class="w"> </span>login<span class="w"> </span>default<span class="w">     </span><span class="c1"># back to the automatic chain</span>
+synui-sound<span class="w"> </span>samples<span class="w">                 </span><span class="c1"># what the current theme has to offer</span>
+</code></pre></div>
+
+<p>In the <code>Super</code>+<code>S</code> panel, <code>[</code> and <code>]</code> cycle the selected event's sample.
+(Brackets rather than <code>Shift</code>+arrows because the panel's key handler returns 0
+for any modifier — <code>Shift</code>+<code>Left</code> never arrives at all.)</p>
+<p><strong>A deliberate pick is never silently replaced by a fallback.</strong> Once you name an
+id, only that id is tried. The fallback chain exists to make the defaults
+audible, not to second-guess you.</p>
+<p><code>synui-sound sound</code> validates the id against the theme on disk and refuses a
+typo. That is the only place it <em>can</em> be caught: libcanberra answering "no such
+sample" is indistinguishable from a broken toggle everywhere downstream.</p>
+<hr />
+<h2 id="technical-notes">Technical notes</h2>
+<h3 id="why-several-spec-names-resolve-to-something-else">Why several spec names resolve to something else</h3>
+<p>The sound-naming spec defines <code>desktop-login</code>, <code>desktop-screen-lock</code> and others
+that <strong>no theme on disk actually ships</strong>. Defaulting to them would mean every
+event named a file nobody hears. So each event has a chain — spec name first, so
+a theme that <em>does</em> ship the proper name wins, then one the freedesktop theme
+really has:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Chain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>login</code></td>
+<td><code>desktop-login</code> → <code>service-login</code></td>
+</tr>
+<tr>
+<td><code>lock</code></td>
+<td><code>desktop-screen-lock</code> → <code>bell</code></td>
+</tr>
+<tr>
+<td><code>unlock</code></td>
+<td><code>desktop-unlock</code> → <code>complete</code></td>
+</tr>
+<tr>
+<td><code>notify</code></td>
+<td><code>message-new-instant</code> → <code>message</code></td>
+</tr>
+<tr>
+<td><code>screenshot</code></td>
+<td><code>screen-capture</code> → <code>camera-shutter</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The state report and the panel both show the <strong>resolved</strong> id, checked against the
+theme on disk — not the chain's first entry. Three states, three colours in the
+panel: picked (bright), automatic (dim), and <strong><code>not in this theme</code></strong> (warning).
+That last one is the whole reason the column exists.</p>
+<h3 id="usrsharesoundsalsa-is-a-ghost-theme"><code>/usr/share/sounds/alsa</code> is a ghost theme</h3>
+<p><code>/usr/share/sounds/alsa</code> is nine channel-test <code>.wav</code> files (<code>Front_Left.wav</code>, …)
+dropped there by <code>alsa-utils</code>. No <code>index.theme</code>, no <code>stereo/</code>, <strong>not one XDG
+sample id</strong>. Select it and every event is silent — every switch says <code>on</code>, and
+every lookup misses.</p>
+<p>An earlier picker offered it, because it listed any directory under
+<code>share/sounds</code>.</p>
+<p>A theme is now <code>index.theme</code> <strong>or</strong> <code>stereo/</code> <strong>or</strong> <code>mono/</code>, enforced in both
+the shell (<code>is_theme</code>) and the panel (<code>sound_dir_is_theme</code>). Filtering alone
+would leave anyone already on such a directory silent and none the wiser, so both
+also <strong>name</strong> it:</p>
+<div class="hl"><pre><span></span><code>  theme            alsa  &lt;-- NOT a sound theme, nothing will play
+                   pick one of: freedesktop ocean
+</code></pre></div>
+
+<p><strong>Lesson:</strong> when you tighten a validity check, handle the people already sitting
+on the invalid value. A filter fixes new choices and abandons existing ones.</p>
+<h3 id="the-volume-key-collision">The <code>volume</code> key collision</h3>
+<p>The master level and the volume-OSD event were both called <code>volume</code> in one flat
+state file. <code>get volume</code> read the <em>event's</em> line (<code>off</code>) into the <em>level</em>, and
+every sound went silent. The event is now <code>volume_change</code>.</p>
+<p>The same shape of bug is why the per-event sample override is keyed
+<code>&lt;event&gt;_sound</code> and matched by <strong>building the exact key</strong>, not by prefix — an
+event added later whose name extends another's would otherwise steal its line.</p>
+<p><strong>Lesson:</strong> one flat namespace means every name in it must be distinct from every
+other, including names of a different <em>kind</em>.</p>
+<h3 id="two-writers-one-file-no-drift">Two writers, one file, no drift</h3>
+<p><code>synui-sound</code> is the single writer of <code>sounds.state</code>. The <code>Super</code>+<code>S</code> panel, the
+<code>Super</code>+<code>S</code> keybind and the command line all run the same script, so "is this
+event enabled?" has exactly one answer and one format.</p>
+<p>The compositor caches the file to skip a <code>fork()</code> when everything is off — but it
+is a <strong>cache</strong>, and the script re-checks on every invocation. A sound is never
+played because the compositor's copy was stale.</p>
+<p>Writes are temp-file + <code>rename()</code>, so the panel (which re-reads after every
+change) can never see a half-written file.</p>
+<h3 id="the-panels-cache-must-refresh-before-acting-not-after">The panel's cache must refresh <em>before</em> acting, not after</h3>
+<p>Both the sound and widget panels keep an optimistic copy of the state, because
+spawning the helper is asynchronous and re-reading immediately after draws the
+<em>previous</em> value under the cursor.</p>
+<p>But the volume row adjusts <strong>relatively</strong>. A copy left stale by a
+<code>synui-sound volume</code> typed in a terminal gets written back over the new value.
+The fix is an mtime-keyed refresh at the <em>top</em> of the key handler — and
+deliberately <strong>not</strong> zeroing the mtime after your own write: an unchanged mtime
+means the child has not landed yet, and the optimistic value is the better
+answer.</p>
+<blockquote>
+<p>The panel does <strong>not</strong> re-read while open. Changing <code>sounds.state</code> under an
+open panel shows nothing — close and reopen it.</p>
+</blockquote>
+<h3 id="the-udev-filter">The udev filter</h3>
+<p>Device events come from a libudev monitor filtered to <code>usb</code>/<code>usb_device</code> and
+<code>block</code>/<code>disk</code>. Unfiltered, plugging in one USB stick fires once per USB
+interface <em>and</em> once per partition — four chimes for one stick.</p>
+<h3 id="playback-path">Playback path</h3>
+<p><code>canberra-gtk-play</code> when it is present, with
+<code>--property=canberra.xdg-theme.name=&lt;theme&gt;</code> so the setting applies to this one
+sample without touching your global GTK sound-theme-name. Without libcanberra it
+falls back to resolving the file itself and handing it to <code>pw-play</code> or <code>paplay</code>.</p>
+<p>Volume is 0–100 as a percentage of full scale, converted to the dB libcanberra
+wants (<code>100</code> = 0 dB, the sample as recorded). <code>0</code> is treated as mute and never
+reaches the player.</p>
+<p><strong>A theme with no such sample is silence, not an error</strong> — <code>play</code> always exits 0.
+This is why the <em>report</em> has to do the checking.</p>
+<h3 id="checking-it-without-listening">Checking it without listening</h3>
+<p><code>synui-sound</code> with no arguments resolves every event against the theme on disk,
+so it answers "what would play?" without playing anything. <code>synui-sound test
+&lt;event&gt;</code> is the other half: it ignores every switch, so it separates "the sound
+is off" from "the audio stack is broken".</p>
+<hr />
+<p>See also: <a href="/wiki/Cursor-Themes">Cursor Themes</a>, <a href="/wiki/The-Desktop">The Desktop</a>,
+<a href="/wiki/synui">synui</a>, <a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/Commands">Commands</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Cursor-Themes"><span>Previous</span>Cursor Themes</a><a class="next" href="/wiki/Architecture"><span>Next</span>Architecture</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes" aria-current="page">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

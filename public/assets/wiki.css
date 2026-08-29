@@ -1,0 +1,318 @@
+/* SynapseOS — wiki styles.
+ *
+ * Loaded only by the pages under /wiki/, on top of style.css. Every colour here
+ * is one of that file's variables, so the wiki wears the compositor's palette
+ * for the same reason the homepage does, and a new theme reaches it for free.
+ *
+ * ⛔ NO SCRIPT AND NO INLINE STYLE. _headers is `script-src 'none'` and
+ * `style-src 'self'` — an inline `style=` attribute is refused SILENTLY, which
+ * is a whole class of "why is nothing happening" that only shows up in
+ * production. Everything below is a class.
+ *
+ * ── Why there is no collapsible nav ─────────────────────────────────────────
+ *
+ * The obvious phone layout is a <details> that opens the page list, hidden by
+ * CSS on a wide screen. It is not used, because a <details> is hidden by the UA
+ * sheet in a way that is NOT reliably overridable by author CSS across
+ * browsers — the trick works in a dev tools inspector and then ships a nav that
+ * a fraction of readers cannot open, with no script available to rescue it.
+ *
+ * So the three regions are always present and always visible, and the grid
+ * moves them instead: on a phone the page reads contents → article → the full
+ * index at the end, and on a desk the same three become rail / column / rail.
+ * Source order is the phone order. Nothing is hidden at any width.
+ */
+
+.wiki-wrap {
+  width: 100%;
+  /* Wider than --wrap (68rem): that is a measure for a single column of prose,
+   * and this has two rails beside it. The article itself is still held to
+   * 62ch by style.css's `p` rule, so the line length does not change. */
+  max-width: 86rem;
+  margin-inline: auto;
+  padding: 2.25rem 1.25rem 3.5rem;
+}
+
+.wiki-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 64rem) {
+  .wiki-layout {
+    grid-template-columns: 15.5rem minmax(0, 1fr) 13.5rem;
+    grid-template-areas: "side main toc";
+    gap: 2.75rem;
+    align-items: start;
+  }
+  .wiki-side { grid-area: side; }
+  .wiki-main { grid-area: main; }
+  .wiki-toc  { grid-area: toc; }
+}
+
+/* ---------- the left rail: every page in the wiki ---------- */
+
+.wiki-side {
+  font-size: .92rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.5rem;
+}
+.wiki-side ul { list-style: none; margin: 0 0 1.25rem; padding: 0; }
+.wiki-side li { margin: 0; }
+.wiki-side a {
+  display: block;
+  padding: .3rem .6rem;
+  margin-left: -.6rem;
+  border-radius: .35rem;
+  color: var(--ink-dim);
+  text-decoration: none;
+  line-height: 1.4;
+}
+.wiki-side a:hover { color: var(--ink); background: var(--bg-raise); }
+
+/* The page you are on. `aria-current` rather than a class, so the styling and
+ * the thing a screen reader announces cannot drift apart. */
+.wiki-side a[aria-current="page"] {
+  color: var(--brand);
+  background: var(--bg-raise);
+  box-shadow: inset 2px 0 0 var(--brand);
+}
+
+.wiki-side-top { margin: 0 0 1.25rem; font-weight: 700; }
+.wiki-side-top a { color: var(--ink); padding-left: 0; margin-left: 0; }
+.wiki-side-h {
+  margin: 0 0 .4rem;
+  font: 600 .72rem/1 var(--mono);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.wiki-side-foot {
+  margin: 0; padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: .88rem;
+}
+
+@media (min-width: 64rem) {
+  .wiki-side {
+    position: sticky;
+    /* The header is sticky and ~3.75rem tall; clearing it is what keeps the
+     * first group from sitting underneath it. */
+    top: 4.5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    border-top: 0; padding-top: 0;
+    /* ⚠ A RAIL THAT SCROLLS SAYS SO. Same rule the desktop follows: a view
+     * with more in it than fits shows a bar, or there is nothing telling you
+     * the rest is there. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+}
+
+/* ---------- the right rail: this page's own headings ---------- */
+
+.wiki-toc {
+  font-size: .88rem;
+  border-left: 2px solid var(--line);
+  padding: .25rem 0 .25rem 1rem;
+}
+.wiki-toc-h {
+  margin: 0 0 .5rem;
+  font: 600 .72rem/1 var(--mono);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+}
+.wiki-toc ul { list-style: none; margin: 0; padding: 0; }
+
+/* The phone disclosure. The checkbox stays focusable — 1px and transparent,
+ * never display:none — which is what gives it keyboard operation for free, the
+ * same note style.css makes about the theme radios. */
+.toc-toggle {
+  position: absolute; opacity: 0; pointer-events: none;
+  width: 1px; height: 1px; margin: 0;
+}
+.toc-label {
+  display: block; cursor: pointer;
+  font: 600 .72rem/1 var(--mono);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+  padding: .35rem 0;
+}
+.toc-label::after {
+  content: "▸"; margin-left: .5rem; display: inline-block;
+  transition: transform .15s;
+}
+.toc-toggle:checked ~ .toc-label::after { transform: rotate(90deg); }
+.toc-label:hover { color: var(--brand); }
+.toc-toggle:focus-visible ~ .toc-label { outline: 2px solid var(--brand); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .toc-label::after { transition: none; } }
+
+.wiki-toc-h { display: none; }
+.wiki-toc ul { display: none; }
+.toc-toggle:checked ~ ul { display: block; padding-top: .4rem; }
+.wiki-toc li { margin: 0 0 .1rem; }
+.wiki-toc li.sub { padding-left: .85rem; font-size: .84rem; }
+.wiki-toc a { color: var(--ink-dim); text-decoration: none; display: block; padding: .15rem 0; }
+.wiki-toc a:hover { color: var(--brand); }
+
+@media (min-width: 64rem) {
+  /* Wide enough for a rail of its own: no disclosure, nothing to open. */
+  .toc-toggle, .toc-label { display: none; }
+  .wiki-toc-h, .wiki-toc ul { display: block; }
+
+  .wiki-toc {
+    position: sticky; top: 4.5rem;
+    max-height: calc(100vh - 6rem); overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  }
+}
+
+/* ---------- the article ---------- */
+
+.wiki-main { min-width: 0; }
+.wiki-main > h1 {
+  margin: 0 0 .35rem;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.1; letter-spacing: -.025em; font-weight: 800;
+}
+.wiki-meta {
+  /* style.css holds a <p> to 62ch, which is right for prose and wrong for a
+   * rule that is meant to close the masthead across the whole column. */
+  max-width: none;
+  margin: 0 0 2rem; padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .88rem; color: var(--ink-faint);
+}
+.wiki-meta a { color: var(--brand-dim); }
+
+.wiki-body > :first-child { margin-top: 0; }
+
+/* h2 opens a part of the page, so it gets a rule; h3 is a step inside one and
+ * gets colour instead. Without the distinction a long page — and several here
+ * are 800 lines — reads as one undifferentiated column. */
+.wiki-body h2 {
+  margin: 3rem 0 1rem; padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+  letter-spacing: -.02em;
+}
+.wiki-body h3 { margin: 2.25rem 0 .6rem; font-size: 1.12rem; color: var(--brand); }
+.wiki-body h4 {
+  margin: 1.75rem 0 .5rem;
+  font: 600 .95rem/1.4 var(--sans); color: var(--ink);
+}
+
+.wiki-body ul, .wiki-body ol { margin: 0 0 1rem; padding-left: 1.3rem; max-width: 62ch; }
+.wiki-body li { margin-bottom: .4rem; }
+.wiki-body li > ul, .wiki-body li > ol { margin-top: .4rem; }
+
+.wiki-body hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+/* ⚠ THE WIKI ALREADY DIVIDES ITS OWN SECTIONS. Most pages put a `---` directly
+ * above a `##`, and h2 draws a rule of its own — together they are two hairlines
+ * a few pixels apart, which reads as a rendering fault rather than as emphasis.
+ * The heading's rule is the one that goes, because the author put the other one
+ * there on purpose. */
+.wiki-body hr + h2 { border-top: 0; margin-top: 0; padding-top: 0; }
+
+/* A heading is a link target, and the rule above puts a border exactly where a
+ * sticky header would land. Without this, following #an-anchor leaves the
+ * heading under the header. */
+.wiki-body :where(h2, h3, h4)[id] { scroll-margin-top: 5rem; }
+
+/* ---------- callouts ---------- */
+
+/* The wiki writes asides as blockquotes, and marks the serious ones with ⚠ or
+ * ⛔ in the text itself. The generator reads that marker and adds .warn — the
+ * prose needs no second syntax to learn. */
+.wiki-body blockquote {
+  margin: 1.5rem 0; padding: 1rem 1.15rem;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line); border-left: 3px solid var(--brand);
+  border-radius: .5rem;
+  color: var(--ink-dim);
+}
+.wiki-body blockquote.warn { border-left-color: var(--warn); }
+.wiki-body blockquote > :last-child { margin-bottom: 0; }
+.wiki-body blockquote strong { color: var(--ink); }
+
+/* ---------- details ---------- */
+
+.wiki-body details {
+  margin: 1.5rem 0; padding: .25rem 1.15rem;
+  background: var(--bg-raise);
+  border: 1px solid var(--line); border-radius: .6rem;
+}
+.wiki-body details[open] { padding-bottom: .75rem; }
+.wiki-body summary {
+  margin: 0 -1.15rem; padding: .8rem 1.15rem;
+  cursor: pointer; font-weight: 600; color: var(--ink);
+  /* INSIDE, or the disclosure triangle is laid out before the padding box and
+   * lands in the margin outside the card it belongs to. */
+  list-style-position: inside;
+}
+.wiki-body summary:hover { color: var(--brand); }
+.wiki-body summary::marker { color: var(--ink-faint); }
+
+/* ---------- code ---------- */
+
+/* Restrained on purpose. style.css paints a <pre> in --ink-dim and dims
+ * comments to --ink-faint; these carry that scheme onto the token classes
+ * Pygments emits rather than dropping a stock highlighter theme in, which would
+ * be seven hardcoded colours that no theme can move. Everything not named here
+ * inherits, so an unfamiliar language degrades to plain text instead of
+ * whatever the palette had left over. */
+.hl { background: none; }
+.wiki-body .hl pre { margin: 1rem 0; }
+.wiki-body pre .c, .wiki-body pre .c1, .wiki-body pre .cm,
+.wiki-body pre .cp, .wiki-body pre .cs { color: var(--ink-faint); }
+.wiki-body pre .s, .wiki-body pre .s1, .wiki-body pre .s2,
+.wiki-body pre .sb, .wiki-body pre .se, .wiki-body pre .sd { color: var(--brand-dim); }
+.wiki-body pre .k, .wiki-body pre .kd, .wiki-body pre .kn,
+.wiki-body pre .kr, .wiki-body pre .kt, .wiki-body pre .nb,
+.wiki-body pre .nf, .wiki-body pre .nt { color: var(--ai); }
+.wiki-body pre .nv, .wiki-body pre .vg { color: var(--ink); }
+.wiki-body pre .m, .wiki-body pre .mi, .wiki-body pre .mf { color: var(--ink); }
+/* Pygments marks a shell prompt as "generic prompt" — it is punctuation, not
+ * something to type, so it recedes. */
+.wiki-body pre .gp { color: var(--ink-faint); }
+/* A token the lexer could not place. Left alone: the default is a red box,
+ * which turns an ordinary snippet into something that looks broken. */
+.wiki-body pre .err { color: inherit; background: none; border: 0; }
+
+/* ⚠ THE SIDEWAYS SCROLLBARS ARE THEMED, NOT HIDDEN. A wide table or a long
+ * command has to be able to scroll, and the bar is the only thing that says so
+ * — but a stock light UA scrollbar across the foot of a dark code block reads
+ * as a rendering fault. Thin, in the palette, still present. */
+.wiki-body pre, .wiki-body .table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+/* ---------- prev / next ---------- */
+
+.wiki-pager {
+  display: grid; gap: .75rem; margin-top: 3.5rem; padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.wiki-pager a {
+  padding: .85rem 1.1rem;
+  background: var(--bg-raise);
+  border: 1px solid var(--line); border-radius: .6rem;
+  color: var(--ink); text-decoration: none; font-weight: 600;
+  transition: border-color .15s;
+}
+.wiki-pager a:hover { border-color: var(--brand); }
+.wiki-pager a span {
+  display: block;
+  font: 600 .7rem/1.6 var(--mono);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+}
+.wiki-pager .next { text-align: right; }
+
+/* ---------- the index page ---------- */
+
+/* Home.md leads with three link tables. They are the wiki's front door, so they
+ * get a little more room than a table buried in a page. */
+.wiki-body table { min-width: 26rem; }
+.wiki-body tbody th { white-space: normal; }

@@ -13,3 +13,10 @@
 
 /
   Cache-Control: public, max-age=0, must-revalidate
+
+# The wiki is served at extensionless URLs (/wiki/Installation), which the
+# /*.html rule above cannot match — a header rule tests the REQUEST path, and
+# the request never carries the extension. Without this the pages fall through
+# to /* and get whatever the platform's default is.
+/wiki/*
+  Cache-Control: public, max-age=0, must-revalidate

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Architecture — SynapseOS Wiki</title>
+<meta name="description" content="SynapseOS runs a local LLM daemon as a system service and lets the rest of the system talk to it over a Unix socket. The model is a piece of system infrastructure, like a…">
+<link rel="canonical" href="https://soslinux.org/wiki/Architecture">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Architecture — SynapseOS Wiki">
+<meta property="og:description" content="SynapseOS runs a local LLM daemon as a system service and lets the rest of the system talk to it over a Unix socket. The model is a piece of system infrastructure, like a…">
+<meta property="og:url" content="https://soslinux.org/wiki/Architecture">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-components">The components</a></li>
+<li><a href="#the-wire-protocol">The wire protocol</a></li>
+<li><a href="#two-consequences-of-the-socket-design-worth-internalising">Two consequences of the socket design worth internalising</a></li>
+<li><a href="#services">Services</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Components</p>
+      <h1>Architecture</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Architecture/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p>SynapseOS runs a local LLM daemon as a <strong>system service</strong> and lets the rest of the
+system talk to it over a Unix socket. The model is a piece of system
+infrastructure, like a logger or an init system — not an application you launch.</p>
+<div class="hl"><pre><span></span><code>  User
+   │
+   ▼
+ synsh ─── natural language / commands ──┐
+   │                                     │
+   ▼                                     │
+ synapd  (local LLM — Mistral 7B)        │
+   │  inference over SYN socket protocol │
+   ├──► synguard      security verdicts ─┤
+   ├──► synnet        network policy     │
+   └──► synapse_kmod  kernel sysfs       │
+            │                            ▼
+            ▼                    synui (Wayland)
+     /sys/kernel/synapse/
+     syscall_log, ai_hints, stats,
+     status, config, version
+</code></pre></div>
+
+<p>No network calls, no API keys. The model lives on the machine.</p>
+<hr />
+<h2 id="the-components">The components</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>synapd</code></strong></td>
+<td>Local LLM inference daemon (llama.cpp). <strong>Owns the model</strong>; every other component is a client.</td>
+</tr>
+<tr>
+<td><strong><code>synsh</code></strong></td>
+<td>AI-native shell. Type a command, or just say what you want.</td>
+</tr>
+<tr>
+<td><strong><code>synui</code></strong></td>
+<td>Wayland compositor on wlroots 0.20, rendering through scenefx 0.5. Five layouts, per-output workspaces, layer-shell, and XWayland for the X11-only apps that still need it.</td>
+</tr>
+<tr>
+<td><strong><code>synguard</code></strong></td>
+<td>Security monitor. Classifies syscall events, scores threats, publishes verdicts on a feed.</td>
+</tr>
+<tr>
+<td><strong><code>synnet</code></strong></td>
+<td>Network policy daemon with nftables integration.</td>
+</tr>
+<tr>
+<td><strong><code>synapse_kmod</code></strong></td>
+<td>Kernel module (DKMS). Syscall monitoring + AI scheduling hints via sysfs.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Supporting: <code>syn-install</code>, <code>syn-firstboot</code>, <code>syn-model</code>, <code>scenefx/</code> (the vendored
+scene-graph fork synui renders through), <code>synui/quickshell/</code> (the bar and desktop
+widgets), <code>archiso/</code>.</p>
+<hr />
+<h2 id="the-wire-protocol">The wire protocol</h2>
+<p><code>synsh</code>, <code>synui</code>, <code>synguard</code>, <code>synnet</code> and the kernel module all speak to <code>synapd</code>
+over a Unix socket using a <strong>fixed 28-byte binary header</strong>, defined in
+<a href="https://github.com/velle999/SYNAPSE/blob/main/synapd/include/synapd.h"><code>synapd/include/synapd.h</code></a>:</p>
+<div class="hl"><pre><span></span><code><span class="cp">#pragma pack(push, 1)</span>
+<span class="cm">/* 28-byte header, then payload */</span>
+<span class="cp">#pragma pack(pop)</span>
+</code></pre></div>
+
+<p>It's a packed struct, so <strong>the header layout is load-bearing across five
+components</strong>. There's a unit test guarding it — keep it that way. If you change
+the header, everything that speaks it must be rebuilt together.</p>
+<p>The socket is the only interface. That's what makes the model a system service
+rather than a library: <code>synui</code> doesn't link llama.cpp, it opens a socket.</p>
+<hr />
+<h2 id="two-consequences-of-the-socket-design-worth-internalising">Two consequences of the socket design worth internalising</h2>
+<p><strong>1. Anything can subscribe.</strong> <code>synguard</code> publishes verdicts on a feed and <code>synui</code>
+holds a live subscription to it, which is how the compositor can render security
+state without knowing anything about syscall classification. Same for <code>synapd</code>'s
+activity — the <code>Super</code>+<code>A</code> neural overlay is a live feed, not a poll.</p>
+<p><strong>2. A dead socket is the failure mode to look for.</strong> When something "isn't
+using the AI", the question is almost never <em>is the model loaded</em> — it's <em>did
+this client's socket connection survive</em>. Two real bugs of exactly this shape:</p>
+<ul>
+<li><code>synguard</code>'s security feed <strong>leaked a client slot per departed subscriber</strong>,
+  wedged at 16 clients, and then refused every new subscriber ("at capacity")
+  while logging it forever. Fixed with a <code>poll()</code>-based reap.</li>
+<li>systemd's <code>IgnoreSIGPIPE=yes</code> (the <strong>default</strong>) meant a write to a dead pipe
+  didn't kill the writer as intended, and a feature stayed silently dead for 21
+  hours.</li>
+</ul>
+<hr />
+<h2 id="services">Services</h2>
+<p>Everything starts on boot:</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd<span class="w">      </span><span class="c1"># AI inference daemon</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synguard<span class="w">    </span><span class="c1"># security monitor</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synnet<span class="w">      </span><span class="c1"># network policy</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>synapse_kmod<span class="w">    </span><span class="c1"># kernel module</span>
+cat<span class="w"> </span>/sys/kernel/synapse/status
+</code></pre></div>
+
+<p><strong>Dependency gotcha:</strong> <code>synnet</code> used to carry a <code>Requires=</code> on <code>synapd</code>, so
+stopping <code>synapd</code> — which <a href="/wiki/synui">game mode</a> does, to free VRAM — <strong>also stopped
+<code>synnet</code></strong>, and starting <code>synapd</code> again did not bring it back, because the
+dependency only points one way. It is a <code>Wants=</code> now: <code>synnet</code> reconnects to
+<code>synapd</code> in its poll loop and, with no connection, degrades to monitoring while
+keeping the firewall and the blocklist up. Check <code>Requires=</code> before you stop a
+unit.</p>
+<p><strong><code>synnet</code> owns the firewall.</strong> <code>nftables.service</code> and <code>iptables.service</code> are
+disabled and there is no firewalld and no ufw; the packet filter is a
+default-drop input chain in <code>synnet</code>'s own nftables table, applied at every
+daemon start and re-checked once a minute. Anything written for another
+distribution that tells you to open a port with <code>ufw</code> does not apply — see
+<a href="/wiki/Troubleshooting">Troubleshooting</a> for what does.</p>
+<p>See also: <a href="/wiki/synapd">synapd</a>, <a href="/wiki/synui">synui</a>,
+<a href="/wiki/synguard-and-synapse_kmod">synguard and synapse_kmod</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Sound-Themes"><span>Previous</span>Sound Themes</a><a class="next" href="/wiki/synapd"><span>Next</span>synapd</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture" aria-current="page">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

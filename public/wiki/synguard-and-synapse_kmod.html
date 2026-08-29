@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>synguard and synapse_kmod — SynapseOS Wiki</title>
+<meta name="description" content="The security half of the system. synapse_kmod is a DKMS kernel module that kprobes syscalls and exports telemetry and AI scheduling hints through sysfs. synguard is the…">
+<link rel="canonical" href="https://soslinux.org/wiki/synguard-and-synapse_kmod">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="synguard and synapse_kmod — SynapseOS Wiki">
+<meta property="og:description" content="The security half of the system. synapse_kmod is a DKMS kernel module that kprobes syscalls and exports telemetry and AI scheduling hints through sysfs. synguard is the…">
+<meta property="og:url" content="https://soslinux.org/wiki/synguard-and-synapse_kmod">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#detection">Detection</a></li>
+<li><a href="#enforcement--the-two-paths-and-why-they-are-not-equivalent">Enforcement — the two paths, and why they are not equivalent</a></li>
+<li class="sub"><a href="#what-the-gate-cannot-do">What the gate cannot do</a></li>
+<li class="sub"><a href="#a-deny-that-stands-down">A DENY that stands down</a></li>
+<li class="sub"><a href="#setting-up-the-in-kernel-gate">Setting up the in-kernel gate</a></li>
+<li class="sub"><a href="#reading-the-stats-line">Reading the stats line</a></li>
+<li class="sub"><a href="#testing-a-deny-rule-without-taking-your-session-with-it">Testing a deny rule without taking your session with it</a></li>
+<li><a href="#anti-tamper-hardening">Anti-tamper hardening</a></li>
+<li><a href="#the-bug-that-should-change-how-you-read-this-code">The bug that should change how you read this code</a></li>
+<li><a href="#other-bugs-worth-knowing">Other bugs worth knowing</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Components</p>
+      <h1>synguard and synapse_kmod</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synguard-and-synapse_kmod/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-30">2026-07-30</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The security half of the system. <strong><code>synapse_kmod</code></strong> is a DKMS kernel module that
+kprobes syscalls and exports telemetry and AI scheduling hints through sysfs.
+<strong><code>synguard</code></strong> is the userspace monitor: it classifies those events, scores
+threats, and publishes verdicts on a feed that <code>synui</code> subscribes to live.</p>
+<div class="hl"><pre><span></span><code>lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>synapse_kmod
+cat<span class="w"> </span>/sys/kernel/synapse/status
+systemctl<span class="w"> </span>status<span class="w"> </span>synguard
+</code></pre></div>
+
+<p>sysfs surface: <code>/sys/kernel/synapse/</code> — <code>syscall_log</code>, <code>ai_hints</code>, <code>stats</code>,
+<code>status</code>, <code>config</code>, <code>version</code>.</p>
+<hr />
+<h2 id="detection">Detection</h2>
+<ul>
+<li><strong>Path / argument rules</strong> on syscalls.</li>
+<li><strong>Keylogger detection</strong> — alerts on <code>/dev/input</code> access.</li>
+<li><strong>Worm / trojan detection</strong> — a <code>connect()</code> probe recording destination IP:port,
+  a <code>netwatch</code> per-PID fan-out alert (<strong>≥20 distinct hosts in 10s</strong>), persistence-
+  write rules, and an <code>AF_UNIX</code> filter on <code>socket()</code>.</li>
+<li><strong>Escalation rules</strong> for exec out of <code>/proc</code> and <code>/dev</code> (softened from <em>deny</em> to
+  <em>escalate</em>, with <code>/proc/self/exe</code> explicitly allowed).</li>
+</ul>
+<p><code>chibi</code> has a read-only <strong>sentinel aspect</strong> that watches the same feed.</p>
+<hr />
+<h2 id="enforcement--the-two-paths-and-why-they-are-not-equivalent">Enforcement — the two paths, and why they are not equivalent</h2>
+<p>There are two entirely different things <code>synguard</code> can do about a rule match, and
+the difference decides whether anything was actually prevented.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>post-hoc kill</strong></th>
+<th><strong>in-kernel gate</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mechanism</td>
+<td>kprobe sees the syscall, daemon sends <code>SIGKILL</code></td>
+<td>BPF-LSM <code>file_open</code> hook returns <code>-EPERM</code></td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>after the fact</td>
+<td>before the file is opened</td>
+</tr>
+<tr>
+<td>Prevents the access?</td>
+<td><strong>no</strong> — it punishes it afterwards</td>
+<td><strong>yes</strong></td>
+</tr>
+<tr>
+<td>Needs</td>
+<td>nothing</td>
+<td><code>--bpf-enforce</code>, and a kernel with the BPF LSM active</td>
+</tr>
+</tbody>
+</table></div>
+<div class="hl"><pre><span></span><code>synguard<span class="w"> </span>--mode<span class="w"> </span>enforce<span class="w"> </span>--bpf-enforce
+</code></pre></div>
+
+<p><strong>Mode is separate from the gate.</strong> <code>--mode</code> decides whether a DENY verdict does
+anything at all; <code>--bpf-enforce</code> decides <em>how</em>:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>audit</code></td>
+<td>log only, never block — <strong>the default, deliberately</strong></td>
+</tr>
+<tr>
+<td><code>enforce</code></td>
+<td>act on DENY verdicts</td>
+</tr>
+<tr>
+<td><code>learning</code></td>
+<td>build a baseline profile, flag anomalies</td>
+</tr>
+<tr>
+<td><code>lockdown</code></td>
+<td>block everything not explicitly allowed</td>
+</tr>
+</tbody>
+</table></div>
+<p>Without <code>--ai-enforce</code> the classifier is <strong>advisory</strong>: a model verdict is clamped
+to <em>alert</em> and cannot reach a kill. Only rule verdicts can.</p>
+<h3 id="what-the-gate-cannot-do">What the gate cannot do</h3>
+<ul>
+<li><strong>It runs after the ordinary permission check.</strong> <code>security_file_open</code> is reached
+  only once DAC has already said yes, so an open that fails with <code>EACCES</code> or
+  <code>ENOENT</code> never reaches the gate at all. The gate can refuse an access that
+  would otherwise have succeeded — it cannot "catch" one the kernel already
+  refused.</li>
+<li><strong>The <code>bpf</code> LSM runs last</strong> in the stack and is additive. It can add a refusal;
+  it cannot overrule an AppArmor or SELinux decision made earlier. Returning <code>0</code>
+  means <em>no opinion</em>, not <em>allow</em>.</li>
+<li><strong>It cannot suspend a process.</strong> An LSM hook has no way to <code>SIGSTOP</code>, so
+  <strong>quarantine is never lowered to the kernel</strong> — that verdict is userspace-only.</li>
+<li><strong>The deny target must exist.</strong> BPF never sees an open of a path that isn't
+  there, and the post-hoc path sees it too late to matter. A rule pointed at a
+  file that does not exist looks armed and does nothing.</li>
+</ul>
+<h3 id="a-deny-that-stands-down">A DENY that stands down</h3>
+<p>Enforcement declines to kill in exactly two cases, and both <strong>fail toward
+enforcing</strong> — when in doubt it still acts:</p>
+<ol>
+<li><strong>The syscall failed.</strong> Nothing was accessed, so a kill prevents nothing.</li>
+<li><strong>The gate is armed <em>and</em> live for that exact rule</strong> — the kernel already
+   refused it, and a userspace kill only widens the blast radius.</li>
+</ol>
+<p>An <em>unknown</em> outcome still kills, because "unknown" is not "failed". A rule the
+kernel was never given still kills, because then the post-hoc path is the only
+enforcement there is.</p>
+<p>Detection is untouched in both cases: the alert still fires and the audit line is
+still written, with the reason enforcement stood down. Two counters make it
+visible rather than silent — <code>failed-syscall-skips</code> and <code>kernel-enforced-skips</code>
+in the stats line.</p>
+<blockquote>
+<p><strong>Why this matters.</strong> Before the kernel module reported the syscall's <em>return
+value</em>, an event said "this process opened this file" when what had happened
+was "it asked, and the kernel said no". Both were treated as an access. A
+process could be killed for an open it was never allowed to complete — and
+<code>ld.so</code> probes a nonexistent <code>/etc/ld.so.preload</code> on <strong>every exec</strong>, so a deny
+rule on that path is a rule against starting programs.</p>
+</blockquote>
+<h3 id="setting-up-the-in-kernel-gate">Setting up the in-kernel gate</h3>
+<p><strong>1. Check the kernel already offers it.</strong> On stock Arch it does:</p>
+<div class="hl"><pre><span></span><code>cat<span class="w"> </span>/sys/kernel/security/lsm
+<span class="c1"># capability,landlock,lockdown,yama,bpf   ← &#39;bpf&#39; must be in this list</span>
+</code></pre></div>
+
+<p>If <code>bpf</code> is absent, add it to the active LSM list on the kernel command line
+(<code>lsm=capability,landlock,lockdown,yama,bpf</code>) and reboot. It needs
+<code>CONFIG_BPF_LSM=y</code> and kernel BTF, both of which Arch's <code>linux</code> ships. <code>bpf</code>
+sits <strong>last</strong> in that list on purpose — the stack is additive, so this can add a
+refusal but never overrule an AppArmor or SELinux decision made earlier.</p>
+<p><strong>2. Know that nothing ships armed.</strong> SynapseOS installs <strong>55 rules and not one
+<code>deny</code> or <code>quarantine</code></strong>. The daemon runs <code>--mode enforce</code>, so acting is
+<em>permitted</em>; nothing loaded ever asks for it. As installed, synguard detects and
+alerts — it does not kill.</p>
+<p><strong>3. Write a rule the kernel can actually run.</strong> A BPF program gets map lookups
+and bounded string work — <strong>there is no <code>fnmatch</code></strong>. synguard compiles each deny
+rule down to an exact string or a prefix and <strong>refuses anything it cannot express
+exactly</strong>, because approximating in either direction is a bug you would not find.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Enforceable in-kernel</th>
+<th>Userspace only</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path /etc/ld.so.preload</code> — exact</td>
+<td><code>path /tmp/*.sh</code> — <code>*</code> anywhere but the end</td>
+</tr>
+<tr>
+<td><code>path /etc/profile.d/*</code> — a directory, <strong>one level</strong></td>
+<td><code>path /etc/*/shadow</code></td>
+</tr>
+<tr>
+<td><code>comm sshd</code> — exact</td>
+<td><code>path /dev/input/event?</code> — <code>?</code> and <code>[…]</code> have no lowered form</td>
+</tr>
+<tr>
+<td><code>comm python*</code> — a prefix</td>
+<td>a deny rule with <strong>no path</strong> (it would match every open)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Four things must all be true, or the rule stays on the userspace path:</p>
+<ul>
+<li><code>event open</code> or <code>event exec</code> — the hooks are <code>lsm/file_open</code> and
+  <code>lsm/bprm_check_security</code>. socket, ptrace, module, mount and setuid have no
+  hook yet.</li>
+<li><code>verdict deny</code>, not <code>quarantine</code> — a hook can return <code>-EPERM</code> and nothing else.</li>
+<li>the patterns lower (table above).</li>
+<li><strong>no earlier rule may pre-empt it.</strong> Rules are first-match-wins, and the kernel
+  only knows the rules it was handed, so synguard refuses to lower a deny rule
+  unless it can <em>prove</em> no earlier rule matches the same input. This is the part
+  most likely to bite: the stock <code>00-base.rules</code> opens with allow rules at
+  priority 1.</li>
+</ul>
+<blockquote>
+<p><strong><code>event exec</code> matches the binary, and <code>comm</code> is the process CALLING
+<code>execve</code></strong> — the kernel does not install the new name until after the hook. So
+<code>comm nginx</code> + <code>path /usr/bin/sh</code> means "nginx ran a shell". A rule naming the
+<em>target</em> binary in <code>comm</code> never matches. An exec also opens its binary
+internally; synguard skips those (<code>FMODE_EXEC</code>) so an <code>event open</code> rule does
+not accidentally block execution.</p>
+</blockquote>
+<p><strong>4. Arm it.</strong> <code>--bpf-enforce</code> is deliberately <strong>not</strong> in the shipped unit —
+loading a policy and arming it are separate decisions, because this path
+<em>prevents</em> rather than reacts:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>edit<span class="w"> </span>synguard
+<span class="c1"># [Service]</span>
+<span class="c1"># ExecStart=</span>
+<span class="c1"># ExecStart=/usr/bin/synguard --foreground --mode enforce \</span>
+<span class="c1">#     --rules /etc/synguard/rules.d/ --bpf-enforce</span>
+</code></pre></div>
+
+<p>Without it, an enforceable rule is still compiled and loaded into the kernel maps
+— the daemon says so — but the gate stays shut.</p>
+<p><strong>5. Read back what actually happened.</strong> Every outcome has a distinct line:</p>
+<div class="hl"><pre><span></span><code>journalctl<span class="w"> </span>-u<span class="w"> </span>synguard<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>bpf-lsm
+</code></pre></div>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy loaded — N enforceable rules</code></td>
+<td>lowered and in the maps</td>
+</tr>
+<tr>
+<td><code>enforcement ARMED</code></td>
+<td>the gate is live</td>
+</tr>
+<tr>
+<td><code>N rules loaded but NOT armed (--bpf-enforce …)</code></td>
+<td>loaded, gate shut</td>
+</tr>
+<tr>
+<td><code>policy NOT loaded — rule '…': path pattern cannot be expressed in-kernel: "…"</code></td>
+<td>that rule named, userspace path unaffected</td>
+</tr>
+<tr>
+<td><code>unavailable — synguard is detect-only this boot</code></td>
+<td>no BPF LSM on this kernel</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The way out, if an armed rule locks you out of your own machine:</strong> add</p>
+<div class="hl"><pre><span></span><code>synapse.bpf_enforce=0
+</code></pre></div>
+
+<p>to the kernel command line at the boot menu. synguard then never loads the BPF
+object and comes up detect-only. Do that before reaching for a live USB. The gate
+also <strong>fails open</strong> if synguard dies or wedges, and <strong>refuses to act for the first
+30 seconds</strong> after it attaches, so a badly wrong rule still lets you log in.</p>
+<blockquote>
+<p><strong>A false positive costs a process tree.</strong> A kill takes the matched process
+<em>and its descendants</em>. Only PID 0/1, kernel threads and the SynapseOS daemons
+are protected — your desktop, editor and browser are not.</p>
+</blockquote>
+<p>The authoritative long-form version ships on the system, with worked examples:
+<code>/etc/synguard/rules.d/40-enforce.rules.example</code>. It ends in <code>.example</code>, so
+nothing parses it until you copy it to <code>.rules</code> — and every rule in it is
+commented out.</p>
+<h3 id="reading-the-stats-line">Reading the stats line</h3>
+<div class="hl"><pre><span></span><code>synguard: stats — events=… rules=… ai=… ai-skipped=… denials=… alerts=…
+  quarantines=… protected-skips=… stale-pid-skips=… failed-syscall-skips=…
+  kernel-enforced-skips=… dropped=… suppressed=… lag=Nms/Nmax
+</code></pre></div>
+
+<ul>
+<li><code>dropped</code> above zero means the ring overflowed and events were <strong>lost</strong> — a
+  detector that misses what it was watching for reports nothing, which reads
+  identically to a quiet system.</li>
+<li><code>lag</code> is how far behind the reader is. It exists because a blocking model call
+  used to run inside the ring-drain loop and could stall it for seconds;
+  classification now runs on its own worker thread, and the reader keeps draining.</li>
+<li><code>denials</code> counts verdicts, not preventions. Cross-check against
+  <code>kernel-enforced-skips</code> to see how many were actually refused in-kernel.</li>
+</ul>
+<h3 id="testing-a-deny-rule-without-taking-your-session-with-it">Testing a deny rule without taking your session with it</h3>
+<p>Run the thing you expect to be denied as a <strong>transient unit</strong>, never from your
+own shell:</p>
+<div class="hl"><pre><span></span><code>systemd-run<span class="w"> </span>--collect<span class="w"> </span>--pipe<span class="w"> </span>--wait<span class="w"> </span>--<span class="w"> </span>cat<span class="w"> </span>/path/covered/by/the/rule
+</code></pre></div>
+
+<p>A DENY that resolves to a <code>SIGKILL</code> kills the <em>process tree</em>, and a shell you
+typed the command into is part of that tree. Testing this from a terminal is how
+you lose the terminal — and, if it was your login session, everything in it.</p>
+<hr />
+<h2 id="anti-tamper-hardening">Anti-tamper hardening</h2>
+<ul>
+<li><strong>Kernel-side protected-PID guard</strong> on <code>ai_hints</code> — previously anyone could
+  write <code>HINT pid=1 class=idle</code> and DoS the system.</li>
+<li><strong>Probe self-integrity watchdog.</strong></li>
+<li><strong>Lockdown self-pin</strong> — <code>rmmod</code> returns <code>EBUSY</code>.</li>
+<li>Tightened sysfs permissions; <code>kptr_restrict</code> raised <code>0 → 2</code>.</li>
+<li>An <strong>opt-in</strong> <code>modules_disabled</code> unit.</li>
+</ul>
+<blockquote>
+<p><strong>Why <code>sig_enforce</code> is not on by default here:</strong> with Secure Boot off — which
+is the shipped state — enabling <code>module.sig_enforce=1</code> refuses to load unsigned
+out-of-tree modules, which on an NVIDIA machine means <strong>no GPU driver</strong>. <code>syn-secureboot</code> handles this properly —
+see <a href="/wiki/Secure-Boot">Secure Boot</a>.</p>
+</blockquote>
+<hr />
+<h2 id="the-bug-that-should-change-how-you-read-this-code">The bug that should change how you read this code</h2>
+<p><strong>For the entire life of the project, every path and argument rule was silently
+dead.</strong> <code>ai</code> was <code>0</code> throughout.</p>
+<p>The kmod's kprobes read <code>regs-&gt;di</code> as the first syscall argument. But at a
+kprobe on a syscall entry point, <code>regs-&gt;di</code> is <strong>not</strong> the first argument — it's a
+<strong>pointer to the user's <code>pt_regs</code></strong>. Every rule that inspected a path or an
+argument was therefore reading garbage, matching nothing, and reporting clean.</p>
+<p>The fix (<code>a6ce919</code>, kmod + synguard pkgrel 6) was a <code>syscall_uregs()</code> deref. It
+<strong>resurrected detection wholesale</strong> and armed a pile of rules that had been
+dormant since they were written.</p>
+<p><strong>The lesson:</strong> a security monitor that reports "clean" is indistinguishable from
+a security monitor that is broken. If you add a rule, you must also add a
+<strong>positive test that makes it fire</strong> — otherwise you have no evidence it works,
+and silence will convince you everything is fine for months.</p>
+<hr />
+<h2 id="other-bugs-worth-knowing">Other bugs worth knowing</h2>
+<p><strong>The security feed leaked a client slot per departed subscriber.</strong> It wedged at
+16 clients and then refused every new subscriber ("at capacity") while spamming
+the log about it forever. Fixed with a <code>poll()</code> reap and a 60s log throttle
+(pkgrel 3, <code>33d8272</code>).</p>
+<p><strong>Stale DKMS modules survived kernel upgrades</strong>, failing to load with <code>ENOEXEC</code>
+while <code>dkms status</code> insisted all was well. See
+<a href="/wiki/Development-Notes#stale-dkms-modules-survive-kernel-upgrades">Development Notes</a> —
+the short version is <strong>never trust <code>dkms status</code>; compare vermagic to
+<code>uname -r</code></strong>.</p>
+<p><strong>Hardened systemd units didn't take effect</strong> because stale copies in <code>/etc</code>
+shadowed the packaged ones in <code>/usr/lib</code>. <code>systemctl show -p FragmentPath</code>.</p>
+<p>See also: <a href="/wiki/Secure-Boot">Secure Boot</a>, <a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/synui"><span>Previous</span>synui</a><a class="next" href="/wiki/synsh"><span>Next</span>synsh</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod" aria-current="page">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

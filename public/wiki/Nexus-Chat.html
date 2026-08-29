@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nexus P2P — SynapseOS Wiki</title>
+<meta name="description" content="End-to-end encrypted peer-to-peer chat — text, voice, file transfer and GIFs, with no account and no server holding your messages.">
+<link rel="canonical" href="https://soslinux.org/wiki/Nexus-Chat">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Nexus P2P — SynapseOS Wiki">
+<meta property="og:description" content="End-to-end encrypted peer-to-peer chat — text, voice, file transfer and GIFs, with no account and no server holding your messages.">
+<meta property="og:url" content="https://soslinux.org/wiki/Nexus-Chat">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#running-it">Running it</a></li>
+<li><a href="#the-room-code-is-the-password">The room code is the password</a></li>
+<li class="sub"><a href="#the-code-never-goes-on-the-wire">The code never goes on the wire</a></li>
+<li><a href="#offline-behaviour">Offline behaviour</a></li>
+<li><a href="#rolling-it">Rolling it</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Apps</p>
+      <h1>Nexus P2P</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Nexus-Chat/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-27">2026-07-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>End-to-end encrypted peer-to-peer chat — text, voice, file transfer and GIFs,
+with no account and no server holding your messages.</strong></p>
+<p>Upstream: <a href="https://github.com/velle999/nexus-chat">velle999/nexus-chat</a>.
+Packaged for SynapseOS as <code>nexus-chat</code>, and on the ISO.</p>
+<h2 id="running-it">Running it</h2>
+<div class="hl"><pre><span></span><code>nexus-chat
+</code></pre></div>
+
+<p>Or <strong>Nexus P2P</strong> in the start menu, under Internet.</p>
+<p>Create a room and you get a <strong>room code</strong>. Anyone who enters that code joins
+your room. The launcher also accepts an invite fragment, so a link can open
+straight into a room:</p>
+<div class="hl"><pre><span></span><code>nexus-chat<span class="w"> </span><span class="s1">&#39;#room=...&#39;</span>
+</code></pre></div>
+
+<p>Unlike <a href="/wiki/Tepris">TEPRIS</a>, this runs as an ordinary window with browser chrome
+intact — it needs URL-hash invite links to be visible and pasteable.</p>
+<h2 id="the-room-code-is-the-password">The room code <em>is</em> the password</h2>
+<p>This is the one thing worth understanding before you use it, because it governs
+how you share a code.</p>
+<p>The encryption key is derived from the room code itself — <code>PBKDF2</code> at <strong>600,000
+iterations</strong> (the OWASP figure), run once when you join. There is no separate
+password and no key exchange. <strong>Anyone who has the code can read the room</strong>, so
+send it over a channel you already trust.</p>
+<p>Codes are <strong>10 characters — about 50 bits</strong> — drawn from <code>crypto.getRandomValues</code>
+rather than <code>Math.random</code>, so they are not guessable and not biased.</p>
+<h3 id="the-code-never-goes-on-the-wire">The code never goes on the wire</h3>
+<p>Rendezvous runs over a <strong>public MQTT broker</strong> and the <strong>public PeerJS cloud</strong> for
+WebRTC signalling. That means the thing peers use to find each other is visible
+to strangers — so it must not be the code.</p>
+<p>It isn't. The public rendezvous id is a <strong>SHA-256 hash</strong> of the code (first 8
+bytes, 16 hex chars); that hash is what becomes the MQTT topic and the PeerJS
+id. The code stays local: it is only ever the key-derivation input, the thing you
+copy, and what an invite fragment carries.</p>
+<blockquote>
+<p>This was not always true, and the failure is worth stating plainly because it
+is a general lesson: the code used to <em>be</em> the topic name. Messages were
+encrypted, but anyone subscribed to the broker's wildcard could read the code
+off the envelope and derive the key — so the encryption protected nothing
+against a passive observer. Encrypting the payload is not enough if the
+envelope carries the secret.</p>
+</blockquote>
+<p>Media and messages themselves go <strong>peer to peer over WebRTC</strong>, not through the
+broker.</p>
+<h2 id="offline-behaviour">Offline behaviour</h2>
+<p>The app's three third-party JavaScript libraries are <strong>vendored into the
+package</strong> rather than loaded from a CDN, and the build <strong>fails</strong> if any CDN
+reference survives the rewrite — so the app works with no network beyond the
+peers themselves. Webfonts are still fetched from Google Fonts and degrade
+gracefully when they cannot be.</p>
+<h2 id="rolling-it">Rolling it</h2>
+<p>The PKGBUILD pins an upstream commit; bump <code>_commit</code> and <code>pkgrel</code> to roll.</p>
+<blockquote>
+<p><strong>Two values must move in lockstep across every copy: the PBKDF2 iteration
+count and the room-id derivation.</strong> Nothing on the wire records either — there
+is no protocol version — so a mismatch fails silently and confusingly. A
+different iteration count <em>connects</em> and then drops every message, because the
+decrypt error is swallowed. A different derivation puts peers on different
+topics, so they never see each other at all. If the hosted copy and the
+packaged copy disagree, peers simply never meet.</p>
+</blockquote>
+<p>The upstream repo also ships <strong>two entry points that must be kept identical</strong>;
+the package installs only one, but both are served publicly, so a change to one
+alone leaves a stale copy live.</p>
+<p>See also: <a href="/wiki/Tepris">TEPRIS</a>, <a href="/wiki/Building-and-Packaging">Building and Packaging</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Tepris"><span>Previous</span>TEPRIS</a><a class="next" href="/wiki/Building-and-Packaging"><span>Next</span>Building and Packaging</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat" aria-current="page">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

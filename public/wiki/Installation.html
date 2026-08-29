@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Installation — SynapseOS Wiki</title>
+<meta name="description" content="Status: alpha (0.2.x). Actively developed and daily-driven by the author, but early and fast-moving. Try it in a VM before you give it a disk.">
+<link rel="canonical" href="https://soslinux.org/wiki/Installation">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Installation — SynapseOS Wiki">
+<meta property="og:description" content="Status: alpha (0.2.x). Actively developed and daily-driven by the author, but early and fast-moving. Try it in a VM before you give it a disk.">
+<meta property="og:url" content="https://soslinux.org/wiki/Installation">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#try-it-in-qemu-first">Try it in QEMU first</a></li>
+<li><a href="#install-to-hardware">Install to hardware</a></li>
+<li class="sub"><a href="#joining-and-writing-linux--macos">Joining and writing: Linux / macOS</a></li>
+<li class="sub"><a href="#joining-and-writing-windows">Joining and writing: Windows</a></li>
+<li class="sub"><a href="#check-who-built-it">Check who built it</a></li>
+<li class="sub"><a href="#the-image-carries-no-ai-model">The image carries no AI model</a></li>
+<li><a href="#choosing-what-to-install">Choosing what to install</a></li>
+<li class="sub"><a href="#custom-is-every-package">Custom is every package</a></li>
+<li class="sub"><a href="#ordinary-software">Ordinary software</a></li>
+<li class="sub"><a href="#the-yn-options">The y/n options</a></li>
+<li class="sub"><a href="#installing-from-a-profile">Installing from a profile</a></li>
+<li><a href="#install-modes">Install modes</a></li>
+<li class="sub"><a href="#advanced">ADVANCED</a></li>
+<li><a href="#filesystems">Filesystems</a></li>
+<li><a href="#bootloaders">Bootloaders</a></li>
+<li><a href="#snapshots">Snapshots</a></li>
+<li><a href="#swap">Swap</a></li>
+<li class="sub"><a href="#full-disk-encryption">Full-disk encryption</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#after-installing">After installing</a></li>
+<li><a href="#secure-boot">Secure Boot</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Installation</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Installation/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-29">2026-08-29</time>
+      </p>
+
+      <div class="wiki-body">
+<blockquote>
+<p><strong>Status: alpha (0.2.x).</strong> Actively developed and daily-driven by the author,
+but early and fast-moving. <strong>Try it in a VM before you give it a disk.</strong></p>
+</blockquote>
+<hr />
+<h2 id="try-it-in-qemu-first">Try it in QEMU first</h2>
+<div class="hl"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/velle999/SYNAPSE.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>SYNAPSE
+<span class="nv">QEMU_RAM</span><span class="o">=</span>8G<span class="w"> </span>./archiso/build_scripts/qemu-test.sh<span class="w">   </span><span class="c1"># auto-detects the newest ISO</span>
+</code></pre></div>
+
+<p>Uses KVM when available, boots UEFI via OVMF (falling back to BIOS), and attaches
+a persistent 20 GB test disk. <strong>Give it 8 GB+ of RAM</strong> if you install the 7B
+model — it will thrash or OOM below that. The ISO itself no longer carries one,
+which is part of why it boots in QEMU as comfortably as it does. Kernel and boot output
+are mirrored to the serial console: <em>View → serial0</em> in the QEMU window.</p>
+<hr />
+<h2 id="install-to-hardware">Install to hardware</h2>
+<p>Grab the latest ISO from
+<a href="https://github.com/velle999/SYNAPSE/releases/latest">Releases</a> and boot it.</p>
+<p>Releases are <strong>split into <code>.part*</code> files</strong> because GitHub caps a release asset at
+2 GiB and the ISO is just under 4 GB — two parts, as of 0.2.9. Download <strong>every</strong>
+<code>.part*</code> file plus <code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join
+them back into an ISO. The join is a plain byte-for-byte concatenation; the
+checksum is what tells you it worked.</p>
+<h3 id="joining-and-writing-linux--macos">Joining and writing: Linux / macOS</h3>
+<div class="hl"><pre><span></span><code>cat<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.part*<span class="w"> </span>&gt;<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso
+sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256<span class="w">    </span><span class="c1"># shasum -a 256 -c on macOS</span>
+sudo<span class="w"> </span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>SynapseOS-&lt;ver&gt;-x86_64.iso<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sdX<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>4M<span class="w"> </span><span class="nv">status</span><span class="o">=</span>progress<span class="w"> </span><span class="nv">oflag</span><span class="o">=</span>sync
+</code></pre></div>
+
+<p>Find <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the <strong>disk</strong> (<code>/dev/sdb</code>), not a
+partition on it (<code>/dev/sdb1</code>). To check the parts before joining rather than the
+ISO after: <code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.parts.sha256</code>.</p>
+<h3 id="joining-and-writing-windows">Joining and writing: Windows</h3>
+<p>Whoever is installing a Linux distro is usually still on the OS they are
+leaving, so this is a supported path.</p>
+<p><strong>1. Join the parts.</strong> In <strong>Command Prompt</strong>, in the folder you downloaded to
+(Shift+right-click the folder ▸ <em>Open in Terminal</em>, or <code>cd</code> to it):</p>
+<div class="hl"><pre><span></span><code><span class="k">copy</span> /b SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part00 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part01 SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso
+</code></pre></div>
+
+<p>Name <strong>every</strong> part, in order, joined by <code>+</code>. Do not use a wildcard: <code>copy</code>
+takes wildcard sources in directory order, which is not guaranteed to be sorted,
+and parts joined out of order give you a file of the right size that is quietly
+corrupt.</p>
+<p><code>/b</code> is <strong>not optional</strong>. Without it <code>copy</code> runs in text mode and stops at the
+first <code>0x1A</code> byte, which in this image is a few hundred KB in — you get a short
+file, no error message, and a stick that does not boot.</p>
+<p>If <code>copy /b</code> gives trouble, <strong>PowerShell</strong> can do the join instead, and it has no
+text mode to fall into:</p>
+<div class="hl"><pre><span></span><code><span class="nv">$out</span> <span class="p">=</span> <span class="no">[System.IO.File]</span><span class="p">::</span><span class="n">Create</span><span class="p">((</span><span class="nb">Join-Path</span> <span class="nv">$PWD</span> <span class="s1">&#39;SynapseOS-&lt;ver&gt;-x86_64.iso&#39;</span><span class="p">))</span>
+<span class="nb">Get-ChildItem</span> <span class="s1">&#39;SynapseOS-&lt;ver&gt;-x86_64.iso.part*&#39;</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">Name</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+  <span class="nv">$in</span> <span class="p">=</span> <span class="no">[System.IO.File]</span><span class="p">::</span><span class="n">OpenRead</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">FullName</span><span class="p">);</span> <span class="nv">$in</span><span class="p">.</span><span class="n">CopyTo</span><span class="p">(</span><span class="nv">$out</span><span class="p">);</span> <span class="nv">$in</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="nv">$out</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
+</code></pre></div>
+
+<p><strong>2. Check it.</strong> Do not skip this — a bad join is the single most common way a
+split download goes wrong, and every symptom of it looks like a broken ISO.</p>
+<div class="hl"><pre><span></span><code>certutil -hashfile SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso SHA256
+</code></pre></div>
+
+<p>Compare what it prints against the contents of the <code>.sha256</code> file. Or have
+PowerShell compare them for you — it prints <code>True</code> when the join is good:</p>
+<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">&#39;\s+&#39;</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
+</code></pre></div>
+
+<p>(<code>Get-FileHash</code> prints uppercase hex where <code>sha256sum</code> writes lowercase — same
+bytes, which is what the <code>.ToUpper()</code> is for.)</p>
+<h3 id="check-who-built-it">Check who built it</h3>
+<p>The checksum proves the download is not corrupt. It does not prove where the
+image came from — it sits in the same GitHub release as the ISO, so anything
+that could alter one could alter the other. The signature answers that, and the
+key is served from <strong>soslinux.org</strong> rather than from the release, so the two
+arrive by different roads.</p>
+<div class="hl"><pre><span></span><code>curl<span class="w"> </span>-O<span class="w"> </span>https://soslinux.org/synapseos-release-key.asc
+gpg<span class="w"> </span>--import<span class="w"> </span>synapseos-release-key.asc
+
+gpg<span class="w"> </span>--verify<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.asc<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso
+</code></pre></div>
+
+<p>A good signature names the key it matched; check that fingerprint against:</p>
+<div class="hl"><pre><span></span><code>6548 9EF5 C20D 0BD9 4211  472B ED33 6DB7 952B 609E
+</code></pre></div>
+
+<p>GnuPG also says the key is <em>not certified with a trusted signature</em>. That is
+expected and is not a failure — it means you have not told GnuPG you trust this
+key, only that the signature matches it. Comparing the fingerprint is what
+closes that gap.</p>
+<p>Releases from <strong>0.2.9.5</strong> onward are signed; earlier ones are not. On Windows,
+<a href="https://gpg4win.org/">Gpg4win</a> gives you the same three commands in PowerShell.</p>
+<p><strong>3. Write it to the stick.</strong> Any of these work:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What to do</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="https://rufus.ie/">Rufus</a></strong></td>
+<td>Pick the ISO, leave the defaults, START</td>
+<td>When it asks <em>ISO Image mode</em> or <em>DD Image mode</em>, choose <strong>DD Image mode</strong>. This is a hybrid image; DD mode writes it unaltered, where ISO mode rebuilds the boot files and has no reason to get this one right</td>
+</tr>
+<tr>
+<td><strong><a href="https://etcher.balena.io/">balenaEtcher</a></strong></td>
+<td>Select image, select drive, Flash</td>
+<td>Nothing to configure; it only ever writes raw</td>
+</tr>
+<tr>
+<td><strong><a href="https://www.ventoy.net/">Ventoy</a></strong></td>
+<td>Copy the <code>.iso</code> onto an existing Ventoy stick</td>
+<td>Pick it from Ventoy's boot menu. Nothing is erased and other ISOs on the stick keep working</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Writing a stick erases it</strong> — the image goes on as a raw disk, not as a file.
+Ventoy is the exception.</p>
+<p>Then boot the stick from your firmware's boot menu, usually <code>F12</code>, <code>F11</code>, <code>Esc</code>
+or <code>Del</code> at power-on. Secure Boot has to be off, or SynapseOS enrolled — see
+<a href="/wiki/Secure-Boot">Secure Boot</a>.</p>
+<h3 id="the-image-carries-no-ai-model">The image carries no AI model</h3>
+<p><strong>The ISO carries no AI model</strong>, since 0.2.8. That is about 4 GB off the
+download, and it means the <strong>installer asks which model you want</strong> instead:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mistral 7B Instruct</strong> (Q4_K_M)</td>
+<td>~4.4 GB</td>
+<td>The recommended one, and what everything is tuned against</td>
+</tr>
+<tr>
+<td><strong>Phi-3 Mini</strong></td>
+<td>~2.4 GB</td>
+<td>Smaller; noticeably weaker answers in the apps built on it</td>
+</tr>
+<tr>
+<td><strong>Qwen2 0.5B</strong></td>
+<td>~0.4 GB</td>
+<td>Tiny. Fine for a machine you are only trying out</td>
+</tr>
+<tr>
+<td><strong>None</strong></td>
+<td>—</td>
+<td>Nothing is downloaded; <code>syn model download</code> adds one later</td>
+</tr>
+</tbody>
+</table></div>
+<p>It is asked on every preset except Minimal, needs a network, and runs near the
+end of the install so nothing else is stuck behind a 4 GB progress bar. A
+failed download <strong>warns rather than failing the install</strong> — the machine boots
+either way, with the same end state as choosing None.</p>
+<blockquote>
+<p><strong>On the live ISO itself there is no model</strong>, so <code>synapd</code> starts in
+<em>shell-assist mode</em> with nothing to load and <code>syn status</code> reports
+"model ✗ not installed". That is expected on live media, not a fault to chase.
+Building with <code>archiso/build.sh --with-model</code> puts one back on the image.</p>
+</blockquote>
+<p>Then run the installer from the live session (<code>syn-install</code>).</p>
+<hr />
+<h2 id="choosing-what-to-install">Choosing what to install</h2>
+<p>Four presets:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Full</strong></td>
+<td>Standard plus Steam, Nix, and a wider software shelf</td>
+</tr>
+<tr>
+<td><strong>Standard</strong> <em>(default)</em></td>
+<td>the SynapseOS suite, Firefox, an AI model, Bluetooth, printing, Wine, phone pairing</td>
+</tr>
+<tr>
+<td><strong>Minimal</strong></td>
+<td>the core daemons only — no apps, no software, no model</td>
+</tr>
+<tr>
+<td><strong>Custom</strong></td>
+<td>tick every package yourself</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="custom-is-every-package">Custom is every package</h3>
+<p><strong>Since 0.2.9 there is no unconditional SynapseOS package.</strong> Eleven of them used
+to be installed whatever you answered — the package manager, the file manager,
+the terminal, Settings, Disks, the editor, <code>syn</code>, <code>syn-model</code>, <code>syn-firstboot</code>,
+<code>syn-confine</code> and <code>fetch</code> — and Custom could not decline any of them. All
+twenty-five are checkboxes on one page now:</p>
+<div class="hl"><pre><span></span><code>  SynapseOS packages — everything the system is made of
+
+  [x]  1) SYNAPSE UI    the desktop     [x] 14) Models        fetch AI models
+  [x]  2) synapd        the AI daemon   [x] 15) First boot    first-run setup
+  [x]  3) synsh         the AI shell    [x] 16) Sandbox       Landlock jail
+  [x]  4) synguard      security watch  [x] 17) About OS      the OS readout
+  [x]  5) synnet        network policy  [x] 18) Arcade        pads + overlay
+  [x]  6) Software      package manager [x] 19) cliamp        music player
+  [x]  7) Files         file manager    [x] 20) Arsenal       BlackArch tools
+  [x]  8) Terminal      the terminal    [x] 21) Chibi         voice companion
+  [x]  9) Settings      system settings [x] 22) Vibe          AI coding help
+  [x] 10) Disks         disks + format  [x] 23) Wallpapers    animated, 317MB
+  [x] 11) Editor        the text editor [ ] 24) Nexus Chat    chat (+Firefox)
+  [x] 12) Updates       receives fixes  [ ] 25) TEPRIS        game (+Firefox)
+  [x] 13) syn           top-level CLI
+
+  Toggle [numbers, &#39;all&#39;, &#39;none&#39;, Enter = accept]:
+</code></pre></div>
+
+<p>Type the numbers you want to flip, <code>all</code> or <code>none</code> to sweep the page, and Enter
+to accept. The same pages appear as checkbox lists in the graphical installer.</p>
+<p><strong>What you cannot switch off is what something else you kept depends on.</strong> Those
+are turned back on and <em>named</em> before anything is installed:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Turning this off</th>
+<th>brings back</th>
+<th>because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminal</td>
+<td>—</td>
+<td><code>synui</code> hard-depends on <code>syntty</code></td>
+</tr>
+<tr>
+<td>synapd</td>
+<td>—</td>
+<td><code>synnet</code> and Vibe depend on it</td>
+</tr>
+<tr>
+<td>Sandbox</td>
+<td>—</td>
+<td>Vibe's shell tool runs inside <code>syn-confine</code></td>
+</tr>
+<tr>
+<td>Models</td>
+<td>—</td>
+<td><code>syn-firstboot</code> depends on it, and it is what downloads the model you chose</td>
+</tr>
+</tbody>
+</table></div>
+<p>A checkbox that silently un-ticks itself would be worse than one that was never
+offered, so the installer prints what it re-ticked and why, before the summary.</p>
+<p>Two deselections it stops to warn about, because both cost something you only
+notice weeks later:</p>
+<ul>
+<li><strong><code>syn-update</code> off</strong> — the machine has no way to receive another SynapseOS
+  package. Fixing that later means installing it by hand from the ISO.</li>
+<li><strong><code>synui</code> off</strong> — SynapseUI is no longer offered on the Desktop page; the
+  answers are KDE, GNOME or no GUI. A profile that asks for both
+  <code>desktop = "synui"</code> and <code>comp.synui = false</code> is refused by name rather than
+  quietly resolved.</li>
+</ul>
+<h3 id="ordinary-software">Ordinary software</h3>
+<p>Five more pages, all of it from the Arch repositories and none of it ours:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Some of what is on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Web and communication</strong></td>
+<td>Firefox, Chromium, Vivaldi, Thunderbird, Discord, Telegram, Signal, KeePassXC, qBittorrent, Syncthing</td>
+</tr>
+<tr>
+<td><strong>Audio and video</strong></td>
+<td>VLC, mpv, OBS Studio, Audacity, Kdenlive, HandBrake, Spotify</td>
+</tr>
+<tr>
+<td><strong>Office and graphics</strong></td>
+<td>LibreOffice, GIMP, Inkscape, Krita, Blender, Calibre</td>
+</tr>
+<tr>
+<td><strong>Development and admin</strong></td>
+<td>VS Code, Neovim, git-lfs, Docker, virt-manager, GParted, btop, FileZilla, Remmina, 7zip + unrar</td>
+</tr>
+<tr>
+<td><strong>Games, launchers and helpers</strong></td>
+<td>Lutris, Prism, RetroArch, Dolphin, PPSSPP, ScummVM, DOSBox, MAME, Protontricks, Winetricks, GOverlay, AntiMicroX, OpenRGB, CoreCtrl</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Firefox is ticked by default</strong> on every preset except Minimal. Before 0.2.9 an
+installed SynapseOS arrived with no web browser at all unless you picked Full,
+where Nexus Chat happened to pull one in as a dependency.</p>
+<p>Steam is <em>not</em> on those pages — it is one of the y/n options below, because it
+is the only item that turns on a second architecture (<code>[multilib]</code> and the lib32
+tree) and a third repository (<code>[cachyos]</code>, for Proton).</p>
+<p>The shelf installs <strong>last, in its own transaction</strong>, after the system is
+complete. A failure there warns and retries one package at a time, so a name
+that moved upstream fails alone and is named, instead of taking every SynapseOS
+package down with it. Anything that did not land is one
+<code>synpkg install &lt;name&gt;</code> away.</p>
+<p>Docker and Syncthing are the two whose units are enabled for you; everything
+else is inert until you open it.</p>
+<h3 id="the-yn-options">The y/n options</h3>
+<p>Not packages — a repository, an architecture or a service. Each is asked one at
+a time because each has a consequence too long for a checkbox:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bluetooth</td>
+<td>on</td>
+<td><code>bluez-utils</code>, and the radio enabled</td>
+</tr>
+<tr>
+<td>Printing</td>
+<td>on</td>
+<td>CUPS; the driver is <code>syn printer &lt;vendor&gt;</code> afterwards</td>
+</tr>
+<tr>
+<td>Wine</td>
+<td>on</td>
+<td><code>wine</code> + <code>wine-mono</code>, and <code>.exe</code>/<code>.msi</code> become double-clickable</td>
+</tr>
+<tr>
+<td>KDE Connect</td>
+<td>on</td>
+<td>pair a phone</td>
+</tr>
+<tr>
+<td>Steam</td>
+<td>off</td>
+<td>+ the game stack and CachyOS Proton; enables <code>[multilib]</code> and <code>[cachyos]</code> (~3.1 GB)</td>
+</tr>
+<tr>
+<td>BlackArch</td>
+<td>on</td>
+<td>the repo and keyring only — no tools installed</td>
+</tr>
+<tr>
+<td>Nix</td>
+<td>off</td>
+<td>Nix + Home Manager beside pacman (<code>syn nix</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3 id="installing-from-a-profile">Installing from a profile</h3>
+<p>Every question the installer asks can be answered ahead of time in a file, so an
+install is reproducible instead of re-typed:</p>
+<div class="hl"><pre><span></span><code>syn-install<span class="w"> </span>--config<span class="w"> </span>profile.nix<span class="w">     </span><span class="c1"># or a plain key=value file</span>
+</code></pre></div>
+
+<p><strong>Whatever the profile leaves out is still asked at the machine</strong>, so pinning
+just the disk layout and the package set is a perfectly good profile. The keys
+are semantic (<code>filesystem = "btrfs"</code>, never a menu number), the destructive
+confirmations each need writing out, and a key that answers nothing is reported
+by name at the end rather than ignored.</p>
+<p>Full key list and the Nix form: <strong><a href="/wiki/Nix#install-profiles">Nix → Install profiles</a></strong>.
+<code>/usr/share/syn/nix/profile-example.nix</code> documents every key on the machine.</p>
+<hr />
+<h2 id="install-modes">Install modes</h2>
+<blockquote>
+<p><strong>Everything below has been in every release since 0.2.5.</strong> On <strong>0.2.4 and
+earlier</strong> the installer had <strong>ERASE</strong> and <strong>ALONGSIDE</strong> only, with an ext4
+root and GRUB — no filesystem or bootloader choice, no snapshots, no
+<strong>ADVANCED</strong> mode, and no swap of any kind.</p>
+</blockquote>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ERASE</strong></td>
+<td>Whole-disk install. Destructive.</td>
+</tr>
+<tr>
+<td><strong>ALONGSIDE</strong></td>
+<td>Non-destructive dual-boot — one ext4 root in the <strong>largest existing free region</strong>, <strong>reusing</strong> the machine's ESP. Offered on UEFI when the disk already holds an OS and has room</td>
+</tr>
+<tr>
+<td><strong>ADVANCED</strong></td>
+<td>You partition the disk yourself, then tell the installer which partitions to use</td>
+</tr>
+</tbody>
+</table></div>
+<p>The ESP is <strong>mounted, never reformatted</strong> on the alongside path, because it
+carries the other OS's bootloader. So make free space <em>first</em> (shrink the Windows
+partition from Windows' own disk manager), then install.</p>
+<p>Before anything is written, the installer prints the whole plan back — disk,
+mode, firmware, filesystem, bootloader, separate <code>/boot</code>, encryption, snapshots —
+and asks you to confirm it. Answering <strong>no</strong> restarts the questions; nothing has
+touched the disk at that point.</p>
+<h3 id="advanced">ADVANCED</h3>
+<p>For the layouts the automatic paths don't generate: a <code>/home</code> you want kept, an
+ESP the alongside conditions rejected, a partition left over from another distro.</p>
+<p>It runs a partition editor on the target disk — <code>cfdisk</code> by default, or any of
+<code>fdisk</code>/<code>parted</code>/<code>cgdisk</code>/<code>gdisk</code>/<code>gparted</code> that the image actually has — re-reads
+the table when you exit, and then asks for:</p>
+<ul>
+<li>the <strong>root</strong> partition (required)</li>
+<li>the <strong>EFI System Partition</strong> (UEFI). An existing FAT one is <strong>kept by default</strong>;
+  formatting it is a question, because on a dual-boot disk that is where the other
+  OS's bootloader lives</li>
+<li>a separate <strong><code>/boot</code></strong>, when the filesystem + bootloader + encryption
+  combination needs one</li>
+<li>a <strong>swap</strong> partition (optional — blank for none)</li>
+</ul>
+<p>Only the partitions you name are formatted. Nothing else on the disk is touched,
+and it never writes a partition table of its own. Every answer is checked before
+it is used: a whole disk given where a partition was wanted, something already
+mounted, anything on the live USB, or a root too small are all refused with the
+reason, and it asks again rather than aborting the install.</p>
+<p>Filesystem, bootloader and encryption are asked on this path exactly as on ERASE,
+and the same code formats the root — so LUKS and the btrfs subvolume layout are
+identical to an automatic install.</p>
+<hr />
+<h2 id="filesystems">Filesystems</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ext4</strong></td>
+<td>The default. Boring in the way a root filesystem should be</td>
+</tr>
+<tr>
+<td><strong>btrfs</strong></td>
+<td>The only one with <strong>snapshots</strong>. Mounted with <code>zstd:3</code> compression; lays out <code>@</code>, <code>@home</code>, <code>@snapshots</code>, <code>@var_log</code>, <code>@pkg</code></td>
+</tr>
+<tr>
+<td><strong>xfs</strong></td>
+<td>Fast on large files. <strong>Cannot be shrunk</strong></td>
+</tr>
+<tr>
+<td><strong>f2fs</strong></td>
+<td>Flash-oriented</td>
+</tr>
+</tbody>
+</table></div>
+<p>Snapshots are a <strong>btrfs</strong> feature here — they are btrfs subvolume snapshots taken
+by <code>snapper</code>. ext4, xfs and f2fs have no equivalent (that would mean LVM thin
+snapshots, which this installer does not set up), and the installer says so
+rather than silently skipping the question.</p>
+<h2 id="bootloaders">Bootloaders</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>Firmware</th>
+<th>Can boot snapshots</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GRUB</strong></td>
+<td>UEFI + BIOS</td>
+<td><strong>yes</strong>, via <code>grub-btrfs</code></td>
+</tr>
+<tr>
+<td><strong>systemd-boot</strong></td>
+<td>UEFI only</td>
+<td>no</td>
+</tr>
+<tr>
+<td><strong>limine</strong></td>
+<td>UEFI only</td>
+<td><strong>yes</strong>, via <code>limine-snapper-sync</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The ESP goes to <code>/boot/efi</code> under GRUB and <strong>is</strong> <code>/boot</code> under systemd-boot and
+limine, which read nothing but the ESP. That also sizes it: 512 MiB for GRUB,
+1 GiB for systemd-boot, and <strong>4 GiB for limine with snapshots on</strong> — that tool
+copies every retained snapshot's kernel and initramfs onto the ESP, roughly
+150 MB each, and simply stops adding entries when the partition fills.</p>
+<p>With encryption, <strong>systemd-boot or limine is the better choice</strong>: the kernel
+lives on the ESP and only the initramfs unlocks, so no separate unencrypted
+<code>/boot</code> partition is needed at all.</p>
+<h2 id="snapshots">Snapshots</h2>
+<p>Offered when the root is btrfs and the bootloader can boot them. <code>snapper</code> takes
+a pre/post pair around every <code>pacman</code> transaction (<code>snap-pac</code>), and the boot menu
+grows entries for them. Timeline snapshots are <strong>off</strong> — hourly snapshots kept
+forever are how a btrfs system quietly fills its own disk — and the pacman ones
+are capped.</p>
+<h2 id="swap">Swap</h2>
+<p><strong>zram is set up on every install</strong>: compressed swap in RAM, sized <code>min(RAM/2,
+8 GiB)</code> with zstd. It needs no partition, which is why it can apply to all three
+modes — ERASE and ALONGSIDE both give the root everything that is left.</p>
+<p>A <strong>real swap partition</strong> is offered on the ADVANCED path only, for the two things
+zram cannot do: hibernate (the image has to survive power-off) and add capacity
+that is not itself RAM. Where both exist, zram takes priority and the disk
+partition is overflow. An existing swap is <strong>not</strong> re-made by default — <code>mkswap</code>
+changes its UUID, which is what another installed system's <code>fstab</code> and its
+hibernation <code>resume=</code> point at.</p>
+<h3 id="full-disk-encryption">Full-disk encryption</h3>
+<p>The <strong>ERASE</strong> and <strong>ADVANCED</strong> paths offer <strong>LUKS2 on the root filesystem</strong>. It is
+deliberately <strong>not</strong> offered alongside an existing OS: encrypting into free space
+works in principle, but shipping an untested variant of the destructive path is
+worse than not offering it.</p>
+<p><strong><code>/boot</code> is a separate plain partition</strong>, not inside the encrypted root. That is
+not an oversight:</p>
+<ul>
+<li>Putting <code>/boot</code> inside LUKS means <strong>GRUB</strong> must unlock it, and GRUB can only
+  open LUKS2 volumes that use <strong>PBKDF2</strong> — not the <code>argon2id</code> that cryptsetup
+  defaults to and that makes LUKS2 worth using.</li>
+<li>The alternatives are weakening the KDF or fighting GRUB's cryptodisk support,
+  and GRUB is already the most fragile part of this distro's boot path.</li>
+<li>A separate <code>/boot</code> costs one partition and leaves the initramfs as the only
+  thing that unlocks anything.</li>
+</ul>
+<p>The ESP itself can never be encrypted — firmware has to read it.</p>
+<p>Manage it afterwards with <strong><code>syn-crypt</code></strong>:</p>
+<div class="hl"><pre><span></span><code>syn-crypt<span class="w"> </span>status<span class="w">                       </span><span class="c1"># is root actually encrypted?</span>
+syn-crypt<span class="w"> </span>add-key<span class="w">                      </span><span class="c1"># a second passphrase</span>
+syn-crypt<span class="w"> </span>change-key
+syn-crypt<span class="w"> </span>backup-header<span class="w"> </span>/run/media/…/luks-header.img
+</code></pre></div>
+
+<blockquote>
+<p><strong>Back the header up.</strong> A corrupted LUKS header means the data is gone <em>even
+with the right passphrase</em>. <code>syn-crypt</code> refuses to guess a device — it either
+takes one explicitly or resolves it from the actually-mounted root, because a
+LUKS operation on the wrong device destroys a disk.</p>
+</blockquote>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Arch</strong></td>
+<td>x86-64</td>
+</tr>
+<tr>
+<td><strong>RAM</strong></td>
+<td>8 GB minimum if you install the 7B model; less if you take a smaller one or none</td>
+</tr>
+<tr>
+<td><strong>Disk</strong></td>
+<td>~20 GB</td>
+</tr>
+<tr>
+<td><strong>GPU</strong></td>
+<td>Optional. The ISO ships a <strong>CPU</strong> llama build so it starts anywhere.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>On GPU:</strong> the shipped ISO runs <code>synapd</code> on the <strong>CPU by design</strong> — a CUDA-linked
+build needs <code>libcuda.so.1</code> and would fail to start on any machine without an
+NVIDIA driver. After installing, switch to the CUDA package
+(<code>synapse-llama-cuda</code>) to get GPU offload. Then <strong>verify it</strong>, because this
+specific thing lied to us for months:</p>
+<div class="hl"><pre><span></span><code>grep<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps<span class="w">   </span><span class="c1"># 0 means you are still on the CPU</span>
+</code></pre></div>
+
+<p>See <a href="/wiki/synapd#gpu-offload">synapd</a>.</p>
+<hr />
+<h2 id="after-installing">After installing</h2>
+<p>Everything starts on boot:</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>status<span class="w"> </span>synapd<span class="w">      </span><span class="c1"># AI inference daemon</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synguard<span class="w">    </span><span class="c1"># security monitor</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>synnet<span class="w">      </span><span class="c1"># network policy</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>synapse_kmod<span class="w">    </span><span class="c1"># kernel module</span>
+cat<span class="w"> </span>/sys/kernel/synapse/status
+</code></pre></div>
+
+<p>Open a shell and you should see <code>⚡ AI online</code>. Press <strong><code>Super</code>+<code>C</code></strong> for the
+control panel, which lists every keyboard shortcut —
+see <a href="/wiki/Keybindings">Keybindings</a>.</p>
+<p><strong>Wi-Fi</strong>: <code>Super</code>+<code>I</code>, or the bar's network module. Installing over Wi-Fi is
+supported.</p>
+<p><strong>Make it yours</strong>: <code>Super</code>+<code>T</code> themes, <code>Super</code>+<code>W</code> wallpaper,
+<code>Super</code>+<code>Shift</code>+<code>P</code> <a href="/wiki/Cursor-Themes">cursors</a>, <code>Super</code>+<code>S</code>
+<a href="/wiki/Sound-Themes">sounds</a> (silent until you turn them on), <code>Super</code>+<code>Shift</code>+<code>A</code>
+<a href="/wiki/The-Desktop#desktop-widgets">desktop widgets</a>, <code>Super</code>+<code>E</code>
+<a href="/wiki/Window-Effects">window effects</a> (off by default on a fresh install).</p>
+<hr />
+<h2 id="secure-boot">Secure Boot</h2>
+<p>Not enabled by default, and enabling it is a deliberate exercise —
+see <strong><a href="/wiki/Secure-Boot">Secure Boot</a></strong>. The one-line version: <code>sbctl</code> cannot enroll
+keys until the firmware is in <strong>Setup Mode</strong>, and <strong>rebooting will never put it
+there</strong> no matter what sbctl's error message implies. You must clear the Platform
+Key from the BIOS menu. Run <code>syn-secureboot enroll</code>, which checks this for you.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="next" href="/wiki/Welcome-Guide"><span>Next</span>Welcome Guide</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation" aria-current="page">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

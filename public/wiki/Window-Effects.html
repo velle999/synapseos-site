@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Window Effects — SynapseOS Wiki</title>
+<meta name="description" content="Glass, blur, drop shadows, rounded corners and the CRT post-process pass. All of it is synuirc configuration, and the shipped default is conservative: as of pkgrel 183 a fresh…">
+<link rel="canonical" href="https://soslinux.org/wiki/Window-Effects">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Window Effects — SynapseOS Wiki">
+<meta property="og:description" content="Glass, blur, drop shadows, rounded corners and the CRT post-process pass. All of it is synuirc configuration, and the shipped default is conservative: as of pkgrel 183 a fresh…">
+<meta property="og:url" content="https://soslinux.org/wiki/Window-Effects">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-supere-panel">The Super+E panel</a></li>
+<li class="sub"><a href="#space-is-page-sensitive">Space is page-sensitive</a></li>
+<li class="sub"><a href="#saving-is-per-page">Saving is per page</a></li>
+<li class="sub"><a href="#the-window-effects-rows">The window-effects rows</a></li>
+<li><a href="#the-knobs">The knobs</a></li>
+<li class="sub"><a href="#turning-all-of-it-off">Turning all of it off</a></li>
+<li class="sub"><a href="#transparency-and-glass">Transparency and glass</a></li>
+<li class="sub"><a href="#blur">Blur</a></li>
+<li class="sub"><a href="#shadows">Shadows</a></li>
+<li class="sub"><a href="#crt-filters-supere">CRT filters (Super+E)</a></li>
+<li class="sub"><a href="#night-light">Night light</a></li>
+<li><a href="#reading-a-shadow-whose-is-it">Reading a shadow: whose is it?</a></li>
+<li class="sub"><a href="#why-firefox-is-different">Why Firefox is different</a></li>
+<li><a href="#shadow_spread-the-50-ceiling">shadow_spread: the 50% ceiling</a></li>
+<li><a href="#glass_halo-letting-the-blur-past-the-window">glass_halo: letting the blur past the window</a></li>
+<li><a href="#firefox-glass">Firefox glass</a></li>
+<li><a href="#kde-blur">KDE blur</a></li>
+<li><a href="#hdr-and-10-bit">HDR and 10-bit</a></li>
+<li><a href="#verifying-an-effect-actually-changed-something">Verifying an effect actually changed something</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Customising it</p>
+      <h1>Window Effects</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Window-Effects/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Glass, blur, drop shadows, rounded corners and the CRT post-process pass. All of
+it is <code>synuirc</code> configuration, and <strong>the shipped default is conservative</strong>: as of
+pkgrel 183 a fresh install boots with window effects <strong>off</strong> and the SYNAPSE
+wallpaper on, because effects on a machine that cannot afford them is a bad first
+impression that looks like a broken system.</p>
+<blockquote>
+<p><strong>A default change is invisible on an existing machine.</strong> Your <code>synuirc</code> is
+yours; new defaults only reach the ISO and fresh installs.</p>
+</blockquote>
+<p>Rendering is <a href="https://github.com/wlrfx/scenefx">scenefx</a> <strong>0.5</strong> on <strong>wlroots
+0.20</strong>. scenefx is a <em>fork</em> of wlroots' scene graph, which matters — see
+<a href="#hdr-and-10-bit">the HDR note</a> below.</p>
+<hr />
+<h2 id="the-supere-panel">The <code>Super</code>+<code>E</code> panel</h2>
+<p>You do not have to edit a config file to tune any of this. <code>Super</code>+<code>E</code> opens a
+live panel with <strong>two pages</strong>, and every change applies as you make it.</p>
+<p><strong><code>Tab</code> switches pages</strong> (<code>Shift</code>+<code>Tab</code> goes back). The status line always tells
+you which page you are on and what <code>Tab</code> will do next:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CRT filters</strong></td>
+<td>The post-process pass — scanlines, curvature, aberration, glitch, phosphor, bloom</td>
+</tr>
+<tr>
+<td><strong>Window effects</strong></td>
+<td>Corners, shadow, blur, halo and translucency — the 12 rows below</td>
+</tr>
+</tbody>
+</table></div>
+<p>Same keys on both pages:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>↑</code> / <code>↓</code> — or <code>k</code> / <code>j</code></td>
+<td>Move between rows</td>
+</tr>
+<tr>
+<td><code>←</code> / <code>→</code> — or <code>h</code> / <code>l</code></td>
+<td>Adjust the selected row</td>
+</tr>
+<tr>
+<td><code>Space</code></td>
+<td>Toggle (see below — it means different things per page)</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td><strong>Save</strong> the current page</td>
+</tr>
+<tr>
+<td><code>Esc</code> · <code>q</code> · <code>Return</code></td>
+<td>Close</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>The panel is <strong>modal</strong>: while it is open it swallows unmodified keys, so
+stray letters cannot leak into the window underneath. <code>Super</code>+… combos still
+reach the global bind table, so the rest of the desktop keeps working.</p>
+</blockquote>
+<h3 id="space-is-page-sensitive"><code>Space</code> is page-sensitive</h3>
+<ul>
+<li><strong>On the CRT page</strong>, <code>Space</code> is the <strong>master on/off</strong> for the whole effects
+  pass, from any row — you never have to navigate to the top row to kill it.</li>
+<li><strong>On the window page</strong>, <code>Space</code> toggles <strong>the switch governing the row you are
+  on</strong>. On any shadow row it toggles <em>Drop shadow</em>; on any blur row (including
+  <em>Glass halo</em>) it toggles <em>Backdrop blur</em>; on <em>Window opacity</em> it toggles
+  <em>Translucency</em>. So pressing it on a greyed-out <em>Shadow size</em> row lights the
+  shadow, rather than doing nothing because that row is not itself a switch.</li>
+<li><strong>Rounded corners has no governing switch</strong> — 0 px <em>is</em> off. <code>Space</code> there
+  says so rather than silently ignoring you.</li>
+</ul>
+<h3 id="saving-is-per-page">Saving is per page</h3>
+<p><code>s</code> saves <strong>the page you are on</strong>, and the two pages persist to <strong>separate
+files</strong> — <code>filters.state</code> for CRT, <code>uifx.state</code> for window effects. That is
+deliberate: a shared file would mean saving a shadow you had just tuned also
+wrote back whatever the CRT page happened to be holding.</p>
+<p>Row values are stored under <strong>their <code>synuirc</code> key names</strong>, so a value you tune
+in the panel can be pasted straight into a config file — the panel and
+<code>synuirc</code> are one vocabulary. The exception is the translucency pair, which
+lives in <code>theme.state</code> because the theme owns it; storing a second copy would
+give startup two answers.</p>
+<h3 id="the-window-effects-rows">The window-effects rows</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Range</th>
+<th>Step</th>
+<th><code>synuirc</code> key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rounded corners</td>
+<td>0–40 px</td>
+<td>2</td>
+<td><code>corner_radius</code></td>
+</tr>
+<tr>
+<td>Drop shadow</td>
+<td>on/off</td>
+<td>—</td>
+<td><code>shadow</code></td>
+</tr>
+<tr>
+<td>Shadow size</td>
+<td>0–80 px</td>
+<td>2</td>
+<td><code>shadow_blur_sigma</code></td>
+</tr>
+<tr>
+<td>Shadow spread</td>
+<td>0–64 px</td>
+<td>1</td>
+<td><code>shadow_spread</code></td>
+</tr>
+<tr>
+<td>Shadow drop</td>
+<td>−32–32 px</td>
+<td>1</td>
+<td><code>shadow_offset_y</code></td>
+</tr>
+<tr>
+<td>Shadow opacity</td>
+<td>0–100%</td>
+<td>5%</td>
+<td><code>shadow_opacity</code></td>
+</tr>
+<tr>
+<td>Backdrop blur</td>
+<td>on/off</td>
+<td>—</td>
+<td><code>blur</code></td>
+</tr>
+<tr>
+<td>Blur radius</td>
+<td>1–20</td>
+<td>1</td>
+<td><code>blur_radius</code></td>
+</tr>
+<tr>
+<td>Blur passes</td>
+<td>1–5</td>
+<td>1</td>
+<td><code>blur_passes</code></td>
+</tr>
+<tr>
+<td>Glass halo</td>
+<td>0–40 px</td>
+<td>2</td>
+<td><code>glass_halo</code></td>
+</tr>
+<tr>
+<td>Translucency</td>
+<td>on/off</td>
+<td>—</td>
+<td><code>transparency</code></td>
+</tr>
+<tr>
+<td>Window opacity</td>
+<td>50–100%</td>
+<td>2%</td>
+<td><code>active_opacity</code></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>Window opacity floors at 50%</strong> on purpose: a window that can go fully
+invisible is a window you cannot find again.</p>
+</blockquote>
+<hr />
+<h2 id="the-knobs">The knobs</h2>
+<p>All of these go in <code>~/.config/synui/synuirc</code> (or <code>/etc/synui/synuirc</code>), and are
+the same values the panel above writes.</p>
+<h3 id="turning-all-of-it-off">Turning all of it off</h3>
+<p>If you do not want any of this, there is one press rather than a hunt:</p>
+<p><strong>Control panel</strong> (<code>Super</code>+<code>C</code>) <strong>▸ Appearance ▸ Make it all solid</strong> — or
+<code>synctl dispatch solid</code>, or bind a key to the <code>solid</code> action.</p>
+<p>It switches window translucency off, sets Glass to Off, releases every glass pin
+and makes the bar and the dock opaque.</p>
+<p>The pins are the part worth knowing about even if you never use this row. Glass
+is a master slider and the five surfaces under it follow it — until you adjust
+one by hand, which <strong>pins</strong> that row so it keeps its own value. Setting Glass to
+Off after that leaves a pinned bar or dock exactly as see-through as it was, on
+a desktop whose glass control now reads Off. Switching <strong>Sync all glass</strong> off
+and on again releases them all; this row does it for you.</p>
+<p>⚠ Glass at Off does not by itself make the bar and dock fully opaque — the
+curve bottoms out at 0.95, so 5% of the wallpaper still shows through. That is
+why this row sets <code>bar_opacity</code> and <code>dock_opacity</code> outright, which pins both at
+1.00. <code>Delete</code> on either row hands it back to the slider.</p>
+<p>It is one-way: there is no button that puts your old numbers back. The rows
+themselves do, and <code>Delete</code> on a row restores the shipped default.</p>
+<h3 id="transparency-and-glass">Transparency and glass</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Range</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transparency</code></td>
+<td><code>off</code></td>
+<td>on/off</td>
+<td>Master switch for translucent windows</td>
+</tr>
+<tr>
+<td><code>active_opacity</code></td>
+<td>—</td>
+<td>0–1</td>
+<td>Focused window opacity</td>
+</tr>
+<tr>
+<td><code>inactive_opacity</code></td>
+<td>—</td>
+<td>0–1</td>
+<td>Unfocused window opacity</td>
+</tr>
+<tr>
+<td><code>foot_alpha</code></td>
+<td>—</td>
+<td>0–1</td>
+<td>The terminal's own alpha, <strong>decoupled</strong> from the slider above. Named for <code>foot</code>; applies to <code>kitty</code> too</td>
+</tr>
+<tr>
+<td><code>corner_radius</code></td>
+<td><code>12</code></td>
+<td>0–48</td>
+<td>Rounded window corners</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="blur">Blur</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Range</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>blur</code></td>
+<td><code>on</code></td>
+<td>on/off</td>
+<td>Backdrop blur behind translucent windows</td>
+</tr>
+<tr>
+<td><code>blur_passes</code></td>
+<td><code>3</code></td>
+<td>1–5</td>
+<td>Dual-kawase passes</td>
+</tr>
+<tr>
+<td><code>blur_radius</code></td>
+<td><code>5</code></td>
+<td>1–20</td>
+<td>Per-pass radius</td>
+</tr>
+<tr>
+<td><code>blur_noise</code></td>
+<td><code>0.02</code></td>
+<td>0–1</td>
+<td>Dither, to break up banding</td>
+</tr>
+<tr>
+<td><code>blur_brightness</code></td>
+<td><code>0.90</code></td>
+<td></td>
+<td>Post-blur brightness</td>
+</tr>
+<tr>
+<td><code>blur_contrast</code></td>
+<td><code>1.00</code></td>
+<td></td>
+<td>Post-blur contrast</td>
+</tr>
+<tr>
+<td><code>blur_saturation</code></td>
+<td><code>1.15</code></td>
+<td></td>
+<td>Post-blur saturation</td>
+</tr>
+<tr>
+<td><code>glass_halo</code></td>
+<td><code>0</code></td>
+<td>0–64 px</td>
+<td>Let the blur reach <em>past</em> the window as a ring</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="shadows">Shadows</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Range</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shadow</code></td>
+<td><code>on</code></td>
+<td>on/off</td>
+<td>Drop shadow</td>
+</tr>
+<tr>
+<td><code>shadow_blur_sigma</code></td>
+<td><code>18</code></td>
+<td>0–80</td>
+<td>Gaussian sigma</td>
+</tr>
+<tr>
+<td><code>shadow_spread</code></td>
+<td><code>0</code></td>
+<td>0–64 px</td>
+<td>Solid ring <strong>outside</strong> the window before the tail</td>
+</tr>
+<tr>
+<td><code>shadow_offset_x</code> / <code>_y</code></td>
+<td><code>0</code> / <code>6</code></td>
+<td>px</td>
+<td>Offset</td>
+</tr>
+<tr>
+<td><code>shadow_opacity</code></td>
+<td><code>0.45</code></td>
+<td>0–1</td>
+<td></td>
+</tr>
+<tr>
+<td><code>shadow_color</code></td>
+<td>black</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>clip_csd_margin</code></td>
+<td><code>on</code></td>
+<td>on/off</td>
+<td>Crop clients to their declared xdg geometry</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="crt-filters-supere">CRT filters (<code>Super</code>+<code>E</code>)</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>effects</code></td>
+<td><code>off</code></td>
+<td>Master switch for the post-process pass</td>
+</tr>
+<tr>
+<td><code>effect_scanline</code></td>
+<td><code>0.35</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>effect_curvature</code></td>
+<td><code>0.25</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>effect_aberration</code></td>
+<td><code>0.40</code></td>
+<td>Chromatic aberration</td>
+</tr>
+<tr>
+<td><code>effect_glitch</code></td>
+<td><code>0.60</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>effect_phosphor</code></td>
+<td><code>off</code></td>
+<td>Monochrome tint: amber / green / white</td>
+</tr>
+<tr>
+<td><code>effect_mono</code></td>
+<td><code>0.90</code></td>
+<td>How strongly the phosphor tint desaturates</td>
+</tr>
+<tr>
+<td><code>effect_bloom</code></td>
+<td><code>0.55</code></td>
+<td>Phosphor glow</td>
+</tr>
+</tbody>
+</table></div>
+<p>Persisted to <code>filters.state</code>, adjustable live with a slider per effect — this is
+the CRT page of <a href="#the-supere-panel">the <code>Super</code>+<code>E</code> panel</a>, and <code>Space</code> on any
+row is the master switch for the whole pass.</p>
+<h3 id="night-light">Night light</h3>
+<p><code>night_light</code> / <code>night_light_temp</code>, or <code>Super</code>+<code>Shift</code>+<code>B</code>.</p>
+<hr />
+<h2 id="reading-a-shadow-whose-is-it">Reading a shadow: whose is it?</h2>
+<p>This is the single most useful skill for debugging "the shadow looks wrong on
+<em>this</em> app", and it took a measurement pass to establish.</p>
+<p><strong>synui's shadow is a gaussian.</strong> No hard edge, reach = <code>sigma + spread</code>, and
+<code>shadow_offset_y</code> makes the top band differ from the sides. The shader clips at
+2·σ_eff, where coverage is about 2% — never a visible step.</p>
+<p><strong>A hard cliff back to the wallpaper is a <em>client</em> margin.</strong> GTK crops its own
+shadow to a rectangular margin that differs per side, so the tell is a hard edge
+at an <em>asymmetric</em> distance — tens of pixels on one side, a handful on another.</p>
+<p>So an app whose shadow looks "overgrown and square-cornered" next to everything
+else is drawing its own. It was never synui's shadow.</p>
+<h3 id="why-firefox-is-different">Why Firefox is different</h3>
+<p>Firefox <strong>never binds xdg-decoration</strong>. synui declares <code>SERVER_SIDE</code>, but a
+client only obeys if it binds the protocol, so Firefox keeps its GTK frame and an
+invisible CSD shadow margin <strong>outside the window geometry it declares</strong> — and
+paints a heavy shadow into it, on top of synui's own.</p>
+<p>Proven by logging geometry against <code>wlr_surface_get_extents</code>:</p>
+<div class="hl"><pre><span></span><code>firefox   geo = 26,23  896x490   inside   ext 948x542
+foot      geo == ext exactly
+</code></pre></div>
+
+<p>Measured, that margin is a ~36 px near-black slab at ~85% darkening with a hard
+step, against a server-decorated app's 12 px soft ring.</p>
+<p><strong><code>clip_csd_margin</code> (default on)</strong> clips the client tree to
+<code>wlr_xdg_surface.geometry</code>, so every window's ring is the one synui draws — same
+width, same rounded corners. It also takes the margin's input region off the grab
+ring, which is the documented cause of "Firefox can't be resized by its edges".</p>
+<p>Three things that are easy to get wrong there:</p>
+<ol>
+<li><strong>Clip the client tree, not <code>view-&gt;scene_tree</code>.</strong>
+   <code>wlr_scene_subsurface_tree_set_clip()</code> recurses into every subsurface tree
+   below the node it is given, and xdg popups are parented <em>beside</em> the client
+   tree — so clipping the parent crops the menus. synui captures
+   <code>view-&gt;client_tree</code> right after <code>wlr_scene_xdg_surface_create()</code>, when the
+   tree has exactly one child.</li>
+<li><strong>Skip the no-op case.</strong> A clip that covers everything is not free: it puts a
+   source box and dest size on the scene buffer, and that alone shifted the
+   blurred backdrop around a terminal by ~7/255. Guarded on extents ⊄ geometry,
+   so every SSD client keeps its exact pixels.</li>
+<li><code>wlr_box_equal</code> is NULL/empty-safe, so <code>set_clip(NULL)</code> on an unclipped tree
+   early-returns — cheap enough for the per-commit path.</li>
+</ol>
+<hr />
+<h2 id="shadow_spread-the-50-ceiling"><code>shadow_spread</code>: the 50% ceiling</h2>
+<p><code>box_shadow.frag</code> insets the solid rectangle by <code>sigma</code>, so <strong>only the gaussian
+tail lands outside the window</strong>. Peak darkening at the border is therefore about
+<em>half</em> of <code>shadow_opacity</code> — <strong>50% is a hard ceiling even at opacity 1.0</strong>,
+against Firefox's measured ~85%.</p>
+<p><code>shadow_spread</code> lifts that ceiling without patching scenefx: grow the node by
+<code>sigma + S</code> instead of <code>sigma</code>, and the shader's own inset now lands S px
+<strong>outside</strong> the window. Full alpha for S px, then the tail. Node corners grow
+with it; a square window stays square; <code>S = 0</code> is byte-identical to the old
+geometry, which is why it is the default.</p>
+<p>Measured: the 12 px band outside a window's border goes from 60.0 to 46.1
+luminance at <code>shadow_spread = 8</code>.</p>
+<blockquote>
+<p>A maximized or fullscreen window has <strong>no</strong> shadow, and the Win95 theme's
+<code>SYN_CHROME_BEVEL</code> chrome returns a shadow of 0. Both are deliberate.</p>
+</blockquote>
+<hr />
+<h2 id="glass_halo-letting-the-blur-past-the-window"><code>glass_halo</code>: letting the blur past the window</h2>
+<p><code>glass_halo = 14</code> puts a blurred ring <em>outside</em> the window — the backdrop blur
+extends past the frame instead of stopping at it.</p>
+<p>The history is instructive, because the first two attempts both looked like
+config problems and were not.</p>
+<p><strong>pkgrel 181 — it only affected app-native-glass windows.</strong> The blur companion
+node was built only for a <em>translucent</em> view, and <code>transparency</code> defaults to
+<code>off</code>. So on a desktop with no <code>transparency</code> line in its config, the only window
+with a blur node at all was Firefox, and no value of <code>glass_halo</code> could give an
+ordinary app a ring.</p>
+<blockquote>
+<p><strong>If your config has no <code>transparency</code> line, most window-effect settings will
+appear to do nothing on most windows.</strong> Turn transparency on first.</p>
+</blockquote>
+<p><strong>pkgrel 182</strong> then widened the gate to <code>(translucent || halo &gt; 0)</code>, so
+server-decorated apps got the ring for the first time.</p>
+<p><strong>pkgrel 184 — the ring had a square top corner.</strong> The cause was the <em>per-buffer</em>
+construction. A decorated window is two stacked buffers, and their corner radii
+carry the <strong>seam rule</strong>: the titlebar rounds the top, the content rounds the
+bottom, and the join between them is straight. Growing those boxes outward
+inherits the seam — so the content buffer's ring covered the whole left edge with
+square top corners, and the titlebar contributed no ring at all. <strong>The seam rule
+is right <em>inside</em> the window and wrong outside it.</strong></p>
+<p><code>view_halo_update()</code> now owns it: <strong>one</strong> <code>wlr_scene_blur</code> node on <code>view-&gt;frame</code>,
+grown <code>glass_halo</code> px on every side, with <code>corner_radii_all(radius + halo)</code> and
+the window's own rounded rect cut out via <code>clipped_region</code> so it is a pure ring.
+Lowered under the shadow, with the same maximize/fullscreen suppression the
+shadow has.</p>
+<p>Two things fell out of moving it to the frame: the per-buffer path got its
+transparency mask back, and an opaque window no longer runs a full-window blur
+pass just to show a 14 px ring.</p>
+<blockquote>
+<p>The halo is drawn <strong>above</strong> the shadow, so it blurs the spread into a smooth
+ramp rather than compounding it. <code>glass_halo = 14</code> alone actually <em>brightens</em>
+the band (60 → 80.7) by covering the shadow; with <code>shadow_spread = 8</code> it lands
+back at 61.6, but smooth.</p>
+</blockquote>
+<hr />
+<h2 id="firefox-glass">Firefox glass</h2>
+<p><code>synui-firefox-glass</code> toggles it. Firefox is treated as <strong>app-native glass</strong>: it
+needs <code>browser.tabs.allow_transparent_browser</code> (FF 128+), which the helper sets.</p>
+<p>Two rules:</p>
+<ul>
+<li><strong><code>off</code> must revert the prefs.</strong> Leaving them set means Firefox stays
+  translucent with no glass behind it.</li>
+<li><strong>Page content is opaque by design.</strong> Only the chrome goes glass; a
+  transparent web page would be unreadable.</li>
+</ul>
+<h2 id="kde-blur">KDE blur</h2>
+<p>synui implements <code>org_kde_kwin_blur</code>, so KDE apps can go glass at all — but note
+that <strong>Dolphin never binds it</strong>. If you are testing KDE blur, confirm with
+<code>WAYLAND_DEBUG</code> that the client actually binds the interface before concluding
+anything about the compositor.</p>
+<hr />
+<h2 id="hdr-and-10-bit">HDR and 10-bit</h2>
+<p>The display panel tells an <strong>HDR</strong> monitor from a merely 10-bit one by reading
+the <strong>EDID</strong>, not by asking the plane. Every 10-bit plane used to be labelled
+"HDR-ready", which is wrong: plenty of 10-bit panels are not HDR at all.</p>
+<p>Real HDR10 output is <strong>blocked on scenefx</strong>, and scenefx is a fork of wlroots'
+scene graph — so the work is not "wait for wlroots", it is "port or patch the
+fork". <code>wp_color_management_v1</code> is exported as of the 0.20 port.</p>
+<p>Two things the night-light work established, which apply to anything touching
+output colour:</p>
+<ul>
+<li><strong>Night light goes on the output <em>state</em>.</strong> Setting it anywhere else is
+  ignored while window effects are on.</li>
+<li><strong>A NULL gamma LUT must be <em>committed</em>, or it never turns off.</strong> The witness is
+  <code>modetest</code>'s <code>GAMMA_LUT</code> property, not the compositor's own log.</li>
+</ul>
+<hr />
+<h2 id="verifying-an-effect-actually-changed-something">Verifying an effect actually changed something</h2>
+<p>Effects are easy to talk yourself into seeing. Two things make a comparison
+honest:</p>
+<ul>
+<li><strong>Change one knob and restart the compositor between arms.</strong> Reloading config
+  in place leaves other state moving, so a whole-image comparison tells you
+  nothing.</li>
+<li><strong>Compare a measurement, not an impression</strong> — a column of pixels walking
+  outward from the window border, rather than two screenshots side by side.</li>
+</ul>
+<p>The headless rig used for this, and its traps, are in
+<a href="/wiki/Development-Notes#testing-the-compositor-without-a-real-seat">Development Notes</a>.</p>
+<hr />
+<p>See also: <a href="/wiki/The-Desktop">The Desktop</a>, <a href="/wiki/synui">synui</a>,
+<a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Wallpapers"><span>Previous</span>Wallpapers</a><a class="next" href="/wiki/Cursor-Themes"><span>Next</span>Cursor Themes</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects" aria-current="page">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

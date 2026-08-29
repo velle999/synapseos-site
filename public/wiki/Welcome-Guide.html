@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The welcome guide — SynapseOS Wiki</title>
+<meta name="description" content="Super+Escape, and it comes up on your first login. Six pages on what this desktop is and which keys do it, with a rail down the left that doubles as a contents page and a line…">
+<link rel="canonical" href="https://soslinux.org/wiki/Welcome-Guide">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="The welcome guide — SynapseOS Wiki">
+<meta property="og:description" content="Super+Escape, and it comes up on your first login. Six pages on what this desktop is and which keys do it, with a rail down the left that doubles as a contents page and a line…">
+<meta property="og:url" content="https://soslinux.org/wiki/Welcome-Guide">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-key-column-is-live">The key column is live</a></li>
+<li><a href="#turning-it-off">Turning it off</a></li>
+<li><a href="#how-it-is-built-and-why-that-matters">How it is built, and why that matters</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>The welcome guide</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Welcome-Guide/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>Super</code>+<code>Escape</code>, and it comes up on your first login.</p>
+<p>Six pages on what this desktop is and which keys do it, with a rail down the
+left that doubles as a contents page and a line under every row saying what the
+thing actually is:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What is on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Welcome</strong></td>
+<td>The terminal, the command bar, the control panel — and how the guide is driven</td>
+</tr>
+<tr>
+<td><strong>The keys</strong></td>
+<td>The shortcut palette, the start menu, the application grid, the task manager, and the workspace and window keys</td>
+</tr>
+<tr>
+<td><strong>Make it yours</strong></td>
+<td>Appearance, wallpaper, display settings, desktop widgets, screen filters, screensaver</td>
+</tr>
+<tr>
+<td><strong>The AI</strong></td>
+<td>The command bar, the neural overlay, which model is loaded, and the backend — GPU, CPU or off</td>
+</tr>
+<tr>
+<td><strong>Everything else</strong></td>
+<td>Network, power, calculator, news, game mode, cat mode, lock screen</td>
+</tr>
+<tr>
+<td><strong>You're set</strong></td>
+<td>The shortcut palette, the control panel, About this system, and where the documentation lives</td>
+</tr>
+</tbody>
+</table></div>
+<p>Arrows move, <code>Left</code>/<code>Right</code> turn the page, <code>Enter</code> opens the selected row,
+<code>Space</code> ticks the checkbox, <code>Esc</code> closes. Clicking outside it closes it too, and
+so does the × in the corner — the guide is the first thing somebody meets, and
+"press Escape and hope you knew that" is not a way out for them.</p>
+<div class="hl"><pre><span></span><code>synui-welcome<span class="w">              </span><span class="c1"># toggle it — the default verb</span>
+synui-welcome<span class="w"> </span>show<span class="w">         </span><span class="c1"># …or on a named monitor: synui-welcome show DP-1</span>
+synui-welcome<span class="w"> </span>page<span class="w"> </span><span class="m">2</span><span class="w">       </span><span class="c1"># straight to the keys</span>
+synui-welcome<span class="w"> </span>hide
+</code></pre></div>
+
+<p>There is also a <strong>Welcome Guide</strong> entry in the applications menu. A panel
+reachable only by a chord is a panel nobody finds, and <code>Super</code>+<code>Escape</code> is not a
+discoverable key.</p>
+<h2 id="the-key-column-is-live">The key column is live</h2>
+<p>Every chord the guide shows is read out of the running compositor over
+<a href="/wiki/Commands"><code>synctl binds</code></a>, which reports <code>synui</code>'s own bind table with each
+combination already spelled the way the shortcut palette and the control panel
+spell it.</p>
+<p>That is not a detail. The guide it replaces carried a hand-typed chord per row,
+and it had been wrong more than once — the command bar has been on
+<code>Super</code>+<code>Space</code>, on <code>Super</code>+<code>=</code>, and back again, and each move left the column
+naming the key before it. Anyone who rebinds something in the <code>Super</code>+<code>/</code> palette
+was in the same position. Now nothing has to remember to update it.</p>
+<h2 id="turning-it-off">Turning it off</h2>
+<p>The <strong>Don't show again</strong> checkbox sits in the footer of every page — not only the
+last one, since anybody who dismisses the guide early would otherwise never find
+the switch that stops it coming back.</p>
+<p>It writes <code>welcome_at_startup</code>, which is also a
+<a href="/wiki/Configuration"><code>synuirc</code> key</a> and a row in the control panel:</p>
+<div class="hl"><pre><span></span><code>welcome_at_startup = off
+</code></pre></div>
+
+<p>The state file (<code>~/.config/synui/welcome.state</code>) overrides the <code>synuirc</code> line
+once you have used the checkbox; delete it to hand control back to the config.
+Note the sense — the checkbox is the opt-<strong>out</strong> and the config key is the
+opt-<strong>in</strong>, so the box is ticked when the setting is off.</p>
+<p><code>Super</code>+<code>Escape</code> opens the guide either way, so turning this off never strands
+it.</p>
+<h2 id="how-it-is-built-and-why-that-matters">How it is built, and why that matters</h2>
+<p>The guide is a <a href="https://quickshell.org/">quickshell</a> window in a <strong>process of its
+own</strong> rather than a panel the compositor draws. Three things follow from that,
+and the first is the reason:</p>
+<ul>
+<li><strong>Two bars ship.</strong> <code>bar_shell = synapse|antiquity</code> picks one (see
+  <a href="/wiki/The-Desktop">The Desktop</a>), and a guide living inside one of them would simply
+  not exist for anyone running the other. The panel it replaces was drawn by
+  <code>synui</code> itself, so every configuration had it.</li>
+<li><strong>It costs nothing while closed.</strong> Dismissing it ends the process. Nothing is
+  resident, and it does not reappear every time something restarts the bar.</li>
+<li><strong>It is themed without copying anything.</strong> It is a second entry point into the
+  bar's own QML tree, so it gets the palette, the picked UI font and the glass
+  namespace from the same files the bar reads.</li>
+</ul>
+<p>It also gets out of the way on its own: open a window while the guide is up and
+it closes. It is a full-screen surface, and the window underneath is what you
+actually asked for.</p>
+<hr />
+<p>See also: <a href="/wiki/Keybindings">Keybindings</a> · <a href="/wiki/Commands">Commands</a> ·
+<a href="/wiki/The-Desktop">The Desktop</a> · <a href="/wiki/Configuration">Configuration</a></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Installation"><span>Previous</span>Installation</a><a class="next" href="/wiki/Updating"><span>Next</span>Updating</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide" aria-current="page">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

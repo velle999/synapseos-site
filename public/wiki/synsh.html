@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>synsh — SynapseOS Wiki</title>
+<meta name="description" content="The AI-native shell. Type a command like any shell — or just say what you want, and it asks synapd. Start it with synsh, or make it your login shell with chsh -s /usr/bin/synsh…">
+<link rel="canonical" href="https://soslinux.org/wiki/synsh">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="synsh — SynapseOS Wiki">
+<meta property="og:description" content="The AI-native shell. Type a command like any shell — or just say what you want, and it asks synapd. Start it with synsh, or make it your login shell with chsh -s /usr/bin/synsh…">
+<meta property="og:url" content="https://soslinux.org/wiki/synsh">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#shell-features">Shell features</a></li>
+<li><a href="#colour-output">Colour output</a></li>
+<li><a href="#-synsh-has-two-incompatible-tokenizers">⚠️ synsh has two incompatible tokenizers</a></li>
+<li><a href="#terminal-setup">Terminal setup</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Components</p>
+      <h1>synsh</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synsh/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-18">2026-08-18</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The AI-native shell. Type a command like any shell — or just say what you want,
+and it asks <a href="/wiki/synapd"><code>synapd</code></a>. Start it with <code>synsh</code>, or make it your login
+shell with <code>chsh -s /usr/bin/synsh</code> — it is already in <code>/etc/shells</code>.</p>
+<div class="hl"><pre><span></span><code>⚡ AI online — type naturally or use shell commands
+</code></pre></div>
+
+<p>If the banner doesn't say <em>AI online</em>, <code>synapd</code> isn't reachable: check
+<code>systemctl status synapd</code> and that the model is in
+<code>/var/lib/synapd/models/synapse.gguf</code>.</p>
+<hr />
+<h2 id="shell-features">Shell features</h2>
+<p>Real GNU <strong>readline</strong> (line editing, history), aliases, built-ins that work
+outside the REPL, redirection and pipes for built-ins, and command lists —
+<code>;</code>, <code>&amp;&amp;</code>, <code>||</code>.</p>
+<p>Several of those are more recent than you'd expect, because they were quietly
+broken:</p>
+<ul>
+<li><strong>Aliases were never expanded at all</strong> until pkgrel 8.</li>
+<li><strong>readline was a phantom dependency</strong> — declared but never actually linked, so
+  you got no line editing. Genuinely enabled in pkgrel 7.</li>
+<li><strong>Built-ins didn't work outside the REPL</strong> and couldn't redirect or pipe.</li>
+</ul>
+<hr />
+<h2 id="colour-output">Colour output</h2>
+<p><code>synsh</code> used to emit colour <strong>unconditionally</strong>: <code>--no-color</code> was dead code, and
+the escape sequences <strong>leaked into pipes</strong>, corrupting anything that parsed its
+output. Fixed in pkgrel 6 (<code>9681fa6</code>).</p>
+<p>If you see escape codes in a pipeline, you are running something older than
+pkgrel 6.</p>
+<hr />
+<h2 id="-synsh-has-two-incompatible-tokenizers">⚠️ synsh has two incompatible tokenizers</h2>
+<p>This is the single most important thing to know before touching the parser. A
+change to quoting, splitting or expansion must be made in <strong>both</strong> or you get
+behaviour that differs between code paths — and the divergence is silent.</p>
+<hr />
+<h2 id="terminal-setup">Terminal setup</h2>
+<blockquote>
+<p>New in <strong>0.2.5</strong>. On <strong>0.2.4 and earlier</strong>, and on any system installed from
+one, the default terminal is <strong>foot</strong> — nothing rewrites a user's <code>synuirc</code> on
+upgrade, so an upgraded machine keeps whatever it already had.</p>
+</blockquote>
+<p>The default terminal is <strong>kitty</strong>. <strong>foot is kept as the rescue terminal</strong> and is
+still installed: it is 793 KiB against kitty's 65 MiB, and it renders on the CPU
+where kitty needs working OpenGL — which is what you want in a VM on <code>llvmpipe</code>,
+or when a GPU driver has just broken. It is second in every fallback chain, and
+systems installed before the switch still have it as their default.</p>
+<p>Change it with <code>terminal = &lt;name&gt;</code> in <code>~/.config/synui/synuirc</code>.</p>
+<blockquote>
+<p><strong>kitty's transparency needs <code>dynamic_background_opacity yes</code> set from its
+FIRST launch.</strong> kitty's own documentation is explicit that the option cannot be
+enabled by reloading the config, and that a <code>background_opacity</code> change on
+reload only works if dynamic opacity was already on when kitty started. A
+<code>kitty.conf</code> shipped without it leaves the transparency slider permanently
+inert for that install, and writing the setting afterwards does not repair it —
+kitty has to be restarted.</p>
+</blockquote>
+<p>Both terminals' configs are <strong>generated in more than one place</strong> (live ISO,
+installed user, packaged default); if you change one, change them all.</p>
+<p>A past failure worth recognising: foot <strong>silently refused its own config</strong> because
+<code>[cursor].color</code> had been removed upstream. The symptom was a terminal that came
+up with default colours and no explanation.</p>
+<p>See also: <a href="/wiki/synapd">synapd</a>, <a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/synguard-and-synapse_kmod"><span>Previous</span>synguard + kmod</a><a class="next" href="/wiki/Vibe"><span>Next</span>Vibe</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh" aria-current="page">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

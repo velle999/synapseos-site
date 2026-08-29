@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Cutting an ISO Release — SynapseOS Wiki</title>
+<meta name="description" content="The whole pipeline lives in archiso/. CI (.github/workflows/build.yml) only compile-checks — it does not build or publish ISOs. Releases are cut by hand.">
+<link rel="canonical" href="https://soslinux.org/wiki/Cutting-an-ISO-Release">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Cutting an ISO Release — SynapseOS Wiki">
+<meta property="og:description" content="The whole pipeline lives in archiso/. CI (.github/workflows/build.yml) only compile-checks — it does not build or publish ISOs. Releases are cut by hand.">
+<meta property="og:url" content="https://soslinux.org/wiki/Cutting-an-ISO-Release">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-steps">The steps</a></li>
+<li><a href="#signing">Signing</a></li>
+<li><a href="#--no-clean-is-safe-it-wasnt-always">--no-clean is safe (it wasn&#x27;t always)</a></li>
+<li class="sub"><a href="#the-collector-drift-and-why-it-is-now-deduped">The collector drift, and why it is now deduped</a></li>
+<li><a href="#testing-without-hardware">Testing without hardware</a></li>
+<li><a href="#release-history">Release history</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Hacking on it</p>
+      <h1>Cutting an ISO Release</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-29">2026-08-29</time>
+      </p>
+
+      <div class="wiki-body">
+<p>The whole pipeline lives in <code>archiso/</code>. CI (<code>.github/workflows/build.yml</code>) only
+<strong>compile-checks</strong> — it does not build or publish ISOs. Releases are cut by hand.</p>
+<hr />
+<h2 id="the-steps">The steps</h2>
+<p><strong>1. Pre-flight the tree.</strong> One script now answers what used to be five manual
+checks:</p>
+<div class="hl"><pre><span></span><code>tools/preflight.sh<span class="w">          </span><span class="c1"># working tree + index, against HEAD</span>
+tools/preflight.sh<span class="w"> </span>--staged<span class="w"> </span><span class="c1"># only what `git commit` would take</span>
+tools/preflight.sh<span class="w"> </span>--self-test<span class="w">   </span><span class="c1"># prove the checks can still fail</span>
+</code></pre></div>
+
+<p>It refuses a commit that cannot ship, and every finding is a fact about the repo
+rather than a style opinion:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>The bug it catches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>pkgrel</strong></td>
+<td>a source edit with no <code>pkgrel</code> bump. pacman compares <code>pkgver-pkgrel</code>, so nothing rebuilds and nothing installs, however different the file is — the edit is committed, pushed, applied, and absent</td>
+</tr>
+<tr>
+<td><strong>lists</strong></td>
+<td>a component in <code>KNOWN=</code> with no build rule, or in one of the six lists and not the others</td>
+</tr>
+<tr>
+<td><strong>iso</strong> / <strong>installer</strong></td>
+<td>a package built into the ISO's local repo but never installed onto the image, or on the image and delivered to no installed system</td>
+</tr>
+<tr>
+<td><strong>pkgver</strong></td>
+<td>a <code>pkgver</code> composed from another variable, which a scraper reads back literally and <code>vercmp</code> then ranks above every real version</td>
+</tr>
+<tr>
+<td><strong>order</strong></td>
+<td>a build order that does not respect an inter-component dependency — it only fails on a <em>fresh</em> host</td>
+</tr>
+</tbody>
+</table></div>
+<p>Run <code>--self-test</code> if a finding surprises you: a matcher that matches nothing
+prints <code>ok</code>, so a broken check and a clean tree look identical.</p>
+<p>Still worth an eye by hand: untracked <em>source</em> files, since <code>git commit -a</code> can
+push a tree that does not build.</p>
+<div class="hl"><pre><span></span><code>git<span class="w"> </span>status<span class="w"> </span>--short<span class="w"> </span>--untracked<span class="o">=</span>all<span class="w"> </span>--<span class="w"> </span>synui<span class="w"> </span>synapd<span class="w"> </span>synguard<span class="w"> </span>synsh<span class="w"> </span>synnet<span class="w"> </span>synapse_kmod
+</code></pre></div>
+
+<p><strong>2. Bump the version.</strong> <code>iso_version</code> in <code>archiso/profiledef.sh</code> is what the
+ISO's filename is built from — but the version is also written into the <strong>boot
+menu text</strong> in five more files, and nothing checks that they agree. Miss one and
+the image boots to a menu naming the previous release:</p>
+<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>archiso
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/0\.2\.9\.4/0.2.9.5/g&#39;</span><span class="w"> </span>profiledef.sh<span class="w"> </span>grub/grub.cfg<span class="w"> </span>grub/loopback.cfg<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>syslinux/archiso_head.cfg<span class="w"> </span>syslinux/archiso_pxe-linux.cfg<span class="w"> </span>syslinux/archiso_sys-linux.cfg
+grep<span class="w"> </span>-rn<span class="w"> </span><span class="s1">&#39;0\.2\.9\.4&#39;</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">&#39;*.cfg&#39;</span><span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;^./work/&#39;</span>
+</code></pre></div>
+
+<p>The <code>grep</code> should print nothing. (<code>work/</code> is the previous build's tree and is
+regenerated.)</p>
+<p>Do <strong>not</strong> touch <code>SYNAPSEOS_VERSION</code> in <code>build.sh</code>; see
+<a href="/wiki/Building-and-Packaging#the-version-model-read-this-before-you-bump-anything">the version model</a>.
+Bump the <code>pkgrel</code> of any component whose code changed.</p>
+<p><strong>3. Build</strong> (~20–30 min: compiles llama.cpp, downloads a ~4 GB GGUF, runs
+mkarchiso):</p>
+<div class="hl"><pre><span></span><code><span class="nv">SYNAPSE_SIGNING_KEY</span><span class="o">=</span>&lt;fingerprint&gt;<span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>./archiso/build.sh<span class="w"> </span>--no-clean<span class="w"> </span>--sign
+</code></pre></div>
+
+<p><strong><code>sudo -E</code>, not plain <code>sudo</code></strong> — the build needs root for mkarchiso, and
+without <code>-E</code> the environment does not survive into it, so <code>SYNAPSE_SIGNING_KEY</code>
+is unset and the signing step fails at the very end of a 30-minute build. The
+key's passphrase is prompted for there too, so this is not unattended.</p>
+<p>See <a href="/wiki/Cutting-an-ISO-Release#signing">Signing a release</a> below for the key
+itself. Building without <code>--sign</code> is fine for a test image; <code>publish-release.sh</code>
+warns rather than refuses.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(none)</em></td>
+<td><strong>CPU-only llama.cpp — this is the release default</strong></td>
+</tr>
+<tr>
+<td><code>--gpu=vulkan</code></td>
+<td>AMD/Intel; portable, safe to ship broadly (needs <code>glslc</code>)</td>
+</tr>
+<tr>
+<td><code>--gpu=cuda</code></td>
+<td>NVIDIA; <strong>will not start on a machine without the driver</strong></td>
+</tr>
+<tr>
+<td><code>--no-gpu</code></td>
+<td>Same as the default; kept for compatibility</td>
+</tr>
+<tr>
+<td><code>--with-model</code></td>
+<td>embed a ~4.1 GB gguf. <strong>Off by default since 0.2.8</strong> — a release ships no model</td>
+</tr>
+<tr>
+<td><code>--no-model</code></td>
+<td>the default; kept for compatibility, does nothing</td>
+</tr>
+<tr>
+<td><code>--llama-only</code></td>
+<td>build and stage llama.cpp, then stop — no packages, no ISO</td>
+</tr>
+<tr>
+<td><code>--no-clean</code></td>
+<td>reuse the previous llama.cpp build — <strong>safe</strong>, and saves the most time</td>
+</tr>
+</tbody>
+</table></div>
+<p>Output: <code>archiso/out/SynapseOS-&lt;ver&gt;-x86_64.iso</code>.</p>
+<blockquote>
+<p><strong>The ISO ships a CPU llama build on purpose, and the default flags give you
+that.</strong> A CUDA or ROCm build links the shipped <code>libggml</code> against the <em>build
+host's</em> driver stack, so <code>synapd</code> exits 127 on any machine without it —
+including every VM. <code>--gpu=vulkan</code> is the exception: it links only the Vulkan
+loader and runs on any AMD/Intel card.</p>
+<p>Regardless of the ISO's own backend, the build <strong>also</strong> packages
+<code>synapse-llama-cuda</code> into the repo if <code>nvcc</code> is on the host, and
+<code>synapse-llama-vulkan</code> if <code>glslc</code> is — so an installed machine can switch onto
+its GPU later. Those go in the repo, never into <code>packages.x86_64</code>.</p>
+</blockquote>
+<p><strong>4. Verify the right packages actually made it in.</strong> This is the step that
+catches a silently stale build:</p>
+<div class="hl"><pre><span></span><code>grep<span class="w"> </span><span class="s1">&#39;^synui &#39;</span><span class="w"> </span>archiso/work/iso/arch/pkglist.x86_64.txt<span class="w">   </span><span class="c1"># → synui 0.1.0-&lt;pkgrel&gt;</span>
+</code></pre></div>
+
+<p>If that pkgrel isn't the one you just bumped, <strong>the ISO is stale — do not ship
+it.</strong></p>
+<p><strong>5. Publish.</strong> GitHub caps release assets at 2 GiB, so the ISO is split:</p>
+<div class="hl"><pre><span></span><code>./archiso/publish-release.sh<span class="w"> </span>&lt;ver&gt;
+</code></pre></div>
+
+<p>This splits the image into 1900 MiB <code>.part*</code> files and runs <code>gh release create
+v&lt;ver&gt;</code>. Recent ISOs are ~6.5 GB → 4 parts.</p>
+<p>It uploads <code>&lt;iso&gt;.asc</code> alongside them when the build was signed, and <strong>verifies
+that signature before publishing</strong> — a signature that does not check out stops
+the release rather than shipping. With no <code>.asc</code> it prints a loud warning and
+publishes anyway, because a test build is a legitimate thing to release.</p>
+<h2 id="signing">Signing</h2>
+<p>Releases from <strong>0.2.9.5</strong> carry a detached GPG signature. The checksum published
+in the same release proves the download is not corrupt and nothing more:
+whatever could alter the ISO could alter the checksum beside it. The signature
+is the part that says who built it, and the <strong>public key is published on
+soslinux.org</strong> rather than in the release, so the two reach people by different
+roads.</p>
+<p>The signing key is a <strong>dedicated release key</strong> — not a personal identity, so it
+can be rotated or revoked without touching anything else, and a compromised
+build host costs the release key rather than your name.</p>
+<div class="hl"><pre><span></span><code>gpg<span class="w"> </span>--quick-generate-key<span class="w"> </span><span class="s2">&quot;SynapseOS Release Signing &lt;releases@soslinux.org&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ed25519<span class="w"> </span>sign<span class="w"> </span>3y
+gpg<span class="w"> </span>--list-secret-keys<span class="w"> </span>--keyid-format<span class="o">=</span>long<span class="w">          </span><span class="c1"># the fingerprint</span>
+gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w"> </span>&lt;fingerprint&gt;<span class="w"> </span>&gt;<span class="w"> </span>synapseos-release-key.asc
+</code></pre></div>
+
+<p>Give it a passphrase; keep the revocation certificate gpg writes to
+<code>~/.gnupg/openpgp-revocs.d/</code> somewhere that is not the build machine. The
+exported public half belongs in the website repo as
+<code>public/synapseos-release-key.asc</code>, with its fingerprint on the download page.</p>
+<p><code>build.sh</code> signs as the <strong>invoking</strong> user rather than as root — the build runs
+under sudo and root's keyring holds no release key — and names the key
+explicitly, because <code>gpg --detach-sign</code> with no <code>-u</code> signs with whatever secret
+key comes first.</p>
+<hr />
+<h2 id="--no-clean-is-safe-it-wasnt-always"><code>--no-clean</code> is safe (it wasn't always)</h2>
+<p>Two stale-artifact bugs used to make builds silently "succeed" on old output.
+Both are fixed (<code>3b6b747</code>), but they're worth knowing because they're the shape
+of failure to expect here:</p>
+<ol>
+<li>
+<p><strong><code>--no-clean</code> used to preserve mkarchiso's <code>work/</code> too</strong>, not just the
+   expensive <code>build/</code> (llama.cpp). mkarchiso's per-stage stamp files then made it
+   skip straight to "Done!" in about two minutes — <strong>reusing the previous ISO and
+   its old pacstrapped packages</strong>, including an unbumped synui. A false-positive
+   exit 0. Now <code>build.sh</code> <strong>always</strong> wipes <code>work/</code> and gates only <code>build/</code> on
+   <code>--clean</code>.</p>
+</li>
+<li>
+<p><strong>Git-sourced packages left a stale <code>src/&lt;pkg&gt;</code></strong> that broke the next build.
+   See <a href="/wiki/Building-and-Packaging#the-src-collision-hazard">the src collision hazard</a>.</p>
+</li>
+</ol>
+<p>Two earlier ones (<code>ec361d2</code>, <code>bf5d733</code>): <code>create_source_tarball</code> omitted <code>data/</code>
+so synui's <code>install_data(data/wallpaper.png)</code> failed; and <code>build.sh</code> chowned the
+ISO <em>files</em> but not the <code>out/</code> <em>directory</em> (mkarchiso creates it root-owned), so
+<code>publish-release.sh</code> — which runs as your user — couldn't write the split parts.</p>
+<h3 id="the-collector-drift-and-why-it-is-now-deduped">The collector drift, and why it is now deduped</h3>
+<p><code>create_source_tarball</code> existed in <strong>two</strong> places — <code>build-all.sh</code> and
+<code>archiso/build.sh</code> — and every single fix to it landed in one and not the other.
+<strong>Four times out of four.</strong> The symptom was always the same shape: a file missing
+from the tarball, a build that fails later and somewhere else, and a fix that
+"was already applied".</p>
+<p>Both collectors now <strong>delegate to the component's own <code>&lt;pkg&gt;/mktarball.sh</code></strong> when
+one exists (<code>8629c32</code>), and <code>build.sh</code> treats a failing <code>mktarball.sh</code> as fatal
+rather than falling through to a stale tarball. When you add a package that needs
+particular files, write it a <code>mktarball.sh</code> — do not teach the two collectors
+about it.</p>
+<hr />
+<h2 id="testing-without-hardware">Testing without hardware</h2>
+<div class="hl"><pre><span></span><code><span class="nv">QEMU_RAM</span><span class="o">=</span>8G<span class="w"> </span>./archiso/build_scripts/qemu-test.sh<span class="w">   </span><span class="c1"># auto-detects the newest ISO</span>
+</code></pre></div>
+
+<p>Uses KVM when available, boots UEFI via OVMF (falling back to BIOS), and attaches
+a persistent 20 GB test disk. Give it <strong>8 GB+ of RAM</strong> when the model is embedded.
+Kernel and boot output are mirrored to the serial console — <em>View → serial0</em> in
+the QEMU window.</p>
+<p>The default CPU build is already the right one for QEMU — and for release.</p>
+<hr />
+<h2 id="release-history">Release history</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(unreleased)</em></td>
+<td>—</td>
+<td>wlroots 0.20 / scenefx 0.5 port, glass halo + <code>shadow_spread</code> + CSD clipping, HDR-from-EDID, desktop icon persistence, <strong>event sounds</strong>, the widget manager. Effects <strong>off</strong> by default</td>
+</tr>
+<tr>
+<td><strong>0.1.9</strong></td>
+<td>2026-07-24</td>
+<td>The desktop release: <strong>quickshell bar replaces waybar</strong>, start button and menu move into it, desktop widgets, <strong>cursor theme manager</strong>, six riced themes, LUKS2 full-disk encryption + <code>syn-crypt</code>, per-app window geometry</td>
+</tr>
+<tr>
+<td>0.1.8</td>
+<td>2026-07-19</td>
+<td>AMD/Vulkan + glass. Portable Vulkan llama.cpp backend, dual-boot install, scenefx glass migration, theme manager</td>
+</tr>
+<tr>
+<td>0.1.7</td>
+<td>2026-07-18</td>
+<td>Greeter, clock/calendar panel, Software Manager, Samsung M2020W driver</td>
+</tr>
+<tr>
+<td>0.1.6</td>
+<td>2026-07-17</td>
+<td>Native lock screen, night light, clipboard history, screen recording, laptop support, Bluetooth, CUPS, Alt+Tab MRU</td>
+</tr>
+<tr>
+<td>0.1.5</td>
+<td>2026-07-13</td>
+<td>Titlebars with min/max/close, drag-to-edge snapping, window animations, the <code>synctl</code> control socket, virtual desktops</td>
+</tr>
+<tr>
+<td><strong>0.1.4</strong></td>
+<td>2026-07-12</td>
+<td>Task manager, control panel, tray, game mode, worm/keylogger detection, Secure Boot enroll fix</td>
+</tr>
+<tr>
+<td>0.1.3</td>
+<td>2026-07-11</td>
+<td>synui pkgrel 59 — control panel (<code>Super</code>+<code>C</code>), Super-tap start menu, waybar tray. 6.5 GB / 4 parts</td>
+</tr>
+<tr>
+<td>0.1.2</td>
+<td>2026-07-10</td>
+<td>synui pkgrel 42 — lock screen (<code>Super</code>+<code>L</code>). 5.7 GB / 4 parts</td>
+</tr>
+<tr>
+<td>0.1.1</td>
+<td>2026-07-08</td>
+<td>First release with the wallpaper selector + dock. 5.5 GB / 3 parts</td>
+</tr>
+<tr>
+<td>0.1.0</td>
+<td>—</td>
+<td>Initial</td>
+</tr>
+</tbody>
+</table></div>
+<p>See also: <a href="/wiki/Building-and-Packaging">Building and Packaging</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Building-and-Packaging"><span>Previous</span>Building and Packaging</a><a class="next" href="/wiki/Development-Notes"><span>Next</span>Development Notes</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release" aria-current="page">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Editor — SynapseOS Wiki</title>
+<meta name="description" content="syn-edit is SynapseOS&#x27;s text editor. It is one engine behind three front ends — a terminal editor, a graphical window, and a scripting mode with no terminal at all — so an edit…">
+<link rel="canonical" href="https://soslinux.org/wiki/Editor">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Editor — SynapseOS Wiki">
+<meta property="og:description" content="syn-edit is SynapseOS&#x27;s text editor. It is one engine behind three front ends — a terminal editor, a graphical window, and a scripting mode with no terminal at all — so an edit…">
+<meta property="og:url" content="https://soslinux.org/wiki/Editor">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-terminal-editor-is-modal">The terminal editor is modal</a></li>
+<li><a href="#syntax-highlighting">Syntax highlighting</a></li>
+<li><a href="#editing-without-a-terminal">Editing without a terminal</a></li>
+<li><a href="#patterns">Patterns</a></li>
+<li><a href="#in-the-window">In the window</a></li>
+<li class="sub"><a href="#the-document-list">The document list</a></li>
+<li class="sub"><a href="#the-rest-of-it">The rest of it</a></li>
+<li><a href="#settings">Settings</a></li>
+<li><a href="#for-front-ends">For front-ends</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Editor</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Editor/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>syn-edit</code> is SynapseOS's text editor. It is <strong>one engine</strong> behind three front
+ends — a terminal editor, a graphical window, and a scripting mode with no
+terminal at all — so an edit means the same thing whichever one you are using.</p>
+<p>The engine is <strong>modal</strong>, and so is the terminal editor. <strong>The window is not</strong>:
+it stays in insert and takes the keys every other program on the desktop takes.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Front-end</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminal editor</td>
+<td><code>syn-edit file.txt</code> (the default), or <code>syn-edit tui file.txt</code></td>
+</tr>
+<tr>
+<td>The window</td>
+<td><strong>Editor</strong> in the start menu, or <code>syn-edit gui file.txt</code></td>
+</tr>
+<tr>
+<td>No terminal at all</td>
+<td><code>syn-edit run -k KEYS file</code>, <code>syn-edit ex -c CMD file</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>It depends on nothing but libc.</p>
+<hr />
+<h2 id="the-terminal-editor-is-modal">The terminal editor is modal</h2>
+<p>Press <strong><code>i</code></strong> to start typing, <strong><code>Escape</code></strong> to stop, <strong><code>:w</code></strong> to write and
+<strong><code>:q</code></strong> to quit — vim's arrangement, because it is the one a text editor on a
+Unix system is expected to have and the one the scripting mode needs in order to
+be a scripting mode at all.</p>
+<p>If you have never used a modal editor: the keys do different things depending on
+which mode you are in. In <em>normal</em> mode <code>d</code> deletes and <code>i</code> starts inserting; in
+<em>insert</em> mode they type a <code>d</code> and an <code>i</code>. <code>Escape</code> always takes you back to
+normal mode, and <code>:q!</code> always leaves without saving.</p>
+<p>This is the terminal editor and the scripting mode. The window works the other
+way round — see <a href="#in-the-window">In the window</a>.</p>
+<h2 id="syntax-highlighting">Syntax highlighting</h2>
+<p>The language is guessed from the file, and <code>--lang NAME</code> forces it.</p>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>langs<span class="w">                    </span><span class="c1"># every language that is highlighted</span>
+syn-edit<span class="w"> </span>highlight<span class="w"> </span>main.c<span class="w">         </span><span class="c1"># the spans it found, without opening anything</span>
+</code></pre></div>
+
+<h2 id="editing-without-a-terminal">Editing without a terminal</h2>
+<p>This is the part worth knowing about even if you use another editor. <code>run</code>
+applies a key sequence to a file and prints the result; <code>ex</code> does the same with
+ex commands only. Nothing is written unless you ask with <code>-w</code>.</p>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;ggdG&#39;</span><span class="w"> </span>notes.md<span class="w">              </span><span class="c1"># delete every line, print the result</span>
+syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;ciwfoo&lt;Esc&gt;&#39;</span><span class="w"> </span>file.c<span class="w">         </span><span class="c1"># change a word</span>
+syn-edit<span class="w"> </span>ex<span class="w">  </span>-c<span class="w"> </span><span class="s1">&#39;%s/foo/bar/g&#39;</span><span class="w"> </span>-w<span class="w"> </span>*.c<span class="w">        </span><span class="c1"># substitute, and write it back</span>
+syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;gg&#39;</span><span class="w"> </span>--status<span class="w"> </span>file.c<span class="w">         </span><span class="c1"># cursor, mode and message as records</span>
+</code></pre></div>
+
+<p>Keys use vim notation, with <code>&lt;Esc&gt;</code>, <code>&lt;CR&gt;</code>, <code>&lt;Tab&gt;</code>, <code>&lt;BS&gt;</code>, <code>&lt;C-r&gt;</code> and the
+arrow keys spelled inside angle brackets; a literal <code>&lt;</code> is <code>&lt;lt&gt;</code>.</p>
+<p><strong>This is how the editor's own test suite drives it</strong>, which is the reason it
+exists and the reason to trust it: the keys the window sends and the keys a
+script sends go through one engine, so they cannot come to mean different
+things.</p>
+<h2 id="patterns">Patterns</h2>
+<p>Patterns are <strong>POSIX basic</strong> regular expressions — the closest thing in libc to
+vim's default. <code>\( \)</code> group, <code>\|</code> alternates, <code>\+</code> and <code>\?</code> repeat, and <code>\&lt; \&gt;</code>
+anchor to word boundaries. A pattern starting with <code>\v</code> is read as an <em>extended</em>
+regular expression instead, which is what vim's very-magic mode is.</p>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%s/\&lt;log\&gt;/trace/g&#39;</span><span class="w"> </span>-w<span class="w"> </span>app.c<span class="w">      </span><span class="c1"># whole word</span>
+syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%s/\v(foo|bar)/baz/g&#39;</span><span class="w">  </span>-w<span class="w"> </span>app.c<span class="w">   </span><span class="c1"># very-magic alternation</span>
+</code></pre></div>
+
+<h2 id="in-the-window">In the window</h2>
+<p><strong>The window is not modal.</strong> It is always ready to type, and the keys are the
+ones every other program on the desktop uses:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl</code>+<code>C</code> / <code>Ctrl</code>+<code>X</code> / <code>Ctrl</code>+<code>V</code></td>
+<td>Copy, cut, paste. The desktop clipboard, and the whole line when nothing is selected</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>Z</code> / <code>Ctrl</code>+<code>Shift</code>+<code>Z</code></td>
+<td>Undo, redo. <code>Ctrl</code>+<code>Y</code> redoes as well</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>A</code></td>
+<td>Select all</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>F</code> / <code>Ctrl</code>+<code>R</code></td>
+<td>Find, replace</td>
+</tr>
+<tr>
+<td><code>Ctrl</code>+<code>S</code> / <code>Ctrl</code>+<code>O</code> / <code>Ctrl</code>+<code>N</code></td>
+<td>Save, open, new</td>
+</tr>
+<tr>
+<td><code>Shift</code>+arrows</td>
+<td>Extend the selection</td>
+</tr>
+<tr>
+<td>Click and drag, double click</td>
+<td>Select, and select a word</td>
+</tr>
+<tr>
+<td><code>Escape</code></td>
+<td>Drop the selection</td>
+</tr>
+<tr>
+<td><code>Insert</code></td>
+<td>Overwrite instead of inserting</td>
+</tr>
+</tbody>
+</table></div>
+<p>Typing with something selected replaces it, and <strong>Backspace at the start of a
+line joins it onto the one above</strong>. Every one of those is the engine's own
+operation with the engine's own undo — the window holds no text, no selection
+and no undo stack of its own, which is why an edit made with the mouse and an
+edit made by a script cannot come to mean different things.</p>
+<h3 id="the-document-list">The document list</h3>
+<p>Down the left, full height, with a header of its own. Every open document is a
+row carrying its <strong>name</strong> and the <strong>folder</strong> it is in — which is what tells
+<code>config.json</code> in one project from <code>config.json</code> in another — with the current
+one marked by an accent bar, an amber dot for unsaved changes, and an <code>✕</code> on
+hover to close it.</p>
+<p>Closing something with unsaved changes <strong>asks</strong> rather than refusing: <em>save and
+close</em>, <em>discard</em>, or <em>cancel</em>. If the write then fails — a read-only file, a
+full disk — it says so and keeps the document open, rather than closing it or
+reporting the wrong problem.</p>
+<p>Drag the panel's right edge to size it. The width is written down, so a panel
+sized once stays sized; the <strong>Documents</strong> button in the toolbar hides it
+altogether. Closing the last document is not offered — that is what the
+window's own close button is for.</p>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>treewidth<span class="w"> </span><span class="m">300</span><span class="w">     </span><span class="c1"># the same width, typed</span>
+syn-edit<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>tree<span class="w"> </span><span class="nb">false</span><span class="w">        </span><span class="c1"># start with the panel hidden</span>
+</code></pre></div>
+
+<blockquote>
+<p>A setting changed with a <strong>button or a drag</strong> in the window is written down.
+A <code>:set</code> <strong>typed</strong> at the command line is not — that is vim's, and vim's
+answer is "this session".</p>
+</blockquote>
+<h3 id="the-rest-of-it">The rest of it</h3>
+<p>A scrollbar you can drag, a right-click menu, tabs above the text, and a
+task-list panel for <code>- [ ]</code> lines. Scrolling moves the caret first and the
+view second — an editor whose view can drift away from its cursor is an editor
+that types in the wrong place.</p>
+<blockquote>
+<p>Vim keys are the <em>terminal</em> editor's. The window does not take them: <code>Ctrl</code>+<code>V</code>
+pastes here rather than starting a block selection, and <code>Escape</code> drops the
+selection rather than leaving insert.</p>
+</blockquote>
+<h2 id="settings">Settings</h2>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>config<span class="w"> </span>list<span class="w">              </span><span class="c1"># every setting and its value</span>
+syn-edit<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>tabwidth<span class="w"> </span><span class="m">4</span>
+syn-edit<span class="w"> </span>config<span class="w"> </span>reset
+syn-edit<span class="w"> </span>about<span class="w">                    </span><span class="c1"># version, licence, and what works on this machine</span>
+</code></pre></div>
+
+<h2 id="for-front-ends">For front-ends</h2>
+<p><code>serve</code> runs the engine on stdin/stdout — it is what the window drives — and
+<code>--rec</code> prints the machine-readable records a front-end parses.</p>
+<blockquote>
+<p><strong>Every field of <code>--rec</code> output is percent-encoded</strong>, including the ones that
+look like plain words. A line of source code can contain a tab and a file name
+can contain any byte at all. Decode for display only.</p>
+</blockquote>
+<p>Exit status: <code>0</code> success, <code>1</code> failure, <code>2</code> a usage problem.</p>
+<h2 id="see-also">See also</h2>
+<p><a href="/wiki/Commands">Commands</a> · <a href="/wiki/Files">Files</a> · <a href="/wiki/Settings">Settings</a> ·
+<a href="/wiki/Development-Notes">Development Notes</a></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Settings"><span>Previous</span>Settings</a><a class="next" href="/wiki/Studio"><span>Next</span>Studio</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor" aria-current="page">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

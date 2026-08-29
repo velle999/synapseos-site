@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Settings — SynapseOS Wiki</title>
+<meta name="description" content="syn-settings is SynapseOS&#x27;s settings app — the system half of the desktop&#x27;s configuration. It is one C binary plus a quickshell window, in the same shape as synfiles and…">
+<link rel="canonical" href="https://soslinux.org/wiki/Settings">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Settings — SynapseOS Wiki">
+<meta property="og:description" content="syn-settings is SynapseOS&#x27;s settings app — the system half of the desktop&#x27;s configuration. It is one C binary plus a quickshell window, in the same shape as synfiles and…">
+<meta property="og:url" content="https://soslinux.org/wiki/Settings">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-panes">The panes</a></li>
+<li><a href="#two-rules-that-shape-it">Two rules that shape it</a></li>
+<li><a href="#kernels">Kernels</a></li>
+<li><a href="#from-a-script">From a script</a></li>
+<li><a href="#naming-the-machine">Naming the machine</a></li>
+<li><a href="#where-the-settings-actually-live">Where the settings actually live</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Settings</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>syn-settings</code> is SynapseOS's settings app — the <strong>system</strong> half of the
+desktop's configuration. It is one C binary plus a
+<a href="https://quickshell.org/">quickshell</a> window, in the same shape as
+<a href="/wiki/Files"><code>synfiles</code></a> and <a href="/wiki/Software"><code>synpkg</code></a>: the binary does the work and
+prints records, the window only renders them.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Front-end</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The window</td>
+<td><strong>Settings</strong> in the start menu, or <code>syn-settings gui [pane]</code></td>
+</tr>
+<tr>
+<td>Command line</td>
+<td><code>syn-settings --rec &lt;pane&gt;</code> to read, <code>syn-settings set …</code> to change</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>Settings is not the control panel.</strong> <code>Super</code>+<code>C</code> is the <em>compositor's</em>
+settings — borders, gaps, animations, blur, focus behaviour, every keybinding
+— changed live while you watch a window change. This is the other half: the
+things that belong to the system rather than to <code>synui</code>, and the ones that
+talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, <code>rfkill</code> and <code>nmcli</code>.</p>
+</blockquote>
+<hr />
+<h2 id="the-panes">The panes</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Pane</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Display</strong></td>
+<td>Connectors, and what each can do: the kernel's view of a monitor beside what the compositor is actually driving. Set a mode, re-probe a connector the kernel has lost</td>
+</tr>
+<tr>
+<td><strong>Region</strong></td>
+<td>Keyboard layout and locale — the console keymap and the desktop's XKB layout are separate rows, because they are separate settings</td>
+</tr>
+<tr>
+<td><strong>Date &amp; Time</strong></td>
+<td>Zone, network time, and how the desktop <em>writes</em> the time: 12- or 24-hour, seconds in the bar clock, and the date order</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Interfaces, radios, whether the firewall is up, and which container bridges it trusts; bring an interface up or down</td>
+</tr>
+<tr>
+<td><strong>Bluetooth</strong></td>
+<td>Adapter, radio blocks, and what is paired</td>
+</tr>
+<tr>
+<td><strong>Power</strong></td>
+<td>Sleep-critical units, sleep hooks, and the last suspend — what would stop this machine sleeping, before you find out by closing the lid</td>
+</tr>
+<tr>
+<td><strong>Kernel</strong></td>
+<td>Every kernel on offer, which are installed, which one runs, and which one <em>boots</em>. See <a href="#kernels">Kernels</a></td>
+</tr>
+<tr>
+<td><strong>Apps</strong></td>
+<td>The default application for each role — and <strong>which file decided it</strong></td>
+</tr>
+<tr>
+<td><strong>System</strong></td>
+<td>The machine's name, and where configuration actually lives</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="two-rules-that-shape-it">Two rules that shape it</h2>
+<p><strong>It reports what the system reports.</strong> Every pane reads the real source when it
+opens — <code>localectl</code>, <code>timedatectl</code>, <code>wlr-randr</code>, <code>rfkill</code>, <code>bootctl</code>,
+<code>/etc/fstab</code> — rather than a cache of its own. A settings app that keeps its own
+copy is confidently wrong about a machine that changed under it, which is the
+single most annoying thing a settings app can be.</p>
+<p><strong>Every row says which file decided it.</strong> A default application you picked and
+one that came from a distribution fallback read identically everywhere else on a
+Linux desktop. Here the Apps pane names the file, so "why does this open in
+<em>that</em>" is a question with an answer on screen.</p>
+<h2 id="kernels">Kernels</h2>
+<p>The Kernel pane installs and removes kernels (through <a href="/wiki/Software"><code>synpkg</code></a>) and
+switches which one boots, on <strong>all three</strong> bootloaders SynapseOS can install:
+limine, systemd-boot and GRUB.</p>
+<p>It distinguishes three states that look identical in a package list:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>installed</strong></td>
+<td>The package is on the disk</td>
+</tr>
+<tr>
+<td><strong>bootable</strong></td>
+<td>A boot entry exists <em>and</em> an initramfs was actually built for it</td>
+</tr>
+<tr>
+<td><strong>running</strong></td>
+<td>It is the kernel you are using right now</td>
+</tr>
+</tbody>
+</table></div>
+<p>Installed is not bootable. A kernel package that never had an initramfs
+generated, or that no boot entry names, is a kernel you cannot select at the
+boot menu — and a package list cannot tell you that.</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>kernel<span class="w">                       </span><span class="c1"># what is installed, bootable, running</span>
+syn-settings<span class="w"> </span>pkg<span class="w"> </span>install<span class="w"> </span>linux-lts<span class="w">              </span><span class="c1"># add one</span>
+syn-settings<span class="w"> </span>boot<span class="w"> </span>linux-lts<span class="w"> </span>--confirm<span class="w">           </span><span class="c1"># make it BOOTABLE</span>
+syn-settings<span class="w"> </span>default<span class="w"> </span>linux-lts<span class="w"> </span>--confirm<span class="w">        </span><span class="c1"># make it the one that boots</span>
+</code></pre></div>
+
+<p><code>boot</code> and <code>default</code> refuse to do anything without <code>--confirm</code>, and <code>boot</code> needs
+root outright — it goes through <code>pkexec</code>, so it asks for admin authentication.</p>
+<blockquote>
+<p><strong>Changing the boot kernel is the one setting here that can stop a machine
+starting.</strong> Keep a kernel you know boots installed and bootable, and change
+the default only from a system you can get back into.</p>
+</blockquote>
+<h2 id="from-a-script">From a script</h2>
+<p>Everything the window does has a command-line half. <code>--rec</code> prints TSV — a
+header line, then rows — which is meant to be piped:</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>region<span class="w"> </span><span class="p">|</span><span class="w"> </span>column<span class="w"> </span>-t<span class="w"> </span>-s<span class="s1">$&#39;\t&#39;</span>
+syn-settings<span class="w"> </span>--rec<span class="w"> </span>apps<span class="w">                  </span><span class="c1"># each role, its app, and which file chose it</span>
+syn-settings<span class="w"> </span>choices<span class="w"> </span>date-format<span class="w">         </span><span class="c1"># what a setting can be set TO, with examples</span>
+syn-settings<span class="w"> </span>apps<span class="w"> </span>browser<span class="w">                </span><span class="c1"># every application that could take a role</span>
+</code></pre></div>
+
+<p>Writing:</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>xkb<span class="w"> </span>us<span class="w"> </span>intl<span class="w">             </span><span class="c1"># desktop keyboard layout</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>keymap<span class="w"> </span>uk<span class="w">               </span><span class="c1"># console keymap — a different setting</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>timezone<span class="w"> </span>Europe/London
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>ntp<span class="w"> </span>on
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>time-format<span class="w"> </span><span class="m">24</span><span class="w">          </span><span class="c1"># how the desktop writes the time</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>hostname<span class="w"> </span>loft<span class="w">           </span><span class="c1"># the machine&#39;s name (see below)</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>app<span class="w"> </span>browser<span class="w"> </span>firefox<span class="w">     </span><span class="c1"># a .desktop name; a command for `terminal`</span>
+syn-settings<span class="w"> </span>unit<span class="w"> </span>restart<span class="w"> </span>synapd<span class="w">         </span><span class="c1"># enable|disable|start|stop|restart</span>
+syn-settings<span class="w"> </span>mode<span class="w"> </span>DP-1<span class="w"> </span>1920x1080@60<span class="w">      </span><span class="c1"># via wlr-randr</span>
+</code></pre></div>
+
+<p><code>-n</code> / <code>--dry-run</code> prints what would be run and changes nothing. Exit status is
+<code>0</code> success, <code>1</code> failure, <code>2</code> refused (a bad argument) — so a script can tell
+"it did not work" from "you asked for something that is not a thing".</p>
+<p>Most writes are performed by a systemd tool that does its own polkit check;
+the binary is not setuid and ships no polkit policy of its own.</p>
+<h2 id="naming-the-machine">Naming the machine</h2>
+<p>Every SynapseOS install answers to <code>synapse</code>. Put two of them on one network and
+Avahi renames one <code>synapse-2.local</code> — with no say in which, and no promise the
+suffix survives a reboot, so the <code>.local</code> address stops being something anybody
+can rely on. Renaming used to be a <code>hostnamectl</code> one-liner, which is to say it
+was not in the settings application at all.</p>
+<p>The identity row on the <strong>System</strong> pane does it, and so does the command line:</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>hostname<span class="w"> </span>loft
+</code></pre></div>
+
+<p>The write goes through <code>hostnamectl</code>, which does its <strong>own</strong> polkit check — the
+same design every writing row here follows, so this binary stays not-setuid with
+no policy of its own. The name is validated here first, and more narrowly than
+most values (letters, digits, hyphen and dot; no leading or trailing punctuation;
+63 characters), because a refusal here can say what was wrong with what you typed
+where systemd can only say <code>hostnamectl exited 1</code>.</p>
+<h2 id="where-the-settings-actually-live">Where the settings actually live</h2>
+<p>The <strong>System</strong> pane answers this directly, and it is worth knowing the shape:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/etc/synui/synuirc</code></td>
+<td>The system-wide compositor defaults</td>
+</tr>
+<tr>
+<td><code>~/.config/synui/synuirc</code></td>
+<td>Your compositor config; overrides the above</td>
+</tr>
+<tr>
+<td><code>~/.config/synui/*.state</code></td>
+<td>What a panel changed live — theme, font, dock, filters. <strong>These override <code>synuirc</code></strong>, by design</td>
+</tr>
+<tr>
+<td><code>localectl</code> / <code>timedatectl</code></td>
+<td>Region and time — systemd's own state, not a SynapseOS file</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <code>.state</code> files winning over <code>synuirc</code> surprises people once: a value you
+edited in <code>synuirc</code> and a value you changed in a panel are not the same setting
+in the same place, and the panel's copy is the newer statement of intent. Delete
+the <code>.state</code> file to hand control back to <code>synuirc</code>.</p>
+<h2 id="see-also">See also</h2>
+<p><a href="/wiki/Commands">Commands</a> · <a href="/wiki/The-Desktop">The Desktop</a> · <a href="/wiki/Software">Software</a> ·
+<a href="/wiki/Keybindings">Keybindings</a> · <a href="/wiki/Troubleshooting">Troubleshooting</a></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Files"><span>Previous</span>Files</a><a class="next" href="/wiki/Editor"><span>Next</span>Editor</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings" aria-current="page">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

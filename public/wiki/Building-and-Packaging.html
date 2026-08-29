@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Building and Packaging — SynapseOS Wiki</title>
+<meta name="description" content="Every component lives in its own directory with its own PKGBUILD. There are two build paths: the inner loop (fast, for development) and the ISO pipeline (slow, for releases).">
+<link rel="canonical" href="https://soslinux.org/wiki/Building-and-Packaging">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Building and Packaging — SynapseOS Wiki">
+<meta property="og:description" content="Every component lives in its own directory with its own PKGBUILD. There are two build paths: the inner loop (fast, for development) and the ISO pipeline (slow, for releases).">
+<meta property="og:url" content="https://soslinux.org/wiki/Building-and-Packaging">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-version-model-read-this-before-you-bump-anything">The version model (read this before you bump anything)</a></li>
+<li><a href="#the-traps">The traps</a></li>
+<li class="sub"><a href="#always-regenerate-the-source-tarball">Always regenerate the source tarball</a></li>
+<li class="sub"><a href="#the-src-collision-hazard">The src/ collision hazard</a></li>
+<li class="sub"><a href="#check-for-untracked-source-files-before-a-release">Check for untracked source files before a release</a></li>
+<li class="sub"><a href="#two-copies-of-everything">Two copies of everything</a></li>
+<li><a href="#package-builds-run-as-synbuild">Package builds run as synbuild</a></li>
+<li><a href="#llamacpp">llama.cpp</a></li>
+<li><a href="#shared-git-index-hazard">Shared git index hazard</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Hacking on it</p>
+      <h1>Building and Packaging</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Building-and-Packaging/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-13">2026-08-13</time>
+      </p>
+
+      <div class="wiki-body">
+<p>Every component lives in its own directory with its own <code>PKGBUILD</code>. There are two
+build paths: the <strong>inner loop</strong> (fast, for development) and the <strong>ISO pipeline</strong>
+(slow, for releases).</p>
+<div class="hl"><pre><span></span><code>./build-all.sh<span class="w">                     </span><span class="c1"># inner loop: every component</span>
+./build-all.sh<span class="w"> </span>synui<span class="w">               </span><span class="c1"># or just one — the usual case</span>
+sudo<span class="w"> </span>./archiso/build.sh<span class="w">            </span><span class="c1"># full ISO pipeline (see Cutting an ISO Release)</span>
+</code></pre></div>
+
+<p><strong>Prerequisites:</strong> an Arch host with <code>archiso</code>, <code>base-devel</code>, <code>meson</code>, <code>ninja</code>,
+<code>wlroots0.20</code>, <code>scenefx0.5</code>, <code>quickshell</code>, <code>qemu</code>, <code>ovmf</code>.</p>
+<p><strong>Budget ~20 GB of free disk</strong>, or ~32 GB with <code>--with-model</code>. Roughly where it
+goes:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>archiso/build/</code> — llama.cpp plus one tree per backend</td>
+<td>~3.1 GB</td>
+</tr>
+<tr>
+<td><code>archiso/work/</code> — mkarchiso's staging tree, then the squashfs</td>
+<td>the bulk of it</td>
+</tr>
+<tr>
+<td>the ISO itself</td>
+<td>~4 GB without a model</td>
+</tr>
+<tr>
+<td><code>airootfs/local-repo</code> — the built packages</td>
+<td>~0.45 GB</td>
+</tr>
+<tr>
+<td><code>/var/tmp</code> at peak — <code>linux-wallpaperengine</code> unpacks a ~1.3 GB CEF blob</td>
+<td>several GB, transient</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <code>/var/tmp</code> scratch does not stack with the staging tree: packages are built
+and cleaned up before <code>mkarchiso</code> runs. A model costs its ~4.4 GB three times
+over — overlay, staging tree, image — which is most of the difference between
+the two figures.</p>
+<p><code>build-all.sh</code> builds against the staged llama tree for whichever backend this
+host runs — <code>llama-staging-cpu</code>, <code>-cuda</code> or <code>-vulkan</code>, defaulting to the one
+already installed, so a routine rebuild on a GPU box does not quietly try to
+replace the GPU package with a CPU one. Produce a staging tree with
+<code>sudo ./archiso/build.sh --gpu=cuda --llama-only</code>. It asks for <code>sudo</code> <strong>up
+front</strong> and then runs unattended.</p>
+<blockquote>
+<p><strong><code>scenefx</code> is built and installed before <code>synui</code></strong>, not alongside it — synui
+links <code>libscenefx-0.5.so</code> and the build is red without it. It is also a <strong>fork</strong>
+of wlroots' scene graph, vendored in <code>scenefx/</code>, so a wlroots bump is a port of
+two things, not one.</p>
+</blockquote>
+<hr />
+<h2 id="the-version-model-read-this-before-you-bump-anything">The version model (read this before you bump anything)</h2>
+<p>There are <strong>two</strong> versions and they are not the same thing.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Where</th>
+<th>Bump it?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iso_version</code></td>
+<td><code>archiso/profiledef.sh</code></td>
+<td><strong>Yes</strong> — this is the release version</td>
+</tr>
+<tr>
+<td><code>SYNAPSEOS_VERSION</code></td>
+<td><code>archiso/build.sh</code></td>
+<td><strong>No. Leave it at <code>0.1.0</code>.</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>SYNAPSEOS_VERSION</code> is the <em>package</em> series. Most PKGBUILDs declare
+<code>source=("&lt;pkg&gt;-0.1.0.tar.gz")</code> <strong>literally</strong>, so if you bump it, <code>build.sh</code>'s
+<code>create_source_tarball</code> emits <code>&lt;pkg&gt;-0.1.1.tar.gz</code> and every <code>makepkg</code> fails to
+find its source.</p>
+<p>So packages are versioned <code>0.1.0-&lt;pkgrel&gt;</code> and the ISO is <code>0.1.4</code>. Ship a code
+change by bumping the component's <strong><code>pkgrel</code></strong>.</p>
+<p><em>(build.sh's completion banner cosmetically prints <code>SYNAPSEOS_VERSION=0.1.0</code>.
+Harmless, left alone.)</em></p>
+<hr />
+<h2 id="the-traps">The traps</h2>
+<p>These are all <strong>silent</strong> — they let a build "succeed" on the wrong code.</p>
+<h3 id="always-regenerate-the-source-tarball">Always regenerate the source tarball</h3>
+<p>Most PKGBUILDs consume a tarball, not your working tree. Edit a <code>.c</code>, run
+<code>makepkg</code> without regenerating <code>&lt;pkg&gt;-0.1.0.tar.gz</code>, and you package the <strong>old</strong>
+code and exit 0. <code>build-all.sh</code> and <code>build.sh</code> each regenerate it — but if you
+run <code>makepkg</code> by hand, you must too.</p>
+<h3 id="the-src-collision-hazard">The <code>src/</code> collision hazard</h3>
+<p><strong>Never <code>rm -rf src/</code> inside a component directory</strong> (this bit us in <code>synui/</code>,
+and applies to <code>synguard/</code> too). makepkg just recreates it, and the stale copy
+gets picked up again on the next run. Cleaning the source tree's <code>src/</code> by hand
+does not help.</p>
+<p>The related bug in the ISO pipeline: the temp-build cleanup removed only
+<code>src/&lt;pkg&gt;-*</code> (the tarball extraction dirs) and missed the <strong>versionless</strong>
+<code>src/&lt;pkg&gt;</code> that <strong>git-sourced</strong> packages (<code>nexus-chat</code>, <code>tepris</code>) extract to.
+That stale git working copy got copied into the <code>synbuild</code> area with <code>.git</code>
+alternates pointing back at your <code>$HOME</code> — unreadable by the unprivileged
+<code>synbuild</code> user — and makepkg aborted with <em>"does not appear to be a git
+repository"</em>. Fixed by wiping the <strong>whole</strong> <code>src/</code> in the temp copy.</p>
+<h3 id="check-for-untracked-source-files-before-a-release">Check for untracked source files before a release</h3>
+<p><code>synui/src/ctlpanel.c</code> once sat <strong>untracked</strong> while <code>meson.build</code> already listed
+it. <code>git commit -a</code> would have pushed a tree that does not build. Before cutting
+a release:</p>
+<div class="hl"><pre><span></span><code>git<span class="w"> </span>status<span class="w"> </span>--short<span class="w"> </span>--untracked<span class="o">=</span>all<span class="w"> </span>--<span class="w"> </span>synui<span class="w"> </span>synapd<span class="w"> </span>synguard<span class="w"> </span>synsh<span class="w"> </span>synnet<span class="w"> </span>synapse_kmod
+</code></pre></div>
+
+<p>Look for <code>??</code> on real source, not just modified files, and stage it explicitly.</p>
+<h3 id="two-copies-of-everything">Two copies of everything</h3>
+<p>Several things exist in more than one place and <strong>drift silently</strong>:</p>
+<ul>
+<li><code>create_source_tarball</code> exists <strong>twice</strong> — in <code>build-all.sh</code> <em>and</em> separately in
+  <code>archiso/build.sh</code>. This one went wrong <strong>four times out of four</strong>: each fix
+  landed in one collector and not the other, and the symptom every time was a
+  file missing from the tarball and a build that failed later, somewhere else.
+  <strong>Both now delegate to the component's own <code>&lt;pkg&gt;/mktarball.sh</code> when it has
+  one</strong>, which is the deduplication — a component that knows which files it needs
+  says so once, in its own directory. Prefer adding a <code>mktarball.sh</code> over
+  teaching the collectors about your package.</li>
+<li><strong>Which components each collector builds</strong> is the same split, and it went
+  wrong a fifth time: a package was named in <code>archiso/build.sh</code> (so every ISO
+  carried it) and in <code>build-all.sh</code>'s <code>KNOWN=</code> list — but never given a build
+  rule in <code>build-all.sh</code> itself. Asking for it by name therefore passed the
+  argument check, matched nothing, and <strong>exited 0 having built nothing</strong>, so
+  installed systems could never update it while the ISO was fine. Adding a
+  component means editing <strong>both</strong> collectors; <code>build-all.sh</code> now fails loudly
+  if an argument it accepted was never dispatched.</li>
+<li>Session environment variables live in <strong>three</strong> places: the live
+  <code>/usr/local/bin/synui-session</code>, and <strong>two</strong> blocks in <code>syn-install.sh</code>.</li>
+<li><code>foot.ini</code> is generated in <strong>three</strong> places, with <strong>two</strong> different tokenizers.</li>
+<li>chibi has <strong>three</strong> copies of every module.</li>
+<li>The event-sound id chains exist <strong>twice</strong>: <code>sound_event_ids()</code> in
+  <code>synui/src/sound.c</code> and <code>ids()</code> in <code>synui-sound.sh</code>. They must stay in
+  lockstep — the C side decides what the panel <em>displays</em>, the shell side decides
+  what actually <em>plays</em>, so a drift means the panel confidently names a sample
+  you will never hear.</li>
+</ul>
+<hr />
+<h2 id="package-builds-run-as-synbuild">Package builds run as <code>synbuild</code></h2>
+<p>Package builds run as the unprivileged <code>synbuild</code> user under <code>/var/tmp</code>, because
+<code>makepkg</code> must not run as root and must live outside <code>/home</code> (mode 0700, so
+<code>synbuild</code> can't read it).</p>
+<p>A failed package build <strong>aborts the run immediately</strong> rather than resurfacing
+later as a confusing pacstrap error. That's deliberate — an earlier version let
+failures through and they showed up as "package not found" much later.</p>
+<hr />
+<h2 id="llamacpp">llama.cpp</h2>
+<p>Pinned at tag <strong><code>b10241</code></strong>, matching CI and <code>synapse-llama</code>'s <code>_llama_ref</code> —
+the two are separate constants and must be bumped together. The CUDA build needs
+a patch for CCCL 3.4 (<code>cub</code>). From b10241 the Vulkan build also requires
+<strong>SPIRV-Headers</strong>, which was not a dependency at b8272.</p>
+<p><code>--no-clean</code> preserves <code>archiso/build/llama.cpp</code> so this doesn't get recompiled —
+it is by far the most expensive step. It is safe: <code>build.sh</code> always wipes
+mkarchiso's <code>work/</code> and gates only <code>build/</code> on <code>--clean</code>.</p>
+<hr />
+<h2 id="shared-git-index-hazard">Shared git index hazard</h2>
+<p>Concurrent sessions working in <code>~/SYNAPSE</code> share <strong>one git index</strong>. Never unstage
+files you didn't stage, and <strong>stage + commit atomically</strong> (<code>git add &lt;paths&gt; &amp;&amp;
+git commit</code>) rather than staging and then doing other work.</p>
+<p>See also: <a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a>,
+<a href="/wiki/Troubleshooting">Troubleshooting</a>.</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Nexus-Chat"><span>Previous</span>Nexus P2P</a><a class="next" href="/wiki/Cutting-an-ISO-Release"><span>Next</span>Cutting an ISO Release</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging" aria-current="page">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>
