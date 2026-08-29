@@ -60,7 +60,7 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "0.2.9.4",
+      "softwareVersion": "0.2.9.5",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
       "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
@@ -215,7 +215,7 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 0.2.9.4</a>
+        <a class="btn btn-primary" href="#download">Download 0.2.9.5</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
       <p class="themes-label">Fifteen themes ship. <b>Try one on this page.</b></p>
@@ -298,6 +298,16 @@
         </p>
       </li>
       <li>
+        <h3>An assistant with the run of the desktop</h3>
+        <p>
+          <code>vibe</code> is a chat window and a terminal command in one &mdash; it
+          opens folders and panels, changes settings and applies them live, reads and
+          edits files, and runs commands you confirm. Plain requests never reach a
+          model at all. It uses the resident model by default, or Claude or OpenAI
+          with a key.
+        </p>
+      </li>
+      <li>
         <h3>A shell that takes English</h3>
         <p>
           <code>synsh</code> is a normal POSIX-ish shell until you stop typing commands.
@@ -375,7 +385,7 @@
     <h2>How it fits together</h2>
     <p>
       One model, resident once, shared by everything. Components do not each load
-      their own copy &mdash; the AI coding assistant reuses the model already sitting in
+      their own copy &mdash; the desktop assistant reuses the model already sitting in
       <code>synapd</code> rather than spending a second allocation of VRAM.
     </p>
 <pre class="diagram" aria-label="SynapseOS architecture diagram"><code>  User
@@ -713,7 +723,7 @@
           <tr><th scope="row"><code>syn-arcade</code></th><td>The game assistant: the MangoHud overlay inside a running game, controllers outside Steam, SDL mapping overrides, and big screen mode for a television.</td></tr>
           <tr><th scope="row"><code>syn-confine</code></th><td>A sandbox launcher &mdash; run a command inside a kernel-enforced allowlist (Landlock), inherited across <code>execve</code>.</td></tr>
           <tr><th scope="row"><code>syn-arsenal</code></th><td>The BlackArch browser &mdash; ~5000 security tools by category, installable from a window or a terminal.</td></tr>
-          <tr><th scope="row"><code>vibe</code></th><td>Local AI coding assistant &mdash; an agentic read/write/edit/bash/grep loop that reuses the resident model, and confirms before destructive tools.</td></tr>
+          <tr><th scope="row"><code>vibe</code></th><td>The desktop assistant &mdash; a chat window and a terminal REPL over the resident model, or Claude/OpenAI with a key. Opens folders, panels and applications, changes settings, reads and edits files, and runs shell commands in <code>syn-confine</code>&rsquo;s sandbox. Anything that writes asks first; it speaks and takes dictation, and answers to its name.</td></tr>
           <tr><th scope="row"><code>chibi</code></th><td>Voice-interactive AI companion with a security-sentinel aspect over <code>synguard</code>&rsquo;s verdict feed.</td></tr>
           <tr><th scope="row"><code>syn-update</code></th><td>Updates the SynapseOS half of an installed system, rebuilding only the components whose version moved.</td></tr>
         </tbody>
@@ -724,7 +734,7 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>0.2.9.4</strong> &mdash; the desktop grows its own furniture.
+      Latest release: <strong>0.2.9.5</strong> &mdash; the desktop gets an assistant, and stops failing quietly.
       Free, x86_64, about 3.7&nbsp;GiB. The model is downloaded during installation,
       not carried in the image.
     </p>
@@ -741,13 +751,13 @@
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>cat SynapseOS-0.2.9.4-x86_64.iso.part* &gt; SynapseOS-0.2.9.4-x86_64.iso
-sha256sum -c SynapseOS-0.2.9.4-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>cat SynapseOS-0.2.9.5-x86_64.iso.part* &gt; SynapseOS-0.2.9.5-x86_64.iso
+sha256sum -c SynapseOS-0.2.9.5-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
     <h4 class="plat">Windows</h4>
     <p>In <strong>Command Prompt</strong>, in the folder you downloaded to:</p>
-<pre><code>copy /b SynapseOS-0.2.9.4-x86_64.iso.part00 + SynapseOS-0.2.9.4-x86_64.iso.part01 SynapseOS-0.2.9.4-x86_64.iso
-certutil -hashfile SynapseOS-0.2.9.4-x86_64.iso SHA256</code></pre>
+<pre><code>copy /b SynapseOS-0.2.9.5-x86_64.iso.part00 + SynapseOS-0.2.9.5-x86_64.iso.part01 SynapseOS-0.2.9.5-x86_64.iso
+certutil -hashfile SynapseOS-0.2.9.5-x86_64.iso SHA256</code></pre>
     <p>
       Name every part, in order, joined by <code>+</code>. <strong><code>/b</code> is
       not optional</strong>: without it <code>copy</code> runs in text mode and stops
@@ -756,8 +766,8 @@ certutil -hashfile SynapseOS-0.2.9.4-x86_64.iso SHA256</code></pre>
       Compare what <code>certutil</code> prints against the <code>.sha256</code> file,
       or let <strong>PowerShell</strong> do the comparing:
     </p>
-<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-0.2.9.4-x86_64.iso).Hash -eq `
-  (((Get-Content .\SynapseOS-0.2.9.4-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
+<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-0.2.9.5-x86_64.iso).Hash -eq `
+  (((Get-Content .\SynapseOS-0.2.9.5-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
     <p class="small">
       <code>True</code> means the join is good. <code>Get-FileHash</code> prints
       uppercase hex where <code>sha256sum</code> writes lowercase &mdash; same bytes,
@@ -809,7 +819,7 @@ gpg --verify SynapseOS-0.2.9.5-x86_64.iso.asc SynapseOS-0.2.9.5-x86_64.iso</code
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>sudo dd if=SynapseOS-0.2.9.4-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-0.2.9.5-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
     <p>
       Check <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the
       <strong>disk</strong> (<code>/dev/sdb</code>), not to a partition on it
