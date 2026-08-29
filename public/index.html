@@ -764,6 +764,45 @@ certutil -hashfile SynapseOS-0.2.9.4-x86_64.iso SHA256</code></pre>
       hence the <code>.ToUpper()</code>.
     </p>
 
+    <h3>Check who built it</h3>
+    <p>
+      The checksum above proves your download is not corrupt. It does not prove
+      where the image came from &mdash; it is published in the same GitHub release
+      as the ISO, so anything that could alter one could alter the other. The
+      signature is the part that answers that, and the key to check it against is
+      served from <strong>this site</strong> rather than from the release, so the
+      two arrive by different roads.
+    </p>
+    <p class="small">
+      Releases from <strong>0.2.9.5</strong> onward carry a
+      <code>.asc</code> signature. Earlier ones, including 0.2.9.4, do not
+      &mdash; there is nothing to check on those.
+    </p>
+
+    <h4 class="plat">Linux / macOS</h4>
+<pre><code>curl -O https://soslinux.org/synapseos-release-key.asc
+gpg --import synapseos-release-key.asc
+
+gpg --verify SynapseOS-0.2.9.5-x86_64.iso.asc SynapseOS-0.2.9.5-x86_64.iso</code></pre>
+    <p>
+      A good signature prints <code>Good signature from &quot;SynapseOS Release
+      Signing&quot;</code>. Check the fingerprint it names against this one:
+    </p>
+<pre><code>6548 9EF5 C20D 0BD9 4211  472B ED33 6DB7 952B 609E</code></pre>
+    <p class="small">
+      <code>gpg</code> will also say the key is <em>not certified with a trusted
+      signature</em>. That is expected and is not a failure: it means you have not
+      told GnuPG you trust this key, only that the signature matches it. Comparing
+      the fingerprint above is what closes that gap.
+    </p>
+
+    <h4 class="plat">Windows</h4>
+    <p>
+      With <a href="https://gpg4win.org/" rel="noopener">Gpg4win</a> installed, the
+      same three commands work in <strong>PowerShell</strong>. Without it, the
+      SHA256 check above is still worth doing on its own.
+    </p>
+
     <h3>Write it to a USB stick</h3>
     <p class="warn-line">
       <strong>Writing a stick erases it.</strong> Everything already on it is gone.
