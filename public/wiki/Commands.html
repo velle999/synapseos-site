@@ -67,7 +67,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Commands</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
       </p>
 
       <div class="wiki-body">
@@ -158,7 +158,7 @@ the desktop is allowed to run without a password.</p>
 </tr>
 <tr>
 <td><code>synctl</code></td>
-<td>Talk to the running <code>synui</code> compositor over its control socket — <code>synctl clients</code>, <code>workspaces</code>, <code>outputs</code>, <code>activewindow</code>, <code>cursor</code> (the pointer's layout position), <code>recent</code> (what has been opened, kept by the compositor at the one moment every launch has in common: a window turns up), <code>binds</code> (the whole bind table, each chord spelled the way a keyboard says it — this is what the welcome guide reads its key column out of), <code>layout</code> (the keyboard layouts <code>xkb_layout</code> compiled, which one is typing, and <code>layout next</code> / <code>layout prev</code> / <code>layout &lt;name&gt;</code> to move — the CLI half of the lock screen's layout chip), <code>dispatch &lt;action&gt; [arg]</code></td>
+<td>Talk to the running <code>synui</code> compositor over its control socket — <code>synctl clients</code>, <code>workspaces</code>, <code>outputs</code> (each monitor's geometry, scale, and the desktop it is showing — which is the only external view of a desk split by <code>workspace_mode = per-monitor</code>), <code>activewindow</code>, <code>cursor</code> (the pointer's layout position), <code>recent</code> (what has been opened, kept by the compositor at the one moment every launch has in common: a window turns up), <code>binds</code> (the whole bind table, each chord spelled the way a keyboard says it — this is what the welcome guide reads its key column out of), <code>layout</code> (the keyboard layouts <code>xkb_layout</code> compiled, which one is typing, and <code>layout next</code> / <code>layout prev</code> / <code>layout &lt;name&gt;</code> to move — the CLI half of the lock screen's layout chip), <code>hdr</code> (what each monitor will accept as an HDR10 signal, asked of the hardware without changing anything on screen — plus <code>hdr on|off &lt;output&gt;</code> and <code>hdr white &lt;output&gt; &lt;cd/m²&gt;</code>, the CLI half of the display panel's <code>Shift</code>+<code>D</code>), <code>dispatch &lt;action&gt; [arg]</code></td>
 </tr>
 <tr>
 <td><code>synui-welcome</code></td>
@@ -396,7 +396,7 @@ exact command, is the deliberate substitute.</p>
 <p>See also: <a href="/wiki/Keybindings">Keybindings</a>, <a href="/wiki/synapd">synapd</a>, <a href="/wiki/synui">synui</a>.</p>
       </div>
 
-<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Keybindings"><span>Previous</span>Keybindings</a><a class="next" href="/wiki/Configuration"><span>Next</span>Configuration</a></nav>
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/syn-speak"><span>Previous</span>Speech and dictation</a><a class="next" href="/wiki/Configuration"><span>Next</span>Configuration</a></nav>
     </article>
 
 <nav class="wiki-side" aria-label="All wiki pages">
@@ -408,10 +408,12 @@ exact command, is the deliberate substitute.</p>
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands" aria-current="page">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -463,7 +465,8 @@ exact command, is the deliberate substitute.</p>
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Calendar — SynapseOS Wiki</title>
+<meta name="description" content="syn-cal — your calendars, on this machine, synced both ways. CalDAV accounts (Nextcloud, Fastmail, iCloud, Radicale, Baikal, Posteo, mailbox.org), Google through OAuth, and…">
+<link rel="canonical" href="https://soslinux.org/wiki/Calendar">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Calendar — SynapseOS Wiki">
+<meta property="og:description" content="syn-cal — your calendars, on this machine, synced both ways. CalDAV accounts (Nextcloud, Fastmail, iCloud, Radicale, Baikal, Posteo, mailbox.org), Google through OAuth, and…">
+<meta property="og:url" content="https://soslinux.org/wiki/Calendar">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#setting-up-an-account">Setting up an account</a></li>
+<li class="sub"><a href="#anything-that-speaks-caldav">Anything that speaks CalDAV</a></li>
+<li class="sub"><a href="#google">Google</a></li>
+<li class="sub"><a href="#microsoft-365--outlook">Microsoft 365 / Outlook</a></li>
+<li><a href="#using-it">Using it</a></li>
+<li><a href="#where-your-calendar-actually-lives">Where your calendar actually lives</a></li>
+<li><a href="#passwords">Passwords</a></li>
+<li><a href="#when-two-people-edit-the-same-event">When two people edit the same event</a></li>
+<li><a href="#when-something-is-wrong">When something is wrong</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Calendar</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Calendar/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-29">2026-08-29</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong><code>syn-cal</code> — your calendars, on this machine, synced both ways.</strong></p>
+<p>CalDAV accounts (Nextcloud, Fastmail, iCloud, Radicale, Baikal, Posteo,
+mailbox.org), <strong>Google</strong> through OAuth, and <strong>Microsoft 365</strong> through Graph.
+There is a window, a terminal view and a command line, and the desktop calendar
+you already have — the one the bar clock opens — marks the days that have
+something on them.</p>
+<h2 id="setting-up-an-account">Setting up an account</h2>
+<h3 id="anything-that-speaks-caldav">Anything that speaks CalDAV</h3>
+<div class="hl"><pre><span></span><code>syn-cal<span class="w"> </span>account<span class="w"> </span>add<span class="w"> </span>work<span class="w"> </span>https://caldav.fastmail.com/
+syn-cal<span class="w"> </span>login<span class="w"> </span>work<span class="w"> </span>--user<span class="w"> </span>you@fastmail.com
+syn-cal<span class="w"> </span>discover<span class="w"> </span>work
+syn-cal<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>work<span class="w"> </span><span class="s2">&quot;Personal&quot;</span>
+syn-cal<span class="w"> </span>sync
+</code></pre></div>
+
+<p><code>discover</code> walks from whatever you typed to the list of your calendars —
+<code>/.well-known/caldav</code>, then your principal, then your calendar home — so a bare
+domain is enough, and a collection URL pasted from a provider's help page also
+works and costs one request.</p>
+<p>⚠ <strong>New calendars start switched off.</strong> Discovery on a work account turns up
+every shared calendar in the building, and syncing them because they exist is
+how a planner becomes unreadable on first use. Running <code>discover</code> again never
+undoes a choice you have made.</p>
+<p>⚠ <strong>Use an app password where the account has two-factor authentication.</strong>
+iCloud and Fastmail both require one; your ordinary password will be refused,
+and the message will not always say why.</p>
+<h3 id="google">Google</h3>
+<p>Google's calendars are CalDAV behind OAuth, so you need a <strong>client id</strong> — which
+only you can create, because it identifies <em>your</em> copy of the application.</p>
+<ol>
+<li><a href="https://console.cloud.google.com/apis/credentials">console.cloud.google.com/apis/credentials</a></li>
+<li>Enable the <strong>Google Calendar API</strong>.</li>
+<li>Create credentials → <strong>OAuth client ID</strong> → application type <strong>Desktop app</strong>.</li>
+<li>Copy the client <strong>id</strong>. There is no secret to copy, and there should not be
+   — see below.</li>
+</ol>
+<div class="hl"><pre><span></span><code>syn-cal<span class="w"> </span>account<span class="w"> </span>add-google<span class="w"> </span>gmail<span class="w"> </span>--client-id<span class="w"> </span><span class="m">1234</span>.apps.googleusercontent.com
+syn-cal<span class="w"> </span>login<span class="w"> </span>gmail<span class="w">          </span><span class="c1"># opens your browser</span>
+syn-cal<span class="w"> </span>discover<span class="w"> </span>gmail
+syn-cal<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>gmail<span class="w"> </span><span class="s2">&quot;you@gmail.com&quot;</span>
+</code></pre></div>
+
+<h3 id="microsoft-365--outlook">Microsoft 365 / Outlook</h3>
+<p>Microsoft removed CalDAV; 365 calendars are reachable only through Graph.</p>
+<ol>
+<li><a href="https://portal.azure.com">portal.azure.com</a> → <strong>App registrations</strong> → New.</li>
+<li>Platform <strong>Mobile and desktop applications</strong>, redirect URI
+   <code>http://localhost</code> — the flow uses a loopback port the client picks.</li>
+<li>API permissions → Microsoft Graph → <strong>Calendars.ReadWrite</strong> and
+   <strong>offline_access</strong>.</li>
+</ol>
+<div class="hl"><pre><span></span><code>syn-cal<span class="w"> </span>account<span class="w"> </span>add-microsoft<span class="w"> </span>work365<span class="w"> </span>--client-id<span class="w"> </span>&lt;the<span class="w"> </span>application<span class="w"> </span>id&gt;
+syn-cal<span class="w"> </span>login<span class="w"> </span>work365
+</code></pre></div>
+
+<p>⛔ <strong>Repeating events are read from Microsoft but never written back.</strong> A
+recurrence rule flattened on the way out would replace a series on your work
+calendar with a single occurrence, and neither side would report anything wrong.
+Editing one locally is <strong>refused</strong>, the local file is left exactly as it is, and
+the message tells you to edit the series in Outlook. A refusal is visible and
+recoverable; a silent flattening is neither.</p>
+<h2 id="using-it">Using it</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>syn-cal agenda</code></td>
+<td>the next seven days, across every calendar</td>
+</tr>
+<tr>
+<td><code>syn-cal today</code> / <code>syn-cal week</code></td>
+<td>just those</td>
+</tr>
+<tr>
+<td><code>syn-cal agenda --from 2026-10-01 --days 31</code></td>
+<td>any range</td>
+</tr>
+<tr>
+<td><code>syn-cal gui</code></td>
+<td>the window</td>
+</tr>
+<tr>
+<td><code>syn-cal tui</code></td>
+<td>the month, in this terminal</td>
+</tr>
+<tr>
+<td><code>syn cal</code></td>
+<td>sync, from the top-level CLI</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <strong>desktop calendar</strong> — the bar clock, or <code>synctl dispatch calendar</code> — marks
+days that have something on them and lists the selected day underneath. It reads
+what <code>syn-cal</code> has already synced, so it is instant and works offline; it does
+not fetch anything itself.</p>
+<h2 id="where-your-calendar-actually-lives">Where your calendar actually lives</h2>
+<div class="hl"><pre><span></span><code>~/.local/share/syn-cal/
+  accounts.conf                  the account list. NO PASSWORDS — see below.
+  &lt;account&gt;/&lt;calendar&gt;/*.ics     one file per event. This is the data.
+  state/                         the sync index. Rebuildable, never data.
+</code></pre></div>
+
+<p>⛔ <strong>The store is a vdir</strong>, which is what <code>vdirsyncer</code> and <code>khal</code> write. A
+private database would have been less code and would have made syn-cal the only
+program on the machine able to read your calendar. Anything that can read a
+folder of <code>.ics</code> files can read this one — a backup, a <code>grep</code>, another client.</p>
+<p>Delete <code>state/</code> and you pay one full re-sync. Delete the vdir and you lose
+everything, so back up the folder and not the index.</p>
+<h2 id="passwords">Passwords</h2>
+<p>⛔ <strong><code>accounts.conf</code> holds a URL and a username, and nothing else.</strong> Passwords
+and OAuth tokens go to the keyring through libsecret. A config file carrying a
+bearer token is one <code>cat</code> into a bug report, one backup to a shared drive, or
+one screen-share away from handing somebody a calendar — a record of where you
+are, when, and with whom.</p>
+<p>⚠ <strong>Every store is read back before it is called a success.</strong> On a machine with
+no keyring daemon the whole stack reports success and stores nothing; a
+credential store that says "saved" when it saved nothing is worse than one that
+refuses. Where there is genuinely no keyring, syn-cal falls back to a 0600 file
+<strong>and tells you so</strong> — <code>syn-cal accounts</code> then reports the secret as living in a
+<code>file</code> rather than claiming a keyring took it.</p>
+<p>There is <strong>no client secret</strong> for Google or Microsoft, and there should not be:
+a desktop application is a public client, so whatever secret it were issued
+would ship inside the binary on every machine that installs it. Both providers
+say so, which is why the sign-in uses PKCE.</p>
+<h2 id="when-two-people-edit-the-same-event">When two people edit the same event</h2>
+<p>Sync decides from <strong>three</strong> facts, not two: the server's version, the local
+file's version, and what both were when they last agreed. With only the first
+two a difference is unattributable — it looks identical whether they changed it,
+you changed it, or one of you deleted it.</p>
+<p>⛔ <strong>An edit is never lost without saying so.</strong> When both sides changed the same
+event since the last sync, <strong>both are kept</strong>: the server's version keeps the
+UID, and yours is re-filed under a UID derived from it, so in a fortnight you can
+still tell which was which. Look for events whose UID ends <code>-syncal-local-</code>.</p>
+<p>Deleted here but edited there brings the event back; deleted there but edited
+here puts it back up. In both directions the rule is the same: a deletion
+destroys and an edit does not, so the edit is the stronger claim.</p>
+<div class="hl"><pre><span></span><code>syn-cal<span class="w"> </span>sync<span class="w"> </span>--dry-run<span class="w">            </span><span class="c1"># decide everything, change nothing</span>
+syn-cal<span class="w"> </span>sync<span class="w"> </span>--conflict<span class="o">=</span>remote<span class="w">    </span><span class="c1"># or =local, if you would rather not keep both</span>
+</code></pre></div>
+
+<p><code>--dry-run</code> is worth knowing about before the first sync of a real account.</p>
+<h2 id="when-something-is-wrong">When something is wrong</h2>
+<div class="hl"><pre><span></span><code>syn-cal<span class="w"> </span>accounts<span class="w">          </span><span class="c1"># is it signed in, and where does the secret live</span>
+syn-cal<span class="w"> </span>calendars<span class="w"> </span>work<span class="w">    </span><span class="c1"># which are switched on</span>
+syn-cal<span class="w"> </span>sync<span class="w"> </span>--verbose<span class="w"> </span>--dry-run
+</code></pre></div>
+
+<p><strong>"not signed in"</strong> on an account that was working usually means an expired
+OAuth grant — <code>syn-cal login &lt;name&gt;</code> again. syn-cal renews the token by itself
+sixty seconds before it expires, so this is a revoked grant rather than a lapsed
+one.</p>
+<p><strong>An event that never uploads</strong> and is reported as skipped has no <code>UID</code> in its
+<code>.ics</code>. Such a file cannot be addressed on a CalDAV server at all; syn-cal says
+which file rather than dropping it quietly.</p>
+<p><strong>Nothing in the desktop calendar</strong> but events in <code>syn-cal agenda</code> means the
+compositor could not run <code>syn-cal</code> — it is spawned by name, so check it is on
+<code>PATH</code> for the session.</p>
+<p>See also: <a href="/wiki/Settings">Settings</a> · <a href="/wiki/Commands">Commands</a> · <a href="/wiki/The-Desktop">The Desktop</a></p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Settings"><span>Previous</span>Settings</a><a class="next" href="/wiki/Editor"><span>Next</span>Editor</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar" aria-current="page">Calendar</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

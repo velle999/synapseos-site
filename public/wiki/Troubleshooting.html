@@ -87,6 +87,9 @@
 <li class="sub"><a href="#a-game-window-is-the-right-size-but-renders-nothing">A game window is the right size but renders nothing</a></li>
 <li class="sub"><a href="#mangohud-never-appears">MangoHud never appears</a></li>
 <li class="sub"><a href="#the-display-panel-says-a-monitor-isnt-hdr">The display panel says a monitor isn&#x27;t HDR</a></li>
+<li class="sub"><a href="#hdr10-is-greyed-out-on-a-monitor-that-says-it-is-hdr">HDR10 is greyed out on a monitor that says it is HDR</a></li>
+<li class="sub"><a href="#the-desktop-looks-over-saturated-in-hdr">The desktop looks over-saturated in HDR</a></li>
+<li class="sub"><a href="#the-desktop-looks-washed-out-or-blinding-next-to-hdr-video">The desktop looks washed out or blinding next to HDR video</a></li>
 <li><a href="#screen-recording">Screen recording</a></li>
 <li class="sub"><a href="#a-screen-recording-will-not-open-in-my-video-editor">A screen recording will not open in my video editor</a></li>
 <li class="sub"><a href="#an-old-recording-loses-frames-or-stutters-when-i-edit-it">An old recording loses frames or stutters when I edit it</a></li>
@@ -128,7 +131,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Troubleshooting</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-30">2026-08-30</time>
       </p>
 
       <div class="wiki-body">
@@ -392,8 +395,33 @@ either way:</p>
 <p>in the launcher's command-line options — which is what <code>syn game</code> does for you.</p>
 <h3 id="the-display-panel-says-a-monitor-isnt-hdr">The display panel says a monitor isn't HDR</h3>
 <p>It reads the monitor's EDID rather than the plane's bit depth, so a 10-bit
-monitor that is not actually HDR is reported honestly. Full HDR10 output is not
-implemented yet.</p>
+monitor that is not actually HDR is reported honestly. Plenty of 10-bit panels
+are not HDR panels.</p>
+<h3 id="hdr10-is-greyed-out-on-a-monitor-that-says-it-is-hdr">HDR10 is greyed out on a monitor that says it is HDR</h3>
+<p>The column shows <strong>HDR10 (—)</strong> when the panel advertises HDR over a link that
+will not carry it. <code>synctl hdr</code> says which part was refused:</p>
+<div class="hl"><pre><span></span><code>DP-3  pq=yes bt2020=yes image_description=yes … pq_lut=yes sdr=yes capable=yes
+</code></pre></div>
+
+<p><code>image_description</code> is whether the display can be told it is receiving HDR10,
+<code>pq_lut</code> whether the desktop can be mapped into it, and <code>sdr</code> whether it can be
+taken back out again — a monitor that fails the last one is never offered the
+mode, because a mode you cannot switch off is worse than one you never had.</p>
+<p>The usual cause is bandwidth: HDR10 also asks for 10-bit colour, and a
+DisplayPort link with the headroom for that at 1440p120 may not have it at
+4K144. Try a lower refresh rate, or a cable rated for the mode you are in.</p>
+<h3 id="the-desktop-looks-over-saturated-in-hdr">The desktop looks over-saturated in HDR</h3>
+<p>The colours are being stretched across a wider gamut than they were drawn for.
+This happens on a monitor that will only accept a BT.2020 container: the
+transfer curve is mapped in the display hardware and the primaries cannot be,
+so reds and greens run wide. The detail line under the monitor list says so when
+it is what happened. Switch HDR off with <code>Shift</code>+<code>D</code> if you would rather have
+correct colour than correct brightness.</p>
+<h3 id="the-desktop-looks-washed-out-or-blinding-next-to-hdr-video">The desktop looks washed out or blinding next to HDR video</h3>
+<p>Move the SDR white level with <code>[</code> and <code>]</code> in the display panel, or
+<code>synctl hdr white &lt;output&gt; &lt;cd/m²&gt;</code>. It sets where an ordinary white window
+lands on HDR's absolute scale; 203 is the broadcast reference and the default,
+and the useful range is roughly 150–300 depending on the panel and the room.</p>
 <hr />
 <h2 id="screen-recording">Screen recording</h2>
 <h3 id="a-screen-recording-will-not-open-in-my-video-editor">A screen recording will not open in my video editor</h3>
@@ -693,10 +721,12 @@ or something it launched is misbehaving, the error is on <strong>tty1</strong>
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -748,7 +778,8 @@ or something it launched is misbehaving, the error is on <strong>tty1</strong>
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

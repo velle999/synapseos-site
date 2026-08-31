@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Speech and dictation — SynapseOS Wiki</title>
+<meta name="description" content="The desktop, out loud — syn-speak. Everything on this desktop says what it has to say in pixels; this is the other channel. It announces the window that has focus as focus…">
+<link rel="canonical" href="https://soslinux.org/wiki/syn-speak">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Speech and dictation — SynapseOS Wiki">
+<meta property="og:description" content="The desktop, out loud — syn-speak. Everything on this desktop says what it has to say in pixels; this is the other channel. It announces the window that has focus as focus…">
+<meta property="og:url" content="https://soslinux.org/wiki/syn-speak">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#the-three-keys">The three keys</a></li>
+<li><a href="#from-a-window">From a window</a></li>
+<li><a href="#from-the-command-line">From the command line</a></li>
+<li><a href="#one-voice-on-the-machine">One voice on the machine</a></li>
+<li><a href="#the-announcer">The announcer</a></li>
+<li><a href="#settings-and-where-they-live">Settings, and where they live</a></li>
+<li><a href="#what-it-needs">What it needs</a></li>
+<li><a href="#notes-for-a-multi-monitor-or-nested-desktop">Notes for a multi-monitor or nested desktop</a></li>
+<li><a href="#see-also">See also</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Speech and dictation</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/syn-speak/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
+      </p>
+
+      <div class="wiki-body">
+<p><strong>The desktop, out loud — <code>syn-speak</code>.</strong> Everything on this desktop says what it
+has to say in pixels; this is the other channel. It announces the window that
+has focus as focus moves, reads the text you have highlighted, and speaks any
+line handed to it.</p>
+<p>Shipped by the <code>synui</code> package as <code>/usr/bin/syn-speak</code>.</p>
+<blockquote class="warn"><p>⚠ <strong>It is an announcer, not a full screen reader — and it says so itself.</strong> A
+real screen reader walks the accessibility tree and reads every widget under
+the cursor, which needs AT-SPI support in each toolkit and is a project of its
+own. What this does is the half that is both useful today and honest: what has
+<strong>focus</strong>, and what it is <strong>asked</strong> for. <a href="https://help.gnome.org/users/orca/stable/">Orca</a>
+remains the answer for the full tree, and this does not pretend otherwise.</p>
+<p>⛔ <strong>Nothing speaks until asked.</strong> It is off on a fresh install, and the switch
+is per user. A desktop that started talking after an update would be the worst
+possible version of this feature.</p>
+</blockquote>
+<h2 id="the-three-keys">The three keys</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>U</code></td>
+<td><strong>Screen reader on/off</strong> — announce the focused window as focus moves, and press again to stop</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>U</code></td>
+<td>Read whatever is <strong>highlighted right now</strong>, once</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>V</code></td>
+<td><strong>Dictate</strong> — listen once, and type what you said where the cursor is (<a href="/wiki/Vibe">vibe</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>They are keys, and not only a menu item, for the obvious reason: a screen reader
+you can only start from a terminal is not one — the person who needs it is the
+person who cannot read the terminal to start it.</p>
+<p><strong>One chord toggles</strong>, rather than a pair. A reader talking over you has to be
+stoppable with the key you just pressed, not with a different one you have to
+remember while it is talking.</p>
+<p><code>Super</code>+<code>Shift</code>+<code>V</code> is V for <strong>voice</strong>; <code>Super</code>+<code>V</code> is the clipboard.</p>
+<h2 id="from-a-window">From a window</h2>
+<p>Two panels offer the same switch, because SynapseOS can be installed with KDE or
+GNOME instead of synui and the setting still has to be reachable:</p>
+<ul>
+<li><strong>synui's control panel</strong> — <code>Super</code>+<code>C</code> ▸ <strong>Sound</strong> ▸ <em>Speech</em>. Two rows:
+  <em>Screen reader</em> and <em>Answer to its name</em> (that second one is
+  <a href="/wiki/Vibe">vibe</a>'s wake word, and it holds a microphone open — the bar shows a
+  microphone icon while it does).</li>
+<li><strong><a href="/wiki/Settings">syn-settings</a> ▸ Speech</strong> — the same two switches, plus the speech
+  rate, the volume, the wake words, which engines this box actually has, and the
+  two <strong>units</strong> behind the switches: <code>syn-speak.service</code> (the announcer) and
+  <code>vibe-wake.service</code> (the listener). That last pair is the row to read when a
+  switch says On and nothing happens — a switch and the thing it switches are
+  two separate facts, and this is where the second one is visible.</li>
+</ul>
+<p>Neither reimplements anything. They read the state files and run the commands
+below, so there is one answer to "is the reader on" and not three.</p>
+<h2 id="from-the-command-line">From the command line</h2>
+<div class="hl"><pre><span></span><code>syn-speak<span class="w"> </span>on<span class="w">           </span><span class="c1"># announce the focused window from now on</span>
+syn-speak<span class="w"> </span>off<span class="w">          </span><span class="c1"># stop, and stop talking now</span>
+syn-speak<span class="w"> </span>toggle<span class="w">       </span><span class="c1"># whichever of those applies</span>
+
+syn-speak<span class="w"> </span>window<span class="w">       </span><span class="c1"># say the focused window once</span>
+syn-speak<span class="w"> </span>selection<span class="w">    </span><span class="c1"># say the highlighted text once</span>
+syn-speak<span class="w"> </span>say<span class="w"> </span><span class="s2">&quot;ready&quot;</span><span class="w">  </span><span class="c1"># say a line</span>
+syn-speak<span class="w"> </span>stop<span class="w">         </span><span class="c1"># silence what is being said</span>
+
+syn-speak<span class="w"> </span>voice<span class="w"> </span>NAME<span class="w">   </span><span class="c1"># syn-speak voices lists them</span>
+syn-speak<span class="w"> </span>rate<span class="w"> </span><span class="m">80</span>..450<span class="w"> </span><span class="c1"># words per minute (default 175)</span>
+syn-speak<span class="w"> </span>volume<span class="w"> </span><span class="m">0</span>..100
+syn-speak<span class="w"> </span>status<span class="w">       </span><span class="c1"># what it would do, and what this box can do</span>
+</code></pre></div>
+
+<p><code>syn-speak status</code> is the one to reach for first — it reports the switch, the
+voice, the rate, the volume, <strong>which engine would actually speak</strong>, and the
+window it would announce right now:</p>
+<div class="hl"><pre><span></span><code>on       yes
+voice    en
+rate     175
+volume   100
+engine   vibe
+window   Inbox, thunderbird
+</code></pre></div>
+
+<p><code>engine</code> is <code>vibe</code>, or the synthesiser name (<code>espeak-ng</code>), or <code>none</code>.</p>
+<h2 id="one-voice-on-the-machine">One voice on the machine</h2>
+<p>⛔ <strong><code>syn-speak</code> does not own a speech engine.</strong> Where <a href="/wiki/Vibe">vibe</a> is installed
+it speaks through <code>vibe voice say</code> — which is <a href="/wiki/Chibi">chibi</a>'s <strong>piper</strong> — so
+the screen reader and the assistant sound like the same desktop, and there is
+one place where "which engine does this box have" is worked out.</p>
+<p><strong><code>espeak-ng</code> is what is left when vibe is absent</strong>, not a second opinion. It is
+an <code>optdepends</code> of <code>synui</code>; on an install that took no AI stack it is the only
+voice there is, so:</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>install<span class="w"> </span>espeak-ng
+</code></pre></div>
+
+<p>Without either, the switch turns on and the machine stays silent. <code>syn-speak
+status</code> reports <code>engine none</code>, and <code>syn-speak say</code> says which synthesiser it
+looked for, on stderr, and exits 3.</p>
+<p>⚠ <strong>One utterance at a time.</strong> A new line stops the one in progress. Two
+announcements overlapping is not twice the information, it is none — and it is
+what makes the announcer usable at speed: moving quickly between windows leaves
+you hearing the one you landed on, not a queue of the ones you passed.</p>
+<h2 id="the-announcer">The announcer</h2>
+<p><code>syn-speak on</code> does two things: it writes <code>on=yes</code>, and it enables
+<strong><code>syn-speak.service</code></strong>, a user unit that runs <code>syn-speak watch</code> — the loop that
+polls the focused window and speaks it when it changes. <code>WantedBy=default.target</code>,
+so the choice survives a login.</p>
+<div class="hl"><pre><span></span><code>systemctl<span class="w"> </span>--user<span class="w"> </span>status<span class="w"> </span>syn-speak.service<span class="w">     </span><span class="c1"># is the reader actually running</span>
+</code></pre></div>
+
+<p>⚠ <strong>A poll, deliberately.</strong> synui has no "focus changed" event a client can
+subscribe to, and adding one to the compositor for a feature that ships off
+would be a protocol for nothing. Half a second is under the threshold at which a
+window switch feels unannounced, and one <code>synctl</code> call at that rate costs
+nothing measurable.</p>
+<p>⚠ <strong>The loop announces on <em>change</em>.</strong> A window is spoken once when you land on
+it, not once per poll.</p>
+<blockquote>
+<p><strong>If the switch says On and nothing is announced</strong>, check
+<code>systemctl --user status syn-speak.service</code> first — or
+<a href="/wiki/Settings">syn-settings</a> ▸ Speech, which shows the same thing as a row. Between synui 527 and 563
+that unit was not in the package at all: <code>syn-speak on</code> tried to enable it,
+the failure was swallowed on purpose (so that a machine without systemd is not
+a broken install), and all three surfaces reported On with nothing behind
+them. Fixed in <strong>synui 0.1.0-564</strong>.</p>
+</blockquote>
+<h2 id="settings-and-where-they-live">Settings, and where they live</h2>
+<p><code>~/.config/synui/speak.state</code>, <code>key=value</code>, the same shape every other synui
+state file uses — so it greps, and it can be fixed with an editor.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>on</code></td>
+<td><code>no</code></td>
+<td>is the announcer switched on</td>
+</tr>
+<tr>
+<td><code>voice</code></td>
+<td><code>en</code></td>
+<td>an espeak-ng voice name — <code>syn-speak voices</code> lists them</td>
+</tr>
+<tr>
+<td><code>rate</code></td>
+<td><code>175</code></td>
+<td>words per minute, 80–450</td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td><code>100</code></td>
+<td>0–100</td>
+</tr>
+<tr>
+<td><code>interval</code></td>
+<td><code>0.5</code></td>
+<td>seconds between focus checks; no command sets it, edit the file</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>voice</code> falls back to <code>lang</code> if it is not set, so an existing <code>lang=</code> line keeps
+working.</p>
+<h2 id="what-it-needs">What it needs</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a voice</td>
+<td><code>vibe</code> (piper), or <code>espeak-ng</code></td>
+</tr>
+<tr>
+<td>the focused window</td>
+<td><code>synctl</code>, from the <code>synui</code> package</td>
+</tr>
+<tr>
+<td>the selection</td>
+<td><code>wl-clipboard</code> — <code>wl-paste --primary</code> first, since on Wayland that is what "the text I just highlighted" means; the clipboard is what was deliberately copied</td>
+</tr>
+<tr>
+<td></td>
+<td><code>python3</code>, to read synctl's JSON</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every one of them is checked by name rather than by running it and looking at
+the exit status: "not installed" and "ran and failed" want opposite answers.</p>
+<h2 id="notes-for-a-multi-monitor-or-nested-desktop">Notes for a multi-monitor or nested desktop</h2>
+<p>The announcer asks <code>synctl</code> which window has focus, and <code>synctl</code> finds the
+compositor through <code>WAYLAND_DISPLAY</code>. A <strong>user unit does not have one</strong> —
+nothing in this session runs <code>systemctl --user import-environment</code> — so
+<code>syn-speak</code> resolves the name synui publishes at
+<code>$XDG_RUNTIME_DIR/synui-display</code>, the same file <code>synui-foot.service</code> and
+<code>synui-media-inhibit</code> read.</p>
+<p>⛔ <strong>An explicit <code>WAYLAND_DISPLAY</code> always wins and is never overridden.</strong> That
+published file names the <em>live</em> desktop, so a nested or headless synui — a test
+rig, a screenshot rig — must not have its announcer read the real session's
+windows out loud.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="/wiki/Keybindings">Keybindings</a> — the three keys, in the System table</li>
+<li><a href="/wiki/Settings">Settings</a> — the Speech pane</li>
+<li><a href="/wiki/Vibe">Vibe</a> — the assistant: <code>vibe voice</code>, dictation, and the wake word</li>
+<li><a href="/wiki/Chibi">Chibi</a> — where piper and faster-whisper come from</li>
+</ul>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Keybindings"><span>Previous</span>Keybindings</a><a class="next" href="/wiki/Commands"><span>Next</span>Commands</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak" aria-current="page">Speech and dictation</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>

@@ -72,7 +72,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Keybindings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
       </p>
 
       <div class="wiki-body">
@@ -256,11 +256,11 @@ bound to the same action. Reach for it either way.</p>
 </tr>
 <tr>
 <td><code>Super</code>+<code>1</code>–<code>9</code></td>
-<td>Switch workspace</td>
+<td>Switch workspace — the <strong>whole desk</strong> by default; only the focused monitor under <code>workspace_mode = per-monitor</code>, see <a href="/wiki/The-Desktop#desktops-and-monitors">The Desktop</a></td>
 </tr>
 <tr>
 <td><code>Super</code>+<code>Shift</code>+<code>1</code>–<code>9</code></td>
-<td>Move window to workspace</td>
+<td>Move window to workspace — it keeps the monitor it is on</td>
 </tr>
 </tbody>
 </table></div>
@@ -339,7 +339,7 @@ walking along the strip, which <code>Super</code>+<code>Shift</code>+<code>J</co
 </tr>
 <tr>
 <td><code>Super</code>+<code>D</code></td>
-<td>Display settings (<code>p</code> sets the <strong>primary</strong> output — see below; <code>m</code> cycles <code>display_mode</code>: extend / mirror / external)</td>
+<td>Display settings (<code>p</code> sets the <strong>primary</strong> output — see below; <code>m</code> cycles <code>display_mode</code>: extend / mirror / external; <code>d</code> 10-bit colour, <code>Shift</code>+<code>D</code> <strong>HDR10 output</strong>, <code>[</code> <code>]</code> SDR white)</td>
 </tr>
 <tr>
 <td><code>Super</code>+<code>I</code></td>
@@ -374,6 +374,18 @@ walking along the strip, which <code>Super</code>+<code>Shift</code>+<code>J</co
 <td>Clipboard history</td>
 </tr>
 <tr>
+<td><code>Super</code>+<code>Shift</code>+<code>U</code></td>
+<td><strong>Screen reader</strong> — announce the focused window as focus moves, and press again to stop (<code>syn-speak toggle</code>). Also Control panel ▸ Sound ▸ <em>Screen reader</em></td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>U</code></td>
+<td>Read whatever is <strong>highlighted right now</strong>, once (<code>syn-speak selection</code>)</td>
+</tr>
+<tr>
+<td><code>Super</code>+<code>Shift</code>+<code>V</code></td>
+<td><strong>Dictate</strong> — listen once, and type what you said where the cursor is (<code>vibe voice type</code>). V for voice; <code>Super</code>+<code>V</code> above is the clipboard</td>
+</tr>
+<tr>
 <td><code>Super</code>+<code>R</code></td>
 <td>News feed (R for RSS — <code>Super</code>+<code>N</code> is minimize)</td>
 </tr>
@@ -396,6 +408,19 @@ walking along the strip, which <code>Super</code>+<code>Shift</code>+<code>J</co
 </tbody>
 </table></div>
 <blockquote>
+<p><strong>The three speech keys are the reason they are keys at all.</strong> A screen
+reader that can only be started from a terminal is not one — the person who
+needs it is the person who cannot read the terminal to start it. And
+<code>Super</code>+<code>Shift</code>+<code>U</code> <strong>toggles</strong> rather than having an off chord of its own: a
+reader talking over you has to be stoppable with the key you just pressed, not
+by remembering a different one.</p>
+<p>All three spawn <a href="/wiki/syn-speak"><code>syn-speak</code></a> and <a href="/wiki/Vibe"><code>vibe</code></a> rather than doing
+the talking themselves — the speech stack lives there, and a compositor that
+grew its own would be a third voice on the machine. On a box without them the
+key spawns a command that is not there, which costs a log line and nothing
+else.</p>
+<p>The voices, the rate, what to install where nothing speaks, and why this is an
+announcer rather than a full screen reader: <a href="/wiki/syn-speak">Speech and dictation</a>.</p>
 <p><strong><code>Super</code>+<code>T</code> used to be the task manager.</strong> It is the theme manager now — the
 task manager had two binds and needed one, and <code>Ctrl</code>+<code>Alt</code>+<code>Delete</code> is the one
 everybody already reaches for. (logind's <code>Ctrl</code>+<code>Alt</code>+<code>Del</code> handling is a
@@ -533,7 +558,7 @@ whichever panel happened to be first. <code>Super</code>+<code>D</code> → <cod
 <p>See also: <a href="/wiki/synui">synui</a>, <a href="/wiki/Commands">Commands</a>.</p>
       </div>
 
-<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Terminal"><span>Previous</span>Terminal</a><a class="next" href="/wiki/Commands"><span>Next</span>Commands</a></nav>
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/Terminal"><span>Previous</span>Terminal</a><a class="next" href="/wiki/syn-speak"><span>Next</span>Speech and dictation</a></nav>
     </article>
 
 <nav class="wiki-side" aria-label="All wiki pages">
@@ -545,10 +570,12 @@ whichever panel happened to be first. <code>Super</code>+<code>D</code> → <cod
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings" aria-current="page">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -600,7 +627,8 @@ whichever panel happened to be first. <code>Super</code>+<code>D</code> → <cod
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

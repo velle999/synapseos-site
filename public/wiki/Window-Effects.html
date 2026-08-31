@@ -82,7 +82,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>Window Effects</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Window-Effects/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Window-Effects/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-30">2026-08-30</time>
       </p>
 
       <div class="wiki-body">
@@ -623,19 +623,31 @@ that <strong>Dolphin never binds it</strong>. If you are testing KDE blur, confi
 anything about the compositor.</p>
 <hr />
 <h2 id="hdr-and-10-bit">HDR and 10-bit</h2>
-<p>The display panel tells an <strong>HDR</strong> monitor from a merely 10-bit one by reading
-the <strong>EDID</strong>, not by asking the plane. Every 10-bit plane used to be labelled
-"HDR-ready", which is wrong: plenty of 10-bit panels are not HDR at all.</p>
-<p>Real HDR10 output is <strong>blocked on scenefx</strong>, and scenefx is a fork of wlroots'
-scene graph — so the work is not "wait for wlroots", it is "port or patch the
-fork". <code>wp_color_management_v1</code> is exported as of the 0.20 port.</p>
-<p>Two things the night-light work established, which apply to anything touching
-output colour:</p>
+<p>They are two different things and the panel keeps them apart. <strong>10-bit colour</strong>
+(<code>d</code>) is how many shades the link carries; <strong>HDR10</strong> (<code>Shift</code>+<code>D</code>) is a
+different signal entirely. Every 10-bit plane used to be labelled "HDR-ready",
+which is wrong: plenty of 10-bit panels are not HDR at all. What a monitor <em>is</em>
+comes from its EDID; whether it can be <em>driven</em> is asked of the connector.</p>
+<p><strong>HDR10 output ships</strong> — see <a href="/wiki/The-Desktop#hdr">Screens</a> for the controls. It is
+the signal, not the rendering: the display is told it is receiving HDR10 and the
+desktop is mapped into it, while the compositor still draws in 8-bit sRGB. An
+HDR video does not gain highlights it did not have.</p>
+<p>That last part is what is still blocked on scenefx, and scenefx is a fork of
+wlroots' scene graph — so the work is not "wait for wlroots", it is "port or
+patch the fork". <code>wp_color_management_v1</code> is exported as of the 0.20 port.</p>
+<p>Three things about output colour, which anything touching it runs into:</p>
 <ul>
-<li><strong>Night light goes on the output <em>state</em>.</strong> Setting it anywhere else is
-  ignored while window effects are on.</li>
-<li><strong>A NULL gamma LUT must be <em>committed</em>, or it never turns off.</strong> The witness is
-  <code>modetest</code>'s <code>GAMMA_LUT</code> property, not the compositor's own log.</li>
+<li><strong>Colour goes on the output <em>state</em>.</strong> Handed to the scene it is ignored while
+  window effects are on — scenefx's renderer declares that it does not do output
+  colour transforms, and then silently drops the field.</li>
+<li><strong>A NULL transform must be <em>committed</em>, or it never turns off.</strong> The witness
+  is <code>modetest</code>'s <code>GAMMA_LUT</code> property, not the compositor's own log. The same
+  is true of the HDR image description: a screen put into HDR has to be
+  explicitly told it is back to sRGB.</li>
+<li><strong>There is one colour slot per screen.</strong> Night light and HDR cannot both hold
+  it, so in HDR the warmth is folded into the HDR curve rather than applied
+  beside it — which is why a screen in HDR still goes warm at night, and by the
+  same amount as the screen next to it.</li>
 </ul>
 <hr />
 <h2 id="verifying-an-effect-actually-changed-something">Verifying an effect actually changed something</h2>
@@ -667,10 +679,12 @@ honest:</p>
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -722,7 +736,8 @@ honest:</p>
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

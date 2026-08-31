@@ -85,7 +85,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Configuration</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Configuration/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Configuration/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
       </p>
 
       <div class="wiki-body">
@@ -391,11 +391,11 @@ nothing: there is nothing to see through.</p>
 </tr>
 <tr>
 <td><code>anim_workspace</code></td>
-<td><code>fade</code> <code>slide</code> <code>none</code></td>
+<td><code>fade</code> <code>slide</code> <code>cube</code> <code>none</code></td>
 </tr>
 <tr>
 <td><code>anim_workspace_ms</code></td>
-<td>a slide wants longer than a fade</td>
+<td>a slide wants longer than a fade, a cube longer again</td>
 </tr>
 <tr>
 <td><code>anim_curve</code></td>
@@ -408,6 +408,9 @@ nothing: there is nothing to see through.</p>
 moment it unmaps, so there is nothing left to animate.</p>
 </blockquote>
 <h2 id="layout">Layout</h2>
+<p><code>workspace_mode</code> — <code>shared</code> (one desktop across every monitor; the default) or
+<code>per-monitor</code> (each screen remembers its own, and a switch moves only the
+monitor the focus is on). See <a href="/wiki/The-Desktop#desktops-and-monitors">The Desktop</a>.</p>
 <p><code>gap</code> (0–128), <code>master_factor</code> (share the master window takes), <code>float_inset</code>
 (0–40 % kept clear at each edge by the floating grid), <code>float_gap</code> (0–256 px
 between those tiles), <code>cascade_stack_max</code> (windows per pile).</p>
@@ -628,10 +631,12 @@ has one spelling and one clamp: <code>bar_enabled</code>, <code>bar_shell</code>
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration" aria-current="page">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -683,7 +688,8 @@ has one spelling and one clamp: <code>bar_enabled</code>, <code>bar_shell</code>
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

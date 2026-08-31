@@ -71,7 +71,7 @@
       <p class="eyebrow">Components</p>
       <h1>synui</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synui/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synui/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-30">2026-08-30</time>
       </p>
 
       <div class="wiki-body">
@@ -164,8 +164,10 @@ desktop can be <code>off</code>, <code>fade</code> or <code>slide</code>. Separa
 curve. See <a href="/wiki/The-Desktop#animations">The Desktop → Animations</a>.</p>
 <h3 id="hardware">Hardware</h3>
 <p><strong>Display</strong> (<code>Super</code>+<code>D</code>) — per-output mode, position, scale, 10-bit colour, and
-<strong>HDR detected from the EDID</strong> rather than from the plane's bit depth. Monitor
-grid with aligned columns; night light is part of the output state.</p>
+<strong>HDR10 output</strong> (<code>Shift</code>+<code>D</code>) with an SDR white level (<code>[</code> <code>]</code>). What a monitor
+<em>is</em> comes from the EDID rather than from the plane's bit depth; whether it can
+be <em>driven</em> in HDR is asked of the connector. Monitor grid with aligned columns;
+night light and the HDR curve share the output state's single colour transform.</p>
 <p><strong>Power</strong> (<code>Super</code>+<code>P</code>) — compositor-native dim, blank, lock and suspend, which
 retired <code>swayidle</code> entirely. Includes <strong>media idle-inhibit</strong>: it will not blank
 the screen while audio is playing. Explicit laptop lid policy, brightness keys,
@@ -241,10 +243,12 @@ Roadmap: <a href="https://github.com/velle999/SYNAPSE/blob/main/synui/ROADMAP.md
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -296,7 +300,8 @@ Roadmap: <a href="https://github.com/velle999/SYNAPSE/blob/main/synui/ROADMAP.md
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>

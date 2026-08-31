@@ -82,11 +82,13 @@
 <li class="sub"><a href="#text">Text</a></li>
 <li><a href="#scale--making-the-whole-desktop-bigger">Scale — making the whole desktop bigger</a></li>
 <li><a href="#screens">Screens</a></li>
+<li class="sub"><a href="#hdr">HDR</a></li>
 <li class="sub"><a href="#screen-audio">Screen audio</a></li>
 <li><a href="#layouts">Layouts</a></li>
 <li class="sub"><a href="#monocle">Monocle</a></li>
 <li class="sub"><a href="#niri">niri</a></li>
 <li><a href="#animations">Animations</a></li>
+<li><a href="#desktops-and-monitors">Desktops and monitors</a></li>
 <li><a href="#per-app-window-geometry">Per-app window geometry</a></li>
 </ul></nav>
 
@@ -94,7 +96,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>The Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
       </p>
 
       <div class="wiki-body">
@@ -775,6 +777,64 @@ application opened, took focus, and was invisible. A detached output is
 removed from the layout now, and the windows on it are swept to a surviving
 screen, the same way an unplugged monitor's are.</p>
 </blockquote>
+<h3 id="hdr">HDR</h3>
+<p><code>Shift</code>+<code>D</code> in the display panel drives the selected monitor in <strong>HDR10</strong>, on a
+monitor and a mode that will take it. The column beside each screen says which
+will:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HDR10 ON</strong></td>
+<td>this screen is being driven in HDR right now</td>
+</tr>
+<tr>
+<td><strong>HDR10</strong></td>
+<td>it can be, and is not</td>
+</tr>
+<tr>
+<td><strong>HDR10 (—)</strong></td>
+<td>the panel advertises HDR, and this cable or refresh rate will not carry it</td>
+</tr>
+<tr>
+<td><em>(blank)</em></td>
+<td>an SDR panel</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>[</code> and <code>]</code> move the <strong>SDR white level</strong>, 203 cd/m² by default. HDR measures
+brightness in real units rather than as a fraction of what a panel can do, so
+the desktop has to be told where its white goes. It is not a brightness control:
+it decides only where ordinary windows sit inside an HDR signal, which is what
+makes the desktop look right beside an HDR video instead of washed out next to
+it. 203 is the broadcast reference level and a sensible place to start; move it
+if white looks dim or glaring against HDR content.</p>
+<p>Both the mode and the level are remembered per monitor, in <code>outputs.conf</code>, and
+restored at the next login only if that connector still accepts them.</p>
+<p>From a script:</p>
+<div class="hl"><pre><span></span><code>synctl<span class="w"> </span>hdr<span class="w">                        </span><span class="c1"># what every screen will accept</span>
+synctl<span class="w"> </span>hdr<span class="w"> </span>on<span class="w">  </span>DP-3<span class="w">               </span><span class="c1"># drive it in HDR10</span>
+synctl<span class="w"> </span>hdr<span class="w"> </span>off<span class="w"> </span>DP-3
+synctl<span class="w"> </span>hdr<span class="w"> </span>white<span class="w"> </span>DP-3<span class="w"> </span><span class="m">250</span><span class="w">         </span><span class="c1"># cd/m², 80–600</span>
+</code></pre></div>
+
+<p>Turning it on can fail — a cable, a refresh rate, or a monitor that will not
+carry the signal — and it answers with an error rather than a setting that
+quietly did nothing.</p>
+<p><strong>What is driven is the signal.</strong> The display is told it is receiving HDR10 and
+the desktop is mapped into it correctly, with 10-bit colour switched on
+alongside so dark gradients do not band. The desktop itself is still composited
+in 8-bit sRGB, so an HDR video does not gain highlights it did not have — that
+needs colour management inside the renderer and is not here. On a monitor that
+will only accept a BT.2020 container, colours run wide; the line under the
+monitor list says so when that is what happened.</p>
+<p>Night light works on a screen in HDR, and warms it by the same amount as the
+screen next to it.</p>
 <h3 id="screen-audio">Screen audio</h3>
 <p><code>hdmi_audio = auto</code> moves audio to a screen that can take it — on by default
 where it is wanted (a machine with a battery) and off where it is a nuisance (a
@@ -925,12 +985,12 @@ windows or ten. On tiling, every new window takes space off the stack.</p>
 </tr>
 <tr>
 <td><code>anim_workspace</code></td>
-<td><code>off</code>, <code>fade</code> (cross-fade), <code>slide</code></td>
+<td><code>off</code>, <code>fade</code> (cross-fade), <code>slide</code>, <code>cube</code></td>
 <td><code>fade</code></td>
 </tr>
 <tr>
 <td><code>anim_workspace_ms</code></td>
-<td>0–1000 ms; a slide wants longer than a fade</td>
+<td>0–1000 ms; a slide wants longer than a fade, a cube longer again</td>
 <td>140</td>
 </tr>
 <tr>
@@ -944,6 +1004,32 @@ windows or ten. On tiling, every new window takes space off the stack.</p>
 higher-numbered desktop sends the old one off to the left, the way a pager
 reads. The windows keep full opacity while they go — they are leaving, not
 dissolving.</p>
+<p><strong>Cube</strong> turns the whole desk about a vertical axis. The desktop you are leaving
+and the one you are arriving at are two faces of a cube meeting at a right
+angle, on black, shaded so the corner between them reads, pulled back far enough
+that the turn fits on the screen. Give it 400–600 ms; at 140 it is over before
+the eye has followed it.</p>
+<p>It is a different kind of animation from the other three and works differently.
+They move each window's frame, which the scene graph can do; a cube has to turn
+the whole picture in perspective, which it cannot. So the compositor takes the
+frame instead: it photographs the desktop being left, renders the incoming one
+live, and draws both as two surfaces through a GLES2 program of its own. Two
+consequences worth knowing:</p>
+<ul>
+<li><strong>The CRT filter is off for the length of the turn.</strong> Both are full-screen
+  passes over the same buffer and only one can have it. It comes back when the
+  desk lands.</li>
+<li><strong>A driver that cannot compile the shader gets an un-animated switch</strong>, not a
+  broken one. Every failure path in the cube ends the turn and hands the frame
+  back to the ordinary path.</li>
+<li><strong>A rotated monitor still turns about the axis you see as vertical.</strong> The
+  compositor renders a 90°/270° screen into a buffer that is on its side, so a
+  cube built out of buffer coordinates would roll like a drum on a portrait
+  panel; the shader works in screen coordinates instead.</li>
+</ul>
+<p>The turn begins and ends at exactly the picture an un-animated switch would
+draw, corner for corner, which is what lets it run on every switch rather than
+only on some of them.</p>
 <p>The curve is deliberately shared rather than per-event. Two easings on one
 desktop read as two different desktops, and the niri strip slide is on it too.</p>
 <blockquote>
@@ -954,6 +1040,47 @@ every frame — so what moves, moves at a fixed size.</p>
 </blockquote>
 <p><code>animation_ms</code> still works and sets both lengths at once; it is what these two
 replaced.</p>
+<h2 id="desktops-and-monitors">Desktops and monitors</h2>
+<p>There are nine desktops, on <code>Super</code>+<code>1</code>–<code>9</code>, and <code>Super</code>+<code>Shift</code>+<code>1</code>–<code>9</code> sends
+the focused window to one. What that means on a desk with more than one monitor
+is a setting: <strong>Windows ▸ Desktops span</strong> in the control panel, <code>workspace_mode</code>
+in <code>synuirc</code>.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>What a switch moves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shared</code> <em>(default)</em></td>
+<td><strong>The whole desk.</strong> A desktop is one virtual desktop across every monitor, the way KDE, GNOME and Windows do it: <code>Super</code>+<code>2</code> changes every screen at once</td>
+</tr>
+<tr>
+<td><code>per-monitor</code></td>
+<td><strong>One screen.</strong> Each monitor remembers the desktop it is showing, and the switch moves only the monitor the focus is on</td>
+</tr>
+</tbody>
+</table></div>
+<p>What does <strong>not</strong> change between them is what a desktop <em>is</em>. Its window list
+still spans the desk and each window still records the monitor it sits on, so
+<code>Super</code>+<code>O</code> (move to the next monitor) and <code>Super</code>+<code>Shift</code>+<code>2</code> (move to another
+desktop) stay the two independent axes they always were. <code>per-monitor</code> only
+removes the rule that every screen has to be looking at the same one.</p>
+<blockquote>
+<p>Two monitors showing the same desktop is a perfectly good state under
+<code>per-monitor</code>, each drawing its own share of it. That is what keeps the keys
+honest: the desktop you ask for is never one another screen has claimed, so
+<code>Super</code>+<code>2</code> always does what it says instead of finding the number taken.</p>
+</blockquote>
+<p>Switching the mode back to <code>shared</code> brings the desk together again — every
+monitor returns to the desktop the focused one is on, with nothing stranded on a
+screen that is no longer showing it.</p>
+<p><strong>The bar follows.</strong> Each screen's row of desktop pills highlights the desktop
+<em>that</em> screen is showing, so a split desk reads correctly at a glance, and
+clicking a pill moves the monitor whose bar you clicked — the switch acts on the
+screen the pointer is on. Both shipped bars do this.</p>
 <h2 id="per-app-window-geometry">Per-app window geometry</h2>
 <p><code>remember_geometry = on</code> reopens a floating window at the box it had last time,
 per application.</p>
@@ -994,10 +1121,12 @@ in — nothing is looked up.</p>
 <li><a href="/wiki/Software">Software</a></li>
 <li><a href="/wiki/Files">Files</a></li>
 <li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
 <li><a href="/wiki/Editor">Editor</a></li>
 <li><a href="/wiki/Studio">Studio</a></li>
 <li><a href="/wiki/Terminal">Terminal</a></li>
 <li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
 <li><a href="/wiki/Commands">Commands</a></li>
 <li><a href="/wiki/Configuration">Configuration</a></li>
 <li><a href="/wiki/Nix">Nix</a></li>
@@ -1049,7 +1178,8 @@ in — nothing is looked up.</p>
     <p class="small">
       These pages are rendered from the
       <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
-      edited. GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
     </p>
   </div>
 </footer>
