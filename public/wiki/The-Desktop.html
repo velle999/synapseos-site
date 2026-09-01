@@ -80,6 +80,9 @@
 <li class="sub"><a href="#a-clear-bar">A clear bar</a></li>
 <li class="sub"><a href="#rgb-lighting">RGB lighting</a></li>
 <li class="sub"><a href="#text">Text</a></li>
+<li><a href="#language">Language</a></li>
+<li class="sub"><a href="#arabic-and-hindi-are-shaped-not-just-translated">Arabic and Hindi are shaped, not just translated</a></li>
+<li class="sub"><a href="#changing-it-after-installing">Changing it after installing</a></li>
 <li><a href="#scale--making-the-whole-desktop-bigger">Scale — making the whole desktop bigger</a></li>
 <li><a href="#screens">Screens</a></li>
 <li class="sub"><a href="#hdr">HDR</a></li>
@@ -96,7 +99,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>The Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-01">2026-09-01</time>
       </p>
 
       <div class="wiki-body">
@@ -699,6 +702,52 @@ with a scratch <code>XDG_CONFIG_HOME</code> will still re-theme the <strong>live
 stub it on <code>PATH</code> before any nested-session testing. See
 <a href="/wiki/Development-Notes#testing-the-compositor-without-a-real-seat">Development Notes</a>.</p>
 </blockquote>
+<hr />
+<h2 id="language">Language</h2>
+<p>The desktop draws its own words in <strong>fourteen languages</strong>: English, Deutsch,
+Français, Español, Português, Italiano, Nederlands, Polski, Русский, 日本語,
+中文, 한국어, हिन्दी, العربية. It follows the locale — the language chosen at
+the boot menu or by the installer — and there is nothing to configure.</p>
+<p><strong>820 strings, complete in all thirteen catalogs.</strong> What speaks: the control
+panel, the dock, the desktop right-click menu, the lock screen, the
+screensaver, the power and idle panels, the CRT and filter panels, and the
+widget panel (<code>Super</code>+<code>Shift</code>+<code>A</code>).</p>
+<p><strong>Still English:</strong> the bar — it is a quickshell surface with a tree of its own,
+and so are the desktop widgets it draws — and a handful of compositor panels:
+Bluetooth, the wallpaper picker, notifications, the news reader, and the
+clock's date format.</p>
+<blockquote>
+<p>The <strong>dock</strong> is translated and the <strong>bar</strong> is not, which is worth saying
+plainly because they sit next to each other. The dock is drawn by the
+compositor; the bar is a separate quickshell process.</p>
+</blockquote>
+<h3 id="arabic-and-hindi-are-shaped-not-just-translated">Arabic and Hindi are shaped, not just translated</h3>
+<p><code>synui</code> draws its own text through cairo rather than handing it to a toolkit,
+so it carries the layout stage itself: <strong>HarfBuzz</strong> for joining, mark
+positioning and Indic reordering, <strong>FriBidi</strong> for reading order. Arabic joins
+and runs right-to-left; Devanagari matras sit before the consonants they belong
+to; conjuncts form. Hebrew reorders the same way.</p>
+<p>Latin, Cyrillic and CJK do not go near the shaper — they need no joining and no
+reordering, so they take the same drawing path they always did and lay out
+identically to before.</p>
+<blockquote>
+<p>Both libraries were already on the system: <code>harfbuzz</code> under <code>librsvg</code>,
+<code>fribidi</code> under <code>pango</code> and GTK. Shaping adds nothing to the ISO.</p>
+</blockquote>
+<h3 id="changing-it-after-installing">Changing it after installing</h3>
+<p>The desktop reads the locale, so this is the same row as everything else that
+follows it — <strong>Settings ▸ Region</strong>, or:</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>locale<span class="w"> </span>ar_EG.UTF-8<span class="w">    </span><span class="c1"># log out and back in</span>
+</code></pre></div>
+
+<p>Catalogs install as <code>.mo</code> files, one per language:</p>
+<div class="hl"><pre><span></span><code>ls<span class="w"> </span>/usr/share/locale/*/LC_MESSAGES/synui.mo
+msgunfmt<span class="w"> </span>/usr/share/locale/ar/LC_MESSAGES/synui.mo<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w">   </span><span class="c1"># what one holds</span>
+</code></pre></div>
+
+<p>They are keyed by the English sentence rather than by an identifier, so a
+string with no translation prints the English. A partial catalog is usable, and
+no panel can ever show an identifier.</p>
 <hr />
 <h2 id="scale--making-the-whole-desktop-bigger">Scale — making the whole desktop bigger</h2>
 <p><code>Super</code>+<code>Ctrl</code>+<code>=</code> and <code>Super</code>+<code>Ctrl</code>+<code>-</code>; <code>Super</code>+<code>Ctrl</code>+<code>0</code> returns to 100%.
