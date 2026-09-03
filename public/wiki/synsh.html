@@ -57,6 +57,7 @@
 <input class="toc-toggle" type="checkbox" id="toc-open">
 <label class="toc-label" for="toc-open">On this page</label>
 <p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#language">Language</a></li>
 <li><a href="#shell-features">Shell features</a></li>
 <li><a href="#colour-output">Colour output</a></li>
 <li><a href="#-synsh-has-two-incompatible-tokenizers">⚠️ synsh has two incompatible tokenizers</a></li>
@@ -67,7 +68,7 @@
       <p class="eyebrow">Components</p>
       <h1>synsh</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synsh/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-18">2026-08-18</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synsh/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -80,6 +81,26 @@ shell with <code>chsh -s /usr/bin/synsh</code> — it is already in <code>/etc/s
 <p>If the banner doesn't say <em>AI online</em>, <code>synapd</code> isn't reachable: check
 <code>systemctl status synapd</code> and that the model is in
 <code>/var/lib/synapd/models/synapse.gguf</code>.</p>
+<hr />
+<h2 id="language">Language</h2>
+<p>synsh <strong>says</strong> everything in fourteen languages and <strong>understands</strong> requests in
+all fourteen whatever it is set to — the phrase tables hold every language at
+once, so somebody working in German who types <code>list files</code> out of habit still
+gets it, and accents are optional in both directions (<code>wie spaet ist es</code>,
+<code>que hora es</code>).</p>
+<p>It follows the language the image was booted in and needs no configuration.
+<code>syn lang</code> says which one; <code>synsh --lang de</code> changes it for one run, and
+<code>set language de</code> in <code>~/.synshrc</code> for good.</p>
+<p>⚠ <strong>The catalog is compiled in, not gettext.</strong> synsh is on the ISO and runs
+before <code>/usr</code> is necessarily complete, and a shell that cannot find its <code>.mo</code>
+files must still be able to say why it cannot. The 91 messages, the English
+text and every catalog's shape are generated from one list, so a message cannot
+exist in one place and not another, and a translation cannot slide onto the
+wrong id.</p>
+<p>⛔ <strong>What the language changes is what it says, never what it runs.</strong> <code>ls</code> is
+<code>ls</code> in every language and so is every exit code — <code>synsh --lang ja -c 'false'</code>
+still exits 1. The language codes it lists (<code>en de fr …</code>) are tags you type, not
+words, and stay as they are.</p>
 <hr />
 <h2 id="shell-features">Shell features</h2>
 <p>Real GNU <strong>readline</strong> (line editing, history), aliases, built-ins that work
