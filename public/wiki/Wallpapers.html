@@ -59,6 +59,8 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#the-picker-superw">The picker (Super+W)</a></li>
 <li class="sub"><a href="#scaling-modes">Scaling modes</a></li>
+<li><a href="#where-more-come-from-wallhavencc-superctrlw">Where more come from: wallhaven.cc (Super+Ctrl+W)</a></li>
+<li class="sub"><a href="#the-command-line">The command line</a></li>
 <li><a href="#per-monitor-wallpapers">Per-monitor wallpapers</a></li>
 <li><a href="#wallpaper-engine-steam-workshop">Wallpaper Engine (Steam Workshop)</a></li>
 <li class="sub"><a href="#getting-it">Getting it</a></li>
@@ -73,7 +75,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>Wallpapers</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-27">2026-07-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -153,6 +155,52 @@ images in beats building a chooser or shelling out to a GTK dialog for one path.
 <h3 id="scaling-modes">Scaling modes</h3>
 <p><code>fill</code> · <code>fit</code> · <code>stretch</code> · <code>center</code> · <code>tile</code>. The mode follows the scope, so
 one screen can <code>fill</code> while another <code>fit</code>s.</p>
+<hr />
+<h2 id="where-more-come-from-wallhavencc-superctrlw">Where more come from: wallhaven.cc (<code>Super</code>+<code>Ctrl</code>+<code>W</code>)</h2>
+<p>The picker lists what is already on the disk. This is a grid of what is on
+<strong>wallhaven.cc</strong> — the same window opens from <code>Super</code>+<code>Ctrl</code>+<code>W</code>, from the
+<strong>Wallhaven</strong> row at the bottom of the picker's built-ins, and from
+<code>synui-wallhaven</code> at a prompt.</p>
+<ul>
+<li><strong>Category chips</strong> — general, anime, people. At least one stays on: <code>000</code> is a
+  query wallhaven answers with nothing, which on screen is indistinguishable
+  from a network that did not come back.</li>
+<li><strong>Sorting</strong> — popular, latest, most viewed, random.</li>
+<li><code>←</code> <code>→</code> page, <code>1</code> <code>2</code> <code>3</code> toggle categories, <code>S</code> cycles the sort, <code>Enter</code> sets
+  the highlighted one, <code>Esc</code> closes.</li>
+</ul>
+<p>Picking one downloads it into <strong><code>~/Pictures/Wallpapers</code></strong>, which is the first
+directory the <code>Super</code>+<code>W</code> picker scans, and then sets it through the same
+<code>wppick_set_path()</code> every other pick goes through. So a wallpaper taken from
+wallhaven is an ordinary local wallpaper from then on: it is in the picker's
+list afterwards, it survives this being uninstalled, and there is one definition
+of "make this the wallpaper" rather than two.</p>
+<blockquote class="warn"><p>⛔ <strong>Off by default.</strong> This is the only part of the wallpaper picker that
+leaves your machine, and the second thing in the whole desktop that talks to
+the internet at all — the weather is the other. Nothing here resolves a name
+until you say so:</p>
+<p><code>bash
+synui-wallhaven on</code></p>
+</blockquote>
+<p>⚠ <strong>Results are <code>sfw</code> and that is not a setting.</strong> wallhaven's other two purity
+levels need an API key, which means pasting a credential into a wallpaper picker
+and keeping it in a config file that a screenshot of the settings window would
+leak. One filter, applied, is a smaller promise and a keepable one.</p>
+<h3 id="the-command-line">The command line</h3>
+<div class="hl"><pre><span></span><code>synui-wallhaven<span class="w"> </span>search<span class="w"> </span>--sort<span class="o">=</span>toplist<span class="w"> </span>--categories<span class="o">=</span><span class="m">101</span><span class="w">   </span><span class="c1"># general + people</span>
+synui-wallhaven<span class="w"> </span>search<span class="w"> </span>--rec<span class="w">                             </span><span class="c1"># the table the window reads</span>
+synui-wallhaven<span class="w"> </span>get<span class="w"> </span>&lt;id&gt;<span class="w">                                 </span><span class="c1"># download only, prints the path</span>
+synui-wallhaven<span class="w"> </span><span class="nb">set</span><span class="w"> </span>&lt;id&gt;<span class="w">                                 </span><span class="c1"># …and make it the wallpaper</span>
+synui-wallhaven<span class="w"> </span>on<span class="w"> </span><span class="p">|</span><span class="w"> </span>off<span class="w"> </span><span class="p">|</span><span class="w"> </span>status
+</code></pre></div>
+
+<p>⚠ <strong>The browser is a quickshell surface, not compositor code</strong>, for the same
+reason the welcome guide is. A grid of remote thumbnails means HTTP, JSON and
+JPEG decoding, and the compositor's event loop is the one place on the machine
+where a slow DNS lookup is a frozen desktop — <code>weather.c</code> and <code>news.c</code> each pay
+for their network with a worker thread and a stop flag wired into libcurl's
+progress callback. A QML <code>Image</code> loads an https URL by itself, asynchronously,
+with its own cache.</p>
 <hr />
 <h2 id="per-monitor-wallpapers">Per-monitor wallpapers</h2>
 <p><code>Tab</code> in the picker is the whole feature. With the scope on:</p>
