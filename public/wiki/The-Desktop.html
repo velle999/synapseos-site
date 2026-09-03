@@ -721,10 +721,17 @@ looks up nothing, and hands back its own argument while looking exactly like a
 marked string in review. The same <code>.po</code> files are compiled a second time into
 JSON, and a singleton reads them: <strong>265 strings</strong>, one catalog per language,
 installed beside the singleton so it can find its own directory.</p>
-<p><strong>Still English:</strong> the desktop <strong>widgets</strong> the bar draws, and a handful of
-compositor panels — the wallpaper picker, notifications, the clock's date
-format, and most of the Bluetooth and news panels, which have their headings
-translated and little else.</p>
+<p><strong>And the applications name themselves.</strong> A <code>.desktop</code> file carries its own
+translations (<code>Name[de]</code>, <code>Name[pt_BR]</code>, <code>Name[sr@latin]</code>) and most software
+ships them, so the application grid, the start menu and the desktop icons show
+each program's name in your language — matched on the spec's own candidate
+list, against the same locale the rest of the desktop is drawn in. A program
+that ships no translation keeps its English name, which is the right failure.</p>
+<p><strong>Still English:</strong> SynapseOS's <strong>own</strong> entries in that list — the thirty
+launchers <code>synui</code> ships for its panels — plus the desktop <strong>widgets</strong> the bar
+draws, and a handful of compositor panels: the wallpaper picker, notifications,
+the clock's date format, and most of the Bluetooth and news panels, which have
+their headings translated and little else.</p>
 <blockquote>
 <p>Every one of those is a screen somebody can reach, which is why they are
 listed rather than rounded up to "translated".</p>
