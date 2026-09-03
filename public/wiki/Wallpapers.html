@@ -112,6 +112,10 @@ below.</p>
 <td>Rescan for images</td>
 </tr>
 <tr>
+<td><code>w</code></td>
+<td><strong>Where more come from</strong> — opens the wallhaven browser below, and the header's <strong>[w] Wallhaven</strong> button is the same door</td>
+</tr>
+<tr>
 <td><code>Enter</code> / <code>Esc</code> / <code>q</code></td>
 <td>Close</td>
 </tr>
@@ -158,16 +162,25 @@ one screen can <code>fill</code> while another <code>fit</code>s.</p>
 <hr />
 <h2 id="where-more-come-from-wallhavencc-superctrlw">Where more come from: wallhaven.cc (<code>Super</code>+<code>Ctrl</code>+<code>W</code>)</h2>
 <p>The picker lists what is already on the disk. This is a grid of what is on
-<strong>wallhaven.cc</strong> — the same window opens from <code>Super</code>+<code>Ctrl</code>+<code>W</code>, from the
-<strong>Wallhaven</strong> row at the bottom of the picker's built-ins, and from
-<code>synui-wallhaven</code> at a prompt.</p>
+<strong>wallhaven.cc</strong> — the same window opens from <code>Super</code>+<code>Ctrl</code>+<code>W</code>, from <code>w</code> or
+the <strong>[w] Wallhaven</strong> button in the picker, from the <strong>Wallhaven</strong> row at the
+bottom of the picker's built-ins, and from <code>synui-wallhaven</code> at a prompt.</p>
+<p><code>w</code> goes back the other way too: the browser's header carries a <strong>Wallpapers</strong>
+button on the same key, so one key flips between what is on the disk and what is
+not. Whichever window you leave closes — both are full-screen and both want the
+keyboard, and two of them at once is a picker nobody can drive.</p>
+<p><strong>One monitor: the one you are on.</strong> synui names the focused screen when it
+opens the browser, because no Wayland protocol tells a layer-shell window where
+focus is — a browser that is never told opens on every monitor at once. Started
+from a prompt with no monitor to name, it opens on the first screen;
+<code>synui-wallhaven toggle DP-1</code> names one by hand.</p>
 <ul>
 <li><strong>Category chips</strong> — general, anime, people. At least one stays on: <code>000</code> is a
   query wallhaven answers with nothing, which on screen is indistinguishable
   from a network that did not come back.</li>
 <li><strong>Sorting</strong> — popular, latest, most viewed, random.</li>
 <li><code>←</code> <code>→</code> page, <code>1</code> <code>2</code> <code>3</code> toggle categories, <code>S</code> cycles the sort, <code>Enter</code> sets
-  the highlighted one, <code>Esc</code> closes.</li>
+  the highlighted one, <code>w</code> goes back to the picker, <code>Esc</code> closes.</li>
 </ul>
 <p>Picking one downloads it into <strong><code>~/Pictures/Wallpapers</code></strong>, which is the first
 directory the <code>Super</code>+<code>W</code> picker scans, and then sets it through the same
@@ -178,7 +191,10 @@ of "make this the wallpaper" rather than two.</p>
 <blockquote class="warn"><p>⛔ <strong>Off by default.</strong> This is the only part of the wallpaper picker that
 leaves your machine, and the second thing in the whole desktop that talks to
 the internet at all — the weather is the other. Nothing here resolves a name
-until you say so:</p>
+until you say so, and the window opens on that question the first time: it
+says what turning it on costs, carries the <strong>Turn on</strong> button, and asks
+wallhaven.cc for nothing at all until it is pressed. The same switch from a
+prompt:</p>
 <p><code>bash
 synui-wallhaven on</code></p>
 </blockquote>
