@@ -60,6 +60,7 @@
 <li><a href="#the-five-sources">The five sources</a></li>
 <li class="sub"><a href="#searching-all-of-them-at-once">Searching all of them at once</a></li>
 <li><a href="#appimages--a-verb-not-a-sixth-source">AppImages — a verb, not a sixth source</a></li>
+<li class="sub"><a href="#in-the-window">In the window</a></li>
 <li><a href="#everyday-use">Everyday use</a></li>
 <li class="sub"><a href="#two-things-pacman-has-never-done">Two things pacman has never done</a></li>
 <li class="sub"><a href="#exit-codes">Exit codes</a></li>
@@ -226,6 +227,14 @@ their promises:</p>
   unpacks it — which it does by <em>running</em> it, because an AppImage is unpacked by
   its own runtime.</li>
 </ul>
+<h3 id="in-the-window">In the window</h3>
+<p><strong>SYNAPSE Software</strong> has an <strong>AppImages</strong> tab beside the five sources: <em>Install
+an AppImage…</em> opens a file chooser, each row offers <strong>Remove</strong>, and both the tab
+hint and the empty state say that synpkg cannot search for or update these. A
+row whose file has been deleted by hand says so, because the menu entry it left
+behind does nothing and this is the only place that can explain it.</p>
+<p>⚠ It is deliberately not a <em>source</em> tab — those carry a browse/search/installed
+toggle and a search box, all of which would be furniture with nothing to answer.</p>
 <p>⚠ <strong>Nothing outside <code>~/Applications</code>, <code>~/.local/share/applications</code>,
 <code>~/.local/share/icons</code> and the manifest is touched</strong>, and <code>remove</code> deletes only
 what the manifest records. A remover that walked the icon theme looking for
