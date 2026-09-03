@@ -69,7 +69,7 @@
       <p class="eyebrow">Hacking on it</p>
       <h1>Cutting an ISO Release</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-30">2026-08-30</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -140,16 +140,23 @@ regenerated.)</p>
 Bump the <code>pkgrel</code> of any component whose code changed.</p>
 <p><strong>3. Build</strong> (~20–30 min: compiles llama.cpp, downloads a ~4 GB GGUF, runs
 mkarchiso):</p>
-<div class="hl"><pre><span></span><code><span class="nv">SYNAPSE_SIGNING_KEY</span><span class="o">=</span>&lt;fingerprint&gt;<span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>./archiso/build.sh<span class="w"> </span>--no-clean<span class="w"> </span>--sign
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>./archiso/build.sh<span class="w"> </span>--no-clean
 </code></pre></div>
 
-<p><strong><code>sudo -E</code>, not plain <code>sudo</code></strong> — the build needs root for mkarchiso, and
-without <code>-E</code> the environment does not survive into it, so <code>SYNAPSE_SIGNING_KEY</code>
-is unset and the signing step fails at the very end of a 30-minute build. The
-key's passphrase is prompted for there too, so this is not unattended.</p>
-<p>See <a href="/wiki/Cutting-an-ISO-Release#signing">Signing a release</a> below for the key
-itself. Building without <code>--sign</code> is fine for a test image; <code>publish-release.sh</code>
-warns rather than refuses.</p>
+<p><strong>The ISO is signed by default.</strong> Which key is named by
+<code>archiso/release-key.fingerprint</code>, so there is nothing to type and nothing to
+remember; the key's passphrase is prompted for near the end, so this is not
+unattended. <code>build.sh</code> proves the key is usable in its <strong>preflight</strong>, not at the
+end — a host without the key stops in the first ten seconds rather than after
+half an hour of building.</p>
+<p>Use <code>--no-sign</code> for a throwaway image. And if an ISO ends up unsigned anyway,
+<strong>that never costs a rebuild</strong> — the signature is detached, so the image is
+already the right one:</p>
+<div class="hl"><pre><span></span><code>./archiso/sign-iso.sh<span class="w"> </span><span class="m">0</span>.3.0<span class="w">        </span><span class="c1"># or no argument for the newest in out/</span>
+</code></pre></div>
+
+<p>See <a href="/wiki/Cutting-an-ISO-Release#signing">Signing</a> below for the key itself.
+<code>publish-release.sh</code> warns about an unsigned release rather than refusing.</p>
 <div class="table-scroll"><table>
 <thead>
 <tr>
@@ -189,6 +196,14 @@ warns rather than refuses.</p>
 <tr>
 <td><code>--no-clean</code></td>
 <td>reuse the previous llama.cpp build — <strong>safe</strong>, and saves the most time</td>
+</tr>
+<tr>
+<td><code>--no-sign</code></td>
+<td>do <strong>not</strong> sign — signing is the default; use for a throwaway image</td>
+</tr>
+<tr>
+<td><code>--sign</code></td>
+<td>the default; kept so old invocations still work</td>
 </tr>
 </tbody>
 </table></div>
@@ -241,10 +256,26 @@ gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w
 <code>~/.gnupg/openpgp-revocs.d/</code> somewhere that is not the build machine. The
 exported public half belongs in the website repo as
 <code>public/synapseos-release-key.asc</code>, with its fingerprint on the download page.</p>
-<p><code>build.sh</code> signs as the <strong>invoking</strong> user rather than as root — the build runs
-under sudo and root's keyring holds no release key — and names the key
-explicitly, because <code>gpg --detach-sign</code> with no <code>-u</code> signs with whatever secret
-key comes first.</p>
+<p>The fingerprint goes in <code>archiso/release-key.fingerprint</code>, which is committed:
+a fingerprint is public, and the file is what lets the key be <em>named</em> without
+anyone remembering to name it. <code>SYNAPSE_SIGNING_KEY=&lt;fpr&gt; sudo -E ./archiso/build.sh</code>
+still overrides it for a build that is not signing with the project key.</p>
+<p>Signing lives in one script, <code>archiso/sign-iso.sh</code> — <code>build.sh</code> calls it, and you
+run it directly to sign an image built without a signature:</p>
+<div class="hl"><pre><span></span><code>./archiso/sign-iso.sh<span class="w">              </span><span class="c1"># newest ISO in archiso/out/</span>
+./archiso/sign-iso.sh<span class="w"> </span><span class="m">0</span>.3.0<span class="w">        </span><span class="c1"># by version</span>
+./archiso/sign-iso.sh<span class="w"> </span>--check-key<span class="w">  </span><span class="c1"># prove the key is usable; sign nothing</span>
+</code></pre></div>
+
+<p>It signs as the <strong>invoking</strong> user rather than as root — the build runs under sudo
+and root's keyring holds no release key — and names the key explicitly, because
+<code>gpg --detach-sign</code> with no <code>-u</code> signs with whatever secret key comes first. It
+verifies the signature it just wrote, against the file that will actually ship;
+<code>publish-release.sh</code> verifies again before uploading, and refuses an <code>.asc</code> that
+does not check out.</p>
+<p><strong>0.3.0 shipped unsigned</strong>, which is why signing is now the default rather than a
+flag: <code>--sign</code> and <code>sudo -E</code> and an environment variable were three things to
+remember at the end of a long build, and remembering is not a mechanism.</p>
 <hr />
 <h2 id="--no-clean-is-safe-it-wasnt-always"><code>--no-clean</code> is safe (it wasn't always)</h2>
 <p>Two stale-artifact bugs used to make builds silently "succeed" on old output.
