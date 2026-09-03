@@ -99,7 +99,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>The Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-01">2026-09-01</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -708,18 +708,23 @@ stub it on <code>PATH</code> before any nested-session testing. See
 Français, Español, Português, Italiano, Nederlands, Polski, Русский, 日本語,
 中文, 한국어, हिन्दी, العربية. It follows the locale — the language chosen at
 the boot menu or by the installer — and there is nothing to configure.</p>
-<p><strong>820 strings, complete in all thirteen catalogs.</strong> What speaks: the control
+<p><strong>887 strings, complete in all thirteen catalogs.</strong> What speaks: the control
 panel, the dock, the desktop right-click menu, the lock screen, the
 screensaver, the power and idle panels, the CRT and filter panels, and the
 widget panel (<code>Super</code>+<code>Shift</code>+<code>A</code>).</p>
-<p><strong>Still English:</strong> the bar — it is a quickshell surface with a tree of its own,
-and so are the desktop widgets it draws — and a handful of compositor panels:
-Bluetooth, the wallpaper picker, notifications, the news reader, and the
-clock's date format.</p>
+<p><strong>And the bar, by a different road.</strong> quickshell ships no translator at all —
+there is no <code>installTranslator</code> anywhere in the binary — so <code>qsTr()</code> compiles,
+looks up nothing, and hands back its own argument while looking exactly like a
+marked string in review. The same <code>.po</code> files are compiled a second time into
+JSON, and a singleton reads them: <strong>265 strings</strong>, one catalog per language,
+installed beside the singleton so it can find its own directory.</p>
+<p><strong>Still English:</strong> the desktop <strong>widgets</strong> the bar draws, and a handful of
+compositor panels — the wallpaper picker, notifications, the clock's date
+format, and most of the Bluetooth and news panels, which have their headings
+translated and little else.</p>
 <blockquote>
-<p>The <strong>dock</strong> is translated and the <strong>bar</strong> is not, which is worth saying
-plainly because they sit next to each other. The dock is drawn by the
-compositor; the bar is a separate quickshell process.</p>
+<p>Every one of those is a screen somebody can reach, which is why they are
+listed rather than rounded up to "translated".</p>
 </blockquote>
 <h3 id="arabic-and-hindi-are-shaped-not-just-translated">Arabic and Hindi are shaped, not just translated</h3>
 <p><code>synui</code> draws its own text through cairo rather than handing it to a toolkit,

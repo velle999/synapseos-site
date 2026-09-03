@@ -67,7 +67,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Commands</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-31">2026-08-31</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -76,6 +76,28 @@ the desktop is allowed to run without a password.</p>
 <hr />
 <h2 id="command-line-tools">Command-line tools</h2>
 <p>Every tool is prefixed <code>syn</code> and self-documents with <code>--help</code> (or <code>help</code>).</p>
+<p><strong>They speak fourteen languages.</strong> Fifteen of them carry catalogs — the disk
+utility, the file manager, the package manager, the settings app, the editor,
+the calendar, the terminal, the media player, the vault, the cleaner, the
+sandbox, the network daemon, the arcade, the studio and the compositor — about
+4,000 strings per language, following the locale with nothing to configure.
+<code>synsh</code> keeps its own compiled-in catalog rather than using gettext, on purpose:
+it runs on the ISO before <code>/usr</code> is necessarily complete, and a shell that
+cannot find its <code>.mo</code> files must still be able to say why.</p>
+<blockquote class="warn"><p>⚠ <strong><code>--rec</code> output never changes language, and neither does <code>--help</code>.</strong>
+A record is not writing: the first row names the columns a window parses, and
+the values are matched on — a vault is <code>open</code> or <code>locked</code>, a cleanup category
+is <code>browsercache</code>, a firewall is <code>active</code>. The word a person reads and the
+word in the record are two separate strings even where they are spelled the
+same. <code>--help</code> stays English too, in every one of them: it is a manual page in
+one block, with each line's text aligned to a flag spelling.</p>
+<p>The same line runs through the rest: a journal stays English because
+<code>journalctl -u synnet</code> is what you paste into a search; <code>[Y/n]</code> stays <code>[Y/n]</code>
+because the script compares against those letters; and an exit status is a
+number in every language, which is why <code>syn-confine</code>'s 78 can still mean "the
+sandbox could not be built" rather than "the command failed".</p>
+<p>See <a href="/wiki/The-Desktop#language">The Desktop → Language</a>.</p>
+</blockquote>
 <div class="table-scroll"><table>
 <thead>
 <tr>
