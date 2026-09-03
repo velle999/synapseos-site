@@ -60,7 +60,7 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "0.2.9.5",
+      "softwareVersion": "0.3.0",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
       "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
@@ -216,7 +216,7 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 0.2.9.5</a>
+        <a class="btn btn-primary" href="#download">Download 0.3.0</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
       <p class="themes-label">Fifteen themes ship. <b>Try one on this page.</b></p>
@@ -230,7 +230,7 @@
         <label class="swatch" for="th-prismlight"><i aria-hidden="true"></i>Prism Light</label>
       </div>
       <p class="status" role="note">
-        <strong>Status: alpha.</strong> Version 0.2.x. A real, actively developed system
+        <strong>Status: alpha.</strong> Version 0.3.x. A real, actively developed system
         &mdash; the author daily-drives it &mdash; but it is early, moves fast, and will
         break. Try it in a VM before you give it a disk.
       </p>
@@ -320,8 +320,10 @@
         <h3>A compositor of its own</h3>
         <p>
           <code>synui</code> runs on wlroots 0.20 and renders through scenefx 0.5:
-          tiling and monocle layouts, per-output workspaces, XWayland, layer-shell,
-          glass, blur, shadows, and an optional CRT post-process pass.
+          tiling and monocle layouts, XWayland, layer-shell, glass, blur, shadows, and
+          an optional CRT post-process pass. Workspaces are shared across monitors or
+          <strong>one set per monitor</strong>, switching flat or as a turning cube, and
+          a display that can take <strong>HDR10</strong> can be driven in it.
         </p>
       </li>
       <li>
@@ -356,9 +358,22 @@
         <p>
           A file manager (<code>synfiles</code>), a package manager
           (<code>synpkg</code>), settings (<code>syn-settings</code>), an editor
-          (<code>syn-edit</code>) and a disk utility (<code>syn-disks</code>) &mdash;
-          each written for this system, and each a window and a command line over one
-          binary rather than two programs that disagree.
+          (<code>syn-edit</code>), a disk utility (<code>syn-disks</code>), a calendar
+          (<code>syn-cal</code>), a media player (<code>syn-play</code>), a locked
+          folder (<code>syn-vault</code>) and a disk cleaner (<code>syn-clean</code>)
+          &mdash; each written for this system, and each a window and a command line
+          over one binary rather than two programs that disagree.
+        </p>
+      </li>
+      <li>
+        <h3>Fourteen languages, everywhere</h3>
+        <p>
+          English, German, French, Spanish, Portuguese, Italian, Dutch, Polish,
+          Russian, Japanese, Chinese, Korean, Hindi and Arabic &mdash; in the installer
+          and in every application on the system, not the installer alone. The
+          compositor shapes its own text through HarfBuzz and FriBidi, so Arabic joins
+          and reads right to left. <strong>The language is the first question the image
+          asks</strong>, from the boot menu, and nothing asks again.
         </p>
       </li>
       <li>
@@ -533,7 +548,7 @@
       <input class="pick" type="radio" name="shot" id="pick-tuxagotchi"
              aria-label="Tuxagotchi (12 of 13)">
       <input class="pick" type="radio" name="shot" id="pick-themes"
-             aria-label="Fourteen themes (13 of 13)">
+             aria-label="Fifteen themes (13 of 13)">
       <div class="viewport">
       <ol class="track">
         <li class="slide" aria-label="Control panel (1 of 13)">
@@ -668,13 +683,13 @@
           <label class="arrow prev" for="pick-updates" aria-hidden="true"><span>&lsaquo;</span></label>
           <label class="arrow next" for="pick-themes" aria-hidden="true"><span>&rsaquo;</span></label>
         </li>
-        <li class="slide" aria-label="Fourteen themes (13 of 13)">
+        <li class="slide" aria-label="Fifteen themes (13 of 13)">
           <figure>
             <span class="media">
               <img src="/assets/shots/themes.webp?v=2026-08-25" width="511" height="967" loading="lazy" decoding="async"
-                   alt="Fourteen themes — The same window across four of them. Every application on the system reads the palette, not just the bar.">
+                   alt="Fifteen themes — The same window across four of them. Every application on the system reads the palette, not just the bar.">
             </span>
-            <figcaption><b>Fourteen themes</b><span>The same window across four of them. Every application on the system reads the palette, not just the bar.</span></figcaption>
+            <figcaption><b>Fifteen themes</b><span>The same window across four of them. Every application on the system reads the palette, not just the bar.</span></figcaption>
           </figure>
           <label class="arrow prev" for="pick-tuxagotchi" aria-hidden="true"><span>&lsaquo;</span></label>
           <label class="arrow next" for="pick-control-panel" aria-hidden="true"><span>&rsaquo;</span></label>
@@ -701,7 +716,13 @@
 
   <section id="components" class="wrap section">
     <h2>Components</h2>
-    <p>Each lives in its own directory in the tree with its own <code>PKGBUILD</code>.</p>
+    <p>
+      Each lives in its own directory in the tree with its own <code>PKGBUILD</code>.
+      <strong>Twenty-two of them are also published separately</strong>, each from its
+      own repository under <a href="https://github.com/velle999" rel="noopener">github.com/velle999</a>
+      &mdash; so the desktop, the terminal, the applications and the AI stack build and
+      install on a plain Arch machine that has never seen this ISO.
+    </p>
     <div class="table-scroll">
       <table>
         <thead>
@@ -720,6 +741,10 @@
           <tr><th scope="row"><code>synfiles</code></th><td>The file manager, and what a folder opens in. Trash, undo, split view, thumbnails, archives and search, with a window, a terminal browser and a command line as three front-ends onto one binary.</td></tr>
           <tr><th scope="row"><code>syn-settings</code></th><td>Settings. Displays, keyboard and language, date and time, network, Bluetooth, power, kernels and default applications &mdash; every pane reading the real source, and saying which file decided it.</td></tr>
           <tr><th scope="row"><code>syn-edit</code></th><td>The text editor. One modal engine driving a terminal editor, a graphical window, and a scripting mode with no terminal at all.</td></tr>
+          <tr><th scope="row"><code>syn-cal</code></th><td>The calendar and schedule planner. CalDAV, Google Calendar and Microsoft 365 over Graph, with a window, a terminal view and a command line over one sync engine. Your appointments are a folder of <code>.ics</code> files &mdash; the vdir layout, not a private database.</td></tr>
+          <tr><th scope="row"><code>syn-play</code></th><td>The media player. Playlists, shuffle, quick open and history over <code>mpv</code>, which already decodes everything &mdash; every feature asked mpv first.</td></tr>
+          <tr><th scope="row"><code>syn-vault</code></th><td>A folder with a password. <code>~/Vaults/&lt;name&gt;</code> while it is open, encrypted at rest through <code>gocryptfs</code>, closed when you say so &mdash; and a Vault row in <code>synfiles</code>&rsquo; sidebar. It contains no cryptography of its own, deliberately.</td></tr>
+          <tr><th scope="row"><code>syn-clean</code></th><td>Disk cleanup and secure delete. Ten categories measured and removed, and a shred that destroys a file or folder on purpose &mdash; both also right-click entries in <code>synfiles</code>.</td></tr>
           <tr><th scope="row"><code>syn-disks</code></th><td>The disk utility. Drives, health, mounting, safe removal, formatting and partitioning &mdash; and it refuses to format anything sharing a disk with a running system, with no override.</td></tr>
           <tr><th scope="row"><code>syn-arcade</code></th><td>The game assistant: the MangoHud overlay inside a running game, controllers outside Steam, SDL mapping overrides, and big screen mode for a television.</td></tr>
           <tr><th scope="row"><code>syn-confine</code></th><td>A sandbox launcher &mdash; run a command inside a kernel-enforced allowlist (Landlock), inherited across <code>execve</code>.</td></tr>
@@ -735,9 +760,9 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>0.2.9.5</strong> &mdash; the desktop gets an assistant, and stops failing quietly.
-      Free, x86_64, about 3.7&nbsp;GiB. The model is downloaded during installation,
-      not carried in the image.
+      Latest release: <strong>0.3.0</strong> &mdash; the desktop speaks fourteen
+      languages, and keeps your appointments. Free, x86_64, about 4.6&nbsp;GiB. The
+      model is downloaded during installation, not carried in the image.
     </p>
     <p class="cta">
       <a class="btn btn-primary" href="https://github.com/velle999/SYNAPSE/releases/latest" rel="noopener">Get the ISO from GitHub Releases</a>
@@ -745,20 +770,21 @@
 
     <h3>Reassemble and verify</h3>
     <p>
-      The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit. Download
-      <strong>all</strong> <code>.part*</code> files plus the <code>.sha256</code>,
-      into one folder. Joining them is a plain byte-for-byte concatenation; the
-      checksum is what tells you it worked.
+      The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit &mdash;
+      <strong>three of them</strong> for 0.3.0. Download <strong>all</strong> the
+      <code>.part*</code> files plus the <code>.sha256</code>, into one folder.
+      Joining them is a plain byte-for-byte concatenation; the checksum is what
+      tells you it worked.
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>cat SynapseOS-0.2.9.5-x86_64.iso.part* &gt; SynapseOS-0.2.9.5-x86_64.iso
-sha256sum -c SynapseOS-0.2.9.5-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>cat SynapseOS-0.3.0-x86_64.iso.part* &gt; SynapseOS-0.3.0-x86_64.iso
+sha256sum -c SynapseOS-0.3.0-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
     <h4 class="plat">Windows</h4>
     <p>In <strong>Command Prompt</strong>, in the folder you downloaded to:</p>
-<pre><code>copy /b SynapseOS-0.2.9.5-x86_64.iso.part00 + SynapseOS-0.2.9.5-x86_64.iso.part01 SynapseOS-0.2.9.5-x86_64.iso
-certutil -hashfile SynapseOS-0.2.9.5-x86_64.iso SHA256</code></pre>
+<pre><code>copy /b SynapseOS-0.3.0-x86_64.iso.part00 + SynapseOS-0.3.0-x86_64.iso.part01 + SynapseOS-0.3.0-x86_64.iso.part02 SynapseOS-0.3.0-x86_64.iso
+certutil -hashfile SynapseOS-0.3.0-x86_64.iso SHA256</code></pre>
     <p>
       Name every part, in order, joined by <code>+</code>. <strong><code>/b</code> is
       not optional</strong>: without it <code>copy</code> runs in text mode and stops
@@ -767,8 +793,8 @@ certutil -hashfile SynapseOS-0.2.9.5-x86_64.iso SHA256</code></pre>
       Compare what <code>certutil</code> prints against the <code>.sha256</code> file,
       or let <strong>PowerShell</strong> do the comparing:
     </p>
-<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-0.2.9.5-x86_64.iso).Hash -eq `
-  (((Get-Content .\SynapseOS-0.2.9.5-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
+<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-0.3.0-x86_64.iso).Hash -eq `
+  (((Get-Content .\SynapseOS-0.3.0-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
     <p class="small">
       <code>True</code> means the join is good. <code>Get-FileHash</code> prints
       uppercase hex where <code>sha256sum</code> writes lowercase &mdash; same bytes,
@@ -794,7 +820,7 @@ certutil -hashfile SynapseOS-0.2.9.5-x86_64.iso SHA256</code></pre>
 <pre><code>curl -O https://soslinux.org/synapseos-release-key.asc
 gpg --import synapseos-release-key.asc
 
-gpg --verify SynapseOS-0.2.9.5-x86_64.iso.asc SynapseOS-0.2.9.5-x86_64.iso</code></pre>
+gpg --verify SynapseOS-0.3.0-x86_64.iso.asc SynapseOS-0.3.0-x86_64.iso</code></pre>
     <p>
       A good signature prints <code>Good signature from &quot;SynapseOS Release
       Signing&quot;</code>. Check the fingerprint it names against this one:
@@ -820,7 +846,7 @@ gpg --verify SynapseOS-0.2.9.5-x86_64.iso.asc SynapseOS-0.2.9.5-x86_64.iso</code
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>sudo dd if=SynapseOS-0.2.9.5-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-0.3.0-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
     <p>
       Check <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the
       <strong>disk</strong> (<code>/dev/sdb</code>), not to a partition on it
