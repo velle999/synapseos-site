@@ -65,6 +65,7 @@
 <li class="sub"><a href="#the-player">The player</a></li>
 <li class="sub"><a href="#the-visualizer">The visualizer</a></li>
 <li><a href="#driving-it">Driving it</a></li>
+<li class="sub"><a href="#a-television-remote">A television remote</a></li>
 <li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
 <li><a href="#settings">Settings</a></li>
 <li class="sub"><a href="#shelves">Shelves</a></li>
@@ -282,6 +283,87 @@ driven with words. So while one is on screen:</p>
   only follow links somebody else opened</li>
 </ul>
 <p>Both stop the instant big screen mode comes back.</p>
+<h3 id="a-television-remote">A television remote</h3>
+<p>A Media Center remote — CEC over HDMI, or infrared through a receiver — arrives
+as ordinary key presses: the kernel's <code>rc-core</code> turns each button into a <code>KEY_*</code>
+code and xkbcommon gives it a keysym. <strong>There is nothing to configure for the
+remote as a device.</strong> What was missing was that several of its buttons landed on
+nothing at all.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Green (Media Center)</strong></td>
+<td>Opens big screen mode from the desktop, and steps it aside again from inside — the same toggle <code>Super</code>+<code>F10</code> is</td>
+</tr>
+<tr>
+<td><strong>OK</strong></td>
+<td>Select</td>
+</tr>
+<tr>
+<td><strong>Back</strong>, <strong>Exit</strong></td>
+<td>Up one level</td>
+</tr>
+<tr>
+<td><strong>Info</strong></td>
+<td>The Start menu</td>
+</tr>
+<tr>
+<td><strong>Guide</strong></td>
+<td>Out to the desktop, leaving big screen mode running</td>
+</tr>
+<tr>
+<td><strong>Arrows</strong></td>
+<td>The selection; <strong>channel up/down</strong> jumps a shelf at a time</td>
+</tr>
+<tr>
+<td><strong>Play / Pause</strong></td>
+<td>Play-pause, on whatever is making the noise</td>
+</tr>
+<tr>
+<td><strong>Stop</strong>, <strong>skip</strong>, <strong>rewind / fast-forward</strong></td>
+<td>The transport</td>
+</tr>
+<tr>
+<td><strong>Record</strong></td>
+<td>Starts or stops a <strong>screen recording</strong></td>
+</tr>
+<tr>
+<td><strong>Power</strong></td>
+<td>Opens a selector: Desktop, Quit, Sleep, Restart, Power off</td>
+</tr>
+</tbody>
+</table></div>
+<p>⛔ <strong>The Power button asks rather than acts.</strong> Sleep, restart and power off are
+three irreversible things and a remote has one button for them; a key wired
+straight to any of them is a key that does the wrong one, from four metres away,
+with somebody's game still running. The selector opens with <strong>Desktop</strong>
+selected, which is the harmless row.</p>
+<p>⛔ <strong>Back is not Escape.</strong> Escape quits, deliberately — somebody at a keyboard
+has a way back that somebody on a sofa does not. Back is the most-pressed button
+on a remote and means "up one level"; folding the two together would mean the
+first press of it closed the interface, and the way back in is a key combination
+nobody holding a remote can press.</p>
+<p>⚠ <strong>Three of those buttons are invisible to Qt.</strong> OK, Info and Guide send
+<code>KEY_OK</code>, <code>KEY_INFO</code> and <code>KEY_EPG</code>, which xkeyboard-config names <code>XF86OK</code>,
+<code>XF86Info</code> and <code>XF86MediaSelectProgramGuide</code> — and Qt has no <code>Qt::Key</code> for any of
+them, so the key code a program receives is literally zero. <code>KEY_NEXT</code> and
+<code>KEY_PREVIOUS</code> have no keysym at all. Those five are matched on the hardware
+scancode instead, which is why they work here and do nothing in most
+applications.</p>
+<p>⚠ <strong>Pause is not a media key.</strong> <code>rc-core</code> sends <code>KEY_PAUSE</code> for it — the same
+code as a keyboard's Pause/Break — so it arrives as plain <code>Pause</code>, never as the
+<code>XF86AudioPause</code> a keyboard's play controls send. Play worked and Pause did
+nothing until 0.1.0-55 for exactly that reason.</p>
+<p>The green button's shortcut is written into <code>~/.config/synui/synuirc</code> by
+<code>syn-arcade binds install</code>, alongside <code>Super</code>+<code>F10</code>. If you already have
+<code>XF86AudioMedia</code> bound to something of your own, yours is left alone and the
+rest of the block still refreshes.</p>
 <hr />
 <h2 id="fitting-an-old-game-to-the-screen">Fitting an old game to the screen</h2>
 <p>A game that renders at 640×480 has no idea what a 1440p monitor is, and sits as
@@ -307,7 +389,10 @@ looks worse than no wrapper.</p>
 that need them.</p>
 <hr />
 <h2 id="settings">Settings</h2>
-<p><strong>Start ▸ Settings</strong>, three pages, every row a press of <strong>A</strong>.</p>
+<p><strong>Start ▸ Settings</strong>, three pages, every row a press of <strong>A</strong> — and the same
+list on the <strong>Big screen</strong> tab of <code>syn-arcade gui</code>, drawn for a mouse instead of
+a d-pad. Neither window keeps its own copy of what a setting can be: both draw
+whatever <code>syn-arcade big settings</code> reports, so the two cannot disagree.</p>
 <h3 id="shelves">Shelves</h3>
 <p>A switch each for <strong>Running, Games, Recent, Play, Media, Apps</strong> and <strong>News</strong>. A
 machine used as a console does not need a headlines row; one wired to a stereo
