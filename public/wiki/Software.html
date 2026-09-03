@@ -59,6 +59,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#the-five-sources">The five sources</a></li>
 <li class="sub"><a href="#searching-all-of-them-at-once">Searching all of them at once</a></li>
+<li><a href="#appimages--a-verb-not-a-sixth-source">AppImages — a verb, not a sixth source</a></li>
 <li><a href="#everyday-use">Everyday use</a></li>
 <li class="sub"><a href="#two-things-pacman-has-never-done">Two things pacman has never done</a></li>
 <li class="sub"><a href="#exit-codes">Exit codes</a></li>
@@ -71,7 +72,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Software</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Software/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-24">2026-08-24</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Software/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -192,6 +193,44 @@ synpkg<span class="w"> </span>arsenal<span class="w"> </span>enable-repo<span cl
 "Flathub is empty" rather than "this is not ready yet". <code>enable-flathub</code> does
 both steps so that cannot happen to you.</p>
 </blockquote>
+<hr />
+<h2 id="appimages--a-verb-not-a-sixth-source">AppImages — a verb, not a sixth source</h2>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>appimage<span class="w"> </span>install<span class="w"> </span>~/Downloads/thing.AppImage
+synpkg<span class="w"> </span>appimage<span class="w"> </span>list
+synpkg<span class="w"> </span>appimage<span class="w"> </span>remove<span class="w"> </span>&lt;name&gt;
+</code></pre></div>
+
+<p><code>install</code> does the mechanical work nobody gets right by hand: puts the image in
+<strong><code>~/Applications</code></strong> (the directory <code>appimaged</code> and AppImageLauncher already
+watch), makes it executable, unpacks its <code>.desktop</code> and icons, rewrites <code>Exec</code>
+to an absolute path — inside the image it reads <code>AppRun …</code>, which resolves to
+nothing outside it — and records everything it placed so <code>remove</code> is a real
+uninstall.</p>
+<p>⚠ <strong>The menu entry is named after the window's class, not the file.</strong> A dock pin
+keys on the <code>app_id</code>, which for an Electron AppImage is its <code>StartupWMClass</code>.
+Filed under any other name the dock cannot resolve a <code>.desktop</code> for the running
+window: it draws a generic icon, offers no <strong>New Window</strong>, and a pin does not
+survive a restart.</p>
+<p>⛔ <strong>It cannot search and it cannot update, and it tells you so.</strong> This is
+deliberately not a sixth source beside the five above, because it could not keep
+their promises:</p>
+<ul>
+<li><strong>No index.</strong> Flathub has an API and the AUR has one. AppImages have no
+  authoritative catalogue — AppImageHub exists and is stale — so there is
+  nothing for <code>synpkg search</code> to reach, and it does not pretend there is.</li>
+<li><strong>No update path.</strong> Most images carry no zsync information, so an installed
+  one is invisible to <code>synpkg updates</code> for ever. Both <code>install</code> and <code>list</code> say
+  so on the spot. Replace one by installing a newer file over the top.</li>
+<li><strong>No signature.</strong> <code>pacman</code> verifies packages and Flatpak has ostree signing.
+  An AppImage is a file off the internet, and <code>install</code> says that before it
+  unpacks it — which it does by <em>running</em> it, because an AppImage is unpacked by
+  its own runtime.</li>
+</ul>
+<p>⚠ <strong>Nothing outside <code>~/Applications</code>, <code>~/.local/share/applications</code>,
+<code>~/.local/share/icons</code> and the manifest is touched</strong>, and <code>remove</code> deletes only
+what the manifest records. A remover that walked the icon theme looking for
+things that <em>might</em> have come from an AppImage would delete somebody else's file
+eventually.</p>
 <hr />
 <h2 id="everyday-use">Everyday use</h2>
 <div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>search<span class="w"> </span>firefox<span class="w">        </span><span class="c1"># the repositories</span>
