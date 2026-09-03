@@ -66,6 +66,10 @@
 <li class="sub"><a href="#the-visualizer">The visualizer</a></li>
 <li><a href="#driving-it">Driving it</a></li>
 <li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
+<li><a href="#settings">Settings</a></li>
+<li class="sub"><a href="#shelves">Shelves</a></li>
+<li class="sub"><a href="#start-menu">Start menu</a></li>
+<li class="sub"><a href="#power">Power</a></li>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#the-shortcuts">The shortcuts</a></li>
 </ul></nav>
@@ -74,7 +78,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Big Screen</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Big-Screen/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Big-Screen/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
       </p>
 
       <div class="wiki-body">
@@ -104,7 +108,7 @@ so this is a separate interface rather than a scaled one.</p>
 <li><strong>Music</strong> — see below</li>
 <li><strong>Headlines</strong></li>
 <li>The machine's own switches — desktop, sleep, restart, power off — behind
-  <strong>Start</strong></li>
+  <strong>Start</strong>, along with <strong>Settings</strong></li>
 </ul>
 <p><strong>Nothing is listed that is not installed.</strong> A tile you can press is a tile that
 works.</p>
@@ -302,11 +306,62 @@ looks worse than no wrapper.</p>
 <code>--force-window</code>, <code>--grab</code>, <code>--overlay</code> and <code>--gamemode</code> are there for the games
 that need them.</p>
 <hr />
+<h2 id="settings">Settings</h2>
+<p><strong>Start ▸ Settings</strong>, three pages, every row a press of <strong>A</strong>.</p>
+<h3 id="shelves">Shelves</h3>
+<p>A switch each for <strong>Running, Games, Recent, Play, Media, Apps</strong> and <strong>News</strong>. A
+machine used as a console does not need a headlines row; one wired to a stereo
+may want nothing but Media and Music.</p>
+<p>A shelf switched off is not drawn and is not navigable — the same state an empty
+one is already in, which is why nothing else had to be taught about it. The
+selection is remembered by name, so a shelf switched back on gets its place back.</p>
+<h3 id="start-menu">Start menu</h3>
+<p>Whether the menu offers the <strong>Visualizer</strong> row, and whether it offers <strong>Sleep,
+restart and power off</strong>. The second is for a machine other people can reach.</p>
+<p>⛔ <strong>Desktop and Quit have no switch, deliberately.</strong> They are the way out of a
+full-screen surface that owns the keyboard, and on a gamepad there is no key
+combination to fall back on — a setting able to hide them would be a setting
+able to trap somebody in front of their own television. The three power rows are
+safe to hide <em>because</em> leaving is still there when they are gone.</p>
+<h3 id="power">Power</h3>
+<p><strong>Keep the screen awake</strong> — <code>never</code>, <code>while playing</code>, or <code>always</code>.</p>
+<p>⚠ <strong>Big screen mode has no timeouts of its own, and must not.</strong> Dim, blank, lock
+and suspend are <code>synui</code>'s idle machine, and every stage of it asks first whether
+anything holds a Wayland idle inhibitor. This setting decides whether big screen
+mode is one of the things holding one. It is the same rule the Sleep tile
+follows in running <code>systemctl suspend</code> rather than reimplementing it — there has
+to be one definition of "suspend this machine", or the couch and the desk drift
+apart.</p>
+<p><code>while playing</code> is the default because of two cases nothing else covers:</p>
+<ul>
+<li><strong>Music through <code>cliamp</code> has no surface.</strong> It is a headless player driven over
+  a socket — no window, no MPRIS inhibit, nothing for the compositor to notice —
+  so the desktop dims, blanks and eventually suspends in the middle of an album.
+  Firefox and mpv hold their own inhibitor through <code>org.freedesktop.ScreenSaver</code>;
+  this one cannot.</li>
+<li><strong>A gamepad is not Wayland input.</strong> A controller-only game is read from evdev
+  by <code>syn-arcade</code> itself; the compositor sees no pointer and no key for as long
+  as somebody plays, and counts the whole session as idle.</li>
+</ul>
+<p><code>always</code> holds it for as long as big screen mode is up, which on a launcher left
+showing a menu all night is a machine that should have slept at midnight and is
+warm at eight. That is why it is not the default.</p>
+<p>The inhibitor is <code>synui</code>'s own helper and is released by the holder <strong>exiting</strong>,
+so whatever ends big screen mode — including a crash — releases it too.</p>
+<hr />
 <h2 id="configuration">Configuration</h2>
-<p><code>~/.config/syn-arcade/big.conf</code>:</p>
+<p>Everything on the settings pages is <code>~/.config/syn-arcade/big.conf</code>, and
+<code>syn-arcade big settings</code> is the same thing at a prompt:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class="w">                    </span><span class="c1"># every row, and what it is set to</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class="w"> </span>show_news<span class="w"> </span>off
+syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class="w"> </span>keep_awake<span class="w"> </span>next<span class="w">    </span><span class="c1"># the next value round — what A does</span>
+</code></pre></div>
+
 <div class="hl"><pre><span></span><code><span class="na">output</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1</span><span class="w">   </span><span class="c1"># a connector name, `primary` or `focused`</span>
 <span class="na">music</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">cliamp</span>
 <span class="na">music_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">plex</span>
+<span class="na">show_news</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">off</span>
+<span class="na">keep_awake</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">playing</span><span class="w">    </span><span class="c1"># never | playing | always</span>
 </code></pre></div>
 
 <p>Without <code>output =</code> it opens on the <strong>primary</strong> screen. It used to resolve the
