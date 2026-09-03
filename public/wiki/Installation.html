@@ -108,10 +108,12 @@ are mirrored to the serial console: <em>View → serial0</em> in the QEMU window
 <p>Grab the latest ISO from
 <a href="https://github.com/velle999/SYNAPSE/releases/latest">Releases</a> and boot it.</p>
 <p>Releases are <strong>split into <code>.part*</code> files</strong> because GitHub caps a release asset at
-2 GiB and the ISO is just under 4 GB — two parts, as of 0.2.9. Download <strong>every</strong>
-<code>.part*</code> file plus <code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join
-them back into an ISO. The join is a plain byte-for-byte concatenation; the
-checksum is what tells you it worked.</p>
+2 GiB and the ISO is larger than that — <strong>three parts, as of 0.3.0</strong>, and the
+count grows with the image, so count the assets on the release page rather than
+trusting this sentence. Download <strong>every</strong> <code>.part*</code> file plus
+<code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join them back into an
+ISO. The join is a plain byte-for-byte concatenation; the checksum is what tells
+you it worked.</p>
 <h3 id="joining-and-writing-linux--macos">Joining and writing: Linux / macOS</h3>
 <div class="hl"><pre><span></span><code>cat<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.part*<span class="w"> </span>&gt;<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso
 sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256<span class="w">    </span><span class="c1"># shasum -a 256 -c on macOS</span>
@@ -124,13 +126,16 @@ ISO after: <code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.parts.sha256</cod
 <h3 id="joining-and-writing-windows">Joining and writing: Windows</h3>
 <p><strong>1. Join the parts.</strong> In <strong>Command Prompt</strong>, in the folder you downloaded to
 (Shift+right-click the folder ▸ <em>Open in Terminal</em>, or <code>cd</code> to it):</p>
-<div class="hl"><pre><span></span><code><span class="k">copy</span> /b SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part00 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part01 SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso
+<div class="hl"><pre><span></span><code><span class="k">copy</span> /b SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part00 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part01 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part02 SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso
 </code></pre></div>
 
-<p>Name <strong>every</strong> part, in order, joined by <code>+</code>. Do not use a wildcard: <code>copy</code>
-takes wildcard sources in directory order, which is not guaranteed to be sorted,
-and parts joined out of order give you a file of the right size that is quietly
-corrupt.</p>
+<p>Name <strong>every</strong> part, in order, joined by <code>+</code> — that line is three parts because
+0.3.0 has three, and a release with four needs a fourth name on it. Copying the
+line as written for an image with more parts is the failure this section exists
+to prevent: it succeeds, and leaves a short ISO.</p>
+<p>Do not use a wildcard instead: <code>copy</code> takes wildcard sources in directory order,
+which is not guaranteed to be sorted, and parts joined out of order give you a
+file of the right size that is quietly corrupt.</p>
 <p><code>/b</code> is <strong>not optional</strong>. Without it <code>copy</code> runs in text mode and stops at the
 first <code>0x1A</code> byte, which in this image is a few hundred KB in — you get a short
 file, no error message, and a stick that does not boot.</p>
