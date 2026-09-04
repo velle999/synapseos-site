@@ -71,7 +71,7 @@
       <p class="eyebrow">Components</p>
       <h1>synapd</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
       </p>
 
       <div class="wiki-body">
@@ -173,14 +173,31 @@ builds CPU-only with <code>GGML_NATIVE=OFF</code> so it runs on baseline x86-64.
 </blockquote>
 <hr />
 <h2 id="vram-and-game-mode">VRAM and game mode</h2>
-<p><a href="/wiki/synui">Game mode</a> (<code>Super</code>+<code>G</code>) <strong>stops <code>synapd</code></strong> to hand its VRAM to
-the game. Two bugs worth knowing, both silent:</p>
+<p><a href="/wiki/synui">Game mode</a> (<code>Super</code>+<code>G</code>) asks <code>synapd</code> to <strong>release its model</strong> — a
+<code>SLEEP</code> message on the way in and a <code>WAKE</code> on the way out. The daemon stays up,
+so retrieval keeps answering and chibi's memory works through a game; what goes
+away is the chat model, and with it the VRAM, the RAM the weights sat in and the
+cores that would have answered from them.</p>
+<blockquote class="warn"><p><strong>⚠ Released, not re-fitted.</strong> synui 599 briefly sent <code>DEMAND high</code> instead,
+which only raises the VRAM floor the offload policy defends. llama.cpp has no
+live migration, so shedding layers means reloading at a smaller
+<code>n_gpu_layers</code> — the weights land in <strong>system RAM</strong> and run on the <strong>CPU</strong>.
+That is the right trade when the desktop is busy and somebody still wants an
+answer, and the wrong one for a game, which competes for all three. <code>DEMAND</code>
+remains the API for the first case.</p>
+</blockquote>
+<p>Three bugs worth knowing, all silent:</p>
 <ul>
-<li>The stop <strong>failed on polkit</strong> — <code>synapd</code> is a <em>system</em> unit and the stop was a
-  fire-and-forget spawn, so it silently did nothing and synapd kept the VRAM. Now
-  uses <code>sudo -n</code> with a dedicated <code>/etc/sudoers.d/synapd-gamemode</code>.</li>
-<li>Stopping <code>synapd</code> <strong>also killed <code>synnet</code></strong>, which carried <code>Requires=synapd</code>.
+<li>The old <code>systemctl stop</code> <strong>failed on polkit</strong> — <code>synapd</code> is a <em>system</em> unit and
+  the stop was a fire-and-forget spawn, so it silently did nothing and synapd
+  kept the VRAM. It went through <code>sudo -n</code> and a dedicated
+  <code>/etc/sudoers.d/synapd-gamemode</code> after that; a message over synapd's own
+  socket needs neither.</li>
+<li>The stop <strong>also killed <code>synnet</code></strong>, which carried <code>Requires=synapd</code>.
   It is <code>Wants=</code> now, so <code>synnet</code> survives game mode and reconnects on its own.</li>
+<li>And it took the <strong>retrieval embedder</strong> with it — a separate 274 MB model that
+  was never the GPU pressure — so chibi's memory went dark for the length of
+  every game, while three comments in two files promised it could not.</li>
 </ul>
 <p>Per-process VRAM is visible in the <a href="/wiki/synui">task manager</a>
 (<code>Ctrl</code>+<code>Alt</code>+<code>Delete</code>), which reads NVML via <code>dlopen</code> — no CUDA headers needed at

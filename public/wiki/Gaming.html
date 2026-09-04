@@ -85,7 +85,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Gaming</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
       </p>
 
       <div class="wiki-body">
@@ -202,19 +202,32 @@ modern desktop apps are Wayland-native and never match.</p>
 <p>It is automatic — <code>Super</code>+<code>G</code> toggles the <em>feature</em>, not each game.</p>
 <h3 id="what-it-does-while-a-game-is-up">What it does while a game is up</h3>
 <ul>
-<li><strong>Stops <code>synapd</code>.</strong> It holds ~4 GB of VRAM and llama.cpp worker threads, and
-  the wire protocol has no unload or sleep message — only <code>RELOAD</code> and
-  <code>SHUTDOWN</code> — so stopping the service is the only way to hand the GPU and those
-  cores over. It starts again on exit and reloads the model then.</li>
-<li><strong>Stops the <code>synapd</code> poller</strong>, which would otherwise spin on connect failures
-  and log them forever.</li>
+<li><strong>Releases the AI model.</strong> <code>synapd</code> holds the largest single allocation on the
+  card — measured at 7300 MiB with it up against 2655 without — plus the RAM the
+  weights sit in and the cores that answer with them. Game mode asks it to let
+  all of that go, and to load it again on the way out.<blockquote class="warn"><p><strong>⚠ Released, not merely made room for.</strong> llama.cpp fixes <code>n_gpu_layers</code>
+when a model is created and has no way to move a layer afterwards, so
+"offload some to RAM" is really destroy-and-reload at a smaller size — and
+the layers that come off the card are then resident in <strong>system RAM</strong> and
+computed on the <strong>CPU</strong>. A game wants all three. Freeing VRAM by moving the
+cost onto RAM and CPU is not handing the machine over.</p>
+</blockquote>
+</li>
+<li><strong>The daemon itself stays up.</strong> It is a message (<code>SLEEP</code> on the way in, <code>WAKE</code>
+  on the way out), not <code>systemctl stop</code>. Stopping the unit took the 274 MB
+  retrieval embedder down with the chat model and killed the socket, so chibi's
+  memory went dark for the length of every game; now retrieval keeps working and
+  only the chat model goes away.</li>
+<li><strong>The <code>synapd</code> poller keeps running</strong>, because <code>synapd</code> is still there.</li>
 <li><strong>Holds off the idle stages.</strong> A gamepad is not a seat input device, so to the
   compositor a controller-only session looks perfectly idle — without this the
   screen dims and then blanks mid-game.</li>
 </ul>
 <p>Everything is restored on exit, <strong>including when synui itself shuts down</strong>.
-Leaving the machine with a stopped <code>synapd</code> because the compositor died mid-game
-would be a poor way to lose the AI.</p>
+Nothing reloads a released model on its own — a query while it is asleep is
+refused rather than queued behind a load — so the wake really is what brings it
+back, and a compositor that died mid-game would otherwise leave the box with no
+assistant until the next reboot.</p>
 <p>The bar shows an indicator while it is active. synui publishes the state to
 <code>$XDG_RUNTIME_DIR/synui-game</code> (0700, session-user owned, so nothing else can
 forge it) and the bar module reads it.</p>
@@ -224,7 +237,7 @@ forge it) and the bar module reads it.</p>
 </code></pre></div>
 
 <p><strong>A fullscreen video is the case this exists for.</strong> Without it, going fullscreen
-on a YouTube video would stop the AI daemon — a genuinely nasty surprise. The
+on a YouTube video would unload the AI model — a genuinely nasty surprise. The
 Firefox-app-mode apps report their own <code>app_id</code> via <code>MOZ_APP_REMOTINGNAME</code>, so
 they need naming separately from <code>firefox</code>.</p>
 <p>Add your own with <code>game_exclude</code> in <code>synuirc</code>; matching is case-insensitive
@@ -247,7 +260,7 @@ substring against the app id.</p>
 <tr>
 <td><code>game_suspend_ai</code></td>
 <td><code>on</code></td>
-<td>Stop <code>synapd</code> while a game is up</td>
+<td>Release <code>synapd</code>'s model while a game is up</td>
 </tr>
 <tr>
 <td><code>game_inhibit_idle</code></td>
@@ -256,8 +269,8 @@ substring against the app id.</p>
 </tr>
 <tr>
 <td><code>game_ai_stop_cmd</code> / <code>game_ai_start_cmd</code></td>
-<td><code>systemctl</code></td>
-<td>How the AI is stopped and started</td>
+<td><em>(empty)</em></td>
+<td>Deprecated. Nothing runs unless set; a box that configured them keeps what it configured</td>
 </tr>
 <tr>
 <td><code>game_exclude</code></td>
@@ -267,9 +280,10 @@ substring against the app id.</p>
 </tbody>
 </table></div>
 <blockquote>
-<p>Stopping <code>synapd</code> needs root, and the session has no polkit agent — so it goes
-through a tightly-scoped <code>sudo -n</code> rule (<code>/etc/sudoers.d/synapd-gamemode</code>).
-See <a href="/wiki/Commands#privileged-desktop-actions-sudo--n">Commands</a>.</p>
+<p><strong>No root any more.</strong> Stopping the unit needed a tightly-scoped <code>sudo -n</code> rule
+(<code>/etc/sudoers.d/synapd-gamemode</code>) because <code>synapd</code> is a system unit and the
+session has no polkit agent. Asking the daemon over its own socket needs none
+of that, so a default box does not shell out to <code>sudo</code> at all.</p>
 </blockquote>
 <hr />
 <h2 id="launching-a-game-syn-game">Launching a game: <code>syn game</code></h2>
