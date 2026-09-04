@@ -307,7 +307,10 @@ syn-remote connect sosdesk   # does that by itself if it is not answering
 <p>The hardware address is read off the network when the connection is saved, so
 <code>syn-remote add</code> while the other machine is still awake needs nothing else.
 <code>--mac</code> gives it explicitly for a machine that was already asleep when it was
-saved, and <code>syn-remote wakeable</code> on that machine prints the address to use.</p>
+saved. Two places on that machine print the address to use: <code>syn-remote
+wakeable</code>, and Settings ▸ <strong>Network</strong>, which lists a hardware address for every
+interface beside the addresses it holds — see <a href="/wiki/Settings#the-network-pane">The Network
+pane</a>.</p>
 <p>Nothing acknowledges a magic packet — there is no reply, and no error — so
 <code>wake</code> watches the port instead and reports what actually happened. <code>connect</code>
 does the same before it opens anything, rather than handing a viewer a machine

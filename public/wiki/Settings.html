@@ -59,6 +59,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#the-panes">The panes</a></li>
 <li><a href="#two-rules-that-shape-it">Two rules that shape it</a></li>
+<li><a href="#the-network-pane">The Network pane</a></li>
 <li><a href="#kernels">Kernels</a></li>
 <li><a href="#from-a-script">From a script</a></li>
 <li><a href="#naming-the-machine">Naming the machine</a></li>
@@ -70,7 +71,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Settings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-25">2026-08-25</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
       </p>
 
       <div class="wiki-body">
@@ -128,7 +129,7 @@ talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, 
 </tr>
 <tr>
 <td><strong>Network</strong></td>
-<td>Interfaces, radios, whether the firewall is up, and which container bridges it trusts; bring an interface up or down</td>
+<td>Interfaces and their addresses — a MAC row per interface and the IP addresses it holds, with one gateway and one nameserver row — plus radios, whether the firewall is up, and which container bridges it trusts; bring an interface up or down. See <a href="#the-network-pane">The Network pane</a></td>
 </tr>
 <tr>
 <td><strong>Bluetooth</strong></td>
@@ -162,6 +163,58 @@ single most annoying thing a settings app can be.</p>
 one that came from a distribution fallback read identically everywhere else on a
 Linux desktop. Here the Apps pane names the file, so "why does this open in
 <em>that</em>" is a question with an answer on screen.</p>
+<h2 id="the-network-pane">The Network pane</h2>
+<p>Four kinds of row, in this order.</p>
+<p><strong><code>device</code></strong> — every interface NetworkManager knows about, its type, its state
+and the connection on it. Selecting one offers <em>up</em> and <em>down</em>; loopback is the
+exception, because there is nothing there to switch.</p>
+<p><strong><code>mac</code></strong> — the hardware address of each interface. This is the one you need in
+order to wake this machine from another: a magic packet is addressed to a
+hardware address, not an IP, so <code>syn-remote wake</code> on the far machine needs what
+this row prints. Only a wired card can be woken that way, and the row for a
+Wi-Fi card says so rather than leaving you to arm something that cannot work —
+a Wi-Fi card does not stay associated through a suspend. A bridge is named as a
+bridge, so a <code>docker0</code> or <code>br-…</code> row is not mistaken for a network card.</p>
+<p><strong><code>ip</code></strong> — the addresses each interface holds right now, IPv4 first, followed by
+one <code>gateway</code> row and one <code>nameservers</code> row. Those two are one row each rather
+than one per interface: every device carries the fields and only the one holding
+the default route fills them in, so a row per interface would be a column of
+blanks around the answer.</p>
+<p>⚠ The <code>fe80::</code> link-local address that every interface always has is left out.
+It is as long as a real address and cannot reach anything without an interface
+named alongside it, so listing it widens the row to say nothing. An interface
+whose only IPv6 address is link-local shows no IPv6 address here.</p>
+<p><strong><code>firewall</code></strong> — three separate things, because they answer differently:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>input filtering</strong></td>
+<td>The <em>preference</em> in <code>/etc/synnet/firewall</code>, and the <em>state</em> synnet last published to <code>/run/synnet/firewall.state</code></td>
+</tr>
+<tr>
+<td><strong>container links</strong></td>
+<td>The bridges named in <code>/etc/synnet/trusted-ifaces</code>. A Waydroid or libvirt guest asks for its address from <code>0.0.0.0</code>, which a default-drop policy eats — the symptom is "the container has no internet" and nothing says firewall. Add one with <code>sudo synnet --trust-if &lt;iface&gt;</code></td>
+</tr>
+<tr>
+<td><strong>rebuilt</strong></td>
+<td>Only when it has happened: how many times the ruleset has gone missing and been re-asserted since synnet started</td>
+</tr>
+<tr>
+<td><strong>synnet.service</strong></td>
+<td>The daemon that applies all of the above. Rules outlive it, so a stopped synnet leaves the last ruleset in place and stops maintaining it</td>
+</tr>
+</tbody>
+</table></div>
+<p>⚠ None of this reads the kernel. It reports what synnet <em>asserted</em>, which is not
+the same claim as what <code>nftables</code> currently holds.</p>
+<p>Nothing in the <code>mac</code> or <code>ip</code> rows is editable. An address is read, not set —
+NetworkManager owns setting it.</p>
 <h2 id="kernels">Kernels</h2>
 <p>The Kernel pane installs and removes kernels (through <a href="/wiki/Software"><code>synpkg</code></a>) and
 switches which one boots, on <strong>all three</strong> bootloaders SynapseOS can install:
