@@ -238,10 +238,10 @@ self-signed, made once, and lives in <code>~/.config/syn-remote/</code>.</p>
 <h2 id="reaching-another-machine">Reaching another machine</h2>
 <p>The other half of the package: <code>syn-remote-gui</code>, or the same thing from a
 terminal. A connection is saved once and opened by name.</p>
-<div class="hl"><pre><span></span><code>syn-remote add sosdesk 192.168.40.153:5900 velle
-syn-remote trust sosdesk     # check the certificate — once, before the first connection
-syn-remote saved sosdesk set # remember the password (optional)
-syn-remote connect sosdesk
+<div class="hl"><pre><span></span><code>syn-remote add desktop 192.168.1.50:5900 &lt;user&gt;
+syn-remote trust desktop     # check the certificate — once, before the first connection
+syn-remote saved desktop set # remember the password (optional)
+syn-remote connect desktop
 </code></pre></div>
 
 <blockquote>
@@ -300,8 +300,8 @@ not, which is deliberate — reaching in from the network to change whether
 a machine can be woken from the network asks for an administrator.</p>
 </blockquote>
 <h3 id="on-the-machine-you-are-sitting-at">On the machine you are sitting at</h3>
-<div class="hl"><pre><span></span><code>syn-remote wake sosdesk      # send the packet and wait for it
-syn-remote connect sosdesk   # does that by itself if it is not answering
+<div class="hl"><pre><span></span><code>syn-remote wake desktop      # send the packet and wait for it
+syn-remote connect desktop   # does that by itself if it is not answering
 </code></pre></div>
 
 <p>The hardware address is read off the network when the connection is saved, so
