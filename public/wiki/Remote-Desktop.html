@@ -60,8 +60,13 @@
 <li><a href="#it-is-a-wrapper-and-wayvnc-is-the-server">It is a wrapper, and wayvnc is the server</a></li>
 <li><a href="#waking-a-screen-that-has-gone-dark">Waking a screen that has gone dark</a></li>
 <li><a href="#where-it-listens">Where it listens</a></li>
+<li><a href="#reaching-it-from-outside-the-lan">Reaching it from outside the LAN</a></li>
+<li class="sub"><a href="#which-vpn">Which VPN</a></li>
 <li><a href="#who-may-connect">Who may connect</a></li>
+<li><a href="#reaching-another-machine">Reaching another machine</a></li>
 <li><a href="#waking-the-machine-itself">Waking the machine itself</a></li>
+<li class="sub"><a href="#on-the-machine-that-sleeps">On the machine that sleeps</a></li>
+<li class="sub"><a href="#on-the-machine-you-are-sitting-at">On the machine you are sitting at</a></li>
 <li><a href="#what-it-is-not">What it is not</a></li>
 </ul></nav>
 
@@ -69,7 +74,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Remote Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
       </p>
 
       <div class="wiki-body">
@@ -150,6 +155,61 @@ stand in the way.</p>
 <p>then point a VNC viewer at <code>localhost:5900</code>. <code>syn-remote address</code> prints that
 line with the right names in it.</p>
 <hr />
+<h2 id="reaching-it-from-outside-the-lan">Reaching it from outside the LAN</h2>
+<p>Two separate things stand in the way, and both have to be dealt with. Neither
+of them is <code>syn-remote listen lan</code>, which only decides what the server binds to.</p>
+<p><strong>1. The firewall drops it.</strong> synnet's input chain accepts loopback,
+established/related, ICMP, and sources in <code>10/8</code>, <code>172.16/12</code>, <code>192.168/16</code>
+(plus IPv6 ULA and link-local). Everything else hits the drop policy, so an
+unsolicited connection from a public address never arrives however the server
+is bound.</p>
+<blockquote>
+<p>[!WARNING]
+<strong><code>synnet --allow &lt;ip&gt;</code> will not open it.</strong> Despite the name it only removes
+an address from the <em>block</em> set — it undoes a previous <code>--block</code> and opens
+nothing. <code>--trust-if</code> is DHCP and DNS on a gateway bridge, also not this.
+The verb that opens a port is <code>--open</code>:</p>
+<p><code>bash
+sudo synnet --open tcp/5900 100.64.0.0/10   # e.g. a Tailscale mesh
+synnet --status                             # shows what is open</code></p>
+<p>With no CIDR the source is <code>any</code>, which means the internet if this machine is
+reachable from it — so it says so when you do that.</p>
+</blockquote>
+<p><strong>2. The certificate does not carry the address you would dial.</strong> It is built
+from the addresses this machine <em>holds</em>, so a public IP in front of a port
+forward — or the dynamic-DNS name that resolves to it — is not in it and cannot
+be. A viewer validates against what it dialled, so it fails with <code>IP address
+mismatch</code> or <code>Hostname mismatch</code>. Name it:</p>
+<div class="hl"><pre><span></span><code>syn-remote<span class="w"> </span>names<span class="w"> </span>add<span class="w"> </span>myhouse.duckdns.org
+syn-remote<span class="w"> </span>names<span class="w">                            </span><span class="c1"># what it vouches for</span>
+</code></pre></div>
+
+<p>That re-issues the certificate, so every client that already trusted this
+machine has to <code>syn-remote trust &lt;name&gt; --renew</code>.</p>
+<h3 id="which-vpn">Which VPN</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>WireGuard on a private range</strong> (<code>10.x</code>, <code>192.168.x</code>)</td>
+<td>Works as shipped. Inbound packets carry a private source, so synnet already accepts them, and the tunnel address is picked up by the certificate — run <code>syn-remote trust &lt;name&gt; --renew</code> on the client once the interface exists.</td>
+</tr>
+<tr>
+<td><strong>Tailscale</strong></td>
+<td>Needs one rule. Its <code>100.64.0.0/10</code> is <strong>not</strong> a private range, so the tunnel establishes outbound and then every packet inside it is dropped, with nothing in any log mentioning the firewall. <code>sudo synnet --open tcp/5900 100.64.0.0/10</code>.</td>
+</tr>
+<tr>
+<td><strong>An SSH tunnel from outside</strong></td>
+<td>Same problem one layer down — inbound SSH from a public address is dropped too. It only helps from on-LAN, or over a VPN that already works.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
 <h2 id="who-may-connect">Who may connect</h2>
 <p>The connection always carries TLS: wayvnc's <code>enable_auth</code> requires a
 certificate, a key <strong>and</strong> a password together, so there is no
@@ -175,16 +235,98 @@ self-signed, made once, and lives in <code>~/.config/syn-remote/</code>.</p>
 </tbody>
 </table></div>
 <hr />
+<h2 id="reaching-another-machine">Reaching another machine</h2>
+<p>The other half of the package: <code>syn-remote-gui</code>, or the same thing from a
+terminal. A connection is saved once and opened by name.</p>
+<div class="hl"><pre><span></span><code>syn-remote add sosdesk 192.168.40.153:5900 velle
+syn-remote trust sosdesk     # check the certificate — once, before the first connection
+syn-remote saved sosdesk set # remember the password (optional)
+syn-remote connect sosdesk
+</code></pre></div>
+
+<blockquote>
+<p>[!IMPORTANT]
+<strong>The certificate has to be checked before the first connection, and nothing
+else will tell you so.</strong> wayvnc offers exactly one security type this viewer
+speaks — VeNCrypt X509Plain — so the server's certificate is the first thing
+in the exchange. Until it has been trusted, the TLS session comes up and is
+dropped, and there is no error on the machine you are sitting at. The only
+trace is on the <strong>server</strong>:</p>
+<p><code>ERROR: ../neatvnc/src/server.c: 2374: Client handshake timed out</code></p>
+<p>which reads like a firewall and is not one. <code>syn-remote trust &lt;name&gt;</code> shows
+the fingerprint and waits for a yes; compare it against <code>syn-remote
+fingerprint</code> on the machine you are dialling before answering.</p>
+</blockquote>
+<p>The window's <strong>Check the certificate</strong> button does the same thing in a
+terminal, because the fingerprint is a question for a person. A connection that
+has not been checked says so in the list rather than failing quietly.</p>
+<p>A re-issued certificate — which happens by itself when the server's address
+moves — is correctly refused by everything that trusted the old one. Accept the
+new one with <code>syn-remote trust &lt;name&gt; --renew</code>.</p>
+<hr />
 <h2 id="waking-the-machine-itself">Waking the machine itself</h2>
 <p>Three different problems wear the same word:</p>
 <ol>
-<li><strong>The screen is asleep.</strong> Handled above — the wrapper wakes it.</li>
-<li><strong>The machine is suspended.</strong> That needs Wake-on-LAN: a magic packet to a NIC
-   that is configured to listen for one. Many NICs drop the setting across a
-   reboot, so it wants <code>ethtool -s &lt;iface&gt; wol g</code> from a boot-time unit.</li>
+<li><strong>The screen is asleep.</strong> Handled above — the wrapper wakes it when somebody
+   connects.</li>
+<li><strong>The machine is suspended.</strong> It has no server, no port and nothing
+   listening, so nothing can be woken by connecting to it. That needs a magic
+   packet, and both ends are below.</li>
 <li><strong>Nobody has logged in.</strong> There is no compositor, so there is nothing to
    capture. A machine meant to be reached this way wants autologin.</li>
 </ol>
+<h3 id="on-the-machine-that-sleeps">On the machine that sleeps</h3>
+<div class="hl"><pre><span></span><code>syn-remote wakeable          # what it is now
+syn-remote wakeable on       # arm the wired card for a magic packet
+</code></pre></div>
+
+<p><code>wakeable</code> reports the interface, its hardware address, whether the card can be
+woken at all, whether it is armed <strong>right now</strong>, and whether it will still be
+armed after the next reboot. Those last two are separate questions on purpose:
+arming the card and remembering to arm it again are two different things, and a
+machine that is armed today and forgotten at the next boot reads as working
+right up until the reboot nobody connects to it after.</p>
+<p>So <code>wakeable on</code> writes both. NetworkManager <strong>remembers</strong> the setting and
+re-applies it every time the connection is activated — a reboot, a replugged
+cable, a driver that clears the flag on link-down. A small helper <strong>applies</strong> it
+immediately, without activating anything, because activating the connection you
+are reaching the machine over drops the link underneath you.</p>
+<blockquote>
+<p>[!NOTE]
+Reading the flag needs privilege, not just writing it: the same kernel call
+can return a card's SecureOn password, so it is guarded like a write. At the
+machine's own keyboard this is granted without a password; over SSH it is
+not, which is deliberate — reaching in from the network to change whether
+a machine can be woken from the network asks for an administrator.</p>
+</blockquote>
+<h3 id="on-the-machine-you-are-sitting-at">On the machine you are sitting at</h3>
+<div class="hl"><pre><span></span><code>syn-remote wake sosdesk      # send the packet and wait for it
+syn-remote connect sosdesk   # does that by itself if it is not answering
+</code></pre></div>
+
+<p>The hardware address is read off the network when the connection is saved, so
+<code>syn-remote add</code> while the other machine is still awake needs nothing else.
+<code>--mac</code> gives it explicitly for a machine that was already asleep when it was
+saved, and <code>syn-remote wakeable</code> on that machine prints the address to use.</p>
+<p>Nothing acknowledges a magic packet — there is no reply, and no error — so
+<code>wake</code> watches the port instead and reports what actually happened. <code>connect</code>
+does the same before it opens anything, rather than handing a viewer a machine
+that is not there.</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>A magic packet is a broadcast, and a broadcast does not cross a router.</strong>
+The machine sending it has to be on the same network as the machine being
+woken. Reaching a sleeping machine from outside needs something on that
+network to send the packet — the VPN endpoint above, or a router that can be
+asked to send one. And a machine that was <strong>shut down</strong> rather than suspended
+needs Wake-on-LAN enabled in its own firmware setup as well; the operating
+system is not running to arm anything.</p>
+</blockquote>
+<p><code>syn-remote on</code> starts the server at every login, and it waits for the desktop
+rather than racing it — the unit is started before the compositor exists, so
+its first seconds are spent waiting for a session that is still coming up.
+<code>syn-remote status</code> says <code>Server stopped</code> while it waits, and the journal says
+what it is waiting for.</p>
 <hr />
 <h2 id="what-it-is-not">What it is not</h2>
 <p><code>syn-remote</code> owns no part of the VNC protocol, the encryption or the

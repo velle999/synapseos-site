@@ -67,7 +67,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Commands</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
       </p>
 
       <div class="wiki-body">
@@ -108,7 +108,7 @@ sandbox could not be built" rather than "the command failed".</p>
 <tbody>
 <tr>
 <td><code>syn</code></td>
-<td>Top-level CLI — <code>syn status</code>, <code>syn info</code>, <code>syn model/net/guard/nix …</code>, <code>syn shell</code>, <code>syn ui</code>, <code>syn install</code>, and <code>syn game &lt;cmd…&gt;</code> to launch something with the MangoHud overlay and gamemode (<code>syn game hud on|off</code> decides whether the overlay loads in every Vulkan client or only in what the launcher starts). See <a href="/wiki/Gaming">Gaming</a></td>
+<td>Top-level CLI — <code>syn status</code>, <code>syn info</code>, <code>syn model/net/guard/nix …</code> (<code>syn net open &lt;proto&gt;/&lt;port&gt; [&lt;cidr&gt;]</code> is the only verb that lets a source outside the private ranges reach a port — ⚠ <code>allow</code> is an <em>unblock</em>, not that), <code>syn shell</code>, <code>syn ui</code>, <code>syn install</code>, and <code>syn game &lt;cmd…&gt;</code> to launch something with the MangoHud overlay and gamemode (<code>syn game hud on|off</code> decides whether the overlay loads in every Vulkan client or only in what the launcher starts). See <a href="/wiki/Gaming">Gaming</a></td>
 </tr>
 <tr>
 <td><code>syn nix</code></td>
@@ -192,7 +192,7 @@ sandbox could not be built" rather than "the command failed".</p>
 </tr>
 <tr>
 <td><code>syn-remote</code></td>
-<td><strong>Remote desktop</strong> — <code>on</code> starts it now and at every login, <code>address</code> says how to connect, <code>password</code> prints the one a viewer is asked for, <code>listen lan</code> puts it on the network instead of loopback. wayvnc is the server; this wakes a blanked screen when somebody connects and holds the machine awake while they are there. See <a href="/wiki/Remote-Desktop">Remote Desktop</a></td>
+<td><strong>Remote desktop</strong> — <code>on</code> starts it now and at every login, <code>address</code> says how to connect, <code>password</code> prints the one a viewer is asked for, <code>listen lan</code> puts it on the network instead of loopback. <code>wakeable on</code> lets a magic packet wake this machine while it sleeps. Going the other way, <code>add</code>/<code>trust</code>/<code>connect</code> save and open somebody else's desktop — ⚠ <code>trust</code> is not optional, the first connection cannot complete until the certificate has been checked — and <code>wake</code> sends a magic packet to one, which <code>connect</code> also does by itself when the machine it is opening is not answering. wayvnc is the server; this wakes a blanked screen when somebody connects and holds the machine awake while they are there. See <a href="/wiki/Remote-Desktop">Remote Desktop</a></td>
 </tr>
 <tr>
 <td><code>syn-crypt</code></td>
