@@ -60,6 +60,7 @@
 <li><a href="#the-panes">The panes</a></li>
 <li><a href="#two-rules-that-shape-it">Two rules that shape it</a></li>
 <li><a href="#the-network-pane">The Network pane</a></li>
+<li class="sub"><a href="#addresses-are-hidden-until-you-ask">Addresses are hidden until you ask</a></li>
 <li><a href="#kernels">Kernels</a></li>
 <li><a href="#from-a-script">From a script</a></li>
 <li><a href="#naming-the-machine">Naming the machine</a></li>
@@ -215,6 +216,18 @@ whose only IPv6 address is link-local shows no IPv6 address here.</p>
 the same claim as what <code>nftables</code> currently holds.</p>
 <p>Nothing in the <code>mac</code> or <code>ip</code> rows is editable. An address is read, not set —
 NetworkManager owns setting it.</p>
+<h3 id="addresses-are-hidden-until-you-ask">Addresses are hidden until you ask</h3>
+<p>Every <code>mac</code> and <code>ip</code> value reads <code>••:••:••:••:••:••</code> until you ask for it, so a
+screenshot or a stream does not carry them. The Bluetooth pane's adapter address
+and every paired device's are masked the same way.</p>
+<p><strong>Reveal addresses</strong>, at the top right of the window, shows them. The button
+reads <strong>Hide addresses</strong> while they are showing, and moving to another pane
+hides them again.</p>
+<p>The command line does the same with a flag:</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>network<span class="w">              </span><span class="c1"># masked</span>
+syn-settings<span class="w"> </span>--rec<span class="w"> </span>network<span class="w"> </span>--reveal<span class="w">     </span><span class="c1"># in full</span>
+</code></pre></div>
+
 <h2 id="kernels">Kernels</h2>
 <p>The Kernel pane installs and removes kernels (through <a href="/wiki/Software"><code>synpkg</code></a>) and
 switches which one boots, on <strong>all three</strong> bootloaders SynapseOS can install:
