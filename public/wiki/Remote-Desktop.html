@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Remote Desktop — SynapseOS Wiki</title>
+<meta name="description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it.">
+<link rel="canonical" href="https://soslinux.org/wiki/Remote-Desktop">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta name="author" content="Velle Sinclair">
+<meta name="theme-color" content="#0a0a12">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SynapseOS Wiki">
+<meta property="og:title" content="Remote Desktop — SynapseOS Wiki">
+<meta property="og:description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it.">
+<meta property="og:url" content="https://soslinux.org/wiki/Remote-Desktop">
+<meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
+</head>
+<body>
+
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      <span>SynapseOS</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#what">What it is</a>
+      <a href="/#desktop">Desktop</a>
+      <a href="/#gallery">Screenshots</a>
+      <a href="/#components">Components</a>
+      <a href="/wiki/" aria-current="page">Wiki</a>
+      <a href="/#download">Download</a>
+      <a href="/#merch">Merch</a>
+      <a href="https://github.com/velle999/SYNAPSE" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wiki">
+  <div class="wiki-wrap wiki-layout">
+
+<nav class="wiki-toc" aria-label="On this page">
+<input class="toc-toggle" type="checkbox" id="toc-open">
+<label class="toc-label" for="toc-open">On this page</label>
+<p class="wiki-toc-h">On this page</p><ul>
+<li><a href="#it-is-a-wrapper-and-wayvnc-is-the-server">It is a wrapper, and wayvnc is the server</a></li>
+<li><a href="#waking-a-screen-that-has-gone-dark">Waking a screen that has gone dark</a></li>
+<li><a href="#where-it-listens">Where it listens</a></li>
+<li><a href="#who-may-connect">Who may connect</a></li>
+<li><a href="#waking-the-machine-itself">Waking the machine itself</a></li>
+<li><a href="#what-it-is-not">What it is not</a></li>
+</ul></nav>
+
+    <article class="wiki-main">
+      <p class="eyebrow">Using it</p>
+      <h1>Remote Desktop</h1>
+      <p class="wiki-meta">
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+      </p>
+
+      <div class="wiki-body">
+<p><code>syn-remote</code> puts this desktop on a VNC viewer somewhere else — including when
+nobody is sitting at it.</p>
+<div class="hl"><pre><span></span><code>syn-remote<span class="w"> </span>on<span class="w">                </span><span class="c1"># start it now, and at every login</span>
+syn-remote<span class="w"> </span>address<span class="w">           </span><span class="c1"># how to connect to it</span>
+syn-remote<span class="w"> </span>password<span class="w">          </span><span class="c1"># the password a viewer is asked for</span>
+syn-remote<span class="w"> </span>status<span class="w">            </span><span class="c1"># what it is doing</span>
+syn-remote<span class="w"> </span>off<span class="w">               </span><span class="c1"># stop it, and stop it starting at login</span>
+</code></pre></div>
+
+<p>Settings ▸ <strong>Remote Desktop</strong> is the same thing in a window.</p>
+<hr />
+<h2 id="it-is-a-wrapper-and-wayvnc-is-the-server">It is a wrapper, and wayvnc is the server</h2>
+<p><strong>wayvnc</strong> is the wlroots-native VNC server. It captures the screen through
+<code>zwlr_screencopy_manager_v1</code> and drives the seat through
+<code>zwp_virtual_pointer_manager_v1</code> and <code>zwp_virtual_keyboard_manager_v1</code>. synui
+implements all three and hands them to any native client, so nothing here goes
+through a desktop portal and nothing prompts.</p>
+<blockquote>
+<p><strong>"Wayland can't do remote desktop" does not apply here.</strong> All three reasons
+that is said are about other stacks:</p>
+<ul>
+<li>GNOME and KDE gate capture behind a portal that asks a human, per session.
+  That is a policy, and it makes unattended access impossible by design.</li>
+<li><code>xdg-desktop-portal-wlr</code> implements ScreenCast but <strong>not</strong> RemoteDesktop, so
+  there is no input injection through the portal. That is why portal-based
+  tools can watch a wlroots desktop and cannot touch it — going native
+  sidesteps it.</li>
+<li>Nothing exists to connect to before somebody logs in. That one <strong>is</strong> true
+  here, on any Wayland system, and <code>syn-remote status</code> says so rather than
+  failing with an error that reads like a bug.</li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="waking-a-screen-that-has-gone-dark">Waking a screen that has gone dark</h2>
+<p><strong>A blanked output cannot be captured at all.</strong> Once synui's idle blank stage
+has fired, screencopy answers <em>failed to copy output</em> — a viewer gets nothing,
+and there is no frame to click on to get out of it. <code>power_blank_timeout</code>
+defaults to 600 seconds, so an unattended machine would go dark to a viewer ten
+minutes after the last keypress and stay dark.</p>
+<p>That is what the wrapper is for. When somebody connects it turns the outputs
+back on and holds a real idle inhibitor; when the last viewer leaves it releases
+it, so the machine goes back to sleeping normally. Two viewers is one screen:
+the wake happens once, and the release waits for the last one.</p>
+<hr />
+<h2 id="where-it-listens">Where it listens</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>This machine only</strong> <em>(default)</em></td>
+<td>Bound to <code>127.0.0.1</code>. Reach it from elsewhere over an SSH tunnel.</td>
+</tr>
+<tr>
+<td><strong>The network</strong></td>
+<td><code>syn-remote listen lan</code> — every device on the LAN can reach it.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="warn"><p><strong>⛔ The firewall does not stand behind this.</strong> synnet's base policy is
+default-drop on input <strong>and accepts everything from <code>10/8</code>, <code>172.16/12</code> and
+<code>192.168/16</code></strong>. A port bound to <code>0.0.0.0</code> is therefore not "open but
+firewalled" — it is reachable by every device on the network, and there is no
+second door to unlock afterwards. The certificate and the password are what
+stand in the way.</p>
+</blockquote>
+<p>From another machine, with the default loopback binding:</p>
+<div class="hl"><pre><span></span><code>ssh<span class="w"> </span>-N<span class="w"> </span>-L<span class="w"> </span><span class="m">5900</span>:localhost:5900<span class="w"> </span>you@your-machine
+</code></pre></div>
+
+<p>then point a VNC viewer at <code>localhost:5900</code>. <code>syn-remote address</code> prints that
+line with the right names in it.</p>
+<hr />
+<h2 id="who-may-connect">Who may connect</h2>
+<p>The connection always carries TLS: wayvnc's <code>enable_auth</code> requires a
+certificate, a key <strong>and</strong> a password together, so there is no
+password-without-encryption — which is the right way round, given VNC's own
+authentication is DES with an eight-character key. The certificate is
+self-signed, made once, and lives in <code>~/.config/syn-remote/</code>.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A generated password</strong> <em>(default)</em></td>
+<td>Twenty characters from <code>/dev/urandom</code>. <code>syn-remote password</code> prints it, <code>syn-remote password new</code> rolls it.</td>
+</tr>
+<tr>
+<td><strong>Your account password</strong></td>
+<td><code>syn-remote auth pam</code> — the same three-try lockout as any other login on the machine.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="waking-the-machine-itself">Waking the machine itself</h2>
+<p>Three different problems wear the same word:</p>
+<ol>
+<li><strong>The screen is asleep.</strong> Handled above — the wrapper wakes it.</li>
+<li><strong>The machine is suspended.</strong> That needs Wake-on-LAN: a magic packet to a NIC
+   that is configured to listen for one. Many NICs drop the setting across a
+   reboot, so it wants <code>ethtool -s &lt;iface&gt; wol g</code> from a boot-time unit.</li>
+<li><strong>Nobody has logged in.</strong> There is no compositor, so there is nothing to
+   capture. A machine meant to be reached this way wants autologin.</li>
+</ol>
+<hr />
+<h2 id="what-it-is-not">What it is not</h2>
+<p><code>syn-remote</code> owns no part of the VNC protocol, the encryption or the
+credentials — wayvnc does all of it. What the wrapper adds is the screen wake,
+the idle inhibitor, the loopback default, the generated certificate and
+password, and one place to read the state from.</p>
+<p>See also: [[The-Desktop]], [[Settings]], [[Commands]].</p>
+      </div>
+
+<nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/syn-speak"><span>Previous</span>Speech and dictation</a><a class="next" href="/wiki/Commands"><span>Next</span>Commands</a></nav>
+    </article>
+
+<nav class="wiki-side" aria-label="All wiki pages">
+<p class="wiki-side-top"><a href="/wiki/">SynapseOS Wiki</a></p>
+<p class="wiki-side-h">Using it</p><ul>
+<li><a href="/wiki/Installation">Installation</a></li>
+<li><a href="/wiki/Welcome-Guide">Welcome Guide</a></li>
+<li><a href="/wiki/Updating">Updating</a></li>
+<li><a href="/wiki/Software">Software</a></li>
+<li><a href="/wiki/Files">Files</a></li>
+<li><a href="/wiki/Settings">Settings</a></li>
+<li><a href="/wiki/Calendar">Calendar</a></li>
+<li><a href="/wiki/Editor">Editor</a></li>
+<li><a href="/wiki/Studio">Studio</a></li>
+<li><a href="/wiki/Terminal">Terminal</a></li>
+<li><a href="/wiki/Keybindings">Keybindings</a></li>
+<li><a href="/wiki/syn-speak">Speech and dictation</a></li>
+<li><a href="/wiki/Remote-Desktop" aria-current="page">Remote Desktop</a></li>
+<li><a href="/wiki/Commands">Commands</a></li>
+<li><a href="/wiki/Configuration">Configuration</a></li>
+<li><a href="/wiki/Nix">Nix</a></li>
+<li><a href="/wiki/Gaming">Gaming</a></li>
+<li><a href="/wiki/Big-Screen">Big Screen</a></li>
+<li><a href="/wiki/DaVinci-Resolve">DaVinci Resolve</a></li>
+<li><a href="/wiki/Secure-Boot">Secure Boot</a></li>
+<li><a href="/wiki/Troubleshooting">Troubleshooting</a></li>
+</ul>
+<p class="wiki-side-h">Customising it</p><ul>
+<li><a href="/wiki/The-Desktop">The Desktop</a></li>
+<li><a href="/wiki/The-Dock">The Dock</a></li>
+<li><a href="/wiki/Bar-Plugins">Bar Plugins</a></li>
+<li><a href="/wiki/Wallpapers">Wallpapers</a></li>
+<li><a href="/wiki/Window-Effects">Window Effects</a></li>
+<li><a href="/wiki/Cursor-Themes">Cursor Themes</a></li>
+<li><a href="/wiki/Sound-Themes">Sound Themes</a></li>
+</ul>
+<p class="wiki-side-h">Components</p><ul>
+<li><a href="/wiki/Architecture">Architecture</a></li>
+<li><a href="/wiki/synapd">synapd</a></li>
+<li><a href="/wiki/synui">synui</a></li>
+<li><a href="/wiki/synguard-and-synapse_kmod">synguard + kmod</a></li>
+<li><a href="/wiki/synsh">synsh</a></li>
+</ul>
+<p class="wiki-side-h">Apps</p><ul>
+<li><a href="/wiki/Vibe">Vibe</a></li>
+<li><a href="/wiki/Chibi">Chibi</a></li>
+<li><a href="/wiki/Tepris">TEPRIS</a></li>
+<li><a href="/wiki/Nexus-Chat">Nexus P2P</a></li>
+</ul>
+<p class="wiki-side-h">Hacking on it</p><ul>
+<li><a href="/wiki/Building-and-Packaging">Building and Packaging</a></li>
+<li><a href="/wiki/Cutting-an-ISO-Release">Cutting an ISO Release</a></li>
+<li><a href="/wiki/Development-Notes">Development Notes</a></li>
+</ul>
+<p class="wiki-side-foot"><a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">Edit on GitHub</a></p>
+</nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <strong>SynapseOS</strong> &mdash; where the kernel thinks.
+      Built by <a href="https://github.com/velle999" rel="noopener">Velle Sinclair</a>.
+    </p>
+    <p class="small">
+      These pages are rendered from the
+      <a href="https://github.com/velle999/SYNAPSE/wiki" rel="noopener">project wiki</a>, which is where they are
+      edited. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot;
+      GPL-2.0-or-later. Not affiliated with or endorsed by Arch Linux.
+    </p>
+  </div>
+</footer>
+
+</div><!-- /.page -->
+</body>
+</html>
