@@ -63,6 +63,7 @@
 <li class="sub"><a href="#joining-and-writing-windows">Joining and writing: Windows</a></li>
 <li class="sub"><a href="#check-who-built-it">Check who built it</a></li>
 <li class="sub"><a href="#the-image-carries-no-ai-model">The image carries no AI model</a></li>
+<li><a href="#picking-a-language">Picking a language</a></li>
 <li><a href="#choosing-what-to-install">Choosing what to install</a></li>
 <li class="sub"><a href="#custom-is-every-package">Custom is every package</a></li>
 <li class="sub"><a href="#ordinary-software">Ordinary software</a></li>
@@ -259,6 +260,38 @@ either way, with the same end state as choosing None.</p>
 Building with <code>archiso/build.sh --with-model</code> puts one back on the image.</p>
 </blockquote>
 <p>Then run the installer from the live session (<code>syn-install</code>).</p>
+<hr />
+<h2 id="picking-a-language">Picking a language</h2>
+<p><strong>It is the first question the image asks.</strong> The bootloader carries a
+<strong>Language</strong> submenu — fifteen entries, each written in its own language — and
+choosing one boots with the answer already given. Take the plain entry instead
+and the live image opens on the same list as its own first screen.</p>
+<p>One answer sets all of it: the console keymap, the desktop keyboard layout, the
+locale, the console font, the font packs that get installed, the language
+<code>synsh</code> speaks, and the installer's own words. The installer does not ask again
+twenty minutes later — it reads the answer back.</p>
+<p>Both keyboard halves are set, which is not the same as one. <code>KEYMAP=</code> names a
+file <code>loadkeys</code> must find and <code>xkb_layout</code> names a layout <code>xkbcommon</code> must
+compile, and they disagree on four of the fifteen rows — Swedish is
+<code>sv-latin1</code> to the console and <code>se</code> to the desktop. They can still be changed
+separately afterwards.</p>
+<p><strong>The installer speaks fourteen languages</strong>: English, Deutsch, Français,
+Español, Português, Italiano, Nederlands, Polski, Русский, 日本語, 中文, 한국어,
+हिन्दी and العربية. Both installers do — the graphical one draws the same
+sentences as the text one, from the same catalog, and its own Language page
+re-translates the window in place if the image booted in the wrong one.</p>
+<blockquote>
+<p><strong>Japanese, Chinese, Korean, Arabic and Hindi cannot be drawn on a text
+console.</strong> A Linux virtual terminal holds at most 512 glyphs and does no text
+shaping, so the <strong>text</strong> installer keeps English prose for those five and says
+so in one line. Everything else about the choice still applies — the locale,
+both keyboards, the fonts and the installed system are the ones asked for —
+and the <strong>graphical</strong> installer and the installed desktop draw all thirteen
+properly.</p>
+</blockquote>
+<p>What is never translated: the answer keys. <code>[Y/n]</code>, <code>[y/N]</code> and typing <code>yes</code> to
+confirm a disk wipe stay those letters in every language, because the installer
+compares against them.</p>
 <hr />
 <h2 id="choosing-what-to-install">Choosing what to install</h2>
 <p>Four presets:</p>
