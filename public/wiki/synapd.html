@@ -63,6 +63,7 @@
 <li class="sub"><a href="#the-gpu-saga-resolved-2026-07-11-37ce3da--3333-layers-on-cuda0">The GPU saga (resolved 2026-07-11, 37ce3da) — 33/33 layers on CUDA0</a></li>
 <li class="sub"><a href="#building-cuda">Building CUDA</a></li>
 <li><a href="#vram-and-game-mode">VRAM and game mode</a></li>
+<li class="sub"><a href="#ram-and-the-cores-too">RAM and the cores, too</a></li>
 <li><a href="#switching-the-inference-device-gpu--cpu--off">Switching the inference device (GPU / CPU / off)</a></li>
 <li><a href="#talking-to-synapd-directly">Talking to synapd directly</a></li>
 </ul></nav>
@@ -199,6 +200,49 @@ remains the API for the first case.</p>
   was never the GPU pressure — so chibi's memory went dark for the length of
   every game, while three comments in two files promised it could not.</li>
 </ul>
+<h3 id="ram-and-the-cores-too">RAM and the cores, too</h3>
+<p>The same watcher looks at the machine as well as the card, because the VRAM
+policy <strong>relieves the GPU by spending the other two</strong> — a shed layer is reloaded
+into system RAM and computed on the CPU. A machine short of memory cannot be
+helped by that, and shedding into a memory shortage deepens it. So when the
+shortage is RAM or cores there is no layer count to reach for, and synapd
+releases the model instead, taking it back when the machine is quiet again.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--offload-ram MIB</code></td>
+<td><code>1536</code></td>
+<td>Release below this much <strong>MemAvailable</strong></td>
+</tr>
+<tr>
+<td><code>--offload-psi PCT</code></td>
+<td><code>40</code></td>
+<td>Release above this stall percentage (<code>some avg60</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Either at <code>0</code> switches that half off and leaves the VRAM policy alone.</p>
+<blockquote class="warn"><p><strong>⚠ Pressure, not free bytes.</strong> "Free memory" on Linux is not a measure of
+shortage — the page cache keeps it small on a machine with nothing whatever
+wrong. <code>/proc/pressure</code> answers the question actually being asked: how much of
+the last minute real tasks spent <em>stalled</em> waiting for memory or for a core.
+A kernel built without PSI falls back to the MemAvailable floor alone, and
+says so in the journal at startup.</p>
+<p><strong>⚠ The CPU half buys less than it looks.</strong> An idle model costs no CPU at all
+— llama.cpp computes only while it is answering — so releasing during a build
+hands that build no cycles it was not already getting. What it does is take
+synapd out of the running as a <em>future</em> competitor and give back the RAM at
+the same time. And it never fires while synapd is the one using the cores: a
+generation saturates its threads and looks exactly like a build, so releasing
+then would unload the model out from under whoever asked the question.</p>
+</blockquote>
 <p>Per-process VRAM is visible in the <a href="/wiki/synui">task manager</a>
 (<code>Ctrl</code>+<code>Alt</code>+<code>Delete</code>), which reads NVML via <code>dlopen</code> — no CUDA headers needed at
 build time.</p>
