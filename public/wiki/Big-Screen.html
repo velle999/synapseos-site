@@ -64,8 +64,10 @@
 <li class="sub"><a href="#youtube-music-needs-no-account-to-play">YouTube Music needs no account to play</a></li>
 <li class="sub"><a href="#the-player">The player</a></li>
 <li class="sub"><a href="#the-visualizer">The visualizer</a></li>
+<li><a href="#discs">Discs</a></li>
 <li><a href="#driving-it">Driving it</a></li>
 <li class="sub"><a href="#a-television-remote">A television remote</a></li>
+<li class="sub"><a href="#with-a-film-or-a-browser-in-front">With a film or a browser in front</a></li>
 <li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
 <li><a href="#settings">Settings</a></li>
 <li class="sub"><a href="#shelves">Shelves</a></li>
@@ -104,6 +106,8 @@ so this is a separate interface rather than a scaled one.</p>
   applications with their own controller support, and this is a web page until a
   game starts, so choosing one takes a cursor and signing in the first time takes
   letters</li>
+<li>A <strong>disc</strong> in the drive — a Blu-ray, a DVD or an audio CD, named after the
+  disc itself and gone again when you take it out. See <a href="#discs">Discs</a></li>
 <li>Whatever <strong>launchers and media players</strong> are actually on the machine</li>
 <li>A <strong>web browser</strong>, a <strong>terminal</strong> and the controller window</li>
 <li><strong>Music</strong> — see below</li>
@@ -262,6 +266,39 @@ for that. L3 and R3 mean nothing on their own — only the pair says a word.</p>
 <p>Behind the Now Playing row, the meter is <code>cliamp</code>'s own FFT bands, streamed a
 frame per line.</p>
 <hr />
+<h2 id="discs">Discs</h2>
+<p>Put a Blu-ray, a DVD or an audio CD in the drive and a tile appears on the media
+shelf, named after the disc — <code>THE LONG GOOD FRIDAY</code>, not "DVD". Press it and the
+film plays full screen; the tile goes when you take the disc out.</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>disc<span class="w">          </span><span class="c1"># what is in the drive</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>disc<span class="w"> </span>play<span class="w">     </span><span class="c1"># play it</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>disc<span class="w"> </span>eject<span class="w">    </span><span class="c1"># open the drive</span>
+</code></pre></div>
+
+<p>The player is <strong>mpv</strong>, which Arch already builds against libdvdnav, libbluray
+and libcdio — so <code>bd://</code>, <code>dvd://</code> and <code>cdda://</code> need nothing installed beyond
+mpv itself. Big screen mode starts it with a control socket and drives it over
+that, which is what makes the media buttons and the remote work on a film, and
+what makes <strong>⏭ and ⏮ skip a chapter</strong> rather than fall off the end of the disc.</p>
+<p>⚠ <strong>mpv is not installed by default</strong> — it is unticked in the installer's
+software list, so a machine can have a drive, a disc and no player. The tile is
+drawn only when mpv is there, on the same rule as every other tile: one you can
+press is one that works. <code>syn-arcade big disc</code> says so from a prompt:</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>install<span class="w"> </span>mpv
+</code></pre></div>
+
+<p>⚠ <strong>A commercial disc is encrypted, and the decrypter is not installed.</strong> An
+ordinary rented DVD needs <code>libdvdcss</code>; a Blu-ray needs <code>libaacs</code> <strong>and</strong> a key
+database, which no distribution ships. <code>syn-arcade big disc</code> names what is
+missing, and the television says so when you press the tile:</p>
+<div class="hl"><pre><span></span><code>synpkg<span class="w"> </span>install<span class="w"> </span>libdvdcss
+</code></pre></div>
+
+<p>A disc you made yourself, and any audio CD, plays without either.</p>
+<p>⚠ <strong>The drive is not spun up to answer.</strong> What is in it comes from what udev
+probed when the disc went in, so the tile list can be checked every few seconds
+without a drive that never stops turning.</p>
+<hr />
 <h2 id="driving-it">Driving it</h2>
 <p>Everything is <strong>words on a pipe</strong> — <code>up</code>, <code>accept</code>, <code>page-right</code>, one per line,
 read by exactly one process. Nothing is synthesised into the desktop, so a stray
@@ -326,8 +363,20 @@ nothing at all.</p>
 <td>Play-pause, on whatever is making the noise</td>
 </tr>
 <tr>
-<td><strong>Stop</strong>, <strong>skip</strong>, <strong>rewind / fast-forward</strong></td>
-<td>The transport</td>
+<td><strong>Stop</strong>, <strong>⏮ / ⏭</strong></td>
+<td>Stop, and skip a track — a <strong>chapter</strong> when a disc is playing</td>
+</tr>
+<tr>
+<td><strong>⏪ / ⏩</strong></td>
+<td>Thirty seconds back or on. These <strong>seek</strong>; they do not skip</td>
+</tr>
+<tr>
+<td><strong>DVD</strong></td>
+<td>Plays the disc in the drive</td>
+</tr>
+<tr>
+<td><strong>Eject</strong></td>
+<td>Opens the drive</td>
 </tr>
 <tr>
 <td><strong>Record</strong></td>
@@ -360,6 +409,44 @@ applications.</p>
 code as a keyboard's Pause/Break — so it arrives as plain <code>Pause</code>, never as the
 <code>XF86AudioPause</code> a keyboard's play controls send. Play worked and Pause did
 nothing until 0.1.0-55 for exactly that reason.</p>
+<h3 id="with-a-film-or-a-browser-in-front">With a film or a browser in front</h3>
+<p>Press a tile and big screen mode steps aside: the film, the browser or the game
+has the keyboard, and the remote's buttons go to it. Most of them work there
+because the application binds them — mpv answers play, pause, stop, ⏪ and ⏩ out
+of the box.</p>
+<p>Five buttons reach <strong>no application at all</strong>: OK, ⏭, ⏮, Guide and Power. Two of
+them have no keysym for a program to bind, and nothing binds the other three. Big
+screen mode reads those five from the remote itself and turns each into something
+the thing in front understands:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>With an application in front</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OK</strong></td>
+<td>A Return — which is what a menu, a browser and a web player all take</td>
+</tr>
+<tr>
+<td><strong>⏭ / ⏮</strong></td>
+<td>Skips a track, or a <strong>chapter</strong> on a disc</td>
+</tr>
+<tr>
+<td><strong>Guide</strong></td>
+<td>Back to big screen mode, leaving the application running</td>
+</tr>
+<tr>
+<td><strong>Power</strong></td>
+<td>Back, with the power selector open</td>
+</tr>
+</tbody>
+</table></div>
+<p>⚠ <strong>Only those five.</strong> Play, pause, stop, ⏪ and ⏩ are left to the application,
+because it receives them: acting on them here as well would answer one press
+twice, and a film would pause and unpause on a single button.</p>
 <p>The green button's shortcut is written into <code>~/.config/synui/synuirc</code> by
 <code>syn-arcade binds install</code>, alongside <code>Super</code>+<code>F10</code>. If you already have
 <code>XF86AudioMedia</code> bound to something of your own, yours is left alone and the
