@@ -64,6 +64,7 @@
 <li><a href="#kernels">Kernels</a></li>
 <li><a href="#from-a-script">From a script</a></li>
 <li><a href="#naming-the-machine">Naming the machine</a></li>
+<li><a href="#malware-scanning">Malware scanning</a></li>
 <li><a href="#where-the-settings-actually-live">Where the settings actually live</a></li>
 <li><a href="#see-also">See also</a></li>
 </ul></nav>
@@ -72,7 +73,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Settings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-10">2026-09-10</time>
       </p>
 
       <div class="wiki-body">
@@ -147,6 +148,30 @@ talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, 
 <tr>
 <td><strong>Apps</strong></td>
 <td>The default application for each role — and <strong>which file decided it</strong></td>
+</tr>
+<tr>
+<td><strong>AI</strong></td>
+<td>The backend switch, the units that can start the daemon again behind your back, and which model is on disk</td>
+</tr>
+<tr>
+<td><strong>Assistant</strong></td>
+<td>Which service the assistant sends your messages to — the model on this machine, or a cloud account and its API key</td>
+</tr>
+<tr>
+<td><strong>Fingerprint</strong></td>
+<td>The reader, which fingers are on file, and enrolling another</td>
+</tr>
+<tr>
+<td><strong>Speech</strong></td>
+<td>The screen reader, the wake word, and the voices this machine can speak and hear with</td>
+</tr>
+<tr>
+<td><strong>Remote Desktop</strong></td>
+<td>Whether this desktop can be reached from another machine, and from how far away</td>
+</tr>
+<tr>
+<td><strong>Malware Scanning</strong></td>
+<td>The weekly sweep's switch, the engines behind it, and what the last one found. See <a href="#malware-scanning">Malware scanning</a></td>
 </tr>
 <tr>
 <td><strong>System</strong></td>
@@ -313,6 +338,48 @@ no policy of its own. The name is validated here first, and more narrowly than
 most values (letters, digits, hyphen and dot; no leading or trailing punctuation;
 63 characters), because a refusal here can say what was wrong with what you typed
 where systemd can only say <code>hostnamectl exited 1</code>.</p>
+<h2 id="malware-scanning">Malware scanning</h2>
+<p>The <strong>Malware Scanning</strong> pane is the switch for the weekly sweep, and the answer
+to "has this machine been scanned". <a href="/wiki/Malware-Scanning"><code>syn-scan</code></a> owns the
+engines, the schedule and the quarantine; this pane reads its records and
+switches the units it ships.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scheduled scan</strong></td>
+<td>The weekly sweep — <code>syn-scan.timer</code>, enabled <em>and</em> started in one go</td>
+</tr>
+<tr>
+<td><strong>Signature updates</strong></td>
+<td><code>freshclam</code>. On by default: a scanner with stale signatures is worse than none</td>
+</tr>
+<tr>
+<td><strong>Keep signatures in memory</strong></td>
+<td><code>clamd</code>. Off by default — it makes a scan start instantly and costs about a gigabyte of RAM</td>
+</tr>
+</tbody>
+</table></div>
+<p>⚠ <strong>The sweep and your own scans are two separate records.</strong> The timer runs as
+root and writes <code>/var/lib/syn-scan</code>; a scan you type yourself is recorded under
+your own account. The pane shows both, each named for whose it is.</p>
+<p>The engine rows separate <strong>installed</strong> from <strong>runnable</strong>. Arch ships <code>rkhunter</code>
+as <code>0700 root</code>, so the scheduled sweep can run it and a scan you start yourself
+cannot; that row reads <em>needs root</em>.</p>
+<p><code>clamav-clamonacc.service</code> is listed with no switch. SynapseOS masks it —
+<a href="/wiki/synguard-and-synapse_kmod"><code>synguard</code></a> already watches every <code>open()</code> in the
+kernel.</p>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>scan<span class="w"> </span><span class="p">|</span><span class="w"> </span>column<span class="w"> </span>-t<span class="w"> </span>-s<span class="s1">$'\t'</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>malware-scan<span class="w"> </span>on
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>signature-updates<span class="w"> </span>on
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>scan-daemon<span class="w"> </span>on
+</code></pre></div>
+
 <h2 id="where-the-settings-actually-live">Where the settings actually live</h2>
 <p>The <strong>System</strong> pane answers this directly, and it is worth knowing the shape:</p>
 <div class="table-scroll"><table>
