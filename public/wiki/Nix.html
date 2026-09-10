@@ -143,12 +143,12 @@ leaves the layer ready and the first build is yours to start:</p>
 <p>Nix on a foreign distro cannot see what pacman did. So SynapseOS probes the
 installed system and hands the result to your expressions as <code>facts</code>:</p>
 <div class="hl"><pre><span></span><code><span class="p">{</span>
-  <span class="ss">system</span>      <span class="o">=</span> <span class="s2">&quot;x86_64-linux&quot;</span><span class="p">;</span>
-  <span class="ss">version</span>     <span class="o">=</span> <span class="s2">&quot;0.2.7&quot;</span><span class="p">;</span>
-  <span class="ss">hostname</span>    <span class="o">=</span> <span class="s2">&quot;synapse&quot;</span><span class="p">;</span>
-  <span class="ss">username</span>    <span class="o">=</span> <span class="s2">&quot;syn&quot;</span><span class="p">;</span>
-  <span class="ss">desktop</span>     <span class="o">=</span> <span class="s2">&quot;synui&quot;</span><span class="p">;</span>          <span class="c1"># synui | kde | gnome | tty</span>
-  <span class="ss">gpu</span>         <span class="o">=</span> <span class="s2">&quot;nvidia&quot;</span><span class="p">;</span>         <span class="c1"># nvidia | amd | intel | vm | none</span>
+  <span class="ss">system</span>      <span class="o">=</span> <span class="s2">"x86_64-linux"</span><span class="p">;</span>
+  <span class="ss">version</span>     <span class="o">=</span> <span class="s2">"0.2.7"</span><span class="p">;</span>
+  <span class="ss">hostname</span>    <span class="o">=</span> <span class="s2">"synapse"</span><span class="p">;</span>
+  <span class="ss">username</span>    <span class="o">=</span> <span class="s2">"syn"</span><span class="p">;</span>
+  <span class="ss">desktop</span>     <span class="o">=</span> <span class="s2">"synui"</span><span class="p">;</span>          <span class="c1"># synui | kde | gnome | tty</span>
+  <span class="ss">gpu</span>         <span class="o">=</span> <span class="s2">"nvidia"</span><span class="p">;</span>         <span class="c1"># nvidia | amd | intel | vm | none</span>
   <span class="ss">allowUnfree</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>             <span class="c1"># nvidia and Steam are unfree</span>
   <span class="ss">want</span> <span class="o">=</span> <span class="p">{</span>
     <span class="ss">model</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">bluetooth</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">printing</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="ss">filemgr</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
@@ -163,7 +163,7 @@ machine:</p>
 <div class="hl"><pre><span></span><code>home<span class="o">.</span><span class="ss">packages</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span> ripgrep fd <span class="p">]</span>
   <span class="o">++</span> lib<span class="o">.</span>optionals facts<span class="o">.</span>want<span class="o">.</span>steam     <span class="p">[</span> protontricks <span class="p">]</span>
   <span class="o">++</span> lib<span class="o">.</span>optionals facts<span class="o">.</span>want<span class="o">.</span>blackarch <span class="p">[</span> nmap <span class="p">]</span>
-  <span class="o">++</span> lib<span class="o">.</span>optionals <span class="p">(</span>facts<span class="o">.</span>gpu <span class="o">!=</span> <span class="s2">&quot;vm&quot;</span><span class="p">)</span>  <span class="p">[</span> vulkan-tools <span class="p">];</span>
+  <span class="o">++</span> lib<span class="o">.</span>optionals <span class="p">(</span>facts<span class="o">.</span>gpu <span class="o">!=</span> <span class="s2">"vm"</span><span class="p">)</span>  <span class="p">[</span> vulkan-tools <span class="p">];</span>
 </code></pre></div>
 
 <p>The same probe runs at install time and any time afterwards:</p>
@@ -226,26 +226,26 @@ exists; an install profile <em>prescribes</em> one that does not yet.</p>
 the disk layout and the package set is a perfectly good profile — this is not
 all-or-nothing, and a partial one is the normal case.</p>
 <div class="hl"><pre><span></span><code><span class="p">{</span>
-  <span class="ss">disk</span>          <span class="o">=</span> <span class="s2">&quot;vda&quot;</span><span class="p">;</span>
-  <span class="ss">install_mode</span>  <span class="o">=</span> <span class="s2">&quot;erase&quot;</span><span class="p">;</span>
+  <span class="ss">disk</span>          <span class="o">=</span> <span class="s2">"vda"</span><span class="p">;</span>
+  <span class="ss">install_mode</span>  <span class="o">=</span> <span class="s2">"erase"</span><span class="p">;</span>
   <span class="ss">confirm_erase</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
 
-  <span class="ss">filesystem</span> <span class="o">=</span> <span class="s2">&quot;btrfs&quot;</span><span class="p">;</span>
-  <span class="ss">bootloader</span> <span class="o">=</span> <span class="s2">&quot;limine&quot;</span><span class="p">;</span>
+  <span class="ss">filesystem</span> <span class="o">=</span> <span class="s2">"btrfs"</span><span class="p">;</span>
+  <span class="ss">bootloader</span> <span class="o">=</span> <span class="s2">"limine"</span><span class="p">;</span>
   <span class="ss">snapshots</span>  <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
 
-  <span class="ss">preset</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span><span class="p">;</span>
+  <span class="ss">preset</span> <span class="o">=</span> <span class="s2">"custom"</span><span class="p">;</span>
   <span class="ss">want</span>   <span class="o">=</span> <span class="p">{</span> <span class="ss">steam</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="ss">blackarch</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">nix</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="p">};</span>
 
   <span class="c1"># Since 0.2.9: every SynapseOS package is a `comp` key, and every program</span>
   <span class="c1"># from the Arch repositories an `sw` one. Both are read only under</span>
-  <span class="c1"># preset = &quot;custom&quot;; omitted keys take the Standard default.</span>
+  <span class="c1"># preset = "custom"; omitted keys take the Standard default.</span>
   <span class="ss">comp</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">synui</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">chibi</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="ss">tepris</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span> <span class="p">};</span>
   <span class="ss">sw</span>   <span class="o">=</span> <span class="p">{</span> <span class="ss">firefox</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">vlc</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="ss">docker</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="p">};</span>
 
-  <span class="ss">username</span> <span class="o">=</span> <span class="s2">&quot;syn&quot;</span><span class="p">;</span>
-  <span class="ss">desktop</span>  <span class="o">=</span> <span class="s2">&quot;synui&quot;</span><span class="p">;</span>
-  <span class="ss">timezone</span> <span class="o">=</span> <span class="s2">&quot;America/Chicago&quot;</span><span class="p">;</span>
+  <span class="ss">username</span> <span class="o">=</span> <span class="s2">"syn"</span><span class="p">;</span>
+  <span class="ss">desktop</span>  <span class="o">=</span> <span class="s2">"synui"</span><span class="p">;</span>
+  <span class="ss">timezone</span> <span class="o">=</span> <span class="s2">"America/Chicago"</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 

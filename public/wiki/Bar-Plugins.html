@@ -149,14 +149,14 @@ inside the bar's own process. Turning one on writes
 <h2 id="writing-one">Writing one</h2>
 <p>A plugin is a directory with a <code>manifest.json</code> and some QML.</p>
 <div class="hl"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;schemaVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example.uptime&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Uptime&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;kinds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bar-widget&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;entryPoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;barWidget&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Uptime.qml&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;barWidget&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Uptime&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;System&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="nt">&quot;allowMultiple&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"schemaVersion"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example.uptime"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Uptime"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"kinds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"bar-widget"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"entryPoints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"barWidget"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Uptime.qml"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"barWidget"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"displayName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Uptime"</span><span class="p">,</span><span class="w"> </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"System"</span><span class="p">,</span>
+<span class="w">                 </span><span class="nt">"allowMultiple"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -173,7 +173,7 @@ lists but loads nothing.</p>
     <span class="kd">id: root</span>
     <span class="k">implicitWidth:</span> <span class="mi">40</span>
     <span class="k">implicitHeight:</span> <span class="nx">root</span><span class="p">.</span><span class="nx">barSize</span>
-    <span class="nx">Text</span> <span class="p">{</span> <span class="k">anchors.centerIn:</span> <span class="nx">parent</span><span class="p">;</span> <span class="k">text:</span> <span class="s2">&quot;hi&quot;</span> <span class="p">}</span>
+    <span class="nx">Text</span> <span class="p">{</span> <span class="k">anchors.centerIn:</span> <span class="nx">parent</span><span class="p">;</span> <span class="k">text:</span> <span class="s2">"hi"</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 

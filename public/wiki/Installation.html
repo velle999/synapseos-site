@@ -143,8 +143,8 @@ first <code>0x1A</code> byte, which in this image is a few hundred KB in — you
 file, no error message, and a stick that does not boot.</p>
 <p>If <code>copy /b</code> gives trouble, <strong>PowerShell</strong> can do the join instead, and it has no
 text mode to fall into:</p>
-<div class="hl"><pre><span></span><code><span class="nv">$out</span> <span class="p">=</span> <span class="no">[System.IO.File]</span><span class="p">::</span><span class="n">Create</span><span class="p">((</span><span class="nb">Join-Path</span> <span class="nv">$PWD</span> <span class="s1">&#39;SynapseOS-&lt;ver&gt;-x86_64.iso&#39;</span><span class="p">))</span>
-<span class="nb">Get-ChildItem</span> <span class="s1">&#39;SynapseOS-&lt;ver&gt;-x86_64.iso.part*&#39;</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">Name</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+<div class="hl"><pre><span></span><code><span class="nv">$out</span> <span class="p">=</span> <span class="no">[System.IO.File]</span><span class="p">::</span><span class="n">Create</span><span class="p">((</span><span class="nb">Join-Path</span> <span class="nv">$PWD</span> <span class="s1">'SynapseOS-&lt;ver&gt;-x86_64.iso'</span><span class="p">))</span>
+<span class="nb">Get-ChildItem</span> <span class="s1">'SynapseOS-&lt;ver&gt;-x86_64.iso.part*'</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">Name</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
   <span class="nv">$in</span> <span class="p">=</span> <span class="no">[System.IO.File]</span><span class="p">::</span><span class="n">OpenRead</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">FullName</span><span class="p">);</span> <span class="nv">$in</span><span class="p">.</span><span class="n">CopyTo</span><span class="p">(</span><span class="nv">$out</span><span class="p">);</span> <span class="nv">$in</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
 <span class="p">}</span>
 <span class="nv">$out</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
@@ -157,7 +157,7 @@ split download goes wrong, and every symptom of it looks like a broken ISO.</p>
 
 <p>Compare what it prints against the contents of the <code>.sha256</code> file. Or have
 PowerShell compare them for you — it prints <code>True</code> when the join is good:</p>
-<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">&#39;\s+&#39;</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
+<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">'\s+'</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
 </code></pre></div>
 
 <p>(<code>Get-FileHash</code> prints uppercase hex where <code>sha256sum</code> writes lowercase — same
@@ -344,7 +344,7 @@ twenty-five are checkboxes on one page now:</p>
   [x] 12) Updates       receives fixes  [ ] 25) TEPRIS        game (+Firefox)
   [x] 13) syn           top-level CLI
 
-  Toggle [numbers, &#39;all&#39;, &#39;none&#39;, Enter = accept]:
+  Toggle [numbers, 'all', 'none', Enter = accept]:
 </code></pre></div>
 
 <p>Type the numbers you want to flip, <code>all</code> or <code>none</code> to sweep the page, and Enter

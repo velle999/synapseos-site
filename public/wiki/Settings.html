@@ -274,7 +274,7 @@ the default only from a system you can get back into.</p>
 <h2 id="from-a-script">From a script</h2>
 <p>Everything the window does has a command-line half. <code>--rec</code> prints TSV — a
 header line, then rows — which is meant to be piped:</p>
-<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>region<span class="w"> </span><span class="p">|</span><span class="w"> </span>column<span class="w"> </span>-t<span class="w"> </span>-s<span class="s1">$&#39;\t&#39;</span>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>region<span class="w"> </span><span class="p">|</span><span class="w"> </span>column<span class="w"> </span>-t<span class="w"> </span>-s<span class="s1">$'\t'</span>
 syn-settings<span class="w"> </span>--rec<span class="w"> </span>apps<span class="w">                  </span><span class="c1"># each role, its app, and which file chose it</span>
 syn-settings<span class="w"> </span>choices<span class="w"> </span>date-format<span class="w">         </span><span class="c1"># what a setting can be set TO, with examples</span>
 syn-settings<span class="w"> </span>apps<span class="w"> </span>browser<span class="w">                </span><span class="c1"># every application that could take a role</span>
@@ -286,7 +286,7 @@ syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> 
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>timezone<span class="w"> </span>Europe/London
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>ntp<span class="w"> </span>on
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>time-format<span class="w"> </span><span class="m">24</span><span class="w">          </span><span class="c1"># how the desktop writes the time</span>
-syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>hostname<span class="w"> </span>loft<span class="w">           </span><span class="c1"># the machine&#39;s name (see below)</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>hostname<span class="w"> </span>loft<span class="w">           </span><span class="c1"># the machine's name (see below)</span>
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>app<span class="w"> </span>browser<span class="w"> </span>firefox<span class="w">     </span><span class="c1"># a .desktop name; a command for `terminal`</span>
 syn-settings<span class="w"> </span>unit<span class="w"> </span>restart<span class="w"> </span>synapd<span class="w">         </span><span class="c1"># enable|disable|start|stop|restart</span>
 syn-settings<span class="w"> </span>mode<span class="w"> </span>DP-1<span class="w"> </span>1920x1080@60<span class="w">      </span><span class="c1"># via wlr-randr</span>

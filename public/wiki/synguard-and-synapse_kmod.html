@@ -210,7 +210,7 @@ rule on that path is a rule against starting programs.</p>
 <h3 id="setting-up-the-in-kernel-gate">Setting up the in-kernel gate</h3>
 <p><strong>1. Check the kernel already offers it.</strong> On stock Arch it does:</p>
 <div class="hl"><pre><span></span><code>cat<span class="w"> </span>/sys/kernel/security/lsm
-<span class="c1"># capability,landlock,lockdown,yama,bpf   ← &#39;bpf&#39; must be in this list</span>
+<span class="c1"># capability,landlock,lockdown,yama,bpf   ← 'bpf' must be in this list</span>
 </code></pre></div>
 
 <p>If <code>bpf</code> is absent, add it to the active LSM list on the kernel command line

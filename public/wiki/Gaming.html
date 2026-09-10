@@ -141,7 +141,7 @@ fixes that, and the line is hard to remember:</p>
 </code></pre></div>
 
 <p><code>syn-arcade fit</code> writes it, and gives it a menu entry:</p>
-<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;The Sims&quot;</span><span class="w"> </span>--exec<span class="o">=</span><span class="s2">&quot;wine Sims.exe&quot;</span><span class="w"> </span>--game<span class="o">=</span>1024x768
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--name<span class="o">=</span><span class="s2">"The Sims"</span><span class="w"> </span>--exec<span class="o">=</span><span class="s2">"wine Sims.exe"</span><span class="w"> </span>--game<span class="o">=</span>1024x768
 syn-arcade<span class="w"> </span>fit<span class="w"> </span>new<span class="w"> </span>--from<span class="o">=</span>/usr/share/applications/thegame.desktop
 syn-arcade<span class="w"> </span>fit<span class="w">                  </span><span class="c1"># the wrappers you have made</span>
 syn-arcade<span class="w"> </span>fit<span class="w"> </span><span class="nb">command</span><span class="w"> </span>&lt;id&gt;<span class="w">     </span><span class="c1"># the command line it builds, to check or copy</span>
@@ -485,7 +485,7 @@ mapping. It exists because the Mappings tab could list a broken controller and
 not fix one: its answer to "my pad's buttons are in the wrong places" used to be
 the name of a program this desktop does not ship.</p>
 <div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>map<span class="w"> </span>learn<span class="w"> </span><span class="o">[</span>&lt;pad&gt;<span class="o">]</span><span class="w">                 </span><span class="c1"># press each control once</span>
-syn-arcade<span class="w"> </span>map<span class="w"> </span>add<span class="w"> </span><span class="s1">&#39;&lt;the mapping string&gt;&#39;</span><span class="w">    </span><span class="c1"># or paste one — quote it</span>
+syn-arcade<span class="w"> </span>map<span class="w"> </span>add<span class="w"> </span><span class="s1">'&lt;the mapping string&gt;'</span><span class="w">    </span><span class="c1"># or paste one — quote it</span>
 syn-arcade<span class="w"> </span>map<span class="w">                               </span><span class="c1"># what you have added</span>
 syn-arcade<span class="w"> </span>map<span class="w"> </span>remove<span class="w"> </span>&lt;guid<span class="w"> </span>or<span class="w"> </span>name&gt;
 syn-arcade<span class="w"> </span>map<span class="w"> </span>path<span class="w">                          </span><span class="c1"># is SDL actually reading them?</span>

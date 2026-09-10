@@ -128,9 +128,9 @@ ISO's filename is built from — but the version is also written into the <stron
 menu text</strong> in five more files, and nothing checks that they agree. Miss one and
 the image boots to a menu naming the previous release:</p>
 <div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>archiso
-sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/0\.2\.9\.4/0.2.9.5/g&#39;</span><span class="w"> </span>profiledef.sh<span class="w"> </span>grub/grub.cfg<span class="w"> </span>grub/loopback.cfg<span class="w"> </span><span class="se">\</span>
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/0\.2\.9\.4/0.2.9.5/g'</span><span class="w"> </span>profiledef.sh<span class="w"> </span>grub/grub.cfg<span class="w"> </span>grub/loopback.cfg<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>syslinux/archiso_head.cfg<span class="w"> </span>syslinux/archiso_pxe-linux.cfg<span class="w"> </span>syslinux/archiso_sys-linux.cfg
-grep<span class="w"> </span>-rn<span class="w"> </span><span class="s1">&#39;0\.2\.9\.4&#39;</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">&#39;*.cfg&#39;</span><span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;^./work/&#39;</span>
+grep<span class="w"> </span>-rn<span class="w"> </span><span class="s1">'0\.2\.9\.4'</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">'*.sh'</span><span class="w"> </span>--include<span class="o">=</span><span class="s1">'*.cfg'</span><span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">'^./work/'</span>
 </code></pre></div>
 
 <p>The <code>grep</code> should print nothing. (<code>work/</code> is the previous build's tree and is
@@ -221,7 +221,7 @@ its GPU later. Those go in the repo, never into <code>packages.x86_64</code>.</p
 </blockquote>
 <p><strong>4. Verify the right packages actually made it in.</strong> This is the step that
 catches a silently stale build:</p>
-<div class="hl"><pre><span></span><code>grep<span class="w"> </span><span class="s1">&#39;^synui &#39;</span><span class="w"> </span>archiso/work/iso/arch/pkglist.x86_64.txt<span class="w">   </span><span class="c1"># → synui 0.1.0-&lt;pkgrel&gt;</span>
+<div class="hl"><pre><span></span><code>grep<span class="w"> </span><span class="s1">'^synui '</span><span class="w"> </span>archiso/work/iso/arch/pkglist.x86_64.txt<span class="w">   </span><span class="c1"># → synui 0.1.0-&lt;pkgrel&gt;</span>
 </code></pre></div>
 
 <p>If that pkgrel isn't the one you just bumped, <strong>the ISO is stale — do not ship
@@ -246,7 +246,7 @@ roads.</p>
 <p>The signing key is a <strong>dedicated release key</strong> — not a personal identity, so it
 can be rotated or revoked without touching anything else, and a compromised
 build host costs the release key rather than your name.</p>
-<div class="hl"><pre><span></span><code>gpg<span class="w"> </span>--quick-generate-key<span class="w"> </span><span class="s2">&quot;SynapseOS Release Signing &lt;releases@soslinux.org&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="hl"><pre><span></span><code>gpg<span class="w"> </span>--quick-generate-key<span class="w"> </span><span class="s2">"SynapseOS Release Signing &lt;releases@soslinux.org&gt;"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>ed25519<span class="w"> </span>sign<span class="w"> </span>3y
 gpg<span class="w"> </span>--list-secret-keys<span class="w"> </span>--keyid-format<span class="o">=</span>long<span class="w">          </span><span class="c1"># the fingerprint</span>
 gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w"> </span>&lt;fingerprint&gt;<span class="w"> </span>&gt;<span class="w"> </span>synapseos-release-key.asc

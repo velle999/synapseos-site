@@ -271,7 +271,7 @@ from whoever spawned it and has no idea.</p>
 </ol>
 <p><strong>Rule:</strong> reset all signal dispositions and unblock the full mask in the child,
 between <code>fork()</code> and <code>exec()</code>.</p>
-<div class="hl"><pre><span></span><code>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;SigIgn|SigBlk&#39;</span><span class="w"> </span>/proc/&lt;pid&gt;/status
+<div class="hl"><pre><span></span><code>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'SigIgn|SigBlk'</span><span class="w"> </span>/proc/&lt;pid&gt;/status
 </code></pre></div>
 
 <hr />
@@ -670,8 +670,8 @@ bootloader silently installed a different one.</p>
 wrote, and the block looks correctly indented in an editor. Two checks worth
 having in any repo with heredocs:</p>
 <div class="hl"><pre><span></span><code><span class="c1"># 1. no terminator may be indented</span>
-grep<span class="w"> </span>-oE<span class="w"> </span><span class="s1">&#39;&lt;&lt;[ \t]*&quot;?[A-Za-z_][A-Za-z0-9_]*&quot;?&#39;</span><span class="w"> </span>script.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/&lt;&lt;[ \t]*//; s/&quot;//g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>t<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>grep<span class="w"> </span>-nE<span class="w"> </span><span class="s2">&quot;^[[:space:]]+</span><span class="nv">$t</span><span class="s2">\$&quot;</span><span class="w"> </span>script.sh<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+grep<span class="w"> </span>-oE<span class="w"> </span><span class="s1">'&lt;&lt;[ \t]*"?[A-Za-z_][A-Za-z0-9_]*"?'</span><span class="w"> </span>script.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">'s/&lt;&lt;[ \t]*//; s/"//g'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>t<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>grep<span class="w"> </span>-nE<span class="w"> </span><span class="s2">"^[[:space:]]+</span><span class="nv">$t</span><span class="s2">\$"</span><span class="w"> </span>script.sh<span class="p">;</span><span class="w"> </span><span class="k">done</span>
 
 <span class="c1"># 2. strip every heredoc BODY, then assert the commands that must run are still code</span>
 </code></pre></div>
@@ -689,10 +689,10 @@ Everything typed after it answers the following prompts, in order.</p>
 you noticed it:</p>
 <div class="hl"><pre><span></span><code>prompt<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-t<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w">                       </span><span class="c1"># only when stdin is a terminal —</span>
-<span class="w">        </span><span class="nb">local</span><span class="w"> </span>_junk<span class="w">                         </span><span class="c1"># a piped run&#39;s answers are real</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span>_junk<span class="w">                         </span><span class="c1"># a piped run's answers are real</span>
 <span class="w">        </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>-t<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-N<span class="w"> </span><span class="m">4096</span><span class="w"> </span>_junk<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">    </span><span class="k">fi</span>
-<span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s1">&#39;  %s &#39;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'  %s '</span><span class="w"> </span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
 <span class="o">}</span>
 </code></pre></div>
 
@@ -792,7 +792,7 @@ whole transaction is rejected and <strong>the machine ends up with no table at a
 fix for one bridge that silently unfilters the box.</p>
 <p><code>iifname</code> is a string match and is happy to name an interface that does not exist
 yet. Verified rather than assumed, which took one command:</p>
-<div class="hl"><pre><span></span><code>unshare<span class="w"> </span>-rn<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;nft -f ruleset.nft &amp;&amp; nft list chain inet synnet input&quot;</span>
+<div class="hl"><pre><span></span><code>unshare<span class="w"> </span>-rn<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"nft -f ruleset.nft &amp;&amp; nft list chain inet synnet input"</span>
 </code></pre></div>
 
 <p>The rule: <strong>a rule that resolves a name at load time is a rule that can fail on a

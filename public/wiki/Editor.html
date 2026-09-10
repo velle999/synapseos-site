@@ -127,10 +127,10 @@ syn-edit<span class="w"> </span>highlight<span class="w"> </span>main.c<span cla
 <p>This is the part worth knowing about even if you use another editor. <code>run</code>
 applies a key sequence to a file and prints the result; <code>ex</code> does the same with
 ex commands only. Nothing is written unless you ask with <code>-w</code>.</p>
-<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;ggdG&#39;</span><span class="w"> </span>notes.md<span class="w">              </span><span class="c1"># delete every line, print the result</span>
-syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;ciwfoo&lt;Esc&gt;&#39;</span><span class="w"> </span>file.c<span class="w">         </span><span class="c1"># change a word</span>
-syn-edit<span class="w"> </span>ex<span class="w">  </span>-c<span class="w"> </span><span class="s1">&#39;%s/foo/bar/g&#39;</span><span class="w"> </span>-w<span class="w"> </span>*.c<span class="w">        </span><span class="c1"># substitute, and write it back</span>
-syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">&#39;gg&#39;</span><span class="w"> </span>--status<span class="w"> </span>file.c<span class="w">         </span><span class="c1"># cursor, mode and message as records</span>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">'ggdG'</span><span class="w"> </span>notes.md<span class="w">              </span><span class="c1"># delete every line, print the result</span>
+syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">'ciwfoo&lt;Esc&gt;'</span><span class="w"> </span>file.c<span class="w">         </span><span class="c1"># change a word</span>
+syn-edit<span class="w"> </span>ex<span class="w">  </span>-c<span class="w"> </span><span class="s1">'%s/foo/bar/g'</span><span class="w"> </span>-w<span class="w"> </span>*.c<span class="w">        </span><span class="c1"># substitute, and write it back</span>
+syn-edit<span class="w"> </span>run<span class="w"> </span>-k<span class="w"> </span><span class="s1">'gg'</span><span class="w"> </span>--status<span class="w"> </span>file.c<span class="w">         </span><span class="c1"># cursor, mode and message as records</span>
 </code></pre></div>
 
 <p>Keys use vim notation, with <code>&lt;Esc&gt;</code>, <code>&lt;CR&gt;</code>, <code>&lt;Tab&gt;</code>, <code>&lt;BS&gt;</code>, <code>&lt;C-r&gt;</code> and the
@@ -144,8 +144,8 @@ things.</p>
 vim's default. <code>\( \)</code> group, <code>\|</code> alternates, <code>\+</code> and <code>\?</code> repeat, and <code>\&lt; \&gt;</code>
 anchor to word boundaries. A pattern starting with <code>\v</code> is read as an <em>extended</em>
 regular expression instead, which is what vim's very-magic mode is.</p>
-<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%s/\&lt;log\&gt;/trace/g&#39;</span><span class="w"> </span>-w<span class="w"> </span>app.c<span class="w">      </span><span class="c1"># whole word</span>
-syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%s/\v(foo|bar)/baz/g&#39;</span><span class="w">  </span>-w<span class="w"> </span>app.c<span class="w">   </span><span class="c1"># very-magic alternation</span>
+<div class="hl"><pre><span></span><code>syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%s/\&lt;log\&gt;/trace/g'</span><span class="w"> </span>-w<span class="w"> </span>app.c<span class="w">      </span><span class="c1"># whole word</span>
+syn-edit<span class="w"> </span>ex<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%s/\v(foo|bar)/baz/g'</span><span class="w">  </span>-w<span class="w"> </span>app.c<span class="w">   </span><span class="c1"># very-magic alternation</span>
 </code></pre></div>
 
 <h2 id="in-the-window">In the window</h2>

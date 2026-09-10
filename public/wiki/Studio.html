@@ -135,8 +135,8 @@ synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span clas
 <div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>look<span class="w"> </span>list<span class="w">                       </span><span class="c1"># name, label, what it does, where it is</span>
 synstudio<span class="w"> </span>look<span class="w"> </span>show<span class="w"> </span>noir<span class="w">                  </span><span class="c1"># exactly which controls it sets</span>
 synstudio<span class="w"> </span>look<span class="w"> </span>apply<span class="w"> </span>noir<span class="w"> </span>--to<span class="w"> </span>photo.jpg
-synstudio<span class="w"> </span>look<span class="w"> </span>save<span class="w"> </span><span class="s2">&quot;my look&quot;</span><span class="w"> </span>--from<span class="w"> </span>photo.jpg<span class="w"> </span><span class="o">[</span>--label<span class="w"> </span><span class="s2">&quot;My Look&quot;</span><span class="o">]</span>
-synstudio<span class="w"> </span>look<span class="w"> </span>remove<span class="w"> </span><span class="s2">&quot;my look&quot;</span>
+synstudio<span class="w"> </span>look<span class="w"> </span>save<span class="w"> </span><span class="s2">"my look"</span><span class="w"> </span>--from<span class="w"> </span>photo.jpg<span class="w"> </span><span class="o">[</span>--label<span class="w"> </span><span class="s2">"My Look"</span><span class="o">]</span>
+synstudio<span class="w"> </span>look<span class="w"> </span>remove<span class="w"> </span><span class="s2">"my look"</span>
 </code></pre></div>
 
 <p>A <code>.synlook</code> is <strong>not a lookup table</strong> — it is the develop stack written out as
@@ -259,9 +259,9 @@ synstudio<span class="w"> </span>timeline<span class="w"> </span>queue<span clas
 <div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>undo<span class="w"> </span>cut.syntl
 synstudio<span class="w"> </span>timeline<span class="w"> </span>redo<span class="w"> </span>cut.syntl
 synstudio<span class="w"> </span>timeline<span class="w"> </span><span class="nb">history</span><span class="w"> </span>cut.syntl
-synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>save<span class="w"> </span><span class="s2">&quot;rough cut&quot;</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>save<span class="w"> </span><span class="s2">"rough cut"</span>
 synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>list
-synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>restore<span class="w"> </span><span class="s2">&quot;rough cut&quot;</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>version<span class="w"> </span>cut.syntl<span class="w"> </span>restore<span class="w"> </span><span class="s2">"rough cut"</span>
 </code></pre></div>
 
 <p>Undo is a ring and it expires. A <strong>version</strong> is a document you decided to keep,
