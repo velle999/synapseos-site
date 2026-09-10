@@ -80,7 +80,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Files</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Files/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-27">2026-08-27</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Files/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-09">2026-09-09</time>
       </p>
 
       <div class="wiki-body">
@@ -335,7 +335,7 @@ which <code>reset</code> fixes.</p>
 <h3 id="piping-to-it">Piping to it</h3>
 <p>If stdin is not a terminal, it runs a line protocol instead — the same browser
 driven a line at a time, which is what makes it scriptable and testable:</p>
-<div class="hl"><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="s1">&#39;1\nq\n&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>synfiles<span class="w"> </span>tui<span class="w">        </span><span class="c1"># open row 1, quit</span>
+<div class="hl"><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="s1">'1\nq\n'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>synfiles<span class="w"> </span>tui<span class="w">        </span><span class="c1"># open row 1, quit</span>
 </code></pre></div>
 
 <p>There, a bare row number opens, and the actions take the row as an argument:
@@ -502,6 +502,22 @@ believes <code>lsblk</code> alone will call a working drive "not mounted" and of
 mount it a second time. Unmounted volumes are shown dimmed with a mount button;
 mounting and unmounting go through <code>udisksctl</code>, which owns the polkit rules that
 let a desktop user do it without root.</p>
+<p><strong>The list keeps up on its own</strong> — plug a stick in, put a disc in a drive, or
+mount something from another program or a terminal, and the sidebar changes
+without a refresh. That takes three mechanisms, and none of them covers the
+other two. A device arriving, and a disc going into a drive, are kernel
+uevents, read from a netlink socket joined to udev's own multicast group, which
+needs no privileges; the kernel notices the disc at all only because it polls
+removable media a few times a minute. Mounting and unmounting emit <strong>no uevent
+whatsoever</strong> — nothing about the device changed, only what is being done with
+it — so the mount table is watched instead, with a <code>poll()</code> for <code>POLLPRI</code> on
+<code>/proc/self/mountinfo</code>, the one thing that file answers. And a network share is
+neither: gvfs hangs every share off a single FUSE mount, so mounting a second
+one does not touch the mount table either, and each share appears as a
+<em>directory</em> under <code>/run/user/&lt;uid&gt;/gvfs</code> — which is inotify's question. A burst
+is coalesced, because one stick is five or six uevents with a mount behind
+them and re-reading the list once per event would put six process spawns behind
+one plug. <code>synfiles volumes --watch</code> is the same stream on the command line.</p>
 <p><strong>Archives</strong>: select, right-click, Compress — <code>tar.gz</code>, <code>tar.xz</code>, <code>tar.zst</code>,
 <code>zip</code> or <code>7z</code>. Every input must share one parent, and the tool runs with that
 parent as its working directory, or the archive stores absolute paths and
@@ -513,8 +529,8 @@ that was already there.</p>
 <p><code>Ctrl</code>+<code>F</code> searches the current folder and everything below it. The filter box
 does double duty and says which mode it is in — filtering is instant, searching
 walks the tree.</p>
-<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>find<span class="w"> </span>.<span class="w"> </span>--name<span class="o">=</span>iso<span class="w">                 </span><span class="c1"># no glob characters means &quot;contains&quot;</span>
-synfiles<span class="w"> </span>find<span class="w"> </span>~/src<span class="w"> </span>--name<span class="o">=</span><span class="s1">&#39;*.c&#39;</span><span class="w"> </span>--content<span class="o">=</span>TODO
+<div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>find<span class="w"> </span>.<span class="w"> </span>--name<span class="o">=</span>iso<span class="w">                 </span><span class="c1"># no glob characters means "contains"</span>
+synfiles<span class="w"> </span>find<span class="w"> </span>~/src<span class="w"> </span>--name<span class="o">=</span><span class="s1">'*.c'</span><span class="w"> </span>--content<span class="o">=</span>TODO
 </code></pre></div>
 
 <ul>

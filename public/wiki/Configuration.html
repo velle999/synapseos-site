@@ -85,7 +85,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Configuration</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Configuration/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Configuration/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-06">2026-09-06</time>
       </p>
 
       <div class="wiki-body">
@@ -419,6 +419,13 @@ between those tiles), <code>cascade_stack_max</code> (windows per pile).</p>
 the rest do nothing. Then <code>active_opacity</code>, <code>inactive_opacity</code>, and <code>foot_alpha</code>
 for the terminal, which needs its own number because foot and syntty draw their
 own background with the glyphs left opaque.</p>
+<p><code>transparency_exclude = mpv vlc</code> names the windows those opacities skip. A
+translucent video is never the wanted effect while a translucent terminal
+usually is, and without this the only way to make one app solid is to turn the
+master switch off for everything — which also releases the bar and the dock,
+because the glass sync watches the same switch. Matched case-insensitively as a
+substring of the app_id, and setting the key replaces the shipped list rather
+than adding to it, so it can be narrowed as well as widened.</p>
 <p>The desktop-wide glass slider and its switches are on
 <strong><a href="/wiki/The-Desktop#glass">The Desktop → Glass</a></strong>.</p>
 <h2 id="lock-screen-and-screensaver">Lock screen and screensaver</h2>

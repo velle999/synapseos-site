@@ -99,7 +99,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>The Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/The-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-09">2026-09-09</time>
       </p>
 
       <div class="wiki-body">
@@ -371,14 +371,17 @@ The Sims</em> one row above <em>The Sims</em> is a dangerous list to arrow throu
 <h2 id="screensaver-lock-screen-and-do-not-disturb">Screensaver, lock screen and Do Not Disturb</h2>
 <p><code>Super</code>+<code>Z</code> is one panel for what the screen shows when nobody is at it — the
 screensaver, and the appearance of the lock and login screens.</p>
-<p>Five modes — <code>blank</code>, <code>clock</code>, <code>starfield</code>, <code>slideshow</code>, <code>matrix</code> — and it is
-<strong>off by default</strong>: with no timeout set, nothing about an existing install's
-idle behaviour changes until you ask.</p>
+<p>Seven modes — <code>blank</code>, <code>clock</code>, <code>starfield</code>, <code>slideshow</code>, <code>matrix</code>,
+<code>floaters</code>, <code>dvd</code> — and it is <strong>off by default</strong>: with no timeout set, nothing
+about an existing install's idle behaviour changes until you ask.</p>
+<p><code>floaters</code> drifts the Synapse mark along curved paths, fading as it shrinks.
+<code>dvd</code> is the bounce everyone knows: constant speed, a new colour on every
+edge, and a count of the exact corner hits.</p>
 <p><code>Up</code>/<code>Down</code> moves between rows, <code>Left</code>/<code>Right</code> changes the value under the
 cursor, <code>p</code> previews the current mode straight away rather than making you wait
 out the timeout, <code>s</code> saves, <code>Escape</code> closes. The mouse does the same job — hover
 selects, left click steps a value on, right click steps it back.</p>
-<div class="hl"><pre><span></span><code><span class="na">screensaver</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">starfield</span><span class="w">   </span><span class="c1"># or blank / clock / slideshow / matrix, or off</span>
+<div class="hl"><pre><span></span><code><span class="na">screensaver</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">starfield</span><span class="w">   </span><span class="c1"># blank / clock / slideshow / matrix / floaters / dvd, or off</span>
 <span class="na">screensaver_timeout</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">300</span><span class="w">         </span><span class="c1"># seconds; 0 = never</span>
 <span class="na">screensaver_lock</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">on</span><span class="w">          </span><span class="c1"># lock the session when it is dismissed</span>
 <span class="na">screensaver_dir</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">~/Pictures</span><span class="w">  </span><span class="c1"># slideshow source (default: the wallpapers)</span>
@@ -425,7 +428,7 @@ frame; with no network it keeps showing the last reading, dimmed and labelled
 with its age rather than pretending to be current.</p>
 <p>There is <strong>one location on this machine</strong> and it is not set in <code>synuirc</code>. It is
 the file every weather widget here already reads:</p>
-<div class="hl"><pre><span></span><code>omarchy-weather-location<span class="w"> </span>--set<span class="w"> </span><span class="s2">&quot;Oslo&quot;</span><span class="w"> </span><span class="m">59</span>.9139,10.7522
+<div class="hl"><pre><span></span><code>omarchy-weather-location<span class="w"> </span>--set<span class="w"> </span><span class="s2">"Oslo"</span><span class="w"> </span><span class="m">59</span>.9139,10.7522
 omarchy-weather-location<span class="w">                      </span><span class="c1"># what it is now</span>
 omarchy-weather-location<span class="w"> </span>--clear<span class="w">              </span><span class="c1"># back to IP detection</span>
 </code></pre></div>
@@ -592,7 +595,7 @@ glass themes handed you.</p>
 <p>Since 0.2.9.4 a new install boots into the house desktop rather than into Prism
 with everything else left at the compositor's defaults:</p>
 <div class="hl"><pre><span></span><code><span class="na">theme</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s">prism</span>
-<span class="na">glass_level</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">       </span><span class="c1"># the theme&#39;s own answer — see below</span>
+<span class="na">glass_level</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">auto</span><span class="w">       </span><span class="c1"># the theme's own answer — see below</span>
 <span class="na">transparency</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">on</span>
 <span class="na">bar_shape</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">floating-pill</span>
 <span class="na">dock_radius</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">64</span><span class="w">         </span><span class="c1"># clamped to a capsule</span>
@@ -655,7 +658,7 @@ sees). The bar keeps a solid strip on those rather than guessing.</p>
 picture and the bar, the dock and the icons wear it. <strong><code>syn-rgb</code></strong> carries the
 same colour out to whatever <a href="https://openrgb.org/">OpenRGB</a> can see: the RAM,
 the board, the keyboard.</p>
-<div class="hl"><pre><span></span><code>syn-rgb<span class="w"> </span>on<span class="w">                </span><span class="c1"># follow the wallpaper&#39;s accent</span>
+<div class="hl"><pre><span></span><code>syn-rgb<span class="w"> </span>on<span class="w">                </span><span class="c1"># follow the wallpaper's accent</span>
 syn-rgb<span class="w"> </span>colour<span class="w"> </span>8B00FF<span class="w">     </span><span class="c1"># or pin one</span>
 syn-rgb<span class="w"> </span>follow<span class="w"> </span>theme<span class="w">      </span><span class="c1"># or follow the theme instead of the picture</span>
 syn-rgb<span class="w"> </span>status<span class="w">            </span><span class="c1"># what it thinks, and whether openrgb is there</span>

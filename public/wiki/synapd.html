@@ -58,6 +58,7 @@
 <label class="toc-label" for="toc-open">On this page</label>
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#the-model">The model</a></li>
+<li class="sub"><a href="#the-download-catalogue">The download catalogue</a></li>
 <li><a href="#gpu-offload">GPU offload</a></li>
 <li class="sub"><a href="#verify-it-never-assume-it">Verify it. Never assume it.</a></li>
 <li class="sub"><a href="#the-gpu-saga-resolved-2026-07-11-37ce3da--3333-layers-on-cuda0">The GPU saga (resolved 2026-07-11, 37ce3da) — 33/33 layers on CUDA0</a></li>
@@ -72,7 +73,7 @@
       <p class="eyebrow">Components</p>
       <h1>synapd</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-06">2026-09-06</time>
       </p>
 
       <div class="wiki-body">
@@ -97,6 +98,18 @@ systemctl<span class="w"> </span>restart<span class="w"> </span>synapd
 
 <p>Any GGUF that llama.cpp can load works. <strong>Mistral 7B Instruct is what the prompts
 are tuned against</strong> — swapping models may need prompt work.</p>
+<h3 id="the-download-catalogue">The download catalogue</h3>
+<p>Control panel ▸ System ▸ AI model lists the most-downloaded GGUF text-generation
+repos on Hugging Face, live, and can fetch one straight into synapd's models
+directory. Nothing is downloaded unprompted — the panel offers, you choose.</p>
+<p>The list is fetched once and then believed for <strong>six hours</strong>, so opening the
+panel repeatedly in an afternoon is a single request. Past that the next open
+re-fetches, which is how a model released since you logged in becomes findable.
+<code>r</code> in the panel forces it immediately, along with a rescan of what is already
+on disk.</p>
+<p>⚠ Previously the list was fetched once per <strong>session</strong>. That reads as harmless
+until you remember synui is the session: a machine left logged in for a
+fortnight went on offering whatever was popular the day it booted.</p>
 <hr />
 <h2 id="gpu-offload">GPU offload</h2>
 <p>The llama.cpp libraries <code>synapd</code> links are packaged per backend; each GPU build
@@ -142,7 +155,7 @@ AMD card: <code>build.sh --gpu=rocm</code>.</p>
 <div class="hl"><pre><span></span><code><span class="c1"># NVIDIA / CUDA:</span>
 grep<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps<span class="w">               </span><span class="c1"># 0 = you are on the CPU</span>
 <span class="c1"># AMD / Intel / Vulkan:</span>
-grep<span class="w"> </span>-Ec<span class="w"> </span><span class="s1">&#39;libvulkan|radv|amdgpu|libggml-vulkan&#39;</span><span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps
+grep<span class="w"> </span>-Ec<span class="w"> </span><span class="s1">'libvulkan|radv|amdgpu|libggml-vulkan'</span><span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps
 </code></pre></div>
 
 <p>A log line claiming GPU offload is not evidence. Check the mapped libraries of
