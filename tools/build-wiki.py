@@ -45,6 +45,23 @@ try:
 except ImportError:
     sys.exit("build-wiki: python-markdown is not installed (pacman -S python-markdown)")
 
+try:
+    import pygments
+except ImportError:
+    sys.exit("build-wiki: pygments is not installed (pacman -S python-pygments)")
+
+# ⚠ PYGMENTS' ESCAPING IS PART OF THE OUTPUT, so its version is part of the
+# build. Up to 2.20 it escaped " and ' as &quot;/&#39; in TEXT nodes as well as
+# in attributes; 2.21 emits them raw. Both are valid — a bare quote only means
+# anything inside an attribute value — but the switch rewrites EVERY
+# highlighted code block, so a rebuild on a different Pygments produces a
+# whole-tree diff that has nothing to do with what anyone edited.
+#
+# That is not hypothetical: it happened on 2026-09-09 and 29 files of it very
+# nearly buried four pages of genuinely unpublished documentation. Hence the
+# banner below prints the version every run, and says so when it has moved.
+EXPECTED_PYGMENTS = "2.21"
+
 REPO      = Path(__file__).resolve().parent.parent
 PUBLIC    = REPO / "public"
 OUT       = PUBLIC / "wiki"
@@ -662,6 +679,20 @@ def main() -> int:
     args = ap.parse_args()
 
     print("build-wiki")
+
+    have = ".".join(pygments.__version__.split(".")[:2])
+    print(f"  pygments  {pygments.__version__}"
+          + ("" if have == EXPECTED_PYGMENTS else f"   ⚠ expected {EXPECTED_PYGMENTS}.x"))
+    if have != EXPECTED_PYGMENTS:
+        print(f"""
+  ⚠ Pygments is {have}.x, not {EXPECTED_PYGMENTS}.x. Its quote escaping changed at
+    2.21, so this run may rewrite every highlighted code block on every page.
+    That diff is MECHANICAL — check it is only &quot;/&#39; becoming \" and '
+    before committing, and do not let it hide a real content change. If this
+    version is the new normal, commit the re-render on its own and update
+    EXPECTED_PYGMENTS at the top of this script.
+""")
+
     tree, tmp = wiki_tree(args.wiki)
     try:
         if args.check:
