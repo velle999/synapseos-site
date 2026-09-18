@@ -73,7 +73,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Settings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-10">2026-09-10</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-18">2026-09-18</time>
       </p>
 
       <div class="wiki-body">
@@ -150,6 +150,10 @@ talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, 
 <td>The default application for each role — and <strong>which file decided it</strong></td>
 </tr>
 <tr>
+<td><strong>Startup</strong></td>
+<td>What runs when you log in: synui's own autostart list (switch off, remove, add), your background services, and the autostart entries in <code>~/.config/autostart</code> and <code>/etc/xdg/autostart</code> — which a synui session never runs; switching one on copies it into synui's list</td>
+</tr>
+<tr>
 <td><strong>AI</strong></td>
 <td>The backend switch, the units that can start the daemon again behind your back, and which model is on disk</td>
 </tr>
@@ -158,8 +162,12 @@ talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, 
 <td>Which service the assistant sends your messages to — the model on this machine, or a cloud account and its API key</td>
 </tr>
 <tr>
+<td><strong>Users</strong></td>
+<td>The accounts on this machine: add one (name, password, administrator or not), reset a password, make an account an administrator (<code>wheel</code>) or standard, enrol or forget its fingerprints, remove it with or without its files. New accounts get the same desktop as the first, from <code>/etc/skel</code>; at the login screen, Tab moves to the name field</td>
+</tr>
+<tr>
 <td><strong>Fingerprint</strong></td>
-<td>The reader, which fingers are on file, and enrolling another</td>
+<td>The reader, which fingers are on file, enrolling another, and whether <code>sudo</code> accepts a finger</td>
 </tr>
 <tr>
 <td><strong>Speech</strong></td>
