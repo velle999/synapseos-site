@@ -100,6 +100,7 @@
 <li class="sub"><a href="#black-screen-after-resuming-from-suspend-on-nvidia">Black screen after resuming from suspend, on NVIDIA</a></li>
 <li class="sub"><a href="#the-screen-is-black-after-waking-but-the-machine-is-alive">The screen is black after waking, but the machine is alive</a></li>
 <li class="sub"><a href="#im-locked-out-and-cant-switch-to-a-text-console">I&#x27;m locked out and can&#x27;t switch to a text console</a></li>
+<li class="sub"><a href="#sudo-rejects-a-password-you-know-is-right">sudo rejects a password you know is right</a></li>
 <li><a href="#updates-and-packages">Updates and packages</a></li>
 <li class="sub"><a href="#pacman--s-404s-while-fetching-a-dependency">pacman -S 404s while fetching a dependency</a></li>
 <li class="sub"><a href="#after-a-kernel-upgrade-the-kernel-module-wont-load">After a kernel upgrade the kernel module won&#x27;t load</a></li>
@@ -131,7 +132,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Troubleshooting</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-30">2026-08-30</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-18">2026-09-18</time>
       </p>
 
       <div class="wiki-body">
@@ -491,6 +492,23 @@ the account after a few tries, so retrying faster locks you out for longer.
 <div class="hl"><pre><span></span><code>faillock<span class="w"> </span>--user<span class="w"> </span>&lt;name&gt;<span class="w"> </span>--reset<span class="w">      </span><span class="c1"># from a root shell or recovery</span>
 </code></pre></div>
 
+<h3 id="sudo-rejects-a-password-you-know-is-right"><code>sudo</code> rejects a password you know is right</h3>
+<p>The account is locked, not the password wrong. <code>pam_faillock</code> locks an account
+for 10 minutes after 5 failed logins (3 on an install from before September
+2026), and the lock covers <code>sudo</code>, the login screen and the lock screen alike —
+so a correct password is refused everywhere, with nothing saying why. Check:</p>
+<div class="hl"><pre><span></span><code>journalctl<span class="w"> </span>-b<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'temporarily locked|conversation failed|incorrect password'</span>
+</code></pre></div>
+
+<p><strong>Stop trying for ten minutes.</strong> Every attempt against a locked account used to
+count as another failure and restart the ten minutes. Then type the password
+once. A reboot also clears it — the lock lives in memory.</p>
+<p>Before synui 0.1.0-613 a password prompt that was never <em>answered</em> counted as a
+failed login too: a <code>sudo</code> with no terminal to ask on, a Ctrl+C at a <code>sudo</code>
+prompt, and — with the fingerprint turned on at the login screen — the login
+screen itself, every ten seconds it sat idle. Since 613 only a wrong password
+counts. The finger still worked at the login screen through all of it, which
+is why the first thing that failed was <code>sudo</code>.</p>
 <hr />
 <h2 id="updates-and-packages">Updates and packages</h2>
 <h3 id="pacman--s-404s-while-fetching-a-dependency"><code>pacman -S</code> 404s while fetching a dependency</h3>
