@@ -59,6 +59,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#launching-and-the-ai">Launching and the AI</a></li>
 <li><a href="#windows">Windows</a></li>
+<li class="sub"><a href="#touchpad-gestures">Touchpad gestures</a></li>
 <li><a href="#look-and-feel">Look and feel</a></li>
 <li><a href="#system">System</a></li>
 <li><a href="#media-and-hardware-keys">Media and hardware keys</a></li>
@@ -72,7 +73,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Keybindings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-17">2026-09-17</time>
       </p>
 
       <div class="wiki-body">
@@ -264,6 +265,46 @@ bound to the same action. Reach for it either way.</p>
 </tr>
 </tbody>
 </table></div>
+<h3 id="touchpad-gestures">Touchpad gestures</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Gesture</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Four fingers <strong>left</strong> / <strong>right</strong></td>
+<td>Next / previous desktop — the one to the right comes in when the fingers move left. Stops at desktops 1 and 9</td>
+</tr>
+<tr>
+<td>Four fingers <strong>up</strong></td>
+<td>Open mission control</td>
+</tr>
+<tr>
+<td>Four fingers <strong>down</strong></td>
+<td>Close mission control</td>
+</tr>
+</tbody>
+</table></div>
+<p>The action runs when the fingers lift. Two- and three-finger gestures are not
+touched: scrolling, pinch-to-zoom and app swipes work as before.</p>
+<p>Each gesture is a bind, set in <code>synuirc</code>:</p>
+<div class="hl"><pre><span></span><code>gesture = swipe:4:left  ws next
+gesture = swipe:3:up    spawn syntty
+gesture = pinch:4:in    overview open
+ungesture = swipe:4:down
+</code></pre></div>
+
+<p><code>swipe</code> takes 3–5 fingers and <code>left</code> <code>right</code> <code>up</code> <code>down</code>; <code>pinch</code> takes 2–5
+fingers and <code>in</code> <code>out</code>. The action is anything a <code>bind =</code> line takes, and
+<code>ungesture</code> removes a default. Binding any direction of a finger count takes
+<strong>every</strong> swipe with that many fingers away from apps.</p>
+<p><strong>Control panel ▸ Input ▸ Touchpad gestures</strong> turns them all off at once, which
+hands every gesture back to apps. <code>synctl gestures</code> prints the table synui is
+using. Gestures do nothing on the lock screen or while a window is being moved
+or resized.</p>
 <blockquote>
 <p><code>Super</code>+<code>J</code>/<code>K</code> walk <strong>stacking order</strong>; <code>Alt</code>+<code>Tab</code> walks <strong>MRU</strong>. That
 difference is the whole reason both exist.</p>

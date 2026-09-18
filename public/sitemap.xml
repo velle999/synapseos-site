@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://soslinux.org/</loc>
-    <lastmod>2026-09-10</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -63,13 +63,13 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Commands</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Configuration</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -105,7 +105,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Files</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -123,7 +123,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Keybindings</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -147,7 +147,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Remote-Desktop</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -195,7 +195,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/The-Desktop</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

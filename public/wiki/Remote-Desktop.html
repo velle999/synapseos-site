@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Remote Desktop — SynapseOS Wiki</title>
-<meta name="description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it.">
+<meta name="description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it — or streams it to Moonlight, which is video rather than rectangles of pixels.">
 <link rel="canonical" href="https://soslinux.org/wiki/Remote-Desktop">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <meta name="author" content="Velle Sinclair">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SynapseOS Wiki">
 <meta property="og:title" content="Remote Desktop — SynapseOS Wiki">
-<meta property="og:description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it.">
+<meta property="og:description" content="syn-remote puts this desktop on a VNC viewer somewhere else — including when nobody is sitting at it — or streams it to Moonlight, which is video rather than rectangles of pixels.">
 <meta property="og:url" content="https://soslinux.org/wiki/Remote-Desktop">
 <meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
 <meta name="twitter:card" content="summary_large_image">
@@ -63,7 +63,12 @@
 <li><a href="#reaching-it-from-outside-the-lan">Reaching it from outside the LAN</a></li>
 <li class="sub"><a href="#which-vpn">Which VPN</a></li>
 <li><a href="#who-may-connect">Who may connect</a></li>
+<li><a href="#streaming-it-instead">Streaming it instead</a></li>
+<li class="sub"><a href="#pairing-a-client">Pairing a client</a></li>
+<li class="sub"><a href="#a-display-of-its-own">A display of its own</a></li>
+<li class="sub"><a href="#what-it-needs">What it needs</a></li>
 <li><a href="#reaching-another-machine">Reaching another machine</a></li>
+<li class="sub"><a href="#when-it-is-a-streaming-host">…when it is a streaming host</a></li>
 <li><a href="#waking-the-machine-itself">Waking the machine itself</a></li>
 <li class="sub"><a href="#on-the-machine-that-sleeps">On the machine that sleeps</a></li>
 <li class="sub"><a href="#on-the-machine-you-are-sitting-at">On the machine you are sitting at</a></li>
@@ -74,12 +79,13 @@
       <p class="eyebrow">Using it</p>
       <h1>Remote Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-17">2026-09-17</time>
       </p>
 
       <div class="wiki-body">
 <p><code>syn-remote</code> puts this desktop on a VNC viewer somewhere else — including when
-nobody is sitting at it.</p>
+nobody is sitting at it — or streams it to Moonlight, which is video rather than
+rectangles of pixels.</p>
 <div class="hl"><pre><span></span><code>syn-remote<span class="w"> </span>on<span class="w">                </span><span class="c1"># start it now, and at every login</span>
 syn-remote<span class="w"> </span>address<span class="w">           </span><span class="c1"># how to connect to it</span>
 syn-remote<span class="w"> </span>password<span class="w">          </span><span class="c1"># the password a viewer is asked for</span>
@@ -235,6 +241,86 @@ self-signed, made once, and lives in <code>~/.config/syn-remote/</code>.</p>
 </tbody>
 </table></div>
 <hr />
+<h2 id="streaming-it-instead">Streaming it instead</h2>
+<p>VNC sends rectangles of pixels; a stream sends an encoded video frame. The GPU
+does the encoding, so a desktop at 1440p120 is smooth where VNC is a slideshow —
+which is what makes games, video and anything that moves worth doing this way.
+The server is <strong>sunshine</strong>; the client is <strong>Moonlight</strong>, on a PC, a phone, a
+tablet or a TV box.</p>
+<div class="hl"><pre><span></span><code>syn-remote stream on         # start it now, and at every login
+syn-remote stream status     # what it is serving, and to how many
+syn-remote stream off        # stop it, and stop it starting at login
+</code></pre></div>
+
+<p>Settings ▸ <strong>Remote Desktop</strong> has the same switch.</p>
+<h3 id="pairing-a-client">Pairing a client</h3>
+<p>Moonlight shows a four-digit PIN and waits. Accept it on the machine being
+streamed:</p>
+<div class="hl"><pre><span></span><code>syn-remote stream pair 1234
+</code></pre></div>
+
+<p>Each client pairs once. <code>syn-remote stream web</code> prints the address of
+sunshine's own settings page, with the user name and password to open it.</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>A streaming host is on the network.</strong> sunshine binds every interface and
+announces itself over mDNS. There is no loopback-only mode, so unlike the VNC
+server above, switching this on makes the machine reachable by anything on the
+network that speaks Moonlight. Pairing is what stands in the way.</p>
+</blockquote>
+<h3 id="a-display-of-its-own">A display of its own</h3>
+<p>By default the stream does not show a monitor. <code>synctl virtual add</code> grows a
+<strong>headless output</strong> on the running compositor — a real screen in every way
+except the cable: it takes a desktop, it holds windows, the bar and the dock
+come up on it — and the stream serves that.</p>
+<div class="hl"><pre><span></span><code>syn-remote stream display virtual    # a display of its own (the default)
+syn-remote stream display auto       # the screen that is on this desk
+syn-remote stream display DP-3       # …or one by name
+syn-remote stream mode 2560x1440@120 # what the virtual display starts at
+</code></pre></div>
+
+<p>When a client connects, that display is resized to exactly what the client asked
+for — resolution and frame rate — and put back when streaming stops. So a phone
+gets a phone-shaped desktop and a 4K TV gets a 4K one, without touching the
+screens in the room.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>syn-remote stream solo on</code></td>
+<td>the screens in this room go dark while somebody is streaming, and come back when they leave</td>
+</tr>
+<tr>
+<td><code>syn-remote stream tune encoder nvenc</code></td>
+<td>pick the encoder by hand instead of letting sunshine choose</td>
+</tr>
+<tr>
+<td><code>syn-remote stream tune latency off</code></td>
+<td>give the encoder back its quality presets</td>
+</tr>
+</tbody>
+</table></div>
+<p>The idle blank stage never turns a virtual display off. A blanked output cannot
+be captured at all, and there is nobody in front of this one to wake it.</p>
+<h3 id="what-it-needs">What it needs</h3>
+<p>sunshine's Wayland grabber binds <code>zwlr_export_dmabuf_manager_v1</code> and
+<code>xdg_output</code>, both of which synui exports — so there is no portal here either.
+The generated config pins <code>capture = wlr</code>.</p>
+<blockquote>
+<p>[!NOTE]
+With capture left to autodetection, sunshine prefers X11 when <code>DISPLAY</code> is
+set. synui runs XWayland, so it is always set, and the result is a stream of
+XWayland windows and nothing else — sunshine's own log says
+<em>"screencasting will only work on XWayland applications"</em>.</p>
+</blockquote>
+<p>Input arrives through <code>/dev/uinput</code>, which logind grants to the user of the
+active seat. Nothing else is needed and nothing has to be run as root.</p>
+<hr />
 <h2 id="reaching-another-machine">Reaching another machine</h2>
 <p>The other half of the package: <code>syn-remote-gui</code>, or the same thing from a
 terminal. A connection is saved once and opened by name.</p>
@@ -263,6 +349,19 @@ has not been checked says so in the list rather than failing quietly.</p>
 <p>A re-issued certificate — which happens by itself when the server's address
 moves — is correctly refused by everything that trusted the old one. Accept the
 new one with <code>syn-remote trust &lt;name&gt; --renew</code>.</p>
+<h3 id="when-it-is-a-streaming-host">…when it is a streaming host</h3>
+<div class="hl"><pre><span></span><code>syn-remote add tv 192.168.1.60 --stream
+syn-remote trust tv          # Moonlight shows a PIN; the other machine accepts it
+syn-remote connect tv
+</code></pre></div>
+
+<p><code>--stream</code> saves it on sunshine's port instead of VNC's, and <code>connect</code> opens it
+with Moonlight rather than the VNC viewer. There is no certificate to pin and no
+password to remember: a streaming host is paired with, once, and the other
+machine is where that is accepted — <code>syn-remote stream pair &lt;PIN&gt;</code> over there,
+or its settings page.</p>
+<p>The window and the TUI show which kind each saved connection is, and the buttons
+change with it: <strong>Pair with it</strong> instead of <strong>Check the certificate</strong>.</p>
 <hr />
 <h2 id="waking-the-machine-itself">Waking the machine itself</h2>
 <p>Three different problems wear the same word:</p>
@@ -333,9 +432,10 @@ what it is waiting for.</p>
 <hr />
 <h2 id="what-it-is-not">What it is not</h2>
 <p><code>syn-remote</code> owns no part of the VNC protocol, the encryption or the
-credentials — wayvnc does all of it. What the wrapper adds is the screen wake,
-the idle inhibitor, the loopback default, the generated certificate and
-password, and one place to read the state from.</p>
+credentials — wayvnc does all of it, and sunshine does the same for the stream.
+What the wrapper adds is the screen wake, the idle inhibitor, the loopback
+default, the generated certificate and password, the virtual display a stream is
+served on, and one place to read the state from.</p>
 <p>See also: [[The-Desktop]], [[Settings]], [[Commands]].</p>
       </div>
 

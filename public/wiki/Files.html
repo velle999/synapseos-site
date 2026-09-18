@@ -80,7 +80,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Files</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Files/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-09">2026-09-09</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Files/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-17">2026-09-17</time>
       </p>
 
       <div class="wiki-body">
@@ -155,6 +155,12 @@ slow". It is 0.08 s now. The fsync was there for a reason — a cross-filesystem
 <em>move</em> deletes the original — so the durability barrier stayed where it
 belongs and left the copy path alone.</p>
 </blockquote>
+<p>A <strong>mounted disc image</strong> appears under Removable Devices — right-click an
+<code>.iso</code> and choose <strong>Mount Image</strong>, or mount one any other way. It is named by
+its volume label, or by its file name when it has none. <strong>Eject</strong> unmounts it
+and releases the loop device behind it; if the image is open in a pane, the
+pane goes to your home folder first. A hybrid image (one that also boots from a
+USB stick) lists the filesystem inside it, not the container.</p>
 <p>A <strong>USB stick with no partition table</strong> — a filesystem written straight to the
 device — appears under Removable Devices. One was mounted, browsable and
 invisible in the sidebar because the scan expected every filesystem to sit on a
@@ -434,14 +440,54 @@ would be a strobe. Scrolling or clicking takes it down.</p>
 <hr />
 <h2 id="properties">Properties</h2>
 <p><code>Alt</code>+<code>Enter</code>, or <strong>Properties…</strong> in the right-click menu. The panel is a view
-over <code>synfiles info</code>, so the dialog and the command show the same list by
-construction — name, type, mime type and its human name, size, permissions,
-owner, the three timestamps, link target, and <strong>resolution</strong> for images and
-video. For a folder it also walks the tree and reports what it <strong>costs on
-disk</strong>, with what it contains beside it.</p>
+over <code>synfiles info</code>, so the dialog and the command show the same records by
+construction. It has four tabs:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>General</strong></td>
+<td>Icon, name and type; location, size and <strong>size on disk</strong>; created, modified and accessed; <strong>resolution</strong> for images and video. Then <strong>Disk</strong> — a fill meter, free, used and capacity, where the disk is mounted, its filesystem and device, and for a mounted disc image the image file behind it</td>
+</tr>
+<tr>
+<td><strong>Permissions</strong></td>
+<td>Owner, group, and a read/write/execute grid for owner, group and others. Ticking a box changes the file</td>
+</tr>
+<tr>
+<td><strong>Checksums</strong></td>
+<td>MD5, SHA-1, SHA-256 and SHA-512, each calculated when you press <strong>Calculate</strong></td>
+</tr>
+<tr>
+<td><strong>Details</strong></td>
+<td>Every record <code>synfiles info</code> printed, unformatted</td>
+</tr>
+</tbody>
+</table></div>
+<p>For a folder, the size is a walk of the tree: what it <strong>costs on disk</strong>, with
+what it contains beside it. Several selected items get the General tab only —
+how many, how much, and the disk they are on.</p>
 <div class="hl"><pre><span></span><code>synfiles<span class="w"> </span>info<span class="w"> </span>photo.jpg
+synfiles<span class="w"> </span>chmod<span class="w"> </span><span class="m">755</span><span class="w"> </span>build.sh
 </code></pre></div>
 
+<p><strong>Disk space</strong> is counted the same way as the sidebar's meters, so both show
+the same percentage for the same drive. Free is what an ordinary user can still
+write — the same figure <code>df</code> gives as <em>Avail</em> — and the reserve only root may
+use counts as used.</p>
+<p><strong>Permissions</strong> apply immediately. A symbolic link has no permissions of its
+own — the boxes show its target's and are greyed; change them on the target.
+Boxes are greyed too on a file you do not own, and the panel says who does.
+<code>synfiles chmod</code> takes an octal mode only and never follows a link.</p>
+<p><strong>Checksums</strong> use coreutils (<code>md5sum</code>, <code>sha256sum</code> and the rest), one at a
+time, and nothing is read until you ask. <strong>Paste a checksum</strong> from a download
+page into the box and the matching algorithm is calculated for you, followed by
+whether the file matches. A whole line out of a <code>SHA256SUMS</code> file works; case
+does not matter.</p>
 <p>Resolution is read from the file's <strong>magic bytes, never its extension</strong>, so a
 photo saved as <code>.txt</code> still reports its size and a text file named <code>.png</code> is not
 parsed into a plausible-looking lie. PNG, JPEG, GIF, BMP, WebP, TIFF, ICO, AVIF,
