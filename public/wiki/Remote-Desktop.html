@@ -79,7 +79,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Remote Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-17">2026-09-17</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-18">2026-09-18</time>
       </p>
 
       <div class="wiki-body">
@@ -255,7 +255,8 @@ syn-remote stream off        # stop it, and stop it starting at login
 <p>Settings ▸ <strong>Remote Desktop</strong> has the same switch.</p>
 <h3 id="pairing-a-client">Pairing a client</h3>
 <p>Moonlight shows a four-digit PIN and waits. Accept it on the machine being
-streamed:</p>
+streamed: Settings ▸ <strong>Remote Desktop</strong> ▸ <strong>Pair a Moonlight client</strong>, type the
+PIN, <strong>Pair</strong>. Or from a terminal:</p>
 <div class="hl"><pre><span></span><code>syn-remote stream pair 1234
 </code></pre></div>
 
@@ -358,8 +359,8 @@ syn-remote connect tv
 <p><code>--stream</code> saves it on sunshine's port instead of VNC's, and <code>connect</code> opens it
 with Moonlight rather than the VNC viewer. There is no certificate to pin and no
 password to remember: a streaming host is paired with, once, and the other
-machine is where that is accepted — <code>syn-remote stream pair &lt;PIN&gt;</code> over there,
-or its settings page.</p>
+machine is where that is accepted — Settings ▸ Remote Desktop ▸ <strong>Pair a
+Moonlight client</strong> over there, or <code>syn-remote stream pair &lt;PIN&gt;</code>.</p>
 <p>The window and the TUI show which kind each saved connection is, and the buttons
 change with it: <strong>Pair with it</strong> instead of <strong>Check the certificate</strong>.</p>
 <hr />
