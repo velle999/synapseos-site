@@ -309,6 +309,16 @@ screens in the room.</p>
 </table></div>
 <p>The idle blank stage never turns a virtual display off. A blanked output cannot
 be captured at all, and there is nobody in front of this one to wake it.</p>
+<p><strong>Getting a window onto the stream.</strong> Applications open where they always do,
+which is usually a screen in the room. Right-click the application's icon in the
+dock on the virtual display and choose <strong>Move Window Here</strong>.</p>
+<p><strong>Shortcuts reach the streamed desktop</strong> when Moonlight is fullscreen on a
+SynapseOS machine: Moonlight asks for the keyboard shortcuts, and synui there
+hands them over while its window has focus — so <code>Super</code>+<code>O</code> moves a window on
+the desktop being streamed, not the Moonlight window. The same goes for the VNC
+viewer. Switching to a console (<code>Ctrl</code>+<code>Alt</code>+<code>F1</code>…) and the lock screen stay
+with the machine you are sitting at, and clicking another window takes the
+shortcuts back.</p>
 <h3 id="what-it-needs">What it needs</h3>
 <p>sunshine's Wayland grabber binds <code>zwlr_export_dmabuf_manager_v1</code> and
 <code>xdg_output</code>, both of which synui exports — so there is no portal here either.
