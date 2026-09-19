@@ -60,7 +60,7 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "0.3.0",
+      "softwareVersion": "1.0.0",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
       "downloadUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
       "installUrl": "https://github.com/velle999/SYNAPSE/releases/latest",
@@ -135,7 +135,7 @@
           "name": "Is SynapseOS ready to use as a daily driver?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. It is beta software at version 0.3.x. The author daily-drives it and recommends you do too. It still moves fast, so expect the occasional rough edge."
+            "text": "Yes. SynapseOS is at version 1.0. The author daily-drives it and recommends you do too. It is a rolling release, so an installed machine keeps taking updates through syn-update."
           }
         },
         {
@@ -216,7 +216,7 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 0.3.0</a>
+        <a class="btn btn-primary" href="#download">Download 1.0.0</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
       <p class="themes-label">Fifteen themes ship. <b>Try one on this page.</b></p>
@@ -230,9 +230,9 @@
         <label class="swatch" for="th-prismlight"><i aria-hidden="true"></i>Prism Light</label>
       </div>
       <p class="status" role="note">
-        <strong>Status: beta.</strong> Version 0.3.x. A real, actively developed system
-        &mdash; the author daily-drives it, and it is ready for you to do the same. It
-        still moves fast, so expect the occasional rough edge.
+        <strong>Status: 1.0.</strong> A real, actively developed system &mdash; the
+        author daily-drives it, and it is ready for you to do the same. It is a rolling
+        release: an installed machine keeps taking updates through syn-update.
       </p>
     </div>
   </section>
@@ -760,8 +760,9 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>0.3.0</strong> &mdash; the desktop speaks fourteen
-      languages, and keeps your appointments. Free, x86_64, about 4.6&nbsp;GiB. The
+      Latest release: <strong>1.0.0</strong> &mdash; this desktop from another room,
+      a malware scanner, and fingerprints for every administrator prompt. Free,
+      x86_64, about 4.6&nbsp;GiB. The
       model is downloaded during installation, not carried in the image.
     </p>
     <p class="cta">
@@ -771,20 +772,20 @@
     <h3>Reassemble and verify</h3>
     <p>
       The ISO is split into parts to fit GitHub&rsquo;s 2&nbsp;GiB asset limit &mdash;
-      <strong>three of them</strong> for 0.3.0. Download <strong>all</strong> the
+      <strong>three of them</strong> for 1.0.0. Download <strong>all</strong> the
       <code>.part*</code> files plus the <code>.sha256</code>, into one folder.
       Joining them is a plain byte-for-byte concatenation; the checksum is what
       tells you it worked.
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>cat SynapseOS-0.3.0-x86_64.iso.part* &gt; SynapseOS-0.3.0-x86_64.iso
-sha256sum -c SynapseOS-0.3.0-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>cat SynapseOS-1.0.0-x86_64.iso.part* &gt; SynapseOS-1.0.0-x86_64.iso
+sha256sum -c SynapseOS-1.0.0-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
     <h4 class="plat">Windows</h4>
     <p>In <strong>Command Prompt</strong>, in the folder you downloaded to:</p>
-<pre><code>copy /b SynapseOS-0.3.0-x86_64.iso.part00 + SynapseOS-0.3.0-x86_64.iso.part01 + SynapseOS-0.3.0-x86_64.iso.part02 SynapseOS-0.3.0-x86_64.iso
-certutil -hashfile SynapseOS-0.3.0-x86_64.iso SHA256</code></pre>
+<pre><code>copy /b SynapseOS-1.0.0-x86_64.iso.part00 + SynapseOS-1.0.0-x86_64.iso.part01 + SynapseOS-1.0.0-x86_64.iso.part02 SynapseOS-1.0.0-x86_64.iso
+certutil -hashfile SynapseOS-1.0.0-x86_64.iso SHA256</code></pre>
     <p>
       Name every part, in order, joined by <code>+</code>. <strong><code>/b</code> is
       not optional</strong>: without it <code>copy</code> runs in text mode and stops
@@ -793,8 +794,8 @@ certutil -hashfile SynapseOS-0.3.0-x86_64.iso SHA256</code></pre>
       Compare what <code>certutil</code> prints against the <code>.sha256</code> file,
       or let <strong>PowerShell</strong> do the comparing:
     </p>
-<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-0.3.0-x86_64.iso).Hash -eq `
-  (((Get-Content .\SynapseOS-0.3.0-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
+<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-1.0.0-x86_64.iso).Hash -eq `
+  (((Get-Content .\SynapseOS-1.0.0-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
     <p class="small">
       <code>True</code> means the join is good. <code>Get-FileHash</code> prints
       uppercase hex where <code>sha256sum</code> writes lowercase &mdash; same bytes,
@@ -820,7 +821,7 @@ certutil -hashfile SynapseOS-0.3.0-x86_64.iso SHA256</code></pre>
 <pre><code>curl -O https://soslinux.org/synapseos-release-key.asc
 gpg --import synapseos-release-key.asc
 
-gpg --verify SynapseOS-0.3.0-x86_64.iso.asc SynapseOS-0.3.0-x86_64.iso</code></pre>
+gpg --verify SynapseOS-1.0.0-x86_64.iso.asc SynapseOS-1.0.0-x86_64.iso</code></pre>
     <p>
       A good signature prints <code>Good signature from &quot;SynapseOS Release
       Signing&quot;</code>. Check the fingerprint it names against this one:
@@ -846,7 +847,7 @@ gpg --verify SynapseOS-0.3.0-x86_64.iso.asc SynapseOS-0.3.0-x86_64.iso</code></p
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>sudo dd if=SynapseOS-0.3.0-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-1.0.0-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
     <p>
       Check <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the
       <strong>disk</strong> (<code>/dev/sdb</code>), not to a partition on it
@@ -926,9 +927,9 @@ QEMU_RAM=8G ./archiso/build_scripts/qemu-test.sh</code></pre>
 
     <h3>Can I use it as my daily driver?</h3>
     <p>
-      Yes. The author does, and at 0.3.x it is ready for you to do the same. It is
-      beta rather than finished &mdash; it still moves fast, so expect the occasional
-      rough edge &mdash; and a VM is still the quickest way to look around first.
+      Yes. The author does, and at 1.0 it is ready for you to do the same. It is a
+      rolling release, so it keeps moving after you install it, and a VM is still the
+      quickest way to look around first.
     </p>
 
     <h3>How do updates work?</h3>

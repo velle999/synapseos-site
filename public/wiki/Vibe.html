@@ -73,7 +73,7 @@
       <p class="eyebrow">Apps</p>
       <h1>Vibe</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Vibe/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Vibe/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
       </p>
 
       <div class="wiki-body">
@@ -206,8 +206,9 @@ still reaches the model.</p>
 recognises as a command is <strong>run</strong> rather than described, after showing you the
 command and waiting. See <a href="/wiki/synsh">synsh</a>.</p>
 <h2 id="voice">Voice</h2>
-<p>The voice stack is <a href="/wiki/Chibi">Chibi</a>'s, not a second copy: piper for speech,
-faster-whisper for dictation. <code>vibe voice</code> reads answers aloud and takes
+<p>The voice stack is <code>synapse-voice</code>, the speech engine <a href="/wiki/Chibi">Chibi</a> uses too,
+not a second copy: piper for speech, faster-whisper for dictation, with their
+models, so both work offline. <code>vibe voice</code> reads answers aloud and takes
 dictation; <code>vibe wake on</code> listens for its name, and the bar's assistant button
 changes while it is listening — a window you cannot see is not a disclosure that
 the microphone is open.</p>
@@ -249,7 +250,7 @@ repos, so there is no venv. The app lives at <code>/usr/lib/vibe/app</code>, the
 <code>/usr/bin/vibe</code>, and the chat window is quickshell rendering
 <code>/usr/share/vibe/vibe.qml</code> in its own process.</p>
 <p>See also: <a href="/wiki/synapd">synapd</a> (the backend and wire protocol), <a href="/wiki/synsh">synsh</a> (the
-shell it asks first) and <a href="/wiki/Chibi">Chibi</a> (the voice it borrows).</p>
+shell it asks first) and <a href="/wiki/Chibi">Chibi</a> (which shares its speech engine).</p>
       </div>
 
 <nav class="wiki-pager" aria-label="Nearby pages"><a class="prev" href="/wiki/synsh"><span>Previous</span>synsh</a><a class="next" href="/wiki/Chibi"><span>Next</span>Chibi</a></nav>

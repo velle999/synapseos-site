@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Installation — SynapseOS Wiki</title>
-<meta name="description" content="Status: beta (0.3.x). Actively developed and daily-driven by the author, and ready for you to do the same. It still moves fast — QEMU below is the quickest way to look around…">
+<meta name="description" content="Status: 1.0. Actively developed and daily-driven by the author, and ready for you to do the same. QEMU below is the quickest way to look around before you commit a disk.">
 <link rel="canonical" href="https://soslinux.org/wiki/Installation">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <meta name="author" content="Velle Sinclair">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SynapseOS Wiki">
 <meta property="og:title" content="Installation — SynapseOS Wiki">
-<meta property="og:description" content="Status: beta (0.3.x). Actively developed and daily-driven by the author, and ready for you to do the same. It still moves fast — QEMU below is the quickest way to look around…">
+<meta property="og:description" content="Status: 1.0. Actively developed and daily-driven by the author, and ready for you to do the same. QEMU below is the quickest way to look around before you commit a disk.">
 <meta property="og:url" content="https://soslinux.org/wiki/Installation">
 <meta property="og:image" content="https://soslinux.org/assets/og.png?v=2026-08-22">
 <meta name="twitter:card" content="summary_large_image">
@@ -85,14 +85,14 @@
       <p class="eyebrow">Using it</p>
       <h1>Installation</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Installation/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Installation/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
       </p>
 
       <div class="wiki-body">
 <blockquote>
-<p><strong>Status: beta (0.3.x).</strong> Actively developed and daily-driven by the author,
-and ready for you to do the same. It still moves fast — QEMU below is the
-quickest way to look around before you commit a disk.</p>
+<p><strong>Status: 1.0.</strong> Actively developed and daily-driven by the author, and
+ready for you to do the same. QEMU below is the quickest way to look around
+before you commit a disk.</p>
 </blockquote>
 <hr />
 <h2 id="try-it-in-qemu-first">Try it in QEMU first</h2>
@@ -110,7 +110,7 @@ are mirrored to the serial console: <em>View → serial0</em> in the QEMU window
 <p>Grab the latest ISO from
 <a href="https://github.com/velle999/SYNAPSE/releases/latest">Releases</a> and boot it.</p>
 <p>Releases are <strong>split into <code>.part*</code> files</strong> because GitHub caps a release asset at
-2 GiB and the ISO is larger than that — <strong>three parts, as of 0.3.0</strong>, and the
+2 GiB and the ISO is larger than that — <strong>three parts, as of 1.0.0</strong>, and the
 count grows with the image, so count the assets on the release page rather than
 trusting this sentence. Download <strong>every</strong> <code>.part*</code> file plus
 <code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join them back into an
@@ -132,7 +132,7 @@ ISO after: <code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.parts.sha256</cod
 </code></pre></div>
 
 <p>Name <strong>every</strong> part, in order, joined by <code>+</code> — that line is three parts because
-0.3.0 has three, and a release with four needs a fourth name on it. Copying the
+1.0.0 has three, and a release with four needs a fourth name on it. Copying the
 line as written for an image with more parts is the failure this section exists
 to prevent: it succeeds, and leaves a short ISO.</p>
 <p>Do not use a wildcard instead: <code>copy</code> takes wildcard sources in directory order,
@@ -431,7 +431,7 @@ installed SynapseOS arrived with no web browser at all unless you picked Full,
 where Nexus Chat happened to pull one in as a dependency.</p>
 <p>Steam is <em>not</em> on those pages — it is one of the y/n options below, because it
 is the only item that turns on a second architecture (<code>[multilib]</code> and the lib32
-tree) and a third repository (<code>[cachyos]</code>, for Proton).</p>
+tree).</p>
 <p>The shelf installs <strong>last, in its own transaction</strong>, after the system is
 complete. A failure there warns and retries one package at a time, so a name
 that moved upstream fails alone and is named, instead of taking every SynapseOS
@@ -474,7 +474,7 @@ a time because each has a consequence too long for a checkbox:</p>
 <tr>
 <td>Steam</td>
 <td>off</td>
-<td>+ the game stack and CachyOS Proton; enables <code>[multilib]</code> and <code>[cachyos]</code> (~3.1 GB)</td>
+<td>+ the game stack and CachyOS Proton; enables <code>[multilib]</code> (~3.1 GB)</td>
 </tr>
 <tr>
 <td>BlackArch</td>

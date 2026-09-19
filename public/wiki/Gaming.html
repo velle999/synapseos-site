@@ -85,7 +85,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Gaming</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-04">2026-09-04</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
       </p>
 
       <div class="wiki-body">
@@ -171,11 +171,14 @@ the directory Steam scans at start, so it appears in a game's
 <p><strong>Valve's Proton stays installed and stays the default.</strong> This is an extra
 option per game, not a replacement — try it when a title misbehaves, leave it
 alone otherwise.</p>
-<p>Adding it means adding CachyOS's repository, and how that is done matters:</p>
+<p>It comes from CachyOS's repository, which the installer adds on every install
+(it also carries sunshine, for <a href="/wiki/Remote-Desktop">remote streaming</a>). How that is
+done matters:</p>
 <ul>
 <li>Only the generic <code>[cachyos]</code> repo, <strong>appended last</strong> in <code>/etc/pacman.conf</code>.
   pacman takes the first repository in the file that carries a package name, so
-  at the end it can only supply names nothing else has — <code>proton-cachyos-*</code>.
+  at the end it can only supply names nothing else has — <code>proton-cachyos-*</code>,
+  <code>sunshine</code>.
   <code>core</code> and <code>extra</code> keep every package they share. <strong>SynapseOS stays Arch.</strong></li>
 <li>CachyOS's own <code>cachyos-repo.sh</code> does the opposite: it inserts the v3/v4 repos
   <em>above</em> <code>[core]</code> and installs their build of pacman, which re-sources the
@@ -190,9 +193,8 @@ alone otherwise.</p>
 
 <p><code>proton-cachyos-native</code> is the same Proton outside the runtime container, for
 driving Proton without Steam. If <code>[cachyos]</code> is not in your <code>pacman.conf</code> — an
-install from before 0.2.8, or one where you declined Steam — add it as the
-installer does, or see
-<a href="https://wiki.cachyos.org/features/optimized_repos/">the CachyOS documentation</a>.</p>
+install from before 1.0 where you declined Steam — <code>synpkg cachyos enable-repo</code>
+adds it the way the installer does.</p>
 <h2 id="game-mode">Game mode</h2>
 <h3 id="what-triggers-it">What triggers it</h3>
 <p><strong>A fullscreen XWayland client</strong>, minus an exclusion list. That is the whole
