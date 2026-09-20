@@ -132,7 +132,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Troubleshooting</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-18">2026-09-18</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
       </p>
 
       <div class="wiki-body">
@@ -466,12 +466,29 @@ done and convert individual takes with <code>syn resolve transcode</code> as you
 <hr />
 <h2 id="power-locking-and-suspend">Power, locking and suspend</h2>
 <h3 id="the-screen-blanks-while-im-watching-something">The screen blanks while I'm watching something</h3>
-<p>It shouldn't — synui holds an idle inhibit while audio is playing. If it still
-blanks, the player may not be routing through PipeWire. Adjust or disable the
-timeouts in <code>Super</code>+<code>P</code>.</p>
+<p>It shouldn't — a video player asks synui to stay awake, over the
+<code>org.freedesktop.ScreenSaver</code> bus name or the Wayland idle-inhibit protocol.
+Firefox, Chrome, mpv, VLC and Steam all do. If it still blanks, the player is
+not asking; adjust or disable the timeouts in <code>Super</code>+<code>P</code>.</p>
+<p><strong>Music alone does not keep the screen awake, on purpose.</strong> Sound coming out of
+the speakers says nothing about whether anyone is at the desk, so playback by
+itself is not an idle inhibit. If you want the screen up while you listen, hold
+one yourself:</p>
+<div class="hl"><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>/usr/lib/synui/synui-idle-inhibit<span class="w">   </span><span class="c1"># held until you kill it</span>
+</code></pre></div>
+
 <h3 id="the-screen-never-blanks">The screen never blanks</h3>
-<p>Check <code>Super</code>+<code>P</code>; a stuck idle inhibitor from a crashed app can also hold it
-awake. Restarting the offending app clears it.</p>
+<p>Check <code>Super</code>+<code>P</code> first. Failing that, an app is holding an idle inhibit — a
+crashed video player is the usual one, and restarting it clears the inhibit.</p>
+<p>To see whether anything is holding one, watch the journal while the machine
+sits idle:</p>
+<div class="hl"><pre><span></span><code>journalctl<span class="w"> </span>-f<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'synui: (screensaver|power):'</span>
+</code></pre></div>
+
+<p>An inhibit that is taken and never released is the bug; synui logs both halves
+with the app's own name. Note that <code>systemd-inhibit --list</code> will <em>not</em> show it —
+those are logind's sleep inhibitors, which are a different mechanism from the
+one the screen blanker uses.</p>
 <h3 id="black-screen-after-resuming-from-suspend-on-nvidia">Black screen after resuming from suspend, on NVIDIA</h3>
 <p>The <code>nvidia-suspend</code>, <code>nvidia-resume</code> and <code>nvidia-hibernate</code> services must be
 <strong>enabled</strong>. They preserve video memory across suspend; without them the GPU

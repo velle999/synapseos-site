@@ -72,7 +72,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Speech and dictation</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/syn-speak/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/syn-speak/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
       </p>
 
       <div class="wiki-body">
@@ -283,8 +283,7 @@ the exit status: "not installed" and "ran and failed" want opposite answers.</p>
 compositor through <code>WAYLAND_DISPLAY</code>. A <strong>user unit does not have one</strong> —
 nothing in this session runs <code>systemctl --user import-environment</code> — so
 <code>syn-speak</code> resolves the name synui publishes at
-<code>$XDG_RUNTIME_DIR/synui-display</code>, the same file <code>synui-foot.service</code> and
-<code>synui-media-inhibit</code> read.</p>
+<code>$XDG_RUNTIME_DIR/synui-display</code>, the same file <code>synui-foot.service</code> reads.</p>
 <p>⛔ <strong>An explicit <code>WAYLAND_DISPLAY</code> always wins and is never overridden.</strong> That
 published file names the <em>live</em> desktop, so a nested or headless synui — a test
 rig, a screenshot rig — must not have its announcer read the real session's

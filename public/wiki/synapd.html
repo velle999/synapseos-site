@@ -66,6 +66,7 @@
 <li><a href="#vram-and-game-mode">VRAM and game mode</a></li>
 <li class="sub"><a href="#ram-and-the-cores-too">RAM and the cores, too</a></li>
 <li><a href="#switching-the-inference-device-gpu--cpu--off">Switching the inference device (GPU / CPU / off)</a></li>
+<li><a href="#how-fast-is-it-here">How fast is it here?</a></li>
 <li><a href="#talking-to-synapd-directly">Talking to synapd directly</a></li>
 </ul></nav>
 
@@ -73,7 +74,7 @@
       <p class="eyebrow">Components</p>
       <h1>synapd</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-06">2026-09-06</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
       </p>
 
       <div class="wiki-body">
@@ -277,6 +278,40 @@ no polkit agent, so the helper <strong>self-escalates with <code>sudo -n</code><
 mutating verbs, allowed by a scoped <code>/etc/sudoers.d/synapd-backend</code> rule. Without
 it the row was silently stuck reading <strong>"auto"</strong> — nothing to select. (<code>status</code>
 stays unprivileged; it only reads a world-readable file.)</p>
+<hr />
+<h2 id="how-fast-is-it-here">How fast is it here?</h2>
+<div class="hl"><pre><span></span><code>synapd-bench<span class="w">                      </span><span class="c1"># the loaded model, on this machine</span>
+synapd-bench<span class="w"> </span>--host<span class="w"> </span>desktop.lan<span class="w">   </span><span class="c1"># another box's daemon, over the LAN bridge</span>
+synapd-bench<span class="w"> </span>--last<span class="w">               </span><span class="c1"># what it answered last; asks it nothing</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code>  model     synapse.gguf · Mistral Nemo Instruct 2407
+  device    40 layers offloaded · context 4096
+  prefill     412 tok    0.38s    1084.2 tok/s
+  decode       96 tok    2.10s      45.70 tok/s
+  wall                   2.61s
+  wire                   0.13s  (everything that is not inference)
+</code></pre></div>
+
+<p><strong>The daemon reports the numbers, not the client.</strong> synapd times the prompt and
+the answer separately and counts the tokens it actually processed, so nothing
+has to guess at tokenisation or count the network as part of the model.</p>
+<ul>
+<li><strong>prefill</strong> is the prompt, read in batches, compute-bound. Slow prefill means
+  layers are not on the GPU — check <a href="#gpu-offload">GPU offload</a>.</li>
+<li><strong>decode</strong> is the answer, one token at a time, memory-bandwidth-bound. Slow
+  decode with fast prefill means the weights are in the wrong kind of memory:
+  spilled to RAM, or a CPU-only llama build.</li>
+<li><strong>wire</strong> is the wall clock minus both of those. Milliseconds on a Unix
+  socket; over the bridge it is what the network and the proxy add, and it is
+  the number that decides whether answering from another machine feels
+  immediate.</li>
+</ul>
+<p>A run that overlaps another client's request is discarded rather than averaged
+in — the status line reports the last request the daemon answered, whoever
+asked it. The first run is discarded too, because it pays for loading the model.</p>
+<p><strong>Settings ▸ AI</strong> shows the same thing without running anything: a <strong>Speed</strong> row
+with the rate of the last answer, and a <strong>Measure</strong> button that runs a real one.</p>
 <hr />
 <h2 id="talking-to-synapd-directly">Talking to synapd directly</h2>
 <p><code>chibi</code> (the assistant) has an optional <strong><code>synapd</code> backend</strong> in <code>llm_client.py</code>

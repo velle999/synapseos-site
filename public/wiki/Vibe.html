@@ -115,6 +115,10 @@ confirmations.</p>
 <td>show or set the backend — <code>synapd</code>, <code>ollama</code>, <code>llama_cpp</code>, <code>anthropic</code>, <code>openai</code></td>
 </tr>
 <tr>
+<td><code>vibe host [name|local]</code></td>
+<td>which synapd answers — this machine's socket, or another box's bridge</td>
+</tr>
+<tr>
 <td><code>vibe key [provider]</code></td>
 <td>where each API key lives; <code>vibe key anthropic</code> prompts, <code>-</code> reads stdin, <code>--forget</code> removes it</td>
 </tr>
@@ -217,7 +221,8 @@ are in the control panel and in <code>syn-settings</code>, and the wake words ar
 <h2 id="backends">Backends</h2>
 <div class="hl"><pre><span></span><code>vibe<span class="w"> </span>provider<span class="w"> </span>anthropic<span class="w">          </span><span class="c1"># persisted for the next start</span>
 <span class="nv">VIBE_BACKEND</span><span class="o">=</span>ollama<span class="w"> </span>vibe<span class="w">         </span><span class="c1"># or per-invocation</span>
-<span class="nv">VIBE_SYNAPD_HOST</span><span class="o">=</span><span class="m">10</span>.0.0.5<span class="w"> </span>vibe<span class="w"> </span><span class="c1"># synapd's TCP bridge on another host</span>
+vibe<span class="w"> </span>host<span class="w"> </span>desktop.lan<span class="w">            </span><span class="c1"># synapd's TCP bridge on another host</span>
+<span class="nv">VIBE_SYNAPD_HOST</span><span class="o">=</span><span class="m">10</span>.0.0.5<span class="w"> </span>vibe<span class="w">   </span><span class="c1"># ... or for one run only</span>
 </code></pre></div>
 
 <p><code>synapd</code> is the default and needs no account. <code>ollama</code> and <code>llama_cpp</code> are for
