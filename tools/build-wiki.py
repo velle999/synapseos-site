@@ -72,7 +72,7 @@ SITE      = "https://soslinux.org"
 # ⚠ BUMPED BY HAND WHEN THE CSS CHANGES. /assets/* is immutable for a year in
 # _headers, so an edit at an unversioned URL never reaches anyone who has
 # already visited. Same convention as style.css's ?v= in index.html.
-STYLE_V   = "2026-08-25"
+STYLE_V   = "2026-09-20"
 WIKI_V    = "2026-08-29"
 
 

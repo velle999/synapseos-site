@@ -23,7 +23,7 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/style.css?v=2026-09-20">
 <link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
 </head>
 <body>
@@ -59,8 +59,9 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#try-it-in-qemu-first">Try it in QEMU first</a></li>
 <li><a href="#install-to-hardware">Install to hardware</a></li>
-<li class="sub"><a href="#joining-and-writing-linux--macos">Joining and writing: Linux / macOS</a></li>
-<li class="sub"><a href="#joining-and-writing-windows">Joining and writing: Windows</a></li>
+<li class="sub"><a href="#checking-and-writing-linux--macos">Checking and writing: Linux / macOS</a></li>
+<li class="sub"><a href="#checking-and-writing-windows">Checking and writing: Windows</a></li>
+<li class="sub"><a href="#or-download-it-in-parts-from-github">Or download it in parts, from GitHub</a></li>
 <li class="sub"><a href="#check-who-built-it">Check who built it</a></li>
 <li class="sub"><a href="#the-image-carries-no-ai-model">The image carries no AI model</a></li>
 <li><a href="#picking-a-language">Picking a language</a></li>
@@ -107,26 +108,52 @@ which is part of why it boots in QEMU as comfortably as it does. Kernel and boot
 are mirrored to the serial console: <em>View → serial0</em> in the QEMU window.</p>
 <hr />
 <h2 id="install-to-hardware">Install to hardware</h2>
-<p>Grab the latest ISO from
-<a href="https://github.com/velle999/SYNAPSE/releases/latest">Releases</a> and boot it.</p>
-<p>Releases are <strong>split into <code>.part*</code> files</strong> because GitHub caps a release asset at
-2 GiB and the ISO is larger than that — <strong>three parts, as of 1.0.0</strong>, and the
-count grows with the image, so count the assets on the release page rather than
-trusting this sentence. Download <strong>every</strong> <code>.part*</code> file plus
-<code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join them back into an
-ISO. The join is a plain byte-for-byte concatenation; the checksum is what tells
-you it worked.</p>
-<h3 id="joining-and-writing-linux--macos">Joining and writing: Linux / macOS</h3>
-<div class="hl"><pre><span></span><code>cat<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.part*<span class="w"> </span>&gt;<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso
-sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256<span class="w">    </span><span class="c1"># shasum -a 256 -c on macOS</span>
+<p>Download the ISO from <strong><a href="https://soslinux.org/#download">soslinux.org</a></strong> — one
+file, about 4.6 GB, and resumable if your connection drops. The same image is
+mirrored on the <a href="https://archive.org/details/synapseos-1.0.0">Internet Archive</a>,
+which also carries a torrent for it.</p>
+<p>Check it before you write it. A download that stopped early still looks like an
+ISO, still writes to a stick, and fails later in ways that look like bad
+hardware.</p>
+<h3 id="checking-and-writing-linux--macos">Checking and writing: Linux / macOS</h3>
+<div class="hl"><pre><span></span><code>sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256<span class="w">    </span><span class="c1"># shasum -a 256 -c on macOS</span>
 sudo<span class="w"> </span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>SynapseOS-&lt;ver&gt;-x86_64.iso<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sdX<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>4M<span class="w"> </span><span class="nv">status</span><span class="o">=</span>progress<span class="w"> </span><span class="nv">oflag</span><span class="o">=</span>sync
 </code></pre></div>
 
 <p>Find <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the <strong>disk</strong> (<code>/dev/sdb</code>), not a
-partition on it (<code>/dev/sdb1</code>). To check the parts before joining rather than the
-ISO after: <code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.parts.sha256</code>.</p>
-<h3 id="joining-and-writing-windows">Joining and writing: Windows</h3>
-<p><strong>1. Join the parts.</strong> In <strong>Command Prompt</strong>, in the folder you downloaded to
+partition on it (<code>/dev/sdb1</code>).</p>
+<h3 id="checking-and-writing-windows">Checking and writing: Windows</h3>
+<p>In <strong>PowerShell</strong>, in the folder you downloaded to. It prints <code>True</code> when the
+download is intact:</p>
+<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">'\s+'</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
+</code></pre></div>
+
+<p>(<code>Get-FileHash</code> prints uppercase hex where <code>sha256sum</code> writes lowercase — same
+bytes, which is what the <code>.ToUpper()</code> is for.) In <strong>Command Prompt</strong> instead,
+<code>certutil -hashfile SynapseOS-&lt;ver&gt;-x86_64.iso SHA256</code>, and compare it against
+the contents of the <code>.sha256</code> file yourself.</p>
+<p>Then write it with <a href="https://rufus.ie/">Rufus</a> in <strong>DD Image mode</strong>,
+<a href="https://etcher.balena.io/">balenaEtcher</a>, or by copying the <code>.iso</code> onto a
+<a href="https://www.ventoy.net/">Ventoy</a> stick.</p>
+<h3 id="or-download-it-in-parts-from-github">Or download it in parts, from GitHub</h3>
+<p>The <a href="https://github.com/velle999/SYNAPSE/releases/latest">release page</a> carries
+the same image <strong>split into <code>.part*</code> files</strong>, because GitHub caps a release
+asset at 2 GiB and the ISO is larger than that — <strong>three parts, as of 1.0.0</strong>,
+and the count grows with the image, so count the assets on the release page
+rather than trusting this sentence.</p>
+<p>The single-file download above is the easier road. This one exists for anyone
+who would rather take the image from GitHub, and for when a mirror is
+unreachable. Download <strong>every</strong> <code>.part*</code> file plus
+<code>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256</code> into one folder, then join them. The join is
+a plain byte-for-byte concatenation; the checksum is what tells you it worked.</p>
+<p>On Linux or macOS:</p>
+<div class="hl"><pre><span></span><code>cat<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.part*<span class="w"> </span>&gt;<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso
+sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;-x86_64.iso.sha256
+</code></pre></div>
+
+<p>To check the parts before joining rather than the ISO after:
+<code>sha256sum -c SynapseOS-&lt;ver&gt;-x86_64.iso.parts.sha256</code>.</p>
+<p>On Windows, in <strong>Command Prompt</strong>, in the folder you downloaded to
 (Shift+right-click the folder ▸ <em>Open in Terminal</em>, or <code>cd</code> to it):</p>
 <div class="hl"><pre><span></span><code><span class="k">copy</span> /b SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part00 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part01 + SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso.part02 SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso
 </code></pre></div>
@@ -150,24 +177,13 @@ text mode to fall into:</p>
 <span class="nv">$out</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
 </code></pre></div>
 
-<p><strong>2. Check it.</strong> Do not skip this — a bad join is the single most common way a
-split download goes wrong, and every symptom of it looks like a broken ISO.</p>
-<div class="hl"><pre><span></span><code>certutil -hashfile SynapseOS-<span class="p">&lt;</span>ver<span class="p">&gt;</span>-x86_64.iso SHA256
-</code></pre></div>
-
-<p>Compare what it prints against the contents of the <code>.sha256</code> file. Or have
-PowerShell compare them for you — it prints <code>True</code> when the join is good:</p>
-<div class="hl"><pre><span></span><code><span class="p">(</span><span class="nb">Get-FileHash</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">).</span><span class="n">Hash</span> <span class="o">-eq</span> <span class="p">(((</span><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">SynapseOS</span><span class="p">-&lt;</span><span class="n">ver</span><span class="p">&gt;</span><span class="n">-x86_64</span><span class="p">.</span><span class="n">iso</span><span class="p">.</span><span class="n">sha256</span><span class="p">)</span> <span class="n">-split</span> <span class="s1">'\s+'</span><span class="p">)[</span><span class="n">0</span><span class="p">]).</span><span class="n">ToUpper</span><span class="p">()</span>
-</code></pre></div>
-
-<p>(<code>Get-FileHash</code> prints uppercase hex where <code>sha256sum</code> writes lowercase — same
-bytes, which is what the <code>.ToUpper()</code> is for.)</p>
+<p>Check the result with the same command as any other download — a bad join is the
+most common way a split download goes wrong, and every symptom of it looks like
+a broken ISO.</p>
 <h3 id="check-who-built-it">Check who built it</h3>
-<p>The checksum proves the download is not corrupt. It does not prove where the
-image came from — it sits in the same GitHub release as the ISO, so anything
-that could alter one could alter the other. The signature answers that, and the
-key is served from <strong>soslinux.org</strong> rather than from the release, so the two
-arrive by different roads.</p>
+<p>The checksum proves the download arrived whole. It does not prove where the
+image came from: it is served from the same place as the ISO, so anything that
+could alter one could alter the other. The signature answers that.</p>
 <div class="hl"><pre><span></span><code>curl<span class="w"> </span>-O<span class="w"> </span>https://soslinux.org/synapseos-release-key.asc
 gpg<span class="w"> </span>--import<span class="w"> </span>synapseos-release-key.asc
 
@@ -178,6 +194,10 @@ gpg<span class="w"> </span>--verify<span class="w"> </span>SynapseOS-&lt;ver&gt;
 <div class="hl"><pre><span></span><code>6548 9EF5 C20D 0BD9 4211  472B ED33 6DB7 952B 609E
 </code></pre></div>
 
+<p>That same fingerprint is committed in the source repository as
+<a href="https://github.com/velle999/SYNAPSE/blob/main/archiso/release-key.fingerprint"><code>archiso/release-key.fingerprint</code></a>
+— a different host, run by somebody else, than the one that served you the
+image. Comparing the two is what makes the check worth making.</p>
 <p>GnuPG also says the key is <em>not certified with a trusted signature</em>. That is
 expected and is not a failure — it means you have not told GnuPG you trust this
 key, only that the signature matches it. Comparing the fingerprint is what

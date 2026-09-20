@@ -868,3 +868,37 @@ pre .c { color: var(--ink-faint); }
   background: color-mix(in oklab, var(--warn) 8%, transparent);
   border-radius: 0 .4rem .4rem 0;
 }
+
+/* ---------- the fallback download, folded away ---------- */
+
+/* The ISO is served whole from dl.soslinux.org, so reassembling GitHub's split
+ * parts is no longer the path anybody should be reading first — but it is still
+ * a working path, and the release pages that describe it are still out there.
+ * <details> is the whole mechanism: native, no script (script-src is 'none'),
+ * and it still prints and still finds on Ctrl-F when closed in most browsers. */
+details.alt-dl {
+  margin: 2rem 0 0;
+  border: 1px solid var(--line);
+  border-radius: .6rem;
+  background: var(--bg-sunk);
+}
+details.alt-dl > summary {
+  padding: .8rem 1.1rem;
+  cursor: pointer;
+  color: var(--ink-dim);
+  font-weight: 600;
+  border-radius: .6rem;
+  list-style-position: inside;
+}
+details.alt-dl > summary:hover { color: var(--ink); }
+details.alt-dl > summary::marker { color: var(--brand); }
+details.alt-dl[open] > summary {
+  border-bottom: 1px solid var(--line);
+  border-radius: .6rem .6rem 0 0;
+  color: var(--ink);
+}
+/* The padding lives on the children rather than the box so the <pre> blocks
+ * inside keep the same full-bleed edge they have outside it. */
+details.alt-dl > :not(summary) { margin-left: 1.1rem; margin-right: 1.1rem; }
+details.alt-dl > :last-child { margin-bottom: 1.1rem; }
+details.alt-dl > h4.plat { margin-top: 1.2rem; }

@@ -23,7 +23,7 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/style.css?v=2026-09-20">
 <link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
 </head>
 <body>
@@ -692,9 +692,11 @@ file but does not restart the unit. <code>sudo systemctl restart synnet</code>.<
 <hr />
 <h2 id="boot-and-secure-boot">Boot and Secure Boot</h2>
 <h3 id="the-usb-stick-does-not-boot-or-the-live-session-dies-partway-in">The USB stick does not boot, or the live session dies partway in</h3>
-<p>If you downloaded the release on Windows, suspect the <strong>join</strong> before the stick
-or the machine. The ISO ships as <code>.part*</code> files and the two usual mistakes both
-produce a file that looks finished:</p>
+<p>If you joined the image from <code>.part*</code> files, suspect the <strong>join</strong> before the
+stick or the machine — and on Windows especially. You can skip the join
+entirely: <a href="https://soslinux.org/#download">soslinux.org</a> serves the ISO as one
+file, and the parts exist only because GitHub caps a release asset at 2 GiB.</p>
+<p>The two usual join mistakes both produce a file that looks finished:</p>
 <ul>
 <li><strong><code>copy</code> without <code>/b</code>.</strong> In text mode <code>copy</code> stops at the first <code>0x1A</code> byte,
   a few hundred KB into the image. You get a short file and no error at all.</li>

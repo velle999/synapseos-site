@@ -23,7 +23,7 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=2026-08-25">
+<link rel="stylesheet" href="/assets/style.css?v=2026-09-20">
 <link rel="stylesheet" href="/assets/wiki.css?v=2026-08-29">
 </head>
 <body>
@@ -69,7 +69,7 @@
       <p class="eyebrow">Hacking on it</p>
       <h1>Cutting an ISO Release</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
       </p>
 
       <div class="wiki-body">
@@ -236,6 +236,30 @@ v&lt;ver&gt;</code>. Recent ISOs are ~6.5 GB → 4 parts.</p>
 that signature before publishing</strong> — a signature that does not check out stops
 the release rather than shipping. With no <code>.asc</code> it prints a loud warning and
 publishes anyway, because a test build is a legitimate thing to release.</p>
+<p><strong>6. Mirror the whole image.</strong> The split is GitHub's constraint alone. The
+download people are pointed at is a single file, and it lives on Cloudflare R2
+with the Internet Archive as the mirror:</p>
+<div class="hl"><pre><span></span><code>./archiso/publish-mirrors.sh<span class="w"> </span>&lt;ver&gt;
+</code></pre></div>
+
+<p>This uploads the ISO and its <code>.sha256</code>, <code>.b2sum</code> and <code>.asc</code> to both, then
+<strong>checks what each host actually serves</strong> — the size, and the hash of the last
+mebibyte by range request — before reporting either as published. An upload
+tool's exit status says the transfer returned, not that the object is servable:
+a bucket whose public access was never switched on, or a custom domain pointing
+somewhere else, exits 0 and serves nothing.</p>
+<p>Re-running it is cheap. Anything already uploaded at the right size is skipped,
+so an interrupted 4.6 GB transfer is resumed rather than restarted, and
+<code>--skip-r2</code> / <code>--skip-ia</code> publish to one mirror alone. The Archive's torrent is
+built by its derive queue some time after the upload, so it is announced as
+pending rather than printed as a finished link — <strong>check it exists before the
+download page links it.</strong></p>
+<p>Setup for both tools is under <strong>Mirrors</strong> in <code>archiso/README.md</code>.</p>
+<p><strong>7. Update the download page.</strong> <code>publish-release.sh</code> generates the release
+body with the right links on its own, but the site's download section carries
+the version in the URL and is edited by hand — it is the one place per release
+that is. The wiki points at the site rather than at a versioned file, so it does
+not need touching.</p>
 <h2 id="signing">Signing</h2>
 <p>Releases from <strong>0.2.9.5</strong> carry a detached GPG signature. The checksum published
 in the same release proves the download is not corrupt and nothing more:
