@@ -65,6 +65,7 @@
 <li class="sub"><a href="#building-cuda">Building CUDA</a></li>
 <li><a href="#vram-and-game-mode">VRAM and game mode</a></li>
 <li class="sub"><a href="#ram-and-the-cores-too">RAM and the cores, too</a></li>
+<li class="sub"><a href="#the-cards-load-and-what-a-move-costs">The card&#x27;s load, and what a move costs</a></li>
 <li><a href="#switching-the-inference-device-gpu--cpu--off">Switching the inference device (GPU / CPU / off)</a></li>
 <li><a href="#how-fast-is-it-here">How fast is it here?</a></li>
 <li><a href="#talking-to-synapd-directly">Talking to synapd directly</a></li>
@@ -74,7 +75,7 @@
       <p class="eyebrow">Components</p>
       <h1>synapd</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
       </p>
 
       <div class="wiki-body">
@@ -257,6 +258,57 @@ the same time. And it never fires while synapd is the one using the cores: a
 generation saturates its threads and looks exactly like a build, so releasing
 then would unload the model out from under whoever asked the question.</p>
 </blockquote>
+<h3 id="the-cards-load-and-what-a-move-costs">The card's load, and what a move costs</h3>
+<p>Two more rules, both added after an incident on 2026-09-20 where the offload
+policy was the thing making the desktop unusable.</p>
+<p><strong>A busy card does not mean shed.</strong> An idle <code>synapd</code> runs no GPU kernels at all —
+it only <em>holds</em> VRAM — so when another application is pinning the card there is
+nothing a layer count can relieve. What a busy card does mean is <strong>do not start a
+reload</strong>: every re-fit is a full destroy-and-reload, the single most GPU-expensive
+thing the daemon does, and starting one into contention is how a policy meant to
+relieve pressure becomes the pressure. Taking layers <em>back</em> is never urgent, so
+that is the move deferred.</p>
+<p><strong>And a move has to be worth its price.</strong> A re-fit costs the same full reload —
+tens of seconds to minutes of saturated card, and the KV cache thrown away —
+whether it shifts one layer or thirty. The policy used to price only the benefit,
+so a shallow dip under the VRAM floor bought the whole bill. Measured that day: a
+40 → 39 layer shed, about 300 MiB recovered, for <strong>2m20s of pinned GPU</strong>. A re-fit
+now has to move at least <code>--offload-refit-min</code> to happen at all.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--offload-gpu-busy PCT</code></td>
+<td><code>80</code></td>
+<td>Don't reload while GPU load is this or higher</td>
+</tr>
+<tr>
+<td><code>--offload-refit-min MIB</code></td>
+<td><code>512</code></td>
+<td>Smallest move worth a destroy+reload</td>
+</tr>
+</tbody>
+</table></div>
+<p>Either at <code>0</code> switches that rule off.</p>
+<blockquote class="warn"><p><strong>⚠ Refusing a small shed leaves you under the floor, on purpose.</strong> The floor is
+headroom for other people, not a hard limit, and sitting a little under it costs
+far less than a reload that pins the card for minutes. It cannot wedge: if the
+shortage grows, the required move grows with it and clears the bar on its own.</p>
+<p><strong>⚠ The busy card is often synapd.</strong> A generation drives the GPU as hard as any
+game, so without a guard the daemon would read its own work as somebody else's
+and never take its layers back. The same <code>busy</code> check that protects the CPU rule
+protects this one.</p>
+</blockquote>
+<p>GPU load is read from sysfs <code>gpu_busy_percent</code> where the driver has it (amdgpu,
+i915) and from <strong>NVML via <code>dlopen</code></strong> otherwise — no CUDA headers at build time and
+no hard dependency on the NVIDIA driver. A card whose load cannot be read is
+treated as <em>unmeasured</em>, never as idle, and the journal says so at startup.</p>
 <p>Per-process VRAM is visible in the <a href="/wiki/synui">task manager</a>
 (<code>Ctrl</code>+<code>Alt</code>+<code>Delete</code>), which reads NVML via <code>dlopen</code> — no CUDA headers needed at
 build time.</p>
