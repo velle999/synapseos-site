@@ -73,7 +73,7 @@
       <p class="eyebrow">Components</p>
       <h1>synguard and synapse_kmod</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synguard-and-synapse_kmod/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-30">2026-07-30</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synguard-and-synapse_kmod/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -167,7 +167,9 @@ anything at all; <code>--bpf-enforce</code> decides <em>how</em>:</p>
 </tbody>
 </table></div>
 <p>Without <code>--ai-enforce</code> the classifier is <strong>advisory</strong>: a model verdict is clamped
-to <em>alert</em> and cannot reach a kill. Only rule verdicts can.</p>
+to <em>alert</em> and cannot reach a kill. Only rule verdicts can. In either mode an
+<em>escalate</em> rule is at least an alert — the classifier adds a threat level and a
+reason, and cannot make the event quieter.</p>
 <h3 id="what-the-gate-cannot-do">What the gate cannot do</h3>
 <ul>
 <li><strong>It runs after the ordinary permission check.</strong> <code>security_file_open</code> is reached
