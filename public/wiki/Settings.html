@@ -65,6 +65,7 @@
 <li><a href="#from-a-script">From a script</a></li>
 <li><a href="#naming-the-machine">Naming the machine</a></li>
 <li><a href="#malware-scanning">Malware scanning</a></li>
+<li><a href="#security">Security</a></li>
 <li><a href="#where-the-settings-actually-live">Where the settings actually live</a></li>
 <li><a href="#see-also">See also</a></li>
 </ul></nav>
@@ -73,7 +74,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Settings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -180,6 +181,10 @@ talk to <code>localectl</code>, <code>timedatectl</code>, <code>bootctl</code>, 
 <tr>
 <td><strong>Malware Scanning</strong></td>
 <td>The weekly sweep's switch, the engines behind it, and what the last one found. See <a href="#malware-scanning">Malware scanning</a></td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>The intrusion monitor, and whether the kernel refuses what its deny rules forbid. See <a href="#security">Security</a></td>
 </tr>
 <tr>
 <td><strong>System</strong></td>
@@ -386,6 +391,28 @@ kernel.</p>
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>malware-scan<span class="w"> </span>on
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>signature-updates<span class="w"> </span>on
 syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>scan-daemon<span class="w"> </span>on
+</code></pre></div>
+
+<h2 id="security">Security</h2>
+<p>The <strong>Security</strong> pane has one switch, <strong>Kernel enforcement</strong>, and the state of
+<a href="/wiki/synguard-and-synapse_kmod"><code>synguard</code></a>.</p>
+<p>With it on — the default — the kernel refuses what synguard's deny rules forbid
+before it happens: a write to <code>/etc/ld.so.preload</code> fails with <em>Operation not
+permitted</em>. With it off, the same rules still act, but only afterwards: the
+process is stopped once it has already done the thing.</p>
+<p>Switching it asks for an administrator. Off writes <code>off</code> to
+<code>/etc/synguard/bpf-enforce</code>; on deletes that file. Either way synguard restarts
+to pick it up.</p>
+<p>The row also says when the switch is not what decides:</p>
+<ul>
+<li>the machine was booted with <code>synapse.bpf_enforce=0</code>, so the gate did not load
+  this boot;</li>
+<li>synguard is older than 0.1.0-44, or its unit has been changed so it does not
+  ask for the gate — the switch then reads off and cannot be flipped.</li>
+</ul>
+<div class="hl"><pre><span></span><code>syn-settings<span class="w"> </span>--rec<span class="w"> </span>security<span class="w"> </span><span class="p">|</span><span class="w"> </span>column<span class="w"> </span>-t<span class="w"> </span>-s<span class="s1">$'\t'</span>
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>kernel-enforce<span class="w"> </span>off
+syn-settings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>kernel-enforce<span class="w"> </span>on
 </code></pre></div>
 
 <h2 id="where-the-settings-actually-live">Where the settings actually live</h2>

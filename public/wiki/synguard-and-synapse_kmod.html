@@ -150,7 +150,7 @@ anything at all; <code>--bpf-enforce</code> decides <em>how</em>:</p>
 <tbody>
 <tr>
 <td><code>audit</code></td>
-<td>log only, never block — <strong>the default, deliberately</strong></td>
+<td>log only, never block — the binary's default when run by hand; the shipped unit runs <code>enforce</code></td>
 </tr>
 <tr>
 <td><code>enforce</code></td>
@@ -275,18 +275,18 @@ exactly</strong>, because approximating in either direction is a bug you would n
 internally; synguard skips those (<code>FMODE_EXEC</code>) so an <code>event open</code> rule does
 not accidentally block execution.</p>
 </blockquote>
-<p><strong>4. Arm it.</strong> <code>--bpf-enforce</code> is deliberately <strong>not</strong> in the shipped unit —
-loading a policy and arming it are separate decisions, because this path
-<em>prevents</em> rather than reacts:</p>
-<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>edit<span class="w"> </span>synguard
-<span class="c1"># [Service]</span>
-<span class="c1"># ExecStart=</span>
-<span class="c1"># ExecStart=/usr/bin/synguard --foreground --mode enforce \</span>
-<span class="c1">#     --rules /etc/synguard/rules.d/ --bpf-enforce</span>
+<p><strong>4. It is armed.</strong> The shipped unit passes <code>--bpf-enforce</code> (synguard 0.1.0-44
+and later), so an enforceable rule is refused in the kernel.</p>
+<p>To leave the gate unarmed, turn off <strong>Settings ▸ Security ▸ Kernel
+enforcement</strong>, or:</p>
+<div class="hl"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>off<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/synguard/bpf-enforce
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>synguard
 </code></pre></div>
 
-<p>Without it, an enforceable rule is still compiled and loaded into the kernel maps
-— the daemon says so — but the gate stays shut.</p>
+<p>Delete the file to arm it again. The rules are still compiled and loaded into
+the kernel maps — the daemon says so — but the gate stays shut. Leave the unit
+itself alone: a drop-in over <code>ExecStart</code> hides every later change to the
+shipped line.</p>
 <p><strong>5. Read back what actually happened.</strong> Every outcome has a distinct line:</p>
 <div class="hl"><pre><span></span><code>journalctl<span class="w"> </span>-u<span class="w"> </span>synguard<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>bpf-lsm
 </code></pre></div>
@@ -308,8 +308,16 @@ loading a policy and arming it are separate decisions, because this path
 <td>the gate is live</td>
 </tr>
 <tr>
-<td><code>N rules loaded but NOT armed (--bpf-enforce …)</code></td>
-<td>loaded, gate shut</td>
+<td><code>N rules loaded but NOT armed — turned off in /etc/synguard/bpf-enforce …</code></td>
+<td>loaded, gate shut on purpose</td>
+</tr>
+<tr>
+<td><code>N rules loaded but NOT armed (--bpf-enforce unset) …</code></td>
+<td>loaded, gate shut — the unit does not ask for it</td>
+</tr>
+<tr>
+<td><code>DISABLED by kernel cmdline (synapse.bpf_enforce=0) — not loading</code></td>
+<td>the boot escape is in effect</td>
 </tr>
 <tr>
 <td><code>policy NOT loaded — rule '…': path pattern cannot be expressed in-kernel: "…"</code></td>
