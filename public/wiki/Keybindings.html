@@ -73,7 +73,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Keybindings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-17">2026-09-17</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Keybindings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -146,6 +146,10 @@ Tapping <strong><code>Super</code></strong> alone opens the start menu.</p>
 <p><strong><code>Super</code>+<code>Space</code> is the command bar</strong> — the one that takes <code>synsh</code> intents and
 shows command output. It sits next to <code>Super</code>+<code>Backspace</code> so the two AI popups
 are side by side on the keyboard.</p>
+<p><strong>A command the AI answers with runs sandboxed</strong>, in either popup: it can read
+your files and use the network, but it can only write to <code>/tmp</code>. Asking for
+an application by name ("open firefox") starts it normally. Without
+<code>syn-confine</code> installed, the bar shows the command instead of running it.</p>
 <p><strong><code>Super</code>+<code>=</code> is rofi</strong>, the application launcher — it lists your installed
 apps and starts one. <strong>Pressing the key again while it is up closes it</strong>, so it
 behaves like the panels below it. Clicking away does not dismiss it, because
