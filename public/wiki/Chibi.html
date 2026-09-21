@@ -58,6 +58,7 @@
 <label class="toc-label" for="toc-open">On this page</label>
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#running-her">Running her</a></li>
+<li><a href="#buddy-mode">Buddy mode</a></li>
 <li><a href="#whats-in-the-box">What&#x27;s in the box</a></li>
 <li><a href="#gotchas-we-already-hit">Gotchas we already hit</a></li>
 </ul></nav>
@@ -66,7 +67,7 @@
       <p class="eyebrow">Apps</p>
       <h1>Chibi</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Chibi/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Chibi/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -87,6 +88,23 @@ for SynapseOS as <code>chibi</code> and shipped on the ISO.</p>
 <p>The launcher exports <code>CHIBI_LLM_BACKEND=synapd</code> and points at synapd's socket,
 so she talks through the OS's own model. Override to use Ollama instead:</p>
 <div class="hl"><pre><span></span><code><span class="nv">CHIBI_LLM_BACKEND</span><span class="o">=</span>ollama<span class="w"> </span>chibi
+</code></pre></div>
+
+<h2 id="buddy-mode">Buddy mode</h2>
+<p>Press <strong>✦</strong> in her window (or <strong>F4</strong>) and Chibi leaves it to wander the
+desktop: along the bottom of the screen, up onto the tops of windows, talking in
+a bubble over her head. To start straight into it:</p>
+<div class="hl"><pre><span></span><code>chibi<span class="w"> </span>--buddy
+</code></pre></div>
+
+<p>Click her to pet her, double-click to type to her, drag her anywhere, and
+right-click for her menu — <strong>Go home</strong> in it puts her back in her window. Voice,
+alarms and the sentinel aspect keep working while she is out, and the rest of the
+desktop stays clickable around her.</p>
+<p>She roams the monitor her window was on. To choose another, or change her size,
+set these in <code>~/.config/chibi/config.local.py</code>:</p>
+<div class="hl"><pre><span></span><code><span class="n">buddy_output</span> <span class="o">=</span> <span class="s2">"DP-1"</span>   <span class="c1"># connector name, as `synctl outputs` lists it</span>
+<span class="n">buddy_scale</span> <span class="o">=</span> <span class="mf">0.7</span>       <span class="c1"># default 0.55</span>
 </code></pre></div>
 
 <h2 id="whats-in-the-box">What's in the box</h2>
@@ -117,6 +135,10 @@ so she talks through the OS's own model. Override to use Ollama instead:</p>
 <tr>
 <td><strong>Avatar</strong></td>
 <td>pygame/SDL2 sprite renderer</td>
+</tr>
+<tr>
+<td><strong>Buddy mode</strong></td>
+<td>a GTK 4 layer-shell overlay (<code>gtk4-layer-shell</code>) that draws her with the same renderer</td>
 </tr>
 </tbody>
 </table></div>
