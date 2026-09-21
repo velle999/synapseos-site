@@ -59,6 +59,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#the-steps">The steps</a></li>
 <li><a href="#signing">Signing</a></li>
+<li><a href="#reproducible-builds">Reproducible builds</a></li>
 <li><a href="#--no-clean-is-safe-it-wasnt-always">--no-clean is safe (it wasn&#x27;t always)</a></li>
 <li class="sub"><a href="#the-collector-drift-and-why-it-is-now-deduped">The collector drift, and why it is now deduped</a></li>
 <li><a href="#testing-without-hardware">Testing without hardware</a></li>
@@ -69,7 +70,7 @@
       <p class="eyebrow">Hacking on it</p>
       <h1>Cutting an ISO Release</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -300,6 +301,27 @@ does not check out.</p>
 <p><strong>0.3.0 shipped unsigned</strong>, which is why signing is now the default rather than a
 flag: <code>--sign</code> and <code>sudo -E</code> and an environment variable were three things to
 remember at the end of a long build, and remembering is not a mechanism.</p>
+<hr />
+<h2 id="reproducible-builds">Reproducible builds</h2>
+<p>A build of one commit is stamped with that commit's time, not the clock:
+<code>tools/source-date-epoch.sh</code> gives <code>SOURCE_DATE_EPOCH</code> — the component's last
+commit for a package, HEAD for the image — and <code>build.sh</code> and <code>build-all.sh</code>
+both use it. Each package is built at the same path every time, because
+<code>.BUILDINFO</code> records the build directory.</p>
+<p><strong>Check the packages</strong> — builds each component twice from a clean clone of
+HEAD and compares them file by file:</p>
+<div class="hl"><pre><span></span><code>tools/repro-check.sh<span class="w"> </span>--all<span class="w"> </span>--skip<span class="w"> </span>synapse-llama
+tools/repro-check.sh<span class="w"> </span>synui<span class="w"> </span>synguard<span class="w">          </span><span class="c1"># or just these</span>
+</code></pre></div>
+
+<p><strong>Check an image</strong> — build the same commit twice, keeping the first ISO aside,
+then:</p>
+<div class="hl"><pre><span></span><code>tools/iso-repro-diff.sh<span class="w"> </span>first.iso<span class="w"> </span>second.iso
+</code></pre></div>
+
+<p>It prints every differing path under the cause that explains it, and anything
+unexplained on its own. Exit 0 means identical, 1 means only listed causes,
+2 means something unexplained. Neither script needs root.</p>
 <hr />
 <h2 id="--no-clean-is-safe-it-wasnt-always"><code>--no-clean</code> is safe (it wasn't always)</h2>
 <p>Two stale-artifact bugs used to make builds silently "succeed" on old output.
