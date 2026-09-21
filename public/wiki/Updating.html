@@ -60,6 +60,7 @@
 <li><a href="#quick-start">Quick start</a></li>
 <li><a href="#being-told-instead-of-remembering-to-look">Being told, instead of remembering to look</a></li>
 <li><a href="#how-it-works">How it works</a></li>
+<li class="sub"><a href="#only-signed-commits-are-built">Only signed commits are built</a></li>
 <li class="sub"><a href="#options">Options</a></li>
 <li><a href="#requirements">Requirements</a></li>
 <li><a href="#what-it-does-not-update">What it does not update</a></li>
@@ -71,7 +72,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Updating</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -171,6 +172,20 @@ it, a later <code>pacman -S synui</code> to repair an install would happily fetc
 version the ISO shipped.</p>
 <p>The source tree is chowned to the user who invoked the command, because <code>makepkg</code>
 refuses to run as root.</p>
+<h3 id="only-signed-commits-are-built">Only signed commits are built</h3>
+<p>Every commit <code>syn-update</code> builds must be signed with the SynapseOS update key.
+The key ships inside the <code>syn-update</code> package, in <code>/usr/share/syn-update/keys/</code>,
+and is never taken from the downloaded source. A copy of the repository from
+GitHub or from a mirror is checked the same way.</p>
+<p><code>syn-update</code> checks every new commit, oldest first. If some are not signed, it
+builds up to the last signed one and leaves the rest out, and <code>syn-update check</code>
+says so:</p>
+<div class="hl"><pre><span></span><code>warn  2 newer commit(s) on origin/main are not signed by a SynapseOS update key, and are not built:
+warn    the first is 1a2b3c4 &lt;its subject&gt;
+</code></pre></div>
+
+<p>If none of them is signed, it builds nothing. The key's fingerprint is in
+<a href="https://github.com/velle999/SYNAPSE/blob/main/SECURITY.md#verifying-an-update">SECURITY.md</a>.</p>
 <h3 id="options">Options</h3>
 <div class="table-scroll"><table>
 <thead>
@@ -210,12 +225,20 @@ refuses to run as root.</p>
 <td><code>SYN_UPDATE_SRC</code></td>
 <td><code>/var/lib/synapse-src</code></td>
 </tr>
+<tr>
+<td><code>SYN_UPDATE_KEYS_DIR</code></td>
+<td><code>/usr/share/syn-update/keys</code> — the keys commits must be signed with</td>
+</tr>
+<tr>
+<td><code>SYN_UPDATE_ALLOW_UNSIGNED</code></td>
+<td>unset. <code>1</code> builds without checking signatures, for a fork signed with a key you have not installed</td>
+</tr>
 </tbody>
 </table></div>
 <hr />
 <h2 id="requirements">Requirements</h2>
 <p>Because it builds from source, <code>syn-update</code> needs a toolchain. It depends on
-<code>bash</code>, <code>git</code>, <code>base-devel</code>, <code>pacman</code> and <code>sudo</code>, all of which pacman resolves
+<code>bash</code>, <code>git</code>, <code>base-devel</code>, <code>pacman</code>, <code>sudo</code> and <code>gnupg</code>, all of which pacman resolves
 from <code>core</code> — roughly <strong>17 packages, ~118 MiB</strong> on a system that has none of them.</p>
 <p><code>cmake</code> and <code>meson</code> are deliberately <strong>not</strong> hard dependencies. <code>makepkg -s</code>
 pulls each component's own <code>makedepends</code> on demand, so you only pay for what you
@@ -315,6 +338,14 @@ with an ISO upgrade.</p>
 That was a real bug in <code>syn-update</code> 0.1.0-6 and earlier, where the local
 repository kept advertising versions older than what was installed. Update
 <code>syn-update</code> itself first, then re-run.</p>
+<p><strong><code>check</code> says newer commits are not signed and are not built.</strong>
+The project has pushed commits without its signature. Nothing past them is built
+until they are signed; the next <code>check</code> after that picks them up. Nothing needs
+doing on your machine.</p>
+<p><strong><code>nothing on origin/main is signed by a SynapseOS update key — refusing to build it</code>.</strong>
+The repository <code>syn-update</code> fetched is not one the installed key signs — usually
+<code>SYN_UPDATE_REPO</code> pointing at a fork. To build a fork anyway, run with
+<code>SYN_UPDATE_ALLOW_UNSIGNED=1</code>.</p>
 <p><strong>Nothing happens and no error appears.</strong>
 Check <code>syn-update status</code> for the source revision it is actually tracking. If the
 tree at <code>/var/lib/synapse-src</code> has local modifications, <code>apply</code> will refuse to
