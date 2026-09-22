@@ -60,9 +60,9 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "1.0.0",
+      "softwareVersion": "1.0.1",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
-      "downloadUrl": "https://dl.soslinux.org/SynapseOS-1.0.0-x86_64.iso",
+      "downloadUrl": "https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso",
       "installUrl": "https://soslinux.org/#download",
       "url": "https://soslinux.org/",
       "image": "https://soslinux.org/assets/og.png?v=2026-08-22",
@@ -216,7 +216,7 @@
         your machine.
       </p>
       <p class="cta">
-        <a class="btn btn-primary" href="#download">Download 1.0.0</a>
+        <a class="btn btn-primary" href="#download">Download 1.0.1</a>
         <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
       </p>
       <p class="themes-label">Fifteen themes ship. <b>Try one on this page.</b></p>
@@ -760,19 +760,19 @@
   <section id="download" class="wrap section">
     <h2>Download SynapseOS</h2>
     <p class="release-line">
-      Latest release: <strong>1.0.0</strong> &mdash; this desktop from another room,
-      a malware scanner, and fingerprints for every administrator prompt. Free,
-      x86_64, about 4.6&nbsp;GiB. The
+      Latest release: <strong>1.0.1</strong> &mdash; signed and verified updates,
+      a firewall that asks about each network, and a malware scanner that says
+      what it found. Free, x86_64, about 4.6&nbsp;GiB. The
       model is downloaded during installation, not carried in the image.
     </p>
     <p class="cta">
-      <a class="btn btn-primary" href="https://dl.soslinux.org/SynapseOS-1.0.0-x86_64.iso">Download the ISO &mdash; 4.6&nbsp;GiB</a>
-      <a class="btn" href="https://archive.org/download/synapseos-1.0.0/SynapseOS-1.0.0-x86_64.iso" rel="noopener">Mirror</a>
-      <a class="btn" href="https://archive.org/download/synapseos-1.0.0/synapseos-1.0.0_archive.torrent" rel="noopener">Torrent</a>
+      <a class="btn btn-primary" href="https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso">Download the ISO &mdash; 4.6&nbsp;GiB</a>
+      <a class="btn" href="https://archive.org/download/synapseos-1.0.1/SynapseOS-1.0.1-x86_64.iso" rel="noopener">Mirror</a>
+      <a class="btn" href="https://archive.org/download/synapseos-1.0.1/synapseos-1.0.1_archive.torrent" rel="noopener">Torrent</a>
     </p>
     <p class="small">
       One file, resumable, nothing to reassemble. The mirror is the
-      <a href="https://archive.org/details/synapseos-1.0.0" rel="noopener">Internet Archive</a>,
+      <a href="https://archive.org/details/synapseos-1.0.1" rel="noopener">Internet Archive</a>,
       which carries the same image and the torrent for it.
     </p>
 
@@ -783,18 +783,18 @@
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>curl -O https://dl.soslinux.org/SynapseOS-1.0.0-x86_64.iso.sha256
-sha256sum -c SynapseOS-1.0.0-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>curl -O https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso.sha256
+sha256sum -c SynapseOS-1.0.1-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
     <h4 class="plat">Windows</h4>
     <p>In <strong>PowerShell</strong>, in the folder you downloaded to:</p>
-<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-1.0.0-x86_64.iso).Hash -eq `
-  (((Get-Content .\SynapseOS-1.0.0-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
+<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-1.0.1-x86_64.iso).Hash -eq `
+  (((Get-Content .\SynapseOS-1.0.1-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
     <p class="small">
       <code>True</code> means the download is intact. <code>Get-FileHash</code> prints
       uppercase hex where <code>sha256sum</code> writes lowercase &mdash; same bytes,
       hence the <code>.ToUpper()</code>. In <strong>Command Prompt</strong> instead:
-      <code>certutil -hashfile SynapseOS-1.0.0-x86_64.iso SHA256</code>, and compare
+      <code>certutil -hashfile SynapseOS-1.0.1-x86_64.iso SHA256</code>, and compare
       it against the <code>.sha256</code> file yourself.
     </p>
 
@@ -803,7 +803,7 @@ sha256sum -c SynapseOS-1.0.0-x86_64.iso.sha256   <span class="c"># shasum -a 256
       <p>
         GitHub caps a release asset at 2&nbsp;GiB, so the copy attached to the
         <a href="https://github.com/velle999/SYNAPSE/releases/latest" rel="noopener">release page</a>
-        is split &mdash; <strong>three parts</strong> for 1.0.0. The download above is
+        is split &mdash; <strong>three parts</strong> for 1.0.1. The download above is
         the same image in one piece; this path exists for anyone who would rather
         take it from GitHub. Download <strong>all</strong> the <code>.part*</code>
         files plus the <code>.sha256</code>, into one folder. Joining them is a plain
@@ -811,13 +811,13 @@ sha256sum -c SynapseOS-1.0.0-x86_64.iso.sha256   <span class="c"># shasum -a 256
       </p>
 
       <h4 class="plat">Linux / macOS</h4>
-<pre><code>cat SynapseOS-1.0.0-x86_64.iso.part* &gt; SynapseOS-1.0.0-x86_64.iso
-sha256sum -c SynapseOS-1.0.0-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>cat SynapseOS-1.0.1-x86_64.iso.part* &gt; SynapseOS-1.0.1-x86_64.iso
+sha256sum -c SynapseOS-1.0.1-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
       <h4 class="plat">Windows</h4>
       <p>In <strong>Command Prompt</strong>, in the folder you downloaded to:</p>
-<pre><code>copy /b SynapseOS-1.0.0-x86_64.iso.part00 + SynapseOS-1.0.0-x86_64.iso.part01 + SynapseOS-1.0.0-x86_64.iso.part02 SynapseOS-1.0.0-x86_64.iso
-certutil -hashfile SynapseOS-1.0.0-x86_64.iso SHA256</code></pre>
+<pre><code>copy /b SynapseOS-1.0.1-x86_64.iso.part00 + SynapseOS-1.0.1-x86_64.iso.part01 + SynapseOS-1.0.1-x86_64.iso.part02 SynapseOS-1.0.1-x86_64.iso
+certutil -hashfile SynapseOS-1.0.1-x86_64.iso SHA256</code></pre>
       <p>
         Name every part, in order, joined by <code>+</code>. <strong><code>/b</code> is
         not optional</strong>: without it <code>copy</code> runs in text mode and stops
@@ -852,7 +852,7 @@ certutil -hashfile SynapseOS-1.0.0-x86_64.iso SHA256</code></pre>
 <pre><code>curl -O https://soslinux.org/synapseos-release-key.asc
 gpg --import synapseos-release-key.asc
 
-gpg --verify SynapseOS-1.0.0-x86_64.iso.asc SynapseOS-1.0.0-x86_64.iso</code></pre>
+gpg --verify SynapseOS-1.0.1-x86_64.iso.asc SynapseOS-1.0.1-x86_64.iso</code></pre>
     <p>
       A good signature prints <code>Good signature from &quot;SynapseOS Release
       Signing&quot;</code>. Check the fingerprint it names against this one:
@@ -878,7 +878,7 @@ gpg --verify SynapseOS-1.0.0-x86_64.iso.asc SynapseOS-1.0.0-x86_64.iso</code></p
     </p>
 
     <h4 class="plat">Linux / macOS</h4>
-<pre><code>sudo dd if=SynapseOS-1.0.0-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-1.0.1-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
     <p>
       Check <code>/dev/sdX</code> with <code>lsblk</code> first, and write to the
       <strong>disk</strong> (<code>/dev/sdb</code>), not to a partition on it
