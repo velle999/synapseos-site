@@ -67,7 +67,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Commands</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -245,16 +245,34 @@ for another distribution will not apply.</p>
 <td>Take one back off the list</td>
 </tr>
 <tr>
+<td><code>synnet --networks</code></td>
+<td>The networks this machine is on, and which of them are trusted</td>
+</tr>
+<tr>
+<td><code>sudo synnet --trust-network &lt;name&gt;</code></td>
+<td>Trust a network (a saved NetworkManager connection, by name or UUID). Other devices on it can then reach this machine's services. Also Settings ▸ Network</td>
+</tr>
+<tr>
+<td><code>sudo synnet --untrust-network &lt;name&gt;</code></td>
+<td>Stop trusting one</td>
+</tr>
+<tr>
+<td><code>sudo synnet --open &lt;proto&gt;/&lt;port&gt; [&lt;cidr&gt;]</code></td>
+<td>Let one port in from a source the firewall would drop, on every network</td>
+</tr>
+<tr>
 <td><code>synnet --block &lt;ip&gt;</code> / <code>--allow &lt;ip&gt;</code></td>
 <td>Add or remove one address in the outbound blocklist</td>
 </tr>
 </tbody>
 </table></div>
 <p>The default is a <strong>default-drop input chain</strong> that accepts loopback, replies to
-connections this machine started, ICMP and ICMPv6, anything from a private
-address (so the whole home network stays reachable without listing ports), and
-DHCP replies. Everything unsolicited from a public address is dropped, which is
-what makes this laptop safe on café Wi-Fi.</p>
+connections this machine started, ICMP and ICMPv6, DHCP replies, anything over
+Tailscale, and — <strong>on a trusted network</strong> — anything from the other devices on
+it. On a network you have not trusted, nothing else gets in, which is what makes
+this laptop safe on café Wi-Fi. A network starts untrusted, and SynapseOS asks
+the first time you join one. Containers and VMs on this machine are not
+affected.</p>
 <p>⚠ <strong>After a <code>syn-update</code> that brings a new <code>synnet</code>, restart it.</strong> pacman replaces
 the binary but does not restart the unit, so the running daemon can be older than
 the file on disk — and <code>synnet --status</code> will report on the old one.</p>

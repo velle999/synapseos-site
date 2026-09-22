@@ -132,7 +132,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Troubleshooting</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -671,13 +671,21 @@ merely out of date looks healthy to it. Run <code>sudo synnet --firewall</code> 
 editing, or use <code>--trust-if</code>, which does it for you. Settings ▸ Network warns
 when the two have drifted apart.</p>
 <h3 id="something-on-the-local-network-cannot-reach-a-server-on-this-machine">Something on the local network cannot reach a server on this machine</h3>
-<p>It can, and that is usually not the problem — the firewall accepts anything from
-a private address, which is every machine on a home or office network. Look at
-the service first.</p>
-<p>What it does drop is unsolicited traffic from a <strong>public</strong> address, which is the
-point: this machine answers nothing on café or hotel Wi-Fi that it did not ask
-for. There is no per-port rule to add for the LAN case, and no <code>ufw</code> to add it
-with — see <a href="/wiki/Commands#the-firewall">Commands</a>.</p>
+<p>First check that the network is <strong>trusted</strong>. The firewall lets other devices in
+only on a network you trusted; on any other network — including your own, if
+nobody has said so yet — only replies, ping and DHCP get through.</p>
+<div class="hl"><pre><span></span><code>synnet<span class="w"> </span>--networks
+</code></pre></div>
+
+<p>If your network reads <strong>NOT trusted</strong>, trust it in Settings ▸ Network, or:</p>
+<div class="hl"><pre><span></span><code>sudo<span class="w"> </span>synnet<span class="w"> </span>--trust-network<span class="w"> </span><span class="s2">"&lt;the network's name&gt;"</span>
+</code></pre></div>
+
+<p>On a trusted network the firewall accepts everything from the other devices on
+it, so if the network is trusted and it still fails, look at the service.
+Unsolicited traffic from a <strong>public</strong> address is dropped on every network; to let
+one port in from anywhere, see <code>synnet --open</code> in
+<a href="/wiki/Commands#the-firewall">Commands</a>.</p>
 <h3 id="i-want-to-check-the-firewall-is-actually-on">I want to check the firewall is actually on</h3>
 <div class="hl"><pre><span></span><code>synnet<span class="w"> </span>--status
 </code></pre></div>

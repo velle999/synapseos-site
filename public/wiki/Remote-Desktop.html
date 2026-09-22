@@ -79,7 +79,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Remote Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-18">2026-09-18</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
       </p>
 
       <div class="wiki-body">
@@ -176,8 +176,11 @@ an address from the <em>block</em> set — it undoes a previous <code>--block</c
 nothing. <code>--trust-if</code> is DHCP and DNS on a gateway bridge, also not this.
 The verb that opens a port is <code>--open</code>:</p>
 <p><code>bash
-sudo synnet --open tcp/5900 100.64.0.0/10   # e.g. a Tailscale mesh
-synnet --status                             # shows what is open</code></p>
+sudo synnet --open tcp/5900 203.0.113.0/24   # a range you connect from
+synnet --status                              # shows what is open</code></p>
+<p>Tailscale needs none of this: anything arriving over it is accepted. On the
+local network, the network has to be trusted — <code>synnet --networks</code> says
+whether it is.</p>
 <p>With no CIDR the source is <code>any</code>, which means the internet if this machine is
 reachable from it — so it says so when you do that.</p>
 </blockquote>

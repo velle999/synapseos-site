@@ -223,7 +223,7 @@ blanks around the answer.</p>
 It is as long as a real address and cannot reach anything without an interface
 named alongside it, so listing it widens the row to say nothing. An interface
 whose only IPv6 address is link-local shows no IPv6 address here.</p>
-<p><strong><code>firewall</code></strong> — three separate things, because they answer differently:</p>
+<p><strong><code>firewall</code></strong> — several separate things, because they answer differently:</p>
 <div class="table-scroll"><table>
 <thead>
 <tr>
@@ -235,6 +235,10 @@ whose only IPv6 address is link-local shows no IPv6 address here.</p>
 <tr>
 <td><strong>input filtering</strong></td>
 <td>The <em>preference</em> in <code>/etc/synnet/firewall</code>, and the <em>state</em> synnet last published to <code>/run/synnet/firewall.state</code></td>
+</tr>
+<tr>
+<td><strong>one row per network</strong></td>
+<td>Each network this machine is on, by name, <strong>trusted</strong> or <strong>not trusted</strong>. Select it to change the answer. On a trusted network other devices can reach this machine's shared services; on any other, only replies, ping, DHCP and opened ports get in. Asks for your password</td>
 </tr>
 <tr>
 <td><strong>container links</strong></td>
