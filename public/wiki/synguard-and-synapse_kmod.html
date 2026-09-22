@@ -98,7 +98,20 @@ systemctl<span class="w"> </span>status<span class="w"> </span>synguard
   write rules, and an <code>AF_UNIX</code> filter on <code>socket()</code>.</li>
 <li><strong>Escalation rules</strong> for exec out of <code>/proc</code> and <code>/dev</code> (softened from <em>deny</em> to
   <em>escalate</em>, with <code>/proc/self/exe</code> explicitly allowed).</li>
+<li><strong>Privilege changes</strong> — any <code>setuid</code>/<code>setgid</code>-family call that switches to root,
+  and a non-root process enabling an administrator capability with <code>capset</code>.</li>
+<li><strong>Bind mounts</strong> — a bind or a move in the host's mount namespace, the way a file
+  is laid over <code>/etc</code> or <code>/usr/bin</code>. Sandboxes mounting in their own namespace
+  are not reported.</li>
+<li><strong>Stopping the security daemons</strong> — a terminating or stopping signal to pid 1,
+  <code>synguard</code>, <code>synnet</code> or <code>synapd</code> from anything but systemd. The record is kept
+  in the kernel's ring, so it survives the daemon being stopped.</li>
 </ul>
+<p>Opens and program starts are seen twice. The kernel module reports the path the
+program asked for, including attempts on files that do not exist. synguard's
+BPF-LSM hooks report the file the kernel actually opened — which catches a
+relative path, a symlink, <code>..</code>, <code>openat2</code> and io_uring — for the paths the rules
+watch. The same open seen by both counts once.</p>
 <p><code>chibi</code> has a read-only <strong>sentinel aspect</strong> that watches the same feed.</p>
 <hr />
 <h2 id="enforcement--the-two-paths-and-why-they-are-not-equivalent">Enforcement — the two paths, and why they are not equivalent</h2>
@@ -350,6 +363,7 @@ commented out.</p>
 <div class="hl"><pre><span></span><code>synguard: stats — events=… rules=… ai=… ai-skipped=… denials=… alerts=…
   quarantines=… protected-skips=… stale-pid-skips=… failed-syscall-skips=…
   kernel-enforced-skips=… dropped=… suppressed=… lag=Nms/Nmax
+  lsm-reports=… dedup=…
 </code></pre></div>
 
 <ul>
@@ -361,6 +375,9 @@ commented out.</p>
   classification now runs on its own worker thread, and the reader keeps draining.</li>
 <li><code>denials</code> counts verdicts, not preventions. Cross-check against
   <code>kernel-enforced-skips</code> to see how many were actually refused in-kernel.</li>
+<li><code>lsm-reports</code> counts opens and program starts the BPF-LSM hooks reported;
+  <code>dedup</code> how many of those the kernel module had already reported. The
+  <code>bpf-lsm:</code> line after it has <code>reports-dropped</code>, which must stay 0.</li>
 </ul>
 <h3 id="testing-a-deny-rule-without-taking-your-session-with-it">Testing a deny rule without taking your session with it</h3>
 <p>Run the thing you expect to be denied as a <strong>transient unit</strong>, never from your
