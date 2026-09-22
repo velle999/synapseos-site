@@ -74,7 +74,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Settings</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Settings/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-22">2026-09-22</time>
       </p>
 
       <div class="wiki-body">
@@ -382,6 +382,11 @@ switches the units it ships.</p>
 </tr>
 </tbody>
 </table></div>
+<p>Under <strong>Outstanding findings</strong>, each thing the sweep flagged is a row of its
+own: the file — or, for a rootkit check, the engine — with the verdict, what the
+engine said, and when. A check that <strong>did not finish</strong> is listed and not
+counted. More than 40 end in a <strong>More findings</strong> row; <code>syn-scan status --weekly</code>
+prints them all.</p>
 <p>⚠ <strong>The sweep and your own scans are two separate records.</strong> The timer runs as
 root and writes <code>/var/lib/syn-scan</code>; a scan you type yourself is recorded under
 your own account. The pane shows both, each named for whose it is.</p>
