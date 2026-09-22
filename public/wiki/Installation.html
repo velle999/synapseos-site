@@ -86,7 +86,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Installation</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Installation/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Installation/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-22">2026-09-22</time>
       </p>
 
       <div class="wiki-body">
@@ -110,7 +110,7 @@ are mirrored to the serial console: <em>View → serial0</em> in the QEMU window
 <h2 id="install-to-hardware">Install to hardware</h2>
 <p>Download the ISO from <strong><a href="https://soslinux.org/#download">soslinux.org</a></strong> — one
 file, about 4.6 GB, and resumable if your connection drops. The same image is
-mirrored on the <a href="https://archive.org/details/synapseos-1.0.0">Internet Archive</a>,
+mirrored on the <a href="https://archive.org/details/synapseos-1.0.1">Internet Archive</a>,
 which also carries a torrent for it.</p>
 <p>Check it before you write it. A download that stopped early still looks like an
 ISO, still writes to a stick, and fails later in ways that look like bad
@@ -138,7 +138,7 @@ the contents of the <code>.sha256</code> file yourself.</p>
 <h3 id="or-download-it-in-parts-from-github">Or download it in parts, from GitHub</h3>
 <p>The <a href="https://github.com/velle999/SYNAPSE/releases/latest">release page</a> carries
 the same image <strong>split into <code>.part*</code> files</strong>, because GitHub caps a release
-asset at 2 GiB and the ISO is larger than that — <strong>three parts, as of 1.0.0</strong>,
+asset at 2 GiB and the ISO is larger than that — <strong>three parts, as of 1.0.1</strong>,
 and the count grows with the image, so count the assets on the release page
 rather than trusting this sentence.</p>
 <p>The single-file download above is the easier road. This one exists for anyone
@@ -159,7 +159,7 @@ sha256sum<span class="w"> </span>-c<span class="w"> </span>SynapseOS-&lt;ver&gt;
 </code></pre></div>
 
 <p>Name <strong>every</strong> part, in order, joined by <code>+</code> — that line is three parts because
-1.0.0 has three, and a release with four needs a fourth name on it. Copying the
+1.0.1 has three, and a release with four needs a fourth name on it. Copying the
 line as written for an image with more parts is the failure this section exists
 to prevent: it succeeds, and leaves a short ISO.</p>
 <p>Do not use a wildcard instead: <code>copy</code> takes wildcard sources in directory order,
