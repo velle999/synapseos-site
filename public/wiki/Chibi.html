@@ -59,6 +59,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#running-her">Running her</a></li>
 <li><a href="#buddy-mode">Buddy mode</a></li>
+<li><a href="#asking-her-to-do-things">Asking her to do things</a></li>
 <li><a href="#whats-in-the-box">What&#x27;s in the box</a></li>
 <li><a href="#gotchas-we-already-hit">Gotchas we already hit</a></li>
 </ul></nav>
@@ -67,7 +68,7 @@
       <p class="eyebrow">Apps</p>
       <h1>Chibi</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Chibi/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Chibi/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-23">2026-09-23</time>
       </p>
 
       <div class="wiki-body">
@@ -107,6 +108,59 @@ set these in <code>~/.config/chibi/config.local.py</code>:</p>
 <span class="n">buddy_scale</span> <span class="o">=</span> <span class="mf">0.7</span>       <span class="c1"># default 0.55</span>
 </code></pre></div>
 
+<h2 id="asking-her-to-do-things">Asking her to do things</h2>
+<p>Some requests Chibi carries out herself, without the model, so they happen
+straight away:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Say or type</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"play music"</td>
+<td>starts cliamp, shuffled, in a terminal window — or resumes it if it is already running</td>
+</tr>
+<tr>
+<td>"open YouTube"</td>
+<td>opens YouTube in your default browser</td>
+</tr>
+<tr>
+<td>"open downloads", "open firefox", "open the display settings"</td>
+<td>opens the folder, app or settings panel</td>
+</tr>
+<tr>
+<td>"what's in my documents"</td>
+<td>lists the folder</td>
+</tr>
+<tr>
+<td>"pc stats", "how much ram do I have"</td>
+<td>reads the hardware</td>
+</tr>
+<tr>
+<td>"lock the screen", "take a screenshot"</td>
+<td>asks first, then does it</td>
+</tr>
+<tr>
+<td>"move the bar to the bottom", "turn the dock off"</td>
+<td>asks first, then does it</td>
+</tr>
+<tr>
+<td>"wake me up at 7am", "cancel alarm", "what alarms do I have"</td>
+<td>sets, cancels or lists her alarms</td>
+</tr>
+</tbody>
+</table></div>
+<p>Her name and "please" are fine — "Chibi, open YouTube please" works. The request
+has to be the whole line, though: "how do I open YouTube?" is a question, and she
+answers it.</p>
+<p>When she asks first, answer <strong>yes</strong> (or yeah, sure, ok, go ahead) and she does
+it; anything else leaves it alone. When an alarm rings, say <strong>snooze</strong> (or "five
+more minutes") for five more minutes; anything else turns it off.</p>
+<p>Folders, apps, settings and the screen go through <a href="/wiki/Vibe#requests-that-never-reach-a-model">Vibe</a>'s
+desktop tools; music and YouTube through <a href="/wiki/synsh">synsh</a>'s intents.</p>
 <h2 id="whats-in-the-box">What's in the box</h2>
 <div class="table-scroll"><table>
 <thead>
@@ -131,6 +185,10 @@ set these in <code>~/.config/chibi/config.local.py</code>:</p>
 <tr>
 <td><strong>Sentinel</strong></td>
 <td>read-only subscriber to <code>synguard</code>'s <code>secfeed</code>; the security aspect never writes</td>
+</tr>
+<tr>
+<td><strong>Desktop requests</strong></td>
+<td>Vibe's desktop tools and synsh's intents, called without the model</td>
 </tr>
 <tr>
 <td><strong>Avatar</strong></td>
