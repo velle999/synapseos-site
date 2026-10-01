@@ -70,6 +70,7 @@
 <li class="sub"><a href="#stabilising">Stabilising</a></li>
 <li class="sub"><a href="#watching-it-back">Watching it back</a></li>
 <li class="sub"><a href="#delivering">Delivering</a></li>
+<li class="sub"><a href="#the-display-it-is-made-for">The display it is made for</a></li>
 <li class="sub"><a href="#undo-and-versions">Undo, and versions</a></li>
 <li><a href="#log-footage">Log footage</a></li>
 <li><a href="#related">Related</a></li>
@@ -79,7 +80,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Studio</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Studio/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-08-22">2026-08-22</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Studio/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-30">2026-09-30</time>
       </p>
 
       <div class="wiki-body">
@@ -127,7 +128,8 @@ synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span clas
 synstudio<span class="w"> </span>mask<span class="w"> </span>photo.jpg<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="nv">geom</span><span class="o">=</span><span class="m">0</span>,0.6,1,1,0.2<span class="w"> </span><span class="nv">exposure</span><span class="o">=</span>-0.5
 </code></pre></div>
 
-<p><code>geom</code> is <code>x0,y0,x1,y1,feather</code> in fractions of the frame.</p>
+<p><code>geom</code> is <code>x0,y0,x1,y1,feather</code> in fractions of the frame. A photograph put
+on the timeline brings its masks with it, up to the four a clip carries.</p>
 <h3 id="looks">Looks</h3>
 <p>Twelve are installed — <code>noir</code>, <code>teal-orange</code>, <code>bleach-bypass</code>, <code>faded-film</code>,
 <code>portrait-warm</code>, <code>punch</code>, <code>moody-blue</code>, <code>high-key</code>, <code>cross-process</code>,
@@ -196,10 +198,40 @@ built), retiming (<code>reverse</code>, <code>freeze</code>, and <code>retime=bl
 frames a slowdown needs), and generated title and solid clips.</p>
 <p>Titles come in five styles — plain, lower third, subtitle, heading and roll —
 and <code>synstudio fonts</code> lists what this machine can letter them in.</p>
+<p>A <strong>template</strong> draws a title as a designed layout: a name over a role beside an
+accent bar, a chapter card with a rule, a tag in the corner. Five ship —
+<code>lower-bar</code>, <code>name-plate</code>, <code>chapter</code>, <code>corner-tag</code> and <code>quote</code>. The template
+stays on the clip and draws from the clip's own caption, size, colour and font,
+so a keyed size or colour moves it too. Each line of the caption fills one line
+of the layout.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>titles<span class="w"> </span>list<span class="w">                         </span><span class="c1"># every template, and the Title rows each reads</span>
+synstudio<span class="w"> </span>titles<span class="w"> </span>check<span class="w"> </span>lower-bar<span class="w"> </span>--out<span class="w"> </span>s.png<span class="w">  </span><span class="c1"># a sample caption drawn through it</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>template<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>lower-bar<span class="w"> </span><span class="k">in</span><span class="o">=</span><span class="m">0</span>.8
+synstudio<span class="w"> </span>timeline<span class="w"> </span>template<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>none
+</code></pre></div>
+
+<p>A template's own knobs — how long a slide-in takes, how wide the bar is — are
+set as <code>tmpl.&lt;knob&gt;</code>, and the inspector hides the Title rows a template does not
+read. A <code>.syntitle</code> is a text file in the same form as an effect: yours go in
+<code>~/.config/synstudio/titles</code> and win over an installed one of the same name.</p>
+<p><strong>Masks</strong> work on a clip's grade as they do on a photograph: linear or radial,
+each with a develop stack of its own, applied over the graded picture where it
+covers. A clip carries up to four.</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>mask<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>add<span class="w"> </span>radial
+synstudio<span class="w"> </span>timeline<span class="w"> </span>mask<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="nv">geom</span><span class="o">=</span><span class="m">0</span>.5,0.4,0.25,0.35,0.4<span class="w"> </span><span class="nv">exposure</span><span class="o">=</span><span class="m">0</span>.6
+synstudio<span class="w"> </span>timeline<span class="w"> </span>mask<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>list
+synstudio<span class="w"> </span>timeline<span class="w"> </span>frame<span class="w"> </span>cut.syntl<span class="w"> </span>--at<span class="w"> </span><span class="m">12</span><span class="w"> </span>--out<span class="w"> </span>f.png<span class="w"> </span>--show-mask<span class="w"> </span><span class="m">0</span>:2:0
+</code></pre></div>
+
+<p><code>geom</code> is in fractions of the clip's picture before its crop. On a clip that
+turns or zooms, a mask stays square to the frame while the picture moves under
+it. <code>--show-mask</code> tints where that mask covers. In the window, <strong>Masks</strong> under
+Grade adds them and picks one; while one is picked, every grade slider, the LUT
+and the looks change that mask, and the monitor shows its tint.</p>
 <p><strong>Keyframes</strong> come in two kinds. <code>timeline key</code> pins a whole grade at an instant,
 and two or more of them make the grade move between them. <code>timeline anim</code> keys a
-single property — opacity, gain, a scale, an angle — with an ease of <code>linear</code>,
-<code>in</code>, <code>out</code>, <code>inout</code> or <code>hold</code>.</p>
+single property — opacity, gain, a scale, an angle, a title's size and colour,
+an effect's knob — with an ease of <code>linear</code>, <code>in</code>, <code>out</code>, <code>inout</code> or <code>hold</code>.</p>
 <h3 id="transitions-and-effects">Transitions and effects</h3>
 <p>Sixty transitions. Dissolve and dip-to-colour, fades to black, white or grey at
 three speeds, wipes and slides and covers and reveals from each of four
@@ -211,7 +243,12 @@ slice, squeeze, distance, noise, wind, zoom.
 lens distortion, chromatic aberration, luma and chroma keying with despill, and
 the rest. <code>synstudio fx list</code> names them and <code>fx show NAME</code> gives each one's
 parameters with their ranges.</p>
+<p>An effect's knobs take keys like any other property, named by the effect's
+place on the clip: <code>fx.0.radius</code> is the first effect's radius. The last column
+of <code>synstudio fx params</code> marks which knobs this machine's ffmpeg can move over
+time, and the inspector shows the key diamond on those.</p>
 <div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>fx<span class="w"> </span>check<span class="w"> </span>blur<span class="w">      </span><span class="c1"># render one frame through it before you commit</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>anim<span class="w"> </span>cut.syntl<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>add<span class="w"> </span>fx.0.radius<span class="w"> </span>--at<span class="w"> </span><span class="m">4</span><span class="w"> </span>--value<span class="w"> </span><span class="m">30</span>
 </code></pre></div>
 
 <h3 id="sound">Sound</h3>
@@ -249,6 +286,19 @@ synstudio<span class="w"> </span>timeline<span class="w"> </span><span class="nb
 <p><code>--burn timecode|name|both</code> stamps a review copy, <code>--watermark F.png</code> puts a logo
 over the delivered frame, and <code>--format png</code> or <code>exr</code> with <code>--out dir/f_%04d.png</code>
 writes an image sequence instead of a movie.</p>
+<h3 id="the-display-it-is-made-for">The display it is made for</h3>
+<p>Every movie is written with the BT.709 colour matrix and tagged with it, so a
+player shows the colours the monitor showed. A project is made for <strong>sRGB</strong> —
+computers, phones and the web — until you say otherwise:</p>
+<div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>output<span class="w"> </span>cut.syntl<span class="w"> </span>rec709<span class="w">    </span><span class="c1"># a broadcast display (BT.1886, gamma 2.4)</span>
+synstudio<span class="w"> </span>timeline<span class="w"> </span>output<span class="w"> </span>cut.syntl<span class="w"> </span>srgb<span class="w">      </span><span class="c1"># back to screens and the web</span>
+</code></pre></div>
+
+<p><strong>Rec.709</strong> re-encodes the picture for a broadcast or grading display, so it looks
+there the way it looked on your monitor. The export sheet's <strong>Made for</strong> row sets
+the same thing, and the project keeps it for every later export. The monitor and
+the play button always show sRGB. A PNG sequence carries the same curve as the
+movie would; an EXR sequence is always linear light.</p>
 <p>Renders can also be queued and run one at a time:</p>
 <div class="hl"><pre><span></span><code>synstudio<span class="w"> </span>timeline<span class="w"> </span>queue<span class="w"> </span>cut.syntl<span class="w"> </span>add<span class="w"> </span>--out<span class="w"> </span>final.mp4<span class="w"> </span>--preset<span class="w"> </span>youtube-4k
 synstudio<span class="w"> </span>timeline<span class="w"> </span>queue<span class="w"> </span>cut.syntl<span class="w"> </span>run
