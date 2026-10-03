@@ -69,6 +69,8 @@
 <li class="sub"><a href="#the-overlay-is-hidden-until-you-ask">The overlay is hidden until you ask</a></li>
 <li class="sub"><a href="#which-config-file-the-overlay-actually-reads">Which config file the overlay actually reads</a></li>
 <li><a href="#geforce-now">GeForce NOW</a></li>
+<li class="sub"><a href="#nvidias-app">NVIDIA&#x27;s app</a></li>
+<li class="sub"><a href="#in-a-browser">In a browser</a></li>
 <li><a href="#controllers">Controllers</a></li>
 <li class="sub"><a href="#stick-drift">Stick drift</a></li>
 <li class="sub"><a href="#buttons-in-the-wrong-places">Buttons in the wrong places</a></li>
@@ -85,7 +87,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Gaming</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-19">2026-09-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Gaming/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-02">2026-10-02</time>
       </p>
 
       <div class="wiki-body">
@@ -404,41 +406,30 @@ Your session runs <code>syn-arcade hud ensure</code> at login so this cannot hap
 <p><code>syn-gfn</code> — no arguments, or the <strong>GeForce NOW</strong> entry in the applications menu,
 or its tile in <a href="/wiki/Big-Screen">big screen mode</a>.</p>
 <div class="hl"><pre><span></span><code>syn-gfn
+syn-gfn<span class="w"> </span>--web<span class="w">                </span><span class="c1"># a browser, even with NVIDIA's app installed</span>
 syn-gfn<span class="w"> </span>--list-browsers<span class="w">      </span><span class="c1"># what it found, and which one it would use</span>
 </code></pre></div>
 
-<p><strong>It is a launcher, and the browser is the client</strong>, because the Electron client
-cannot do either of the two things a game stream is — and both failures are
-silent.</p>
-<ul>
-<li>Its Wayland branch hardcodes a GL implementation Chromium 142 removed, so the
-  GPU process dies at every launch and falls back to software compositing — in
-  which its Wayland surface never repaints at the size the compositor gave it.
-  synui sends <code>configure(2556, 1382)</code>, the client answers
-  <code>set_window_geometry(0, 0, 2556, 1382)</code> and acknowledges it, and then paints
-  800×600 into the corner with the desktop showing through the rest. A stream
-  negotiated against that viewport comes back 5:4.</li>
-<li>It binds <code>zwp_pointer_constraints_v1</code> and <strong>never calls <code>lock_pointer</code></strong>, so
-  nothing asks the compositor to hold the cursor and it leaves the window
-  mid-game onto the next monitor.</li>
-</ul>
-<p>Neither is synui's doing — a compliant client driven through the same
-maximise-then-fullscreen sequence in a nested headless synui is configured to the
-exact output box and fills it, and both pointer protocols are advertised and
-answered.</p>
-<p>Every hard part of a cloud-gaming client — pointer lock, keyboard lock,
-fullscreen, H.264/HEVC decode, WebRTC — belongs to the browser engine, already
-written and already tested against this service. So <code>syn-gfn</code> runs the first
-Chromium-family browser it finds, in <strong>a profile of its own</strong> (never your
-browsing one), with <strong>keyboard lock, pointer lock and automatic fullscreen
-pre-granted for the site</strong> — the permission prompt they replace is raised while
-the page is already fullscreen with the cursor captured, where nobody can see it.
-Keyboard lock is what makes <code>Escape</code> reach the game instead of being spent
-leaving fullscreen.</p>
+<h3 id="nvidias-app">NVIDIA's app</h3>
+<p>When NVIDIA's own GeForce NOW app is installed, <code>syn-gfn</code> opens it. It decodes
+the stream on the graphics card and holds the mouse while you play, letting go
+whenever the game shows a cursor. It is not on Flathub; install it for your user
+with:</p>
+<div class="hl"><pre><span></span><code>flatpak<span class="w"> </span>remote-add<span class="w"> </span>--user<span class="w"> </span>--if-not-exists<span class="w"> </span>flathub<span class="w"> </span>https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak<span class="w"> </span>remote-add<span class="w"> </span>--user<span class="w"> </span>--if-not-exists<span class="w"> </span>GeForceNOW<span class="w"> </span>https://international.download.nvidia.com/GFNLinux/flatpak/geforcenow.flatpakrepo
+flatpak<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>GeForceNOW<span class="w"> </span>com.nvidia.geforcenow
+</code></pre></div>
+
+<h3 id="in-a-browser">In a browser</h3>
+<p>Without the app, or with <code>--web</code>, <code>syn-gfn</code> runs the first Chromium-family
+browser it finds, in <strong>a profile of its own</strong> (never your browsing one), with
+<strong>keyboard lock, pointer lock and automatic fullscreen pre-granted for the
+site</strong>. Use GeForce NOW's own fullscreen button, not <code>F11</code>: <code>Escape</code> reaches the
+game only in the fullscreen the page asks for.</p>
 <blockquote>
-<p><strong>No browser is a dependency.</strong> GeForce NOW refuses Gecko, so Firefox cannot
-run it. If <code>--list-browsers</code> comes back empty, install any Chromium-family
-browser and it will be found.</p>
+<p><strong>No browser is a dependency.</strong> Firefox can browse the GeForce NOW catalogue
+on Linux but cannot start a game. If <code>--list-browsers</code> shows no browser that
+can stream, install any Chromium-family browser and it will be found.</p>
 </blockquote>
 <hr />
 <h2 id="controllers">Controllers</h2>

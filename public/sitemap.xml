@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://soslinux.org/</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -39,7 +39,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Big-Screen</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Commands</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -111,7 +111,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Gaming</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
