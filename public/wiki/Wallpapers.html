@@ -75,7 +75,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>Wallpapers</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
       </p>
 
       <div class="wiki-body">
@@ -257,10 +257,10 @@ a native reimplementation that reads the same Workshop assets and paints a
 <code>wlr-layer-shell</code> surface. SynapseOS packages it together with a control script,
 <strong><code>synui-wpengine</code></strong>, which is what the <code>Super</code>+<code>W</code> picker drives.</p>
 <h3 id="getting-it">Getting it</h3>
-<p><strong>It is on the ISO as of 0.2.1</strong> — installed already, nothing to build. On
-0.2.0 and earlier it was not, and had to be built from the repo:</p>
-<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>linux-wallpaperengine-pkg
-makepkg<span class="w"> </span>-si
+<p><strong>It is on the ISO as of 0.2.1</strong> — installed already, nothing to build, and
+<code>syn-update</code> keeps it current. On a machine without it (0.2.0 and earlier, or
+unticked at install time), build and install it with:</p>
+<div class="hl"><pre><span></span><code>syn-update<span class="w"> </span>apply<span class="w"> </span>linux-wallpaperengine
 </code></pre></div>
 
 <p>It needs, at runtime:</p>

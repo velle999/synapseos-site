@@ -63,7 +63,8 @@
 <li class="sub"><a href="#only-signed-commits-are-built">Only signed commits are built</a></li>
 <li class="sub"><a href="#options">Options</a></li>
 <li><a href="#requirements">Requirements</a></li>
-<li><a href="#what-it-does-not-update">What it does not update</a></li>
+<li><a href="#what-it-updates">What it updates</a></li>
+<li class="sub"><a href="#a-component-a-system-update-broke">A component a system update broke</a></li>
 <li><a href="#why-this-exists">Why this exists</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 </ul></nav>
@@ -72,7 +73,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Updating</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
       </p>
 
       <div class="wiki-body">
@@ -242,32 +243,60 @@ warn    the first is 1a2b3c4 &lt;its subject&gt;
 from <code>core</code> — roughly <strong>17 packages, ~118 MiB</strong> on a system that has none of them.</p>
 <p><code>cmake</code> and <code>meson</code> are deliberately <strong>not</strong> hard dependencies. <code>makepkg -s</code>
 pulls each component's own <code>makedepends</code> on demand, so you only pay for what you
-actually build. Hard-depending on cmake would add ~150 MiB for a component
-<code>syn-update</code> does not update anyway.</p>
+actually build.</p>
 <hr />
-<h2 id="what-it-does-not-update">What it does not update</h2>
-<p>Some components are on the ISO but are not rebuilt this way. <code>syn-update</code>
-<strong>reports</strong> these rather than skipping them silently — a component quietly frozen
-forever is the exact bug this tool exists to fix.</p>
+<h2 id="what-it-updates">What it updates</h2>
+<p>Every SynapseOS component on the ISO is rebuilt this way, including:</p>
 <div class="table-scroll"><table>
 <thead>
 <tr>
 <th>Component</th>
-<th>Why not</th>
+<th>What its build involves</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>synapse-llama</code></td>
-<td>Packaged from a staging tree that only exists during an ISO build</td>
+<td>llama.cpp, compiled on the machine for the backend it already runs — CUDA, Vulkan or CPU. A CUDA build is compiled for the installed card only and takes several minutes</td>
 </tr>
 <tr>
 <td><code>linux-wallpaperengine</code></td>
-<td>Its build fetches a ~1.3 GB CEF blob and needs ~6 GB of scratch</td>
+<td>Fetches a ~1.3 GB CEF blob and needs ~6 GB of scratch</td>
 </tr>
 </tbody>
 </table></div>
-<p>These move with an ISO upgrade instead.</p>
+<p>Two packages on the ISO come from the <code>[cachyos]</code> repository instead, and
+<code>pacman -Syu</code> updates them:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>limine-snapper-sync</code></td>
+<td><code>[cachyos]</code></td>
+</tr>
+<tr>
+<td><code>limine-mkinitcpio-hook</code></td>
+<td><code>[cachyos]</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The ISO carries copies of both for the installer. On a machine installed before
+<code>syn-update</code> 0.1.0-67, an old copy may still sit in the local repository
+(<code>/var/cache/synapseos</code>), which pacman reads before <code>[cachyos]</code>, and keep
+<code>pacman -Syu</code> from offering the newer version. <code>syn-update check</code> lists such
+files; the next <code>syn-update apply</code> moves them to <code>/var/cache/synapseos/superseded/</code>.</p>
+<h3 id="a-component-a-system-update-broke">A component a system update broke</h3>
+<p>When an Arch update replaces a library with a new soname — ffmpeg 8 to 9 moved
+<code>libavcodec.so.62</code> to <code>libavcodec.so.63</code> — a component linked against the old
+one stops loading, while its version stays the same. <code>syn-update check</code> lists
+it for a rebuild at the version it already has, with the missing library named
+under the table, and <code>syn-update apply</code> rebuilds it. If the rebuild does not
+fix it, <code>check</code> says so and it is not rebuilt again for the same library.</p>
 <p><strong>A component that is new since you installed is ADDED</strong>, not skipped. That is
 what makes a suite work: <code>synfiles</code>, <code>synpkg</code>, <code>syn-settings</code>, <code>syn-disks</code>,
 <code>syn-edit</code>, <code>syn-confine</code>, <code>syn-arcade</code>, <strong><code>syntty</code></strong> and <strong><code>cliamp</code></strong> all
@@ -286,13 +315,13 @@ covered now.</p>
 <p>Adding software is a louder act than updating it, so new components are listed
 in their own section of <code>syn-update check</code> rather than mixed in with the
 upgrades.</p>
-<p>Two are deliberately excluded from that, and <code>syn-update</code> names them rather than
-skipping in silence:</p>
+<p>Three are deliberately excluded from that, and <code>syn-update</code> names them rather
+than skipping in silence:</p>
 <div class="table-scroll"><table>
 <thead>
 <tr>
 <th>Never added</th>
-<th>Why</th>
+<th>How it arrives instead</th>
 </tr>
 </thead>
 <tbody>
@@ -301,12 +330,16 @@ skipping in silence:</p>
 <td>The ISO's disk installer. An installed system is not meant to have a disk partitioner on <code>PATH</code></td>
 </tr>
 <tr>
-<td><code>limine-mkinitcpio-hook</code></td>
-<td>It writes limine boot entries. On any other bootloader it would pull limine in and override the mkinitcpio hook — a broken initramfs pipeline, delivered as an update. It reaches limine machines through the installer and the Settings Kernel pane instead</td>
+<td><code>synapse-llama</code></td>
+<td>With <code>synapd</code>, as the build for the machine's GPU, chosen at install time. A machine that runs Arch's own llama.cpp through <code>synapse-llama-system</code> does not get it</td>
+</tr>
+<tr>
+<td><code>samsung-m2020</code></td>
+<td>A driver for one Samsung printer. <code>syn printer samsung</code> installs it, after showing its licence</td>
 </tr>
 </tbody>
 </table></div>
-<p>Both are still <em>updated</em> when present; they are only never introduced.</p>
+<p>All three are still <em>updated</em> when present; they are only never introduced.</p>
 <hr />
 <h2 id="why-this-exists">Why this exists</h2>
 <p>Every system installed from an ISO before 0.2.3 was given a package repository
@@ -331,9 +364,9 @@ fix, which is the dead end being removed.</p>
 <code>apply</code> runs <code>sudo pacman -U</code> mid-build and needs a terminal to prompt on. Run it
 from a terminal, not from a launcher or a script with no tty. The GUI does this
 for you.</p>
-<p><strong>It reports a component as unsupported.</strong>
-That is intentional and not an error — see the table above. Those components come
-with an ISO upgrade.</p>
+<p><strong>It lists package files that "hide newer versions from another repository".</strong>
+Those are old copies of the <code>[cachyos]</code> packages described above. Run
+<code>syn-update apply</code> to move them aside, then <code>pacman -Syu</code>.</p>
 <p><strong><code>pacman</code> offers to downgrade a SynapseOS package after an update.</strong>
 That was a real bug in <code>syn-update</code> 0.1.0-6 and earlier, where the local
 repository kept advertising versions older than what was installed. Update

@@ -70,7 +70,7 @@
       <p class="eyebrow">Hacking on it</p>
       <h1>Cutting an ISO Release</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cutting-an-ISO-Release/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
       </p>
 
       <div class="wiki-body">
@@ -192,11 +192,11 @@ already the right one:</p>
 </tr>
 <tr>
 <td><code>--llama-only</code></td>
-<td>build and stage llama.cpp, then stop — no packages, no ISO</td>
+<td>build the <code>synapse-llama</code> package for <code>--gpu</code> and stage it, then stop — no other packages, no ISO</td>
 </tr>
 <tr>
 <td><code>--no-clean</code></td>
-<td>reuse the previous llama.cpp build — <strong>safe</strong>, and saves the most time</td>
+<td>keep <code>archiso/build/</code> from the previous run; llama.cpp is rebuilt either way</td>
 </tr>
 <tr>
 <td><code>--no-sign</code></td>
@@ -211,7 +211,7 @@ already the right one:</p>
 <p>Output: <code>archiso/out/SynapseOS-&lt;ver&gt;-x86_64.iso</code>.</p>
 <blockquote>
 <p><strong>The ISO ships a CPU llama build on purpose, and the default flags give you
-that.</strong> A CUDA or ROCm build links the shipped <code>libggml</code> against the <em>build
+that.</strong> A CUDA build links the shipped <code>libggml</code> against the <em>build
 host's</em> driver stack, so <code>synapd</code> exits 127 on any machine without it —
 including every VM. <code>--gpu=vulkan</code> is the exception: it links only the Vulkan
 loader and runs on any AMD/Intel card.</p>

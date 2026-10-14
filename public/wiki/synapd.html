@@ -75,7 +75,7 @@
       <p class="eyebrow">Components</p>
       <h1>synapd</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-20">2026-09-20</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synapd/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
       </p>
 
       <div class="wiki-body">
@@ -151,8 +151,9 @@ to the CPU build</strong>. That design exists because of the bug below.</p>
 <code>-vulkan</code> on AMD/Intel); switch by hand any time with the <strong>AI backend</strong> row or
 <code>synui-ai-backend gpu</code>. <strong>Vulkan</strong> is the portable AMD/Intel choice — no
 per-architecture compile and only the mesa ICD at runtime — and is competitive
-with ROCm for token generation. ROCm/HIP stays an opt-in for a known-supported
-AMD card: <code>build.sh --gpu=rocm</code>.</p>
+with ROCm for token generation. There is no ROCm build.</p>
+<p>Whichever one is installed, <code>syn-update</code> rebuilds it on the machine when the
+llama.cpp pin moves, and rebuilds <code>synapd</code> after it.</p>
 <h3 id="verify-it-never-assume-it">Verify it. Never assume it.</h3>
 <div class="hl"><pre><span></span><code><span class="c1"># NVIDIA / CUDA:</span>
 grep<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>/proc/<span class="k">$(</span>pidof<span class="w"> </span>synapd<span class="k">)</span>/maps<span class="w">               </span><span class="c1"># 0 = you are on the CPU</span>
@@ -178,8 +179,8 @@ stacked silent failures</strong>:</p>
 <p>The lesson is #3. A plausible hardcoded value is worse than a crash — it produces
 a system that lies to you consistently.</p>
 <h3 id="building-cuda">Building CUDA</h3>
-<p>llama.cpp pinned at <strong><code>b10241</code></strong>, with a <strong>CCCL 3.4 <code>cub</code> patch</strong> (CUDA 13 broke
-the API). Verified clean with <strong>gcc 16 + nvcc 13.3</strong>.</p>
+<p>llama.cpp pinned at <strong><code>b11612</code></strong> — <code>_llama_ref</code> in <code>synapse-llama/PKGBUILD</code>. It
+builds against CUDA 13 with no patches; verified with <strong>gcc 16 + nvcc 13.4</strong>.</p>
 <blockquote>
 <p><strong>The ISO ships a CPU build on purpose.</strong> A CUDA-linked <code>synapd</code> needs
 <code>libcuda.so.1</code>, which doesn't exist on a machine with no NVIDIA driver — it

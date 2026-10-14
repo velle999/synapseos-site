@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://soslinux.org/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -45,7 +45,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Building-and-Packaging</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -81,7 +81,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Cutting-an-ISO-Release</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -213,7 +213,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Updating</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -225,7 +225,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/Wallpapers</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -249,7 +249,7 @@
   </url>
   <url>
     <loc>https://soslinux.org/wiki/synapd</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
