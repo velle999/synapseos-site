@@ -73,7 +73,7 @@
       <p class="eyebrow">Components</p>
       <h1>synguard and synapse_kmod</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synguard-and-synapse_kmod/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synguard-and-synapse_kmod/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-15">2026-10-15</time>
       </p>
 
       <div class="wiki-body">
@@ -95,7 +95,9 @@ systemctl<span class="w"> </span>status<span class="w"> </span>synguard
 <li><strong>Keylogger detection</strong> — alerts on <code>/dev/input</code> access.</li>
 <li><strong>Worm / trojan detection</strong> — a <code>connect()</code> probe recording destination IP:port,
   a <code>netwatch</code> per-PID fan-out alert (<strong>≥20 distinct hosts in 10s</strong>), persistence-
-  write rules, and an <code>AF_UNIX</code> filter on <code>socket()</code>.</li>
+  write rules, and an <code>AF_UNIX</code> filter on <code>socket()</code>. Programs that fan out by
+  design are listed by executable path in <code>/etc/synguard/netwatch-exempt</code>
+  (shipped with <code>/usr/bin/syncthing</code>); <code>systemctl reload synguard</code> rereads it.</li>
 <li><strong>Escalation rules</strong> for exec out of <code>/proc</code> and <code>/dev</code> (softened from <em>deny</em> to
   <em>escalate</em>, with <code>/proc/self/exe</code> explicitly allowed).</li>
 <li><strong>Privilege changes</strong> — any <code>setuid</code>/<code>setgid</code>-family call that switches to root,
