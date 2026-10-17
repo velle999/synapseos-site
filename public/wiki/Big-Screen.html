@@ -68,6 +68,7 @@
 <li><a href="#driving-it">Driving it</a></li>
 <li class="sub"><a href="#a-television-remote">A television remote</a></li>
 <li class="sub"><a href="#with-a-film-or-a-browser-in-front">With a film or a browser in front</a></li>
+<li class="sub"><a href="#youtube-and-jellyfin">YouTube and Jellyfin</a></li>
 <li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
 <li><a href="#settings">Settings</a></li>
 <li class="sub"><a href="#shelves">Shelves</a></li>
@@ -81,7 +82,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Big Screen</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Big-Screen/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-16">2026-10-16</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Big-Screen/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-17">2026-10-17</time>
       </p>
 
       <div class="wiki-body">
@@ -457,6 +458,29 @@ twice, and a film would pause and unpause on a single button.</p>
 <code>syn-arcade binds install</code>, alongside <code>Super</code>+<code>F10</code>. If you already have
 <code>XF86AudioMedia</code> bound to something of your own, yours is left alone and the
 rest of the block still refreshes.</p>
+<h3 id="youtube-and-jellyfin">YouTube and Jellyfin</h3>
+<p>The <strong>YouTube</strong> tile and every <strong>Jellyfin</strong> server tile open the site's
+television interface, the one made for a remote: the arrows move the highlight,
+<strong>OK</strong> opens what is highlighted and <strong>Back</strong> goes back a page. The gamepad
+still moves a pointer there too.</p>
+<p>Each opens full screen in a browser profile of its own, apart from the desktop
+browser: its tabs, history and sign-ins are not shared. Sign in once, on the
+television:</p>
+<ul>
+<li><strong>YouTube</strong> shows a code. Enter it at <code>yt.be/activate</code> on a phone or another
+  computer.</li>
+<li><strong>Jellyfin</strong>: choose <strong>Quick Connect</strong> on the sign-in screen, then enter the
+  code it shows under <strong>Quick Connect</strong> in the user settings on a device that is
+  already signed in. The server's administrator turns Quick Connect on under
+  <strong>Dashboard ▸ General</strong>. To type a password instead, hold <strong>Start</strong> for the
+  on-screen keyboard.</li>
+</ul>
+<p>The two profiles are in <code>~/.local/share/syn-arcade/</code>, named <code>tv-youtube-</code> and
+<code>tv-jellyfin-</code> followed by the browser. Delete one to sign out of it.</p>
+<p>This works with Firefox, LibreWolf, Chromium, Brave and Google Chrome. Any other
+browser opens the ordinary site, and a <strong>Plex</strong> server opens its ordinary page.</p>
+<p>⚠ <strong>In YouTube under Firefox, Play, Stop, ⏪ and ⏩ do nothing.</strong> Pause pauses;
+to resume, press <strong>OK</strong> on the player's play button.</p>
 <hr />
 <h2 id="fitting-an-old-game-to-the-screen">Fitting an old game to the screen</h2>
 <p>A game that renders at 640×480 has no idea what a 1440p monitor is, and sits as
