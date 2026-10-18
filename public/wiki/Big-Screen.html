@@ -421,10 +421,11 @@ nothing until 0.1.0-55 for exactly that reason.</p>
 has the keyboard, and the remote's buttons go to it. Most of them work there
 because the application binds them — mpv answers play, pause, stop, ⏪ and ⏩ out
 of the box.</p>
-<p>Five buttons reach <strong>no application at all</strong>: OK, ⏭, ⏮, Guide and Power. Two of
-them have no keysym for a program to bind, and nothing binds the other three. Big
-screen mode reads those five from the remote itself and turns each into something
-the thing in front understands:</p>
+<p>Six buttons do <strong>nothing in an application</strong>: OK, Back, ⏭, ⏮, Guide and Power.
+Two of them have no keysym for a program to bind. Back sends <code>KEY_EXIT</code>, which
+arrives as <code>XF86Close</code> — not the <code>XF86Back</code> a browser goes back on. Nothing binds
+the other three. Big screen mode reads those six from the remote itself and turns
+each into something the thing in front understands:</p>
 <div class="table-scroll"><table>
 <thead>
 <tr>
@@ -438,6 +439,10 @@ the thing in front understands:</p>
 <td>A Return — which is what a menu, a browser and a web player all take</td>
 </tr>
 <tr>
+<td><strong>Back</strong></td>
+<td><code>XF86Back</code> — a browser goes back a page, and so do the YouTube and Jellyfin television interfaces</td>
+</tr>
+<tr>
 <td><strong>⏭ / ⏮</strong></td>
 <td>Skips a track, or a <strong>chapter</strong> on a disc</td>
 </tr>
@@ -449,11 +454,17 @@ the thing in front understands:</p>
 <td><strong>Power</strong></td>
 <td>Back, with the power selector open</td>
 </tr>
+<tr>
+<td><strong>Clear</strong>, twice</td>
+<td>Closes the application in front, as <code>Super</code>+<code>Q</code> does</td>
+</tr>
 </tbody>
 </table></div>
-<p>⚠ <strong>Only those five.</strong> Play, pause, stop, ⏪ and ⏩ are left to the application,
+<p>⚠ <strong>Only those six.</strong> Play, pause, stop, ⏪ and ⏩ are left to the application,
 because it receives them: acting on them here as well would answer one press
 twice, and a film would pause and unpause on a single button.</p>
+<p>⚠ <strong>Clear closes only on the second press</strong>, within a second of the first. One
+press closes nothing; the application still receives it as Delete.</p>
 <p>The green button's shortcut is written into <code>~/.config/synui/synuirc</code> by
 <code>syn-arcade binds install</code>, alongside <code>Super</code>+<code>F10</code>. If you already have
 <code>XF86AudioMedia</code> bound to something of your own, yours is left alone and the
