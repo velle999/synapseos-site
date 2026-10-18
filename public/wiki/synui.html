@@ -71,7 +71,7 @@
       <p class="eyebrow">Components</p>
       <h1>synui</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/synui/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-03">2026-09-03</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/synui/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-18">2026-10-18</time>
       </p>
 
       <div class="wiki-body">
@@ -204,7 +204,10 @@ wanders your monitors on top of everything, because why not.</p>
 <p><code>~/.config/synui/synuirc</code>, or <code>/etc/synui/synuirc</code> for the system-wide default.
 Monitor layout is separate, in <code>outputs.conf</code>, where <code>primary=1</code> marks the
 primary output for Xwayland — which is what stops SDL games opening on the wrong
-monitor. Its x/y are taken <strong>verbatim</strong>; synui does not repack them into rows.</p>
+monitor. Its x/y are taken <strong>verbatim</strong>; synui does not repack them into rows.
+Each monitor has its own line, matched by <code>id=</code> (its make, model and serial) as
+well as its port, so a different monitor on the same port starts at its own
+preferred mode.</p>
 <p>State files live beside it — <code>wallpaper.state</code>, <code>wpengine.state</code>, <code>dock.state</code>,
 <code>power.state</code>, <code>filters.state</code>, <code>welcome.state</code>, <code>cursor.state</code>, <code>cursor.env</code>,
 <code>sounds.state</code>, <code>widgets.state</code>, <code>theme.json</code>, <code>layouts.state</code>.</p>
