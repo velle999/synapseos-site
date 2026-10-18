@@ -72,6 +72,7 @@
 <li><a href="#fitting-an-old-game-to-the-screen">Fitting an old game to the screen</a></li>
 <li><a href="#settings">Settings</a></li>
 <li class="sub"><a href="#shelves">Shelves</a></li>
+<li class="sub"><a href="#tiles">Tiles</a></li>
 <li class="sub"><a href="#start-menu">Start menu</a></li>
 <li class="sub"><a href="#web-apps">Web apps</a></li>
 <li class="sub"><a href="#power">Power</a></li>
@@ -518,7 +519,7 @@ looks worse than no wrapper.</p>
 that need them.</p>
 <hr />
 <h2 id="settings">Settings</h2>
-<p><strong>Start ▸ Settings</strong>, three pages, every row a press of <strong>A</strong> — and the same
+<p><strong>Start ▸ Settings</strong>, four pages, every row a press of <strong>A</strong> — and the same
 list on the <strong>Big screen</strong> tab of <code>syn-arcade gui</code>, drawn for a mouse instead of
 a d-pad. Neither window keeps its own copy of what a setting can be: both draw
 whatever <code>syn-arcade big settings</code> reports, so the two cannot disagree.</p>
@@ -529,6 +530,24 @@ may want nothing but Media and Music.</p>
 <p>A shelf switched off is not drawn and is not navigable — the same state an empty
 one is already in, which is why nothing else had to be taught about it. The
 selection is remembered by name, so a shelf switched back on gets its place back.</p>
+<h3 id="tiles">Tiles</h3>
+<p>Every program installed on the machine gets a tile: Steam, RetroArch, Lutris,
+Heroic, Moonlight, Greenlight, GeForce NOW, Kodi, Plex, Jellyfin, Music, Web,
+Terminal and Controllers. Switch off the ones you do not use under
+<strong>Start ▸ Settings ▸ Tiles</strong>, under <strong>Tiles</strong> on the <strong>Big screen</strong> tab of
+<code>syn-arcade gui</code>, or at a prompt:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>tiles<span class="w">                    </span><span class="c1"># each one, and whether it is on</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>tiles<span class="w"> </span>moonlight<span class="w"> </span>off
+syn-arcade<span class="w"> </span>big<span class="w"> </span>tiles<span class="w"> </span>moonlight<span class="w"> </span>on
+</code></pre></div>
+
+<p>A tile switched off is not drawn. The program stays installed, and
+<code>syn-arcade big run &lt;name&gt;</code> still starts it. A program installed later gets its
+tile. <code>big.conf</code> keeps the list of tiles that are off:</p>
+<div class="hl"><pre><span></span><code><span class="na">hide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">moonlight,greenlight</span>
+</code></pre></div>
+
+<p>The web services have their own switches — see <a href="#web-apps">Web apps</a>.</p>
 <h3 id="start-menu">Start menu</h3>
 <p>Whether the menu offers the <strong>Visualizer</strong> row, and whether it offers <strong>Sleep,
 restart and power off</strong>. The second is for a machine other people can reach.</p>
@@ -601,6 +620,8 @@ syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class
 <span class="na">keep_awake</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">playing</span>
 <span class="c1"># the web apps to show, or `none`; with no line, all of them</span>
 <span class="na">webapps</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">twitch,youtube,netflix</span>
+<span class="c1"># the other tiles switched off, or `none`; with no line, every one is on</span>
+<span class="na">hide</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">moonlight</span>
 </code></pre></div>
 
 <p>A <code>#</code> starts a comment only at the beginning of a line.</p>
