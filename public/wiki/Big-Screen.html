@@ -73,6 +73,7 @@
 <li><a href="#settings">Settings</a></li>
 <li class="sub"><a href="#shelves">Shelves</a></li>
 <li class="sub"><a href="#start-menu">Start menu</a></li>
+<li class="sub"><a href="#web-apps">Web apps</a></li>
 <li class="sub"><a href="#power">Power</a></li>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#the-shortcuts">The shortcuts</a></li>
@@ -536,6 +537,27 @@ full-screen surface that owns the keyboard, and on a gamepad there is no key
 combination to fall back on — a setting able to hide them would be a setting
 able to trap somebody in front of their own television. The three power rows are
 safe to hide <em>because</em> leaving is still there when they are gone.</p>
+<h3 id="web-apps">Web apps</h3>
+<p><strong>Twitch, YouTube, Spotify, Netflix, Paramount+, Prime Video</strong> and
+<strong>Crunchyroll</strong> each get a tile on the Media shelf. Each opens in your browser,
+full screen with no tabs or address bar, and the gamepad works as the mouse;
+hold <strong>Start</strong> for the on-screen keyboard. YouTube opens its television
+interface instead — see <a href="#youtube-and-jellyfin">YouTube and Jellyfin</a>.</p>
+<p>Switch them on and off under <strong>Web apps</strong> on the <strong>Big screen</strong> tab of
+<code>syn-arcade gui</code>, or at a prompt:</p>
+<div class="hl"><pre><span></span><code>syn-arcade<span class="w"> </span>big<span class="w"> </span>webapps<span class="w">                  </span><span class="c1"># each one, and whether it is on</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>webapps<span class="w"> </span>netflix<span class="w"> </span>on
+syn-arcade<span class="w"> </span>big<span class="w"> </span>webapps<span class="w"> </span>amazon<span class="w"> </span>on<span class="w">        </span><span class="c1"># Prime Video</span>
+syn-arcade<span class="w"> </span>big<span class="w"> </span>webapps<span class="w"> </span>spotify<span class="w"> </span>off
+</code></pre></div>
+
+<p>All of them are on until you switch one off. After that, <code>big.conf</code> lists the
+ones you chose, and a service added by a later update starts off: switch it on
+to get its tile.</p>
+<p>Netflix, Paramount+, Prime Video and Crunchyroll play only with DRM turned on
+in the browser. Firefox downloads what it needs by itself; if a video will not
+start, turn on <strong>Play DRM-controlled content</strong> in Firefox's
+<strong>Settings ▸ General</strong>.</p>
 <h3 id="power">Power</h3>
 <p><strong>Keep the screen awake</strong> — <code>never</code>, <code>while playing</code>, or <code>always</code>.</p>
 <p>⚠ <strong>Big screen mode has no timeouts of its own, and must not.</strong> Dim, blank, lock
@@ -570,13 +592,18 @@ syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class
 syn-arcade<span class="w"> </span>big<span class="w"> </span>settings<span class="w"> </span>keep_awake<span class="w"> </span>next<span class="w">    </span><span class="c1"># the next value round — what A does</span>
 </code></pre></div>
 
-<div class="hl"><pre><span></span><code><span class="na">output</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1</span><span class="w">   </span><span class="c1"># a connector name, `primary` or `focused`</span>
+<div class="hl"><pre><span></span><code><span class="c1"># a connector name, `primary` or `focused`</span>
+<span class="na">output</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">HDMI-A-1</span>
 <span class="na">music</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">cliamp</span>
 <span class="na">music_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">plex</span>
 <span class="na">show_news</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">off</span>
-<span class="na">keep_awake</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">playing</span><span class="w">    </span><span class="c1"># never | playing | always</span>
+<span class="c1"># never | playing | always</span>
+<span class="na">keep_awake</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">playing</span>
+<span class="c1"># the web apps to show, or `none`; with no line, all of them</span>
+<span class="na">webapps</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">twitch,youtube,netflix</span>
 </code></pre></div>
 
+<p>A <code>#</code> starts a comment only at the beginning of a line.</p>
 <p>Without <code>output =</code> it opens on the <strong>primary</strong> screen. It used to resolve the
 screen as "wherever I am", which synui answers from the output under the
 <em>cursor</em> — so a <code>big start</code> typed in a terminal on the second monitor opened the
