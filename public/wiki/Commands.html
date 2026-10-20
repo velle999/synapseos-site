@@ -66,7 +66,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Commands</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-02">2026-10-02</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Commands/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-20">2026-10-20</time>
       </p>
 
       <div class="wiki-body">
@@ -191,7 +191,7 @@ sandbox could not be built" rather than "the command failed".</p>
 </tr>
 <tr>
 <td><code>syn-remote</code></td>
-<td><strong>Remote desktop</strong> — <code>on</code> starts it now and at every login, <code>address</code> says how to connect, <code>password</code> prints the one a viewer is asked for, <code>listen lan</code> puts it on the network instead of loopback. <code>wakeable on</code> lets a magic packet wake this machine while it sleeps. Going the other way, <code>add</code>/<code>trust</code>/<code>connect</code> save and open somebody else's desktop — ⚠ <code>trust</code> is not optional, the first connection cannot complete until the certificate has been checked — and <code>wake</code> sends a magic packet to one, which <code>connect</code> also does by itself when the machine it is opening is not answering. <code>stream on</code> serves it to Moonlight instead — video rather than rectangles of pixels, on a display of its own that synui grows on demand and sizes to whatever the connecting client asks for; <code>stream pair &lt;PIN&gt;</code> accepts a client, and <code>add --stream</code> saves a Moonlight host that <code>connect</code> opens with Moonlight. wayvnc and sunshine are the servers; this wakes a blanked screen when somebody connects and holds the machine awake while they are there. See <a href="/wiki/Remote-Desktop">Remote Desktop</a></td>
+<td><strong>Remote desktop</strong> — <code>on</code> starts it now and at every login, <code>address</code> says how to connect, <code>password</code> prints the one a viewer is asked for, <code>listen lan</code> puts it on the network instead of loopback. <code>wakeable on</code> lets a magic packet wake this machine while it sleeps. Going the other way, <code>add</code>/<code>trust</code>/<code>connect</code> save and open somebody else's desktop — ⚠ <code>trust</code> is not optional, the first connection cannot complete until the certificate has been checked — and <code>wake</code> sends a magic packet to one, which <code>connect</code> also does by itself when the machine it is opening is not answering. <code>stream on</code> serves it to Moonlight instead — video rather than rectangles of pixels, on a display of its own that synui grows on demand and sizes to whatever the connecting client asks for; <code>stream pair &lt;PIN&gt;</code> accepts a client, and <code>add --stream</code> saves a Moonlight host that <code>connect</code> opens with Moonlight, at the size of the screen it opens on (<code>resolution moonlight</code> uses Moonlight's own settings instead). wayvnc and sunshine are the servers; this wakes a blanked screen when somebody connects and holds the machine awake while they are there. See <a href="/wiki/Remote-Desktop">Remote Desktop</a></td>
 </tr>
 <tr>
 <td><code>syn-crypt</code></td>

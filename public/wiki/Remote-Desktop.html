@@ -78,7 +78,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Remote Desktop</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-19">2026-10-19</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Remote-Desktop/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-20">2026-10-20</time>
       </p>
 
       <div class="wiki-body">
@@ -380,6 +380,14 @@ machine is where that is accepted — Settings ▸ Remote Desktop ▸ <strong>Pa
 Moonlight client</strong> over there, or <code>syn-remote stream pair &lt;PIN&gt;</code>.</p>
 <p>The window and the TUI show which kind each saved connection is, and the buttons
 change with it: <strong>Pair with it</strong> instead of <strong>Check the certificate</strong>.</p>
+<p>A stream opens at the size of the screen it opens on — the focused one — and
+Moonlight picks the bitrate for that size. To use the resolution and bitrate set
+in Moonlight's own settings instead:</p>
+<div class="hl"><pre><span></span><code>syn-remote resolution moonlight   # Moonlight's own settings
+syn-remote resolution screen      # the screen's size (the default)
+</code></pre></div>
+
+<p>The window has the same switch below its buttons, and the TUI has it on <code>r</code>.</p>
 <hr />
 <h2 id="waking-the-machine-itself">Waking the machine itself</h2>
 <p>Three different problems wear the same word:</p>
