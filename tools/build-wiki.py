@@ -72,8 +72,8 @@ SITE      = "https://soslinux.org"
 # ⚠ BUMPED BY HAND WHEN THE CSS CHANGES. /assets/* is immutable for a year in
 # _headers, so an edit at an unversioned URL never reaches anyone who has
 # already visited. Same convention as style.css's ?v= in index.html.
-STYLE_V   = "2026-09-20"
-WIKI_V    = "2026-08-29"
+STYLE_V   = "2026-10-19"
+WIKI_V    = "2026-10-19"
 
 
 # ── the wiki source ─────────────────────────────────────────────────────────
@@ -250,7 +250,7 @@ def rewrite_links(body: str, pages: set[str], src: str, problems: list[str]) -> 
     return HREF.sub(fix, body)
 
 
-# ⚠ EVERY TABLE GETS A SCROLL BOX. style.css sets `table { min-width: 32rem }`
+# ⚠ EVERY TABLE GETS A SCROLL BOX. wiki.css sets `table { min-width: 26rem }`
 # because a table narrower than that stops being readable — which means a table
 # in a phone-width column overflows the PAGE unless something clips it. The
 # homepage wraps its own tables by hand; markdown emits a bare <table>, so the
@@ -327,13 +327,29 @@ def toc_html(toc: list[tuple[int, str, str]]) -> str:
 # ⚠ THE SAME ROW AS THE HOMEPAGE, IN THE SAME ORDER. A header that quietly
 # loses an item when you follow a link reads as a different site — so Merch is
 # here despite being of no use on a wiki page, and Wiki is on the homepage.
-# Changing one means changing the other; there is no shared template to hold
-# them together, because there is no build step at deploy time.
+# Changing one means changing the other (and privacy.html and terms.html, which
+# are hand-written); there is no shared template to hold them together, because
+# there is no build step at deploy time.
 HEADER_NAV = [
-    ("/#what", "What it is"), ("/#desktop", "Desktop"), ("/#gallery", "Screenshots"),
-    ("/#components", "Components"), ("/wiki/", "Wiki"), ("/#download", "Download"),
-    ("/#merch", "Merch"), ("https://github.com/velle999/SYNAPSE", "GitHub"),
+    ("/#what", "About"), ("/#gallery", "Screenshots"), ("/#download", "Download"),
+    ("/wiki/", "Wiki"), ("/#merch", "Merch"), ("https://github.com/velle999/SYNAPSE", "GitHub"),
 ]
+
+# The header mark, inline so it is drawn in currentColor and takes the page's
+# accent in light and dark alike — an <img> of logo.svg is one colour on every
+# ground. Same geometry as logo.svg, heavier strokes: that file is drawn for
+# 1024px and this one is shown at 28. The homepage, 404, privacy and terms carry
+# the same string.
+MARK = ('<svg class="mark" viewBox="-480 -576 960 960" width="28" height="28" '
+        'aria-hidden="true" focusable="false">'
+        '<polygon points="0,-464 400,272 -400,272" fill="none" stroke="currentColor" '
+        'stroke-width="22" opacity=".4"/>'
+        '<g stroke="currentColor" stroke-linecap="round">'
+        '<path d="M0-48V-416M0-48 288 192M0-48-288 192" stroke-width="44"/>'
+        '<path d="M0-48 176 200M0-48-176 200" stroke-width="28"/></g>'
+        '<g fill="currentColor"><circle cy="-48" r="72"/><circle cy="-416" r="46"/>'
+        '<circle cx="288" cy="192" r="46"/><circle cx="-288" cy="192" r="46"/>'
+        '<circle cx="176" cy="200" r="34"/><circle cx="-176" cy="200" r="34"/></g></svg>')
 
 
 def shell(*, title: str, desc: str, canonical: str, body: str) -> str:
@@ -352,8 +368,9 @@ def shell(*, title: str, desc: str, canonical: str, body: str) -> str:
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <meta name="author" content="Velle Sinclair">
-<meta name="theme-color" content="#0a0a12">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f8f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1917" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SynapseOS Wiki">
@@ -377,7 +394,7 @@ def shell(*, title: str, desc: str, canonical: str, body: str) -> str:
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="/">
-      <img src="/assets/logo.svg" alt="" width="34" height="34" decoding="async">
+      {MARK}
       <span>SynapseOS</span>
     </a>
     <nav aria-label="Primary">

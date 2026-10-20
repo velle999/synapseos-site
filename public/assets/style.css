@@ -1,479 +1,487 @@
 /* SynapseOS — site styles.
  *
- * ⚠ THE PALETTE IS THE COMPOSITOR'S, NOT A CHOICE MADE HERE. Every value below
- * is lifted from synui/src/theme.c, so the page wears what a fresh install
- * actually boots into rather than something drawn to look like it. Prism is the
- * default there and the default here: accent #00D6E5, face #191C23, ink #E6EAF1.
- *
- * ⚠ AND #8B73FB IS NOT "the old brand purple" — it is Prism's `border_ai`, the
- * colour synui draws round a window the AI is working in. That is why it stayed
- * when the rest went cyan: on this desktop violet MEANS the model, so the page
- * uses it for the model and cyan for the system. The logo and the social card
- * are still violet and still correct.
+ * The page is a document: a reading face, a plain ground that follows the
+ * visitor's own light/dark setting, one accent, hairline rules, and the
+ * screenshots doing the showing. No glow, no glass, no gradients, no card grids,
+ * no spaced-out uppercase labels.
  *
  * ── The theme switcher ──────────────────────────────────────────────────────
  *
  * `script-src 'none'`, so this is a hidden radio group (`.theme-pick`) declared
  * before `.page`, with `#th-x:checked ~ .page { --var: … }` doing the work. The
  * variable NAMES never change — every rule below reads --brand/--bg/--ink and
- * knows nothing about themes — so a new palette is seven declarations and no
- * component has to be touched.
+ * knows nothing about themes — so a new palette is a block of declarations and
+ * no component has to be touched. `#th-site` sets nothing: it is the page's own
+ * palette from :root.
  *
  * Same pattern as the screenshot carousel, and for the same reason: a radio
  * changes state without navigating, so nothing scrolls. Do not turn these into
  * anchors. Keep them focusable (NOT display:none) — that is what gives arrow-key
  * control for free.
+ *
+ * ⚠ /assets/* IS SERVED IMMUTABLE FOR A YEAR. Bump `?v=` on this file's link in
+ * index.html, 404.html, privacy.html, terms.html and tools/build-wiki.py whenever
+ * it changes, or returning visitors keep the old copy.
  */
 
-:root {
-  /* SYNAPSE Prism — theme.c, [SYN_THEME_PRISM] */
-  --bg:        #12141a;   /* one step under the face, so panels lift off it */
-  --bg-raise:  #191c23;   /* .face */
-  --bg-sunk:   #0d0f14;
-  --line:      #2e323c;   /* .border_norm */
-  --ink:       #e6eaf1;   /* .tb_text_focus */
-  --ink-dim:   #8b92a0;   /* .tb_text — the secondary the desktop actually uses */
-  --ink-faint: #626977;
-  --brand:     #00d6e5;   /* .border_focus / .panel_accent */
-  --brand-dim: #00a3ad;
-  --ai:        #8b73fb;   /* .border_ai — the model's colour, not the brand's */
-  --warn:      #ff5a67;   /* .border_warn */
-  --on-brand:  #04141b;   /* ink for a filled brand button */
-
-  --wrap:      68rem;
-  --mono: ui-monospace, "JetBrains Mono", "DejaVu Sans Mono", SFMono-Regular, Menlo, monospace;
-  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+/* Literata, subset to Latin and pinned to its default optical size, weights
+ * 300–700. OFL-1.1 with no Reserved Font Name, which is what allows the subset;
+ * the licence is beside the files. Vendored because `default-src 'self'` refuses
+ * a font from anywhere else. */
+@font-face {
+  font-family: "Literata";
+  src: url("/assets/fonts/literata.woff2") format("woff2");
+  font-weight: 300 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Literata";
+  src: url("/assets/fonts/literata-italic.woff2") format("woff2");
+  font-weight: 300 700; font-style: italic; font-display: swap;
 }
 
-/* ── The other fourteen ──────────────────────────────────────
+:root {
+  color-scheme: light;
+  --bg:        #f8f7f4;
+  --bg-raise:  #ffffff;
+  --bg-sunk:   #efede8;
+  --line:      #dcd8d0;
+  --ink:       #1c1b19;
+  --ink-dim:   #4a4741;
+  --ink-faint: #6b675f;
+  --brand:     #5b2aa0;   /* the logo's ink cut, a step warmer */
+  --brand-dim: #4a2185;
+  --on-brand:  #ffffff;
+  --ai:        #00727e;   /* code keywords in the wiki */
+  --warn:      #b3261e;
+
+  --wrap:    70rem;
+  --measure: 66ch;
+  --serif: "Literata", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono:  ui-monospace, "JetBrains Mono", "DejaVu Sans Mono", SFMono-Regular, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:        #1a1917;
+    --bg-raise:  #23221f;
+    --bg-sunk:   #141311;
+    --line:      #3a3733;
+    --ink:       #ece8e1;
+    --ink-dim:   #bdb7ad;
+    --ink-faint: #918a80;
+    --brand:     #c3aef5;
+    --brand-dim: #a891e6;
+    --on-brand:  #1a1917;
+    --ai:        #7dcfc4;
+    --warn:      #ff8a80;
+  }
+}
+
+/* ── The desktop's own themes ──────────────────────────────────────────────
  *
- * Seven of them offered, chosen to show the range rather than the list: the two
- * Prisms (the default, and a light one — because a page that can only go dark is
- * not demonstrating anything), the neon house theme, and four palettes people
- * already know. Values are theme.c's `accent_*`, `base_*` and `text_*`.
- *
- * `--bg` is darkened a step off `base` and `--line` lifted a step off it, by
- * hand, for the same reason the compositor does it: `base` is a PANEL face, and
- * a page painted entirely in it has no depth to put a panel on.
+ * Seven of the fifteen, offered in the desktop section. Values are
+ * synui/src/theme.c's `accent_*`, `base_*` and `text_*`; `--bg` is darkened a
+ * step off `base` and `--line` lifted a step off it, by hand, because `base` is
+ * a PANEL face and a page painted entirely in it has no depth to put a panel on.
  */
+#th-prism:checked ~ .page, #th-synapse:checked ~ .page, #th-gruvbox:checked ~ .page,
+#th-nord:checked ~ .page, #th-dracula:checked ~ .page, #th-tokyo:checked ~ .page {
+  color-scheme: dark; --ai: #a593ff; --warn: #ff6b76;
+}
+#th-prism:checked ~ .page {
+  --bg: #12141a; --bg-raise: #191c23; --bg-sunk: #0d0f14; --line: #2e323c;
+  --ink: #e6eaf1; --ink-dim: #a3a9b6; --ink-faint: #7d8492;
+  --brand: #00d6e5; --brand-dim: #00a3ad; --on-brand: #04141b; --ai: #8b73fb;
+}
 #th-synapse:checked ~ .page {
   --bg: #141416; --bg-raise: #1e1e24; --bg-sunk: #0e0e10; --line: #34343c;
-  --ink: #ebebf2; --ink-dim: #9a9aa8; --ink-faint: #6d6d7a;
+  --ink: #ebebf2; --ink-dim: #a9a9b6; --ink-faint: #7d7d8a;
   --brand: #ff296d; --brand-dim: #c41e52; --on-brand: #1a0209;
 }
 #th-gruvbox:checked ~ .page {
   --bg: #1d2021; --bg-raise: #282828; --bg-sunk: #141617; --line: #3c3836;
-  --ink: #ebdbb2; --ink-dim: #a89984; --ink-faint: #7c6f64;
+  --ink: #ebdbb2; --ink-dim: #bdae93; --ink-faint: #928374;
   --brand: #fe8019; --brand-dim: #d65d0e; --on-brand: #1d1204;
 }
 #th-nord:checked ~ .page {
   --bg: #242933; --bg-raise: #2e3440; --bg-sunk: #1c2029; --line: #434c5e;
-  --ink: #d8dee9; --ink-dim: #a3adbb; --ink-faint: #7b8494;
+  --ink: #d8dee9; --ink-dim: #b0bac8; --ink-faint: #8a93a3;
   --brand: #88c0d0; --brand-dim: #5e81ac; --on-brand: #0f1a1f;
 }
 #th-dracula:checked ~ .page {
   --bg: #21222c; --bg-raise: #282a36; --bg-sunk: #191a21; --line: #44475a;
-  --ink: #f8f8f2; --ink-dim: #b3b6c4; --ink-faint: #6272a4;
+  --ink: #f8f8f2; --ink-dim: #c3c6d4; --ink-faint: #8f9bc4;
   --brand: #ff79c6; --brand-dim: #bd93f9; --on-brand: #1e0716;
 }
 #th-tokyo:checked ~ .page {
   --bg: #1a1b26; --bg-raise: #24283b; --bg-sunk: #16161e; --line: #3b4261;
-  --ink: #c0caf5; --ink-dim: #8d97bd; --ink-faint: #6b7394;
+  --ink: #c0caf5; --ink-dim: #9aa5ce; --ink-faint: #737ba0;
   --brand: #7aa2f7; --brand-dim: #5273c4; --on-brand: #0a0f1f;
 }
-/* The light one. It has to invert the ground as well as the accent, or the
- * switcher is only ever proving that seven dark themes are dark. */
 #th-prismlight:checked ~ .page {
+  color-scheme: light;
   --bg: #e5e9f0; --bg-raise: #eef1f6; --bg-sunk: #d8dde6; --line: #c2c9d6;
-  --ink: #1a1d24; --ink-dim: #4d5563; --ink-faint: #737b8a;
-  --brand: #00727e; --brand-dim: #005760; --ai: #5b41c9; --on-brand: #ffffff;
+  --ink: #1a1d24; --ink-dim: #424a58; --ink-faint: #5f6878;
+  --brand: #00727e; --brand-dim: #005760; --on-brand: #ffffff; --ai: #5b41c9; --warn: #b3261e;
 }
+
+/* ---------- base ---------- */
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 400 1.0625rem/1.7 var(--sans);
-  -webkit-font-smoothing: antialiased;
+  font: 400 1.125rem/1.65 var(--serif);
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
+
+.page { background: var(--bg); color: var(--ink); transition: background-color .25s ease, color .25s ease; }
+@media (prefers-reduced-motion: reduce) { .page { transition: none; } }
 
 .wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: 1.25rem; }
 
 .skip {
   position: absolute; left: -9999px;
   background: var(--brand); color: var(--on-brand);
-  padding: .6rem 1rem; border-radius: 0 0 .5rem 0; font-weight: 600; z-index: 50;
+  padding: .6rem 1rem; font: 600 1rem var(--sans); z-index: 50;
 }
 .skip:focus { left: 0; top: 0; }
 
-a { color: var(--brand); text-underline-offset: .18em; }
-a:hover { color: color-mix(in oklab, var(--brand) 72%, var(--ink)); }
+a { color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+a:hover { color: var(--brand-dim); text-decoration-thickness: 2px; }
 
-:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; color: var(--ink); }
+h1 { margin: 0; font-size: clamp(2.1rem, 4.8vw, 3.3rem); line-height: 1.1; letter-spacing: -.012em; }
+h2 { margin: 0 0 1rem; font-size: clamp(1.65rem, 3.2vw, 2.15rem); line-height: 1.2; letter-spacing: -.008em; }
+h3 { margin: 2.25rem 0 .5rem; font-size: 1.22rem; line-height: 1.3; }
+h4 { margin: 1.75rem 0 .5rem; font-size: 1.05rem; }
+
+p { margin: 0 0 1rem; max-width: var(--measure); }
+p.small, .small { font-size: .95rem; color: var(--ink-dim); }
+strong, b { font-weight: 650; }
+
+ul, ol { max-width: var(--measure); }
+
+code {
+  font: 400 .84em/1.5 var(--mono);
+  background: var(--bg-sunk);
+  padding: .1em .32em; border-radius: 3px;
+  color: var(--ink);
+  font-variant-numeric: normal;
+}
+pre {
+  margin: 1rem 0; padding: .95rem 1.1rem;
+  background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+}
+pre code {
+  background: none; padding: 0; border-radius: 0; color: var(--ink);
+  font-size: .86rem; line-height: 1.6; white-space: pre;
+}
+pre .c { color: var(--ink-faint); }   /* a comment inside a <pre> */
+
+kbd {
+  font: 500 .8em/1 var(--sans);
+  background: var(--bg-raise); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 4px;
+  padding: .22em .45em; color: var(--ink); white-space: nowrap;
+}
 
 /* ---------- header ---------- */
 
-.site-header {
-  position: sticky; top: 0; z-index: 20;
-  background: color-mix(in oklab, var(--bg) 84%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
-}
+.site-header { border-bottom: 1px solid var(--line); }
 .header-inner {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; min-height: 3.75rem; flex-wrap: wrap;
+  flex-wrap: wrap; gap: .5rem 1.75rem;
+  padding-block: .85rem;
 }
 .brand {
   display: inline-flex; align-items: center; gap: .55rem;
-  font-weight: 700; letter-spacing: .01em; color: var(--ink); text-decoration: none;
+  font: 600 1.2rem/1 var(--serif); color: var(--ink); text-decoration: none;
 }
-.brand img { display: block; }
-.site-header nav {
-  display: flex; gap: 1.15rem; flex-wrap: wrap;
-  font-size: .95rem;
-}
+.brand:hover { color: var(--ink); }
+/* The mark is inline SVG drawn in currentColor, so it takes the accent of
+ * whichever palette is on; a file in an <img> would be one colour on every
+ * ground. Strokes are heavier than logo.svg's — that file is drawn for 1024px. */
+.mark { display: block; width: 1.75rem; height: 1.75rem; color: var(--brand); flex: none; }
+.site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1.35rem; font: 500 .98rem/1.4 var(--sans); }
 .site-header nav a { color: var(--ink-dim); text-decoration: none; }
-.site-header nav a:hover { color: var(--brand); }
+.site-header nav a:hover, .site-header nav a[aria-current="page"] {
+  color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px;
+  text-decoration-color: var(--brand);
+}
 
-/* ---------- hero ---------- */
+/* ---------- intro ---------- */
 
-/* Geometry only. The hero's ground is set in the revamp block at the bottom of
- * this file, over the screenshot; the two literals that used to live here
- * (#0d0b1a and a hardcoded violet wash) could not follow a theme and were the
- * one part of the page a switcher could not move. */
-.hero {
-  padding: clamp(3rem, 9vw, 6.5rem) 0 clamp(2.5rem, 6vw, 4rem);
-  border-bottom: 1px solid var(--line);
-  text-align: center;
+.intro {
+  display: grid; gap: 1.5rem 4rem;
+  padding-top: clamp(2.5rem, 7vw, 5.5rem);
+  padding-bottom: clamp(2rem, 4vw, 3rem);
 }
-.eyebrow {
-  margin: 0 0 .75rem;
-  font: 600 .78rem/1 var(--mono);
-  letter-spacing: .18em; text-transform: uppercase; color: var(--brand);
+.intro h1 { max-width: 17ch; }
+.intro .lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); line-height: 1.6; color: var(--ink); }
+@media (min-width: 60rem) {
+  .intro { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: end; }
 }
-.hero h1 {
-  margin: 0;
-  font-size: clamp(2.75rem, 9vw, 5rem);
-  line-height: 1.02; letter-spacing: -.03em; font-weight: 800;
-}
-.tagline {
-  margin: .5rem 0 1.5rem;
-  font-size: clamp(1.15rem, 3.2vw, 1.6rem);
-  color: var(--brand); font-weight: 500;
-}
-.lede {
-  max-width: 46rem; margin: 0 auto;
-  font-size: clamp(1.05rem, 2.2vw, 1.2rem); color: var(--ink-dim);
-}
-.lede strong { color: var(--ink); }
 
-.cta { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; margin: 2rem 0 0; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; margin: 1.5rem 0 0; }
+.actions a:not(.btn) { font: 500 1rem var(--sans); }
+.meta { margin: 1.25rem 0 0; font: 400 .92rem/1.5 var(--sans); color: var(--ink-faint); }
+
 .btn {
-  display: inline-block; padding: .7rem 1.4rem;
-  border: 1px solid var(--line); border-radius: .6rem;
-  background: var(--bg-raise); color: var(--ink);
-  font-weight: 600; text-decoration: none;
-  transition: border-color .15s, background .15s, transform .15s;
+  display: inline-block; padding: .7rem 1.2rem;
+  background: var(--brand); color: var(--on-brand);
+  border: 1px solid var(--brand); border-radius: 6px;
+  font: 600 1rem/1.2 var(--sans); text-decoration: none;
 }
-.btn:hover { border-color: var(--brand); color: var(--ink); transform: translateY(-1px); }
-.btn-primary {
-  background: var(--brand); border-color: var(--brand); color: var(--on-brand);
-}
-.btn-primary:hover {
-  background: color-mix(in oklab, var(--brand) 78%, var(--ink));
-  border-color: color-mix(in oklab, var(--brand) 78%, var(--ink));
-  color: var(--on-brand);
-}
-@media (prefers-reduced-motion: reduce) { .btn:hover { transform: none; } }
+.btn:hover { background: var(--brand-dim); border-color: var(--brand-dim); color: var(--on-brand); text-decoration: none; }
+.btn-plain { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-plain:hover { background: var(--bg-raise); color: var(--ink); border-color: var(--ink-faint); }
 
-.status {
-  max-width: 44rem; margin: 2.25rem auto 0;
-  padding: .85rem 1.1rem;
-  border: 1px solid var(--line); border-left: 3px solid var(--brand);
-  border-radius: .5rem; background: var(--bg-sunk);
-  color: var(--ink-dim); font-size: .95rem; text-align: left;
+/* The lead screenshot. Shown as itself — full colour, unblurred, with a caption —
+ * because it is the quickest answer to "what is this". It also carries the CRT
+ * switch (below). */
+.lead-shot { margin: 0 auto; padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+.lead-shot .crt-stack {
+  background: var(--bg-sunk);
+  box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 18px 40px -24px rgba(0,0,0,.45);
 }
-.status strong { color: var(--brand); }
+
+figure { margin: 2rem 0; }
+figure img { display: block; max-width: 100%; height: auto; }
+figcaption { margin-top: .75rem; font: 400 .92rem/1.5 var(--sans); color: var(--ink-dim); max-width: var(--measure); }
 
 /* ---------- sections ---------- */
 
-.section { padding: clamp(2.75rem, 7vw, 4.5rem) 1.25rem; }
-.section + .section { border-top: 1px solid var(--line); }
+/* The rule is drawn as a background so it spans the text column, not the
+ * gutters `.wrap` pads it with. */
+.section {
+  padding-block: clamp(3rem, 7vw, 5rem);
+  background: linear-gradient(var(--line), var(--line)) center top / calc(100% - 2.5rem) 1px no-repeat;
+}
+.section > h2 + p { font-size: 1.15rem; }
 
-h2 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
-  letter-spacing: -.02em; line-height: 1.2;
-}
-h3 {
-  margin: 2rem 0 .5rem;
-  font-size: 1.15rem; letter-spacing: -.01em;
-}
-p { margin: 0 0 1rem; max-width: 62ch; }
-p.small, .small { font-size: .9rem; color: var(--ink-faint); }
-.small a { color: var(--brand-dim); }
-
-code {
-  font: 500 .9em/1.5 var(--mono);
-  background: var(--bg-raise); border: 1px solid var(--line);
-  /* Inline code is a NAME of something on the system, so it wears the AI/system
-   * violet rather than the accent — the accent is what a control does, and a
-   * page where every `synapd` looks like a button is a page of false buttons. */
-  padding: .1em .38em; border-radius: .3em; color: var(--ai);
-}
-pre {
-  margin: 1rem 0; padding: 1rem 1.1rem;
-  background: var(--bg-sunk); border: 1px solid var(--line); border-radius: .6rem;
-  overflow-x: auto;
-}
-pre code {
-  background: none; border: 0; padding: 0; color: var(--ink-dim);
-  font-size: .875rem; line-height: 1.6; white-space: pre;
-}
-.diagram code { color: var(--brand); }
-
-kbd {
-  font: 500 .82em/1 var(--mono);
-  background: var(--bg-raise); border: 1px solid var(--line);
-  border-bottom-width: 2px; border-radius: .35em;
-  padding: .25em .45em; color: var(--ink); white-space: nowrap;
+/* The first thing the page shows about using it: the shell, with the exchange
+ * beside the words that explain it. */
+.lead-feature { display: grid; gap: 1rem 3.5rem; margin-top: 2rem; }
+.lead-feature h3 { margin-top: 0; }
+@media (min-width: 56rem) {
+  .lead-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: start; }
+  .lead-feature pre { margin-top: .35rem; }
 }
 
-/* ---------- feature grid ---------- */
+.exchange code { font-size: .92rem; line-height: 1.9; white-space: pre-wrap; }
+.exchange .ps   { color: var(--brand); font-weight: 700; }
+.exchange .out  { color: var(--ink); }
+.exchange .out b { color: var(--ai); }
+.exchange .hint { color: var(--ink-faint); }
 
-.grid {
-  list-style: none; margin: 2rem 0 0; padding: 0;
-  display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+.points {
+  list-style: none; margin: 3rem 0 0; padding: 0; max-width: none;
+  display: grid; gap: 2rem 3.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
 }
-.grid li {
-  padding: 1.25rem 1.35rem;
-  background: var(--bg-raise); border: 1px solid var(--line); border-radius: .75rem;
-}
-.grid h3 { margin: 0 0 .5rem; font-size: 1.05rem; color: var(--brand); }
-.grid p { margin: 0; font-size: .95rem; color: var(--ink-dim); max-width: none; }
+.points li { border-top: 1px solid var(--line); padding-top: 1.1rem; }
+.points h3 { margin: 0 0 .4rem; font-size: 1.15rem; }
+.points p { margin: 0; font-size: 1.02rem; }
 
-/* ---------- merch ---------- */
+/* ---------- the desktop ---------- */
 
-/* Product shots are vendored under /assets/merch/, not hotlinked from the
-   print shop: _headers sets img-src 'self' data:, so a remote mockup URL is
-   blocked by our own CSP and renders as a broken image. */
-.merch {
-  list-style: none; margin: 2rem 0 0; padding: 0;
-  display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+.themes-label { margin: 1.5rem 0 .6rem; font: 500 .98rem/1.4 var(--sans); color: var(--ink-dim); }
+.themes { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 2.5rem; }
+.swatch {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .42rem .7rem .42rem .5rem;
+  border: 1px solid var(--line); border-radius: 5px;
+  background: var(--bg-raise);
+  font: 500 .9rem/1 var(--sans); color: var(--ink-dim);
+  cursor: pointer; user-select: none;
 }
-.merch li {
-  background: var(--bg-raise); border: 1px solid var(--line);
-  border-radius: .75rem; overflow: hidden;
-  transition: border-color .15s, transform .15s;
-}
-.merch li:hover, .merch li:focus-within {
-  border-color: var(--brand); transform: translateY(-2px);
-}
-.merch a {
-  display: flex; flex-direction: column; height: 100%;
-  text-decoration: none; color: inherit;
-}
-.merch img {
-  display: block; width: 100%; height: auto;
-  aspect-ratio: 1 / 1; object-fit: cover;
-  background: var(--bg-sunk); border-bottom: 1px solid var(--line);
-}
-.merch .name {
-  padding: .9rem 1rem .35rem;
-  font-size: .95rem; line-height: 1.35; color: var(--ink);
-}
-.merch .price {
-  margin-top: auto; padding: 0 1rem 1rem;
-  font: 600 .95rem var(--mono); color: var(--brand);
-}
-.merch-note { font-size: .9rem; color: var(--ink-faint); }
-@media (prefers-reduced-motion: reduce) { .merch li:hover { transform: none; } }
+.swatch:hover { color: var(--ink); border-color: var(--ink-faint); }
+.swatch i { width: .9rem; height: .9rem; border-radius: 3px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
 
-/* ---------- figures ---------- */
+/* ⚠ THE SWATCH COLOURS LIVE HERE, NOT IN A style ATTRIBUTE ON THE LABEL.
+ * _headers sets `style-src 'self'` with no 'unsafe-inline', so an inline
+ * `style="--sw:#00d6e5"` is refused by our own CSP — silently: the property
+ * never lands and every chip renders an empty square. */
+.swatch[for="th-site"]       i { background: linear-gradient(135deg, #f8f7f4 50%, #1a1917 50%); }
+.swatch[for="th-prism"]      i { background: #00d6e5; }
+.swatch[for="th-synapse"]    i { background: #ff296d; }
+.swatch[for="th-gruvbox"]    i { background: #fe8019; }
+.swatch[for="th-nord"]       i { background: #88c0d0; }
+.swatch[for="th-dracula"]    i { background: #ff79c6; }
+.swatch[for="th-tokyo"]      i { background: #7aa2f7; }
+.swatch[for="th-prismlight"] i { background: #00727e; }
 
-figure { margin: 2rem 0; }
-figure img {
-  display: block; width: 100%; height: auto;
-  border: 1px solid var(--line); border-radius: .75rem;
-  background: var(--bg-sunk);
+/* The chip for the palette that is ON. Sibling selectors only reach forward and
+ * every input is declared before .page, so this is written from the input. */
+#th-site:checked       ~ .page .swatch[for="th-site"],
+#th-prism:checked      ~ .page .swatch[for="th-prism"],
+#th-synapse:checked    ~ .page .swatch[for="th-synapse"],
+#th-gruvbox:checked    ~ .page .swatch[for="th-gruvbox"],
+#th-nord:checked       ~ .page .swatch[for="th-nord"],
+#th-dracula:checked    ~ .page .swatch[for="th-dracula"],
+#th-tokyo:checked      ~ .page .swatch[for="th-tokyo"],
+#th-prismlight:checked ~ .page .swatch[for="th-prismlight"] {
+  color: var(--ink); border-color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--brand);
 }
-figcaption { margin-top: .6rem; font-size: .875rem; color: var(--ink-faint); }
+/* Keyboard focus shows on the LABEL, the only thing on screen — the input it
+ * belongs to is 1px in the corner. */
+#th-site:focus-visible       ~ .page .swatch[for="th-site"],
+#th-prism:focus-visible      ~ .page .swatch[for="th-prism"],
+#th-synapse:focus-visible    ~ .page .swatch[for="th-synapse"],
+#th-gruvbox:focus-visible    ~ .page .swatch[for="th-gruvbox"],
+#th-nord:focus-visible       ~ .page .swatch[for="th-nord"],
+#th-dracula:focus-visible    ~ .page .swatch[for="th-dracula"],
+#th-tokyo:focus-visible      ~ .page .swatch[for="th-tokyo"],
+#th-prismlight:focus-visible ~ .page .swatch[for="th-prismlight"] {
+  outline: 2px solid var(--brand); outline-offset: 3px;
+}
+
+.theme-pick, .crt-pick, .pick {
+  position: absolute; width: 1px; height: 1px;
+  opacity: 0; margin: 0; pointer-events: none;
+}
+
+/* ---------- the CRT switch ---------- */
+
+.crt-stack {
+  position: relative; line-height: 0;
+  border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+}
+.crt-stack img { display: block; width: 100%; height: auto; }
+/* The filtered frame is stacked ON the plain one rather than swapped for it, so
+ * the flip has nothing to load and cannot flash a gap. */
+.crt-on-img { position: absolute; inset: 0; height: 100%; opacity: 0; transition: opacity .25s ease; }
+/* The input is a SIBLING of the figure, not of .page — the theme radios are the
+ * ones at document top. Getting this wrong gives a switch that focuses and does
+ * nothing. */
+#crt-on:checked ~ .crt-figure .crt-on-img { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .crt-on-img { transition: none; } }
+
+.crt-toggle {
+  position: absolute; right: .75rem; top: .75rem;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .45rem .75rem .45rem .6rem;
+  border: 1px solid var(--line); border-radius: 5px;
+  background: var(--bg-raise); color: var(--ink);
+  font: 600 .85rem/1 var(--sans);
+  cursor: pointer; user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.crt-toggle:hover { border-color: var(--ink-faint); }
+.crt-dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--ink-faint); flex: none; }
+.crt-word-on { display: none; }
+/* Amber, not the accent: the dot reports the phosphor the filter is set to. */
+#crt-on:checked ~ .crt-figure .crt-dot { background: #ffb454; box-shadow: 0 0 .45rem #ffb454; }
+#crt-on:checked ~ .crt-figure .crt-toggle { border-color: #ffb454; }
+#crt-on:checked ~ .crt-figure .crt-word-off { display: none; }
+#crt-on:checked ~ .crt-figure .crt-word-on  { display: inline; }
+.crt-pick:focus-visible ~ .crt-figure .crt-toggle { outline: 2px solid var(--brand); outline-offset: 3px; }
 
 /* ---------- tables ---------- */
 
-.table-scroll { overflow-x: auto; margin: 1.25rem 0; }
-table { border-collapse: collapse; width: 100%; min-width: 32rem; font-size: .95rem; }
-caption { caption-side: bottom; padding-top: .75rem; font-size: .875rem; color: var(--ink-faint); text-align: left; }
-th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-thead th { color: var(--brand); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; }
-tbody th { font-weight: 600; white-space: nowrap; }
-tbody tr:hover { background: var(--bg-raise); }
-
-/* ---------- download ---------- */
-
-.release-line { font-size: 1.1rem; color: var(--ink-dim); }
-.release-line strong { color: var(--brand); }
-#download .cta { justify-content: flex-start; margin-bottom: 1rem; }
-.reqs { margin: 1rem 0 0; padding-left: 1.15rem; color: var(--ink-dim); max-width: 62ch; }
-.reqs li { margin-bottom: .4rem; }
-.reqs strong { color: var(--ink); }
-
-.closing .cta { justify-content: flex-start; }
-
-/* ---------- footer ---------- */
-
-.site-footer {
-  border-top: 1px solid var(--line);
-  background: var(--bg-sunk);
-  padding: 2.5rem 0;
-  color: var(--ink-dim); font-size: .95rem;
+.table-scroll {
+  overflow-x: auto; margin: 1.25rem 0;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
 }
-.site-footer p { max-width: 62ch; }
-.site-footer p:last-child { margin-bottom: 0; }
+table { border-collapse: collapse; width: 100%; font: 400 .97rem/1.5 var(--sans); }
+caption { caption-side: bottom; padding-top: .75rem; font-size: .9rem; color: var(--ink-dim); text-align: left; }
+th, td { text-align: left; padding: .6rem .9rem .6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-weight: 600; font-size: .9rem; color: var(--ink-dim); border-bottom-color: var(--ink-faint); }
+tbody th { font-weight: 600; white-space: nowrap; }
+
+/* ---------- the architecture diagram ---------- */
+
+.diagram { margin: 1.5rem 0 2.5rem; }
+.diagram pre { display: inline-block; max-width: 100%; margin: 0; }
+.diagram code { color: var(--ink-dim); }
 
 /* ---------- gallery ---------- */
 /*
  * One screenshot at a time, switched by a hidden radio group.
  *
- * It is CSS alone because it has to be: _headers sets `script-src 'none'`, so
- * there is no JavaScript here and no library to reach for.
- *
  * ⚠ IT USED TO BE ANCHORS TO SLIDE IDS, AND THAT IS THE ONE THING NOT TO GO
- * BACK TO. Following a fragment makes the browser scroll the target into view,
- * and it scrolls EVERY scrollable ancestor to do it — the track sideways, which
- * was the point, and the page vertically, which was not. There is no CSS that
- * suppresses only the vertical half. Clicking a number threw the page around,
- * which is exactly the complaint that produced this rewrite. A radio changes
- * state without navigating anywhere, so nothing scrolls at all.
+ * BACK TO. Following a fragment scrolls EVERY scrollable ancestor to bring the
+ * target into view — the track sideways, which was the point, and the page
+ * vertically, which was not. No CSS suppresses only the vertical half. A radio
+ * changes state without navigating, so nothing scrolls.
  *
- * What that costs, so nobody re-adds it by accident: no per-shot URL to share
- * and no Back-button step per shot (the ids are gone from the slides — with a
- * transform moving them off-screen, an #shot-x URL would have scrolled the page
- * to a picture nobody can see), and no swipe on touch, because the track is no
- * longer a scroll container. The dots and arrows are the whole interface now.
- *
- * The inputs stay focusable rather than `display: none`, which is what gives
- * keyboard control for free: focus the group and the arrow keys walk the shots,
- * because that is simply what a radio group does.
- *
- * ⚠ AND THE STYLESHEET IS VERSIONED IN THE LINK (`?v=`): /assets/* is served
- * immutable for a year, so an edit at an unversioned URL reaches new visitors
- * only. Bump the query whenever this file changes.
+ * What that costs: no per-shot URL, no Back step per shot, and no swipe on
+ * touch. The inputs stay focusable rather than `display: none`, so the arrow
+ * keys walk the shots once the group has focus.
  */
 
-.carousel { position: relative; margin-top: 1.75rem; }
-
-.viewport { overflow: hidden; border: 1px solid var(--line); border-radius: .75rem;
-  background: var(--bg-raise); }
-
-.track {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; gap: 0;
-  transition: transform .35s ease;
-}
-
-/* Visually hidden, deliberately NOT display:none — a removed input is not
-   focusable, and the arrow-key walk through the shots is just the radio group
-   behaving normally. */
-.pick {
-  position: absolute; width: 1px; height: 1px;
-  opacity: 0; margin: 0; pointer-events: none;
-}
-
-.slide {
-  position: relative;
-  flex: 0 0 100%;
-  margin: 0; padding: 1rem 1rem .25rem;
-}
+.carousel { position: relative; margin-top: 2rem; }
+.viewport { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-sunk); }
+.track { list-style: none; margin: 0; padding: 0; max-width: none; display: flex; transition: transform .35s ease; }
+.slide { position: relative; flex: 0 0 100%; margin: 0; padding: 1rem 1rem .25rem; }
 .slide figure { margin: 0; }
 
-/*
- * A FIXED media box, not a fixed image. The shots run from a 231x258 widget to
- * a 1600x1329 theme sheet, and sizing to the picture would make the carousel
- * change height on every slide — the thing that reads as "massive" on the wide
- * ones and empty on the small. The box is constant, the picture is centred
- * inside it and contained: `cover` would crop, and these were taken to show
- * what is in them.
- */
+/* A FIXED media box, not a fixed image: the shots run from a 231x258 widget to a
+ * 1600x900 frame, and sizing to the picture would change the carousel's height
+ * on every slide. The picture is centred and contained — `cover` would crop. */
 .slide .media {
   display: flex; align-items: center; justify-content: center;
-  height: clamp(15rem, 46vh, 30rem);
-  background: var(--bg-sunk); border-radius: .5rem;
-  overflow: hidden;
+  height: clamp(15rem, 48vh, 31rem);
 }
-.slide .media img {
-  display: block;
-  max-width: 100%; max-height: 100%;
-  width: auto; height: auto; object-fit: contain;
-  border: 0; border-radius: 0;
-}
+.slide .media img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 
 /* Reserved so a one-line caption and a three-line one do not move the dots. */
-.slide figcaption {
-  min-height: 5.5rem;
-  padding: .85rem .25rem .25rem;
-  text-align: center;
-}
-.slide figcaption b {
-  display: block; margin-bottom: .25rem;
-  font-size: 1rem; font-weight: 600; color: var(--brand);
-}
-.slide figcaption span {
-  display: block; max-width: 60ch; margin: 0 auto;
-  font-size: .88rem; line-height: 1.55; color: var(--ink-dim);
-}
+.slide figcaption { min-height: 5.25rem; margin: 0 auto; padding: .9rem .25rem .25rem; text-align: center; max-width: 40rem; }
+.slide figcaption b { display: block; margin-bottom: .15rem; font: 600 1.05rem/1.4 var(--serif); color: var(--ink); }
+.slide figcaption span { display: block; font-size: .92rem; line-height: 1.5; color: var(--ink-dim); }
 
-/* Overlaid on the media box, vertically centred on it rather than on the
- * slide, so they do not drift down over the caption. */
 .arrow {
   cursor: pointer;
   position: absolute; top: 1rem; z-index: 1;
-  height: clamp(15rem, 46vh, 30rem);
+  height: clamp(15rem, 48vh, 31rem);
   display: flex; align-items: center;
-  width: clamp(2.5rem, 7%, 4rem);
-  text-decoration: none; color: var(--ink);
-  opacity: .55; transition: opacity .18s ease;
+  width: 3rem;
+  color: var(--ink);
 }
-.arrow:hover { opacity: 1; }
 .arrow.prev { left: 1rem; justify-content: flex-start; }
 .arrow.next { right: 1rem; justify-content: flex-end; }
 .arrow span {
   display: flex; align-items: center; justify-content: center;
-  width: 2.25rem; height: 2.25rem;
-  font: 400 1.6rem/1 var(--sans);
-  border: 1px solid var(--line); border-radius: 50%;
-  background: rgba(4, 4, 10, .65); backdrop-filter: blur(6px);
+  width: 2.4rem; height: 2.4rem;
+  font: 400 1.5rem/1 var(--sans);
+  border: 1px solid var(--line); border-radius: 6px;
+  background: var(--bg-raise);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
+.arrow:hover span { border-color: var(--ink-faint); }
 
 .dots {
-  list-style: none; margin: .9rem 0 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: .4rem;
-  justify-content: center;
+  list-style: none; margin: 1rem 0 0; padding: 0; max-width: none;
+  display: flex; flex-wrap: wrap; gap: .35rem; justify-content: center;
 }
 .dots li { margin: 0; }
-.dots label { cursor: pointer; }
 .dots label {
+  cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  width: 1.6rem; height: 1.6rem;
-  font-size: .72rem; text-decoration: none;
+  min-width: 2rem; height: 2rem; padding: 0 .4rem;
+  font: 500 .85rem/1 var(--sans);
   color: var(--ink-dim); background: var(--bg-raise);
-  border: 1px solid var(--line); border-radius: 50%;
-  transition: color .18s ease, border-color .18s ease, background .18s ease;
+  border: 1px solid var(--line); border-radius: 5px;
 }
-.dots label:hover {
-  color: var(--ink); border-color: var(--brand-dim);
-}
+.dots label:hover { color: var(--ink); border-color: var(--ink-faint); }
 
-/* Which one you are on, and which slide is showing — the same :checked state
-   drives both, so the mark can never disagree with the picture. */
+/* Which shot is showing, and which number is marked — the same :checked state
+ * drives both, so the mark can never disagree with the picture. */
 .pick#pick-control-panel:checked ~ .viewport .track { transform: translateX(-0%); }
 .pick#pick-software:checked ~ .viewport .track { transform: translateX(-100%); }
 .pick#pick-files:checked ~ .viewport .track { transform: translateX(-200%); }
@@ -488,417 +496,129 @@ tbody tr:hover { background: var(--bg-raise); }
 .pick#pick-tuxagotchi:checked ~ .viewport .track { transform: translateX(-1100%); }
 .pick#pick-themes:checked ~ .viewport .track { transform: translateX(-1200%); }
 
-.pick#pick-control-panel:checked ~ .dots li:nth-child(1) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-software:checked ~ .dots li:nth-child(2) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-files:checked ~ .dots li:nth-child(3) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-settings:checked ~ .dots li:nth-child(4) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-disks:checked ~ .dots li:nth-child(5) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-task-manager:checked ~ .dots li:nth-child(6) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-arcade:checked ~ .dots li:nth-child(7) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-big-screen:checked ~ .dots li:nth-child(8) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-chibi:checked ~ .dots li:nth-child(9) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-arsenal:checked ~ .dots li:nth-child(10) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-updates:checked ~ .dots li:nth-child(11) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-tuxagotchi:checked ~ .dots li:nth-child(12) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-.pick#pick-themes:checked ~ .dots li:nth-child(13) label { background: var(--brand); border-color: var(--brand); color: var(--bg); }
-
-.pick#pick-control-panel:focus-visible ~ .dots li:nth-child(1) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-software:focus-visible ~ .dots li:nth-child(2) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-files:focus-visible ~ .dots li:nth-child(3) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-settings:focus-visible ~ .dots li:nth-child(4) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-disks:focus-visible ~ .dots li:nth-child(5) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-task-manager:focus-visible ~ .dots li:nth-child(6) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-arcade:focus-visible ~ .dots li:nth-child(7) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-big-screen:focus-visible ~ .dots li:nth-child(8) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-chibi:focus-visible ~ .dots li:nth-child(9) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-arsenal:focus-visible ~ .dots li:nth-child(10) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-updates:focus-visible ~ .dots li:nth-child(11) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-tuxagotchi:focus-visible ~ .dots li:nth-child(12) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-.pick#pick-themes:focus-visible ~ .dots li:nth-child(13) label { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .track { transition: none; }
-  .arrow, .dots label { transition: none; }
+.pick#pick-control-panel:checked ~ .dots li:nth-child(1) label,
+.pick#pick-software:checked ~ .dots li:nth-child(2) label,
+.pick#pick-files:checked ~ .dots li:nth-child(3) label,
+.pick#pick-settings:checked ~ .dots li:nth-child(4) label,
+.pick#pick-disks:checked ~ .dots li:nth-child(5) label,
+.pick#pick-task-manager:checked ~ .dots li:nth-child(6) label,
+.pick#pick-arcade:checked ~ .dots li:nth-child(7) label,
+.pick#pick-big-screen:checked ~ .dots li:nth-child(8) label,
+.pick#pick-chibi:checked ~ .dots li:nth-child(9) label,
+.pick#pick-arsenal:checked ~ .dots li:nth-child(10) label,
+.pick#pick-updates:checked ~ .dots li:nth-child(11) label,
+.pick#pick-tuxagotchi:checked ~ .dots li:nth-child(12) label,
+.pick#pick-themes:checked ~ .dots li:nth-child(13) label {
+  background: var(--ink); border-color: var(--ink); color: var(--bg);
 }
 
+.pick#pick-control-panel:focus-visible ~ .dots li:nth-child(1) label,
+.pick#pick-software:focus-visible ~ .dots li:nth-child(2) label,
+.pick#pick-files:focus-visible ~ .dots li:nth-child(3) label,
+.pick#pick-settings:focus-visible ~ .dots li:nth-child(4) label,
+.pick#pick-disks:focus-visible ~ .dots li:nth-child(5) label,
+.pick#pick-task-manager:focus-visible ~ .dots li:nth-child(6) label,
+.pick#pick-arcade:focus-visible ~ .dots li:nth-child(7) label,
+.pick#pick-big-screen:focus-visible ~ .dots li:nth-child(8) label,
+.pick#pick-chibi:focus-visible ~ .dots li:nth-child(9) label,
+.pick#pick-arsenal:focus-visible ~ .dots li:nth-child(10) label,
+.pick#pick-updates:focus-visible ~ .dots li:nth-child(11) label,
+.pick#pick-tuxagotchi:focus-visible ~ .dots li:nth-child(12) label,
+.pick#pick-themes:focus-visible ~ .dots li:nth-child(13) label {
+  outline: 2px solid var(--brand); outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+
 @media (max-width: 40rem) {
-  /* The arrows sit over the picture on a narrow screen, where there is no
-   * margin beside it to hold them. The dots are the reliable control there. */
-  .arrow { width: 2.75rem; }
-  .arrow.prev { left: .25rem; }
-  .arrow.next { right: .25rem; }
+  /* No margin beside the picture on a phone, so the arrows sit over it and the
+   * numbers are the dependable control. */
+  .arrow { width: 2.6rem; }
+  .arrow.prev { left: .3rem; }
+  .arrow.next { right: .3rem; }
   .slide { padding: .75rem .75rem .25rem; }
   .slide figcaption { min-height: 6.5rem; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   The revamp — a page that looks like the desktop, and does a little of what
-   it does. All of it CSS: `script-src 'none'` is not a limitation to work
-   around here, it is the reason these are radios and not widgets.
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ---------- download ---------- */
 
-/* The radio group itself: off-screen, but NOT display:none — an input that is
- * not rendered is not focusable, and focusability is what gives this arrow-key
- * control without a line of script. */
-.theme-pick {
-  position: absolute; opacity: 0; pointer-events: none;
-  width: 1px; height: 1px; margin: 0;
-}
+.release-line { font-size: 1.15rem; }
+.dl-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0 .75rem; }
 
-.page { background: var(--bg); color: var(--ink); }
+/* The steps are numbered in the margin on a wide screen and inline on a phone,
+ * where a hanging column would take the width the commands need. */
+.steps { list-style: none; counter-reset: step; margin: 2.5rem 0 0; padding: 0; max-width: 48rem; }
+.steps > li { counter-increment: step; position: relative; padding-bottom: 2.25rem; margin-bottom: 2.25rem; border-bottom: 1px solid var(--line); }
+.steps > li:last-child { border-bottom: 0; margin-bottom: 0; }
+.steps > li > h3 { margin-top: 0; }
+.steps > li > h3::before { content: counter(step) "."; color: var(--brand); margin-right: .5rem; font-variant-numeric: lining-nums; }
+@media (min-width: 52rem) {
+  .steps > li { padding-left: 3rem; }
+  .steps > li > h3::before { position: absolute; left: 0; margin: 0; font-size: 1.5rem; line-height: 1.1; }
+}
+.optional { font: 400 .9rem var(--sans); color: var(--ink-faint); margin-left: .35rem; }
 
-/* The whole page moves when a theme is picked, so the transition is on the
- * things that carry colour rather than on `*` — animating every property of
- * every node is how a switcher becomes a stutter on a long document. */
-.page, .hero, .band, .card, .site-header, .btn, .figure, .term {
-  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
-}
-@media (prefers-reduced-motion: reduce) {
-  .page, .hero, .band, .card, .site-header, .btn, .figure, .term { transition: none; }
-}
-
-/* ---------- the hero, over the desktop ---------- */
-
-/* ⚠ THE SCREENSHOT IS THE PITCH. It used to sit below the fold inside the
- * carousel, which is a strange place to keep the one asset that answers "what
- * is this" without a sentence. It is the ground now, scrimmed hard enough that
- * the type over it clears AA on every theme — the scrim is a --bg gradient
- * rather than a flat black, so it re-tints with the palette instead of sitting
- * on top of it as a foreign grey. */
-.hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  text-align: center;
-  padding: clamp(3.5rem, 10vw, 7rem) 0 clamp(3rem, 7vw, 5rem);
-  border-bottom: 1px solid var(--line);
-  background: var(--bg-sunk);
-}
-/* Pushed DOWN and softened. Two things were fighting the type: the desktop's own
- * top bar sat right under the site header and read as a second header, and the
- * control panel landed square behind the lede. `object-position` drops the frame
- * so the skyline is what is behind the words, and a 3px blur turns the panel from
- * a thing you try to read into texture — it is a backdrop, and a backdrop with
- * legible UI in it is asking to be read instead of the headline. */
-.hero-shot {
-  position: absolute; inset: 0; z-index: -2;
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: 50% 78%;
-  opacity: .40;
-  filter: saturate(1.1) blur(3px);
-  transform: scale(1.04);   /* hides the soft edge the blur leaves at the frame */
-}
-.hero::after {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(70rem 34rem at 50% 8%, color-mix(in oklab, var(--brand) 20%, transparent), transparent 68%),
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--bg) 86%, transparent) 0%,
-      color-mix(in oklab, var(--bg) 76%, transparent) 38%,
-      color-mix(in oklab, var(--bg) 88%, transparent) 72%,
-      var(--bg) 100%);
-}
-/* A browser without color-mix() gets a flat scrim rather than unreadable type
- * over a photograph. Worth the four lines: this is the first thing anyone sees. */
-@supports not (background: color-mix(in oklab, red 50%, blue)) {
-  .hero::after { background: linear-gradient(180deg, rgba(0,0,0,.62), var(--bg)); }
-}
-
-.hero h1 {
-  font-family: var(--mono);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-size: clamp(2rem, 7.5vw, 4.25rem);
-  font-weight: 700;
-}
-
-/* ---------- the theme switcher, in the hero ---------- */
-
-.themes {
-  margin: 0 auto;
-  display: flex; flex-wrap: wrap; justify-content: center;
-  gap: .45rem;
-  /* Wide enough that all seven fit one line on a desktop — a single chip
-     orphaned onto a second row reads as a mistake rather than as a wrap. */
-  max-width: 54rem;
-}
-/* Outside .themes, not a flex item inside it: a label that has to be on its own
- * line should not depend on a flex-basis some other rule can win against. */
-.themes-label {
-  margin: 2rem 0 .6rem;
-  text-align: center;
-  font: 600 .72rem/1 var(--mono);
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--ink-dim);
-}
-.themes-label b { color: var(--brand); font-weight: 600; }
-.swatch {
-  display: inline-flex; align-items: center; gap: .45rem;
-  padding: .38rem .7rem .38rem .5rem;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: color-mix(in oklab, var(--bg-raise) 70%, transparent);
-  font: 500 .82rem/1 var(--sans); color: var(--ink-dim);
-  cursor: pointer; user-select: none;
-}
-.swatch:hover { color: var(--ink); border-color: var(--brand-dim); }
-.swatch i {
-  width: .85rem; height: .85rem; border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset;
-  flex: none;
-}
-/* The chip for the theme that is ON. Sibling selectors only reach forward, and
- * every input is declared before .page, so this is written from the input. */
-#th-prism:checked      ~ .page .swatch[for="th-prism"],
-#th-synapse:checked    ~ .page .swatch[for="th-synapse"],
-#th-gruvbox:checked    ~ .page .swatch[for="th-gruvbox"],
-#th-nord:checked       ~ .page .swatch[for="th-nord"],
-#th-dracula:checked    ~ .page .swatch[for="th-dracula"],
-#th-tokyo:checked      ~ .page .swatch[for="th-tokyo"],
-#th-prismlight:checked ~ .page .swatch[for="th-prismlight"] {
-  color: var(--ink);
-  border-color: var(--brand);
-  background: color-mix(in oklab, var(--brand) 14%, transparent);
-}
-/* Keyboard focus has to be visible on the LABEL, which is the only thing on
- * screen — the input it belongs to is off in the corner at 1px. */
-.theme-pick:focus-visible ~ .page .swatch[for="th-prism"],
-.theme-pick:focus-visible ~ .page .swatch { outline: none; }
-#th-prism:focus-visible      ~ .page .swatch[for="th-prism"],
-#th-synapse:focus-visible    ~ .page .swatch[for="th-synapse"],
-#th-gruvbox:focus-visible    ~ .page .swatch[for="th-gruvbox"],
-#th-nord:focus-visible       ~ .page .swatch[for="th-nord"],
-#th-dracula:focus-visible    ~ .page .swatch[for="th-dracula"],
-#th-tokyo:focus-visible      ~ .page .swatch[for="th-tokyo"],
-#th-prismlight:focus-visible ~ .page .swatch[for="th-prismlight"] {
-  outline: 2px solid var(--brand); outline-offset: 3px;
-}
-
-/* ---------- the CRT toggle ---------- */
-
-.crt-pick { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
-
-.crt-figure { margin: 2rem 0; }
-.crt-stack {
-  position: relative;
-  border: 1px solid var(--line); border-radius: .7rem; overflow: hidden;
-  line-height: 0;
-}
-.crt-stack img { display: block; width: 100%; height: auto; }
-/* The filtered frame is stacked ON the plain one rather than swapped for it, so
- * the flip has nothing to load and cannot flash a gap. Both are ~112 KB and the
- * section is `loading="lazy"`, so the cost is one extra image below the fold. */
-.crt-on-img {
-  position: absolute; inset: 0; height: 100%;
-  opacity: 0; transition: opacity .28s ease;
-}
-/* The input is a SIBLING of the figure (both inside the section), not of .page —
- * the theme radios are the ones declared at document top. Getting this wrong
- * gives a switch that is perfectly focusable and does nothing. */
-#crt-on:checked ~ .crt-figure .crt-on-img { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .crt-on-img { transition: none; } }
-
-.crt-toggle {
-  position: absolute; right: .75rem; top: .75rem;
-  display: inline-flex; align-items: center; gap: .5rem;
-  padding: .4rem .8rem .4rem .55rem;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: color-mix(in oklab, var(--bg) 78%, transparent);
-  backdrop-filter: blur(8px);
-  font: 600 .8rem/1 var(--mono); letter-spacing: .04em;
-  color: var(--ink-dim); cursor: pointer; user-select: none;
-  line-height: 1;
-}
-.crt-toggle:hover { color: var(--ink); border-color: var(--brand-dim); }
-.crt-dot {
-  width: .6rem; height: .6rem; border-radius: 50%;
-  background: var(--ink-faint); flex: none;
-  transition: background-color .28s ease, box-shadow .28s ease;
-}
-.crt-word-on { display: none; }
-
-#crt-on:checked ~ .crt-figure .crt-toggle {
-  color: var(--ink);
-  border-color: #ffb454;
-  background: color-mix(in oklab, #ffb454 16%, color-mix(in oklab, var(--bg) 72%, transparent));
-}
-/* Amber, and not the theme accent: the dot is reporting the PHOSPHOR the filter
- * is set to, which is a property of the filter and not of the palette. */
-#crt-on:checked ~ .crt-figure .crt-dot {
-  background: #ffb454;
-  box-shadow: 0 0 .5rem #ffb454, 0 0 1.1rem rgba(255,180,84,.55);
-}
-#crt-on:checked ~ .crt-figure .crt-word-off { display: none; }
-#crt-on:checked ~ .crt-figure .crt-word-on  { display: inline; }
-
-.crt-figure figcaption { margin-top: .7rem; }
-.crt-pick:focus-visible ~ .crt-figure .crt-toggle {
-  outline: 2px solid var(--brand); outline-offset: 3px;
-}
-
-/* ---------- bands ---------- */
-
-/* The page was h2 → prose → three cards, seven times. A band is a full-bleed
- * change of ground, so the eye gets a beat between sections instead of one
- * unbroken column. */
-.band { border-block: 1px solid var(--line); background: var(--bg-sunk); }
-.band > .wrap { padding-block: clamp(2.5rem, 6vw, 4rem); }
-
-/* ---------- the shell, typing ---------- */
-
-.term {
-  max-width: 46rem; margin-inline: auto;
-  border: 1px solid var(--line); border-radius: .7rem;
-  background: var(--bg-raise);
-  overflow: hidden;
-  box-shadow: 0 1.2rem 3rem rgba(0,0,0,.35);
-}
-.term-bar {
-  display: flex; align-items: center; gap: .4rem;
-  padding: .55rem .8rem;
-  border-bottom: 1px solid var(--line);
-  background: color-mix(in oklab, var(--bg) 60%, var(--bg-raise));
-}
-.term-bar i { width: .65rem; height: .65rem; border-radius: 50%; background: var(--line); }
-.term-bar span {
-  margin-left: .5rem; font: 600 .78rem/1 var(--mono);
-  letter-spacing: .1em; color: var(--ink-faint); text-transform: uppercase;
-}
-.term-body {
-  margin: 0; padding: 1.1rem 1.2rem 1.3rem;
-  background: none; border: 0;
-  font: 500 .95rem/1.9 var(--mono);
-  white-space: pre-wrap; word-break: break-word;
-}
-.term-prompt { color: var(--brand); font-weight: 700; }
-.term-out    { color: var(--ink); }
-.term-out b  { color: var(--ai); font-weight: 700; }
-.term-hint   { color: var(--ink-faint); font-size: .85em; }
-
-/* The typing. `ch` units and steps() over the exact character count, so it lands
- * on whole glyphs rather than clipping one down the middle — the string is 31
- * characters and the count matches it.
- *
- * ⚠ The animation runs ONCE and stops filled in (`forwards`). A six-second loop
- * beside prose is a thing that pulls the eye back every six seconds while
- * somebody is trying to read the paragraph under it. */
-.term-typed {
-  display: inline-block; vertical-align: bottom;
-  overflow: hidden; white-space: nowrap;
-  max-width: 31ch;
-  animation: term-type 1.7s steps(31, end) .35s both;
-}
-.term-out, .term-hint { display: block; opacity: 0; animation: term-fade .4s ease forwards; }
-.term-out  { animation-delay: 2.2s; }
-.term-hint { animation-delay: 2.55s; }
-.term-caret {
-  display: inline-block; width: .55ch; height: 1.05em;
-  vertical-align: text-bottom; margin-left: .1ch;
-  background: var(--brand);
-  animation: term-blink 1.1s steps(1, end) infinite;
-}
-@keyframes term-type  { from { max-width: 0; } to { max-width: 31ch; } }
-@keyframes term-fade  { to { opacity: 1; } }
-@keyframes term-blink { 50% { opacity: 0; } }
-
-/* Reduced motion gets the finished state, not a broken one: the whole point is
- * the answer, and the typing was only ever the delivery. */
-@media (prefers-reduced-motion: reduce) {
-  .term-typed { animation: none; max-width: 31ch; }
-  .term-out, .term-hint { animation: none; opacity: 1; }
-  .term-caret { animation: none; }
-}
-
-.term-note {
-  max-width: 46rem; margin: 1.4rem auto 0;
-  color: var(--ink-dim); text-align: center; font-size: .98rem;
-}
-
-/* ---------- the numbers ---------- */
-
-.figs {
-  display: grid; gap: 1.5rem 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-}
-.fig { text-align: center; }
-.fig b {
-  display: block;
-  font: 700 clamp(1.75rem, 4.5vw, 2.5rem)/1.1 var(--mono);
-  color: var(--brand); letter-spacing: -.02em;
-}
-.fig span {
-  display: block; margin-top: .45rem;
-  font-size: .92rem; line-height: 1.55; color: var(--ink-dim);
-}
-
-/* ⚠ THE DOT COLOURS LIVE HERE, NOT IN A style ATTRIBUTE ON THE LABEL.
- * _headers sets `style-src 'self'` with no 'unsafe-inline', so an inline
- * `style="--sw:#00d6e5"` is refused by our own CSP — and the failure is silent
- * and invisible in the markup: the custom property never lands, `background:
- * var(--sw)` resolves to nothing, and seven colour chips render as seven empty
- * circles. Same shape as a remote image URL being blocked here.
- * These are the accents out of theme.c, the same values the rules above use. */
-.swatch[for="th-prism"]      i { background: #00d6e5; }
-.swatch[for="th-synapse"]    i { background: #ff296d; }
-.swatch[for="th-gruvbox"]    i { background: #fe8019; }
-.swatch[for="th-nord"]       i { background: #88c0d0; }
-.swatch[for="th-dracula"]    i { background: #ff79c6; }
-.swatch[for="th-tokyo"]      i { background: #7aa2f7; }
-.swatch[for="th-prismlight"] i { background: #00727e; }
-
-/* ---------- platform sub-headings in the download steps ---------- */
-
-/* The download section is a procedure people follow with a machine in front of
- * them, so the platform split is plain headings rather than tabs: both paths
- * stay searchable, printable, and linkable, and nothing is one click away from
- * being seen. */
-h4.plat {
-  margin: 1.6rem 0 .5rem;
-  font: 600 .78rem/1 var(--mono);
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--brand);
-}
+h4.plat { margin: 1.4rem 0 .4rem; font: 600 .95rem/1.4 var(--sans); color: var(--ink); }
 h4.plat + p { margin-top: 0; }
-
-/* A comment inside a <pre>, dimmed so the command reads first. */
-pre .c { color: var(--ink-faint); }
 
 .warn-line {
   border-left: 3px solid var(--warn);
   padding: .5rem .9rem; margin: 1rem 0;
-  background: color-mix(in oklab, var(--warn) 8%, transparent);
-  border-radius: 0 .4rem .4rem 0;
+  background: color-mix(in oklab, var(--warn) 7%, transparent);
 }
 
-/* ---------- the fallback download, folded away ---------- */
+.reqs { margin: 1rem 0 0; padding-left: 1.15rem; list-style: disc; }
+.reqs li { margin-bottom: .4rem; }
 
-/* The ISO is served whole from dl.soslinux.org, so reassembling GitHub's split
- * parts is no longer the path anybody should be reading first — but it is still
- * a working path, and the release pages that describe it are still out there.
- * <details> is the whole mechanism: native, no script (script-src is 'none'),
- * and it still prints and still finds on Ctrl-F when closed in most browsers. */
-details.alt-dl {
-  margin: 2rem 0 0;
-  border: 1px solid var(--line);
-  border-radius: .6rem;
-  background: var(--bg-sunk);
-}
+details.alt-dl { margin: 1.75rem 0 0; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-raise); }
 details.alt-dl > summary {
-  padding: .8rem 1.1rem;
-  cursor: pointer;
-  color: var(--ink-dim);
-  font-weight: 600;
-  border-radius: .6rem;
+  padding: .8rem 1.1rem; cursor: pointer;
+  font: 600 1rem var(--sans); color: var(--ink);
   list-style-position: inside;
 }
-details.alt-dl > summary:hover { color: var(--ink); }
-details.alt-dl > summary::marker { color: var(--brand); }
-details.alt-dl[open] > summary {
-  border-bottom: 1px solid var(--line);
-  border-radius: .6rem .6rem 0 0;
-  color: var(--ink);
-}
-/* The padding lives on the children rather than the box so the <pre> blocks
- * inside keep the same full-bleed edge they have outside it. */
+details.alt-dl > summary::marker { color: var(--ink-faint); }
+details.alt-dl[open] > summary { border-bottom: 1px solid var(--line); }
+/* Padding on the children rather than the box, so the <pre> blocks inside keep
+ * the same edge they have outside it. */
 details.alt-dl > :not(summary) { margin-left: 1.1rem; margin-right: 1.1rem; }
 details.alt-dl > :last-child { margin-bottom: 1.1rem; }
-details.alt-dl > h4.plat { margin-top: 1.2rem; }
+
+/* ---------- questions ---------- */
+
+.faq h3 { margin-top: 2rem; }
+
+/* ---------- merch ---------- */
+
+/* Product shots are vendored under /assets/merch/, not hotlinked from the print
+ * shop: `img-src 'self' data:` refuses a remote mockup and it renders broken. */
+.merch {
+  list-style: none; margin: 2rem 0; padding: 0; max-width: none;
+  display: grid; gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+}
+.merch a { display: block; color: var(--ink); text-decoration: none; }
+.merch img {
+  display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: 6px; background: var(--bg-sunk);
+}
+.merch .name { display: block; margin-top: .6rem; font-size: 1rem; line-height: 1.35; }
+.merch .price { display: block; margin-top: .15rem; font: 400 .92rem var(--sans); color: var(--ink-dim); }
+.merch a:hover .name { text-decoration: underline; text-decoration-color: var(--brand); }
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--bg-sunk);
+  padding: 2.25rem 0 2.5rem;
+  font: 400 .95rem/1.6 var(--sans); color: var(--ink-dim);
+}
+.site-footer strong { color: var(--ink); }
+.site-footer p:last-child { margin-bottom: 0; }
+
+/* A section label above a page title — the wiki's and the legal pages'. */
+.eyebrow { margin: 0 0 .4rem; font: 500 .95rem/1.4 var(--sans); color: var(--ink-faint); }
+
+/* The 404 page. */
+.lost { padding-block: clamp(3rem, 10vw, 7rem); }
+.lost h1 { margin-bottom: 1rem; }

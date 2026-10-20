@@ -1,8 +1,8 @@
 /* SynapseOS — wiki styles.
  *
- * Loaded only by the pages under /wiki/, on top of style.css. Every colour here
- * is one of that file's variables, so the wiki wears the compositor's palette
- * for the same reason the homepage does, and a new theme reaches it for free.
+ * Loaded only by the pages under /wiki/ (and /privacy, /terms), on top of
+ * style.css. Every colour here is one of that file's variables, so the wiki
+ * follows the visitor's light/dark setting exactly as the homepage does.
  *
  * ⛔ NO SCRIPT AND NO INLINE STYLE. _headers is `script-src 'none'` and
  * `style-src 'self'` — an inline `style=` attribute is refused SILENTLY, which
@@ -54,7 +54,7 @@
 /* ---------- the left rail: every page in the wiki ---------- */
 
 .wiki-side {
-  font-size: .92rem;
+  font: 400 .95rem/1.4 var(--sans);
   border-top: 1px solid var(--line);
   padding-top: 1.5rem;
 }
@@ -83,8 +83,7 @@
 .wiki-side-top a { color: var(--ink); padding-left: 0; margin-left: 0; }
 .wiki-side-h {
   margin: 0 0 .4rem;
-  font: 600 .72rem/1 var(--mono);
-  letter-spacing: .14em; text-transform: uppercase;
+  font: 600 .85rem/1.3 var(--sans);
   color: var(--ink-faint);
 }
 .wiki-side-foot {
@@ -96,10 +95,8 @@
 @media (min-width: 64rem) {
   .wiki-side {
     position: sticky;
-    /* The header is sticky and ~3.75rem tall; clearing it is what keeps the
-     * first group from sitting underneath it. */
-    top: 4.5rem;
-    max-height: calc(100vh - 6rem);
+    top: 1.5rem;
+    max-height: calc(100vh - 3rem);
     overflow-y: auto;
     border-top: 0; padding-top: 0;
     /* ⚠ A RAIL THAT SCROLLS SAYS SO. Same rule the desktop follows: a view
@@ -113,14 +110,13 @@
 /* ---------- the right rail: this page's own headings ---------- */
 
 .wiki-toc {
-  font-size: .88rem;
+  font: 400 .9rem/1.4 var(--sans);
   border-left: 2px solid var(--line);
   padding: .25rem 0 .25rem 1rem;
 }
 .wiki-toc-h {
   margin: 0 0 .5rem;
-  font: 600 .72rem/1 var(--mono);
-  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+  font: 600 .85rem/1.3 var(--sans); color: var(--ink-faint);
 }
 .wiki-toc ul { list-style: none; margin: 0; padding: 0; }
 
@@ -133,8 +129,7 @@
 }
 .toc-label {
   display: block; cursor: pointer;
-  font: 600 .72rem/1 var(--mono);
-  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+  font: 600 .9rem/1.3 var(--sans); color: var(--ink-dim);
   padding: .35rem 0;
 }
 .toc-label::after {
@@ -160,8 +155,8 @@
   .wiki-toc-h, .wiki-toc ul { display: block; }
 
   .wiki-toc {
-    position: sticky; top: 4.5rem;
-    max-height: calc(100vh - 6rem); overflow-y: auto;
+    position: sticky; top: 1.5rem;
+    max-height: calc(100vh - 3rem); overflow-y: auto;
     scrollbar-width: thin; scrollbar-color: var(--line) transparent;
   }
 }
@@ -172,7 +167,7 @@
 .wiki-main > h1 {
   margin: 0 0 .35rem;
   font-size: clamp(2rem, 5vw, 2.8rem);
-  line-height: 1.1; letter-spacing: -.025em; font-weight: 800;
+  line-height: 1.12; letter-spacing: -.012em; font-weight: 600;
 }
 .wiki-meta {
   /* style.css holds a <p> to 62ch, which is right for prose and wrong for a
@@ -180,22 +175,21 @@
   max-width: none;
   margin: 0 0 2rem; padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--line);
-  font-size: .88rem; color: var(--ink-faint);
+  font: 400 .92rem/1.5 var(--sans); color: var(--ink-faint);
 }
-.wiki-meta a { color: var(--brand-dim); }
 
 .wiki-body > :first-child { margin-top: 0; }
 
 /* h2 opens a part of the page, so it gets a rule; h3 is a step inside one and
- * gets colour instead. Without the distinction a long page — and several here
- * are 800 lines — reads as one undifferentiated column. */
+ * gets size alone. Without the distinction a long page — and several here are
+ * 800 lines — reads as one undifferentiated column. */
 .wiki-body h2 {
   margin: 3rem 0 1rem; padding-top: 1.75rem;
   border-top: 1px solid var(--line);
   font-size: clamp(1.4rem, 3.5vw, 1.8rem);
-  letter-spacing: -.02em;
+  letter-spacing: -.008em;
 }
-.wiki-body h3 { margin: 2.25rem 0 .6rem; font-size: 1.12rem; color: var(--brand); }
+.wiki-body h3 { margin: 2.25rem 0 .6rem; font-size: 1.22rem; }
 .wiki-body h4 {
   margin: 1.75rem 0 .5rem;
   font: 600 .95rem/1.4 var(--sans); color: var(--ink);
@@ -214,10 +208,9 @@
  * there on purpose. */
 .wiki-body hr + h2 { border-top: 0; margin-top: 0; padding-top: 0; }
 
-/* A heading is a link target, and the rule above puts a border exactly where a
- * sticky header would land. Without this, following #an-anchor leaves the
- * heading under the header. */
-.wiki-body :where(h2, h3, h4)[id] { scroll-margin-top: 5rem; }
+/* A heading is a link target; a little room above it keeps the rule it carries
+ * from landing flush against the top of the window. */
+.wiki-body :where(h2, h3, h4)[id] { scroll-margin-top: 1.25rem; }
 
 /* ---------- callouts ---------- */
 
@@ -228,8 +221,8 @@
   margin: 1.5rem 0; padding: 1rem 1.15rem;
   background: var(--bg-sunk);
   border: 1px solid var(--line); border-left: 3px solid var(--brand);
-  border-radius: .5rem;
-  color: var(--ink-dim);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
 }
 .wiki-body blockquote.warn { border-left-color: var(--warn); }
 .wiki-body blockquote > :last-child { margin-bottom: 0; }
@@ -240,12 +233,12 @@
 .wiki-body details {
   margin: 1.5rem 0; padding: .25rem 1.15rem;
   background: var(--bg-raise);
-  border: 1px solid var(--line); border-radius: .6rem;
+  border: 1px solid var(--line); border-radius: 6px;
 }
 .wiki-body details[open] { padding-bottom: .75rem; }
 .wiki-body summary {
   margin: 0 -1.15rem; padding: .8rem 1.15rem;
-  cursor: pointer; font-weight: 600; color: var(--ink);
+  cursor: pointer; font: 600 1rem/1.4 var(--sans); color: var(--ink);
   /* INSIDE, or the disclosure triangle is laid out before the padding box and
    * lands in the margin outside the card it belongs to. */
   list-style-position: inside;
@@ -298,15 +291,13 @@
 .wiki-pager a {
   padding: .85rem 1.1rem;
   background: var(--bg-raise);
-  border: 1px solid var(--line); border-radius: .6rem;
+  border: 1px solid var(--line); border-radius: 6px;
   color: var(--ink); text-decoration: none; font-weight: 600;
-  transition: border-color .15s;
 }
-.wiki-pager a:hover { border-color: var(--brand); }
+.wiki-pager a:hover { border-color: var(--ink-faint); }
 .wiki-pager a span {
   display: block;
-  font: 600 .7rem/1.6 var(--mono);
-  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+  font: 500 .85rem/1.6 var(--sans); color: var(--ink-faint);
 }
 .wiki-pager .next { text-align: right; }
 

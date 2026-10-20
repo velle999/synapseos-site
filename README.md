@@ -17,10 +17,13 @@ public/                 EVERYTHING IN HERE IS PUBLIC. Nothing outside it is.
   _headers              caching + security headers
   wiki/                 GENERATED — the project wiki, rendered. Never edit by
                         hand; see "The wiki" below.
-  assets/style.css      all styles
+  assets/style.css      all styles; light or dark from the visitor's setting
   assets/wiki.css       styles for /wiki/ only, on top of style.css
-  assets/logo.svg       dendrite mark, brand purple — the header, and the
-                        favicon on a DARK browser theme
+  assets/fonts/         Literata (OFL-1.1, licence beside it), Latin subset —
+                        the reading face for every page
+  assets/logo.svg       dendrite mark, brand purple — the favicon on a DARK
+                        browser theme. The header mark is an inline SVG copy
+                        drawn in currentColor, in every page's header.
   assets/logo-ink.svg   the same mark in ink (#5b21b6) — the favicon on a
                         light browser theme, where the purple washes out
   assets/og.png         1200×630 social card

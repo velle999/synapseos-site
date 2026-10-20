@@ -3,34 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>404 — page not found | SynapseOS</title>
+<title>Page not found | SynapseOS</title>
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#0a0a12">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f8f7f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1917" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <!-- Two cuts of the mark, and the TAB STRIP is the ground, not this page.
-     #a78bfa is drawn for dark: ~7:1 on our own header, ~2.7:1 on white,
-     where a light browser theme puts it. The ink cut is ~9:1 there. Both
-     links carry a media query so a browser that ignores the attribute
-     takes the LAST one — ink, which is the ground most browsers use. -->
+     #a78bfa is drawn for dark: ~2.7:1 on white, where a light browser theme
+     puts it. The ink cut is ~9:1 there. Both links carry a media query so a
+     browser that ignores the attribute takes the LAST one — ink, which is the
+     ground most browsers use. -->
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/logo-ink.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
-<link rel="stylesheet" href="/assets/style.css?v=2026-09-20">
+<link rel="stylesheet" href="/assets/style.css?v=2026-10-19">
 </head>
 <body>
-<main id="main">
-  <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">404 &mdash; no such path</p>
-      <h1>Signal lost</h1>
-      <p class="tagline">That page isn&rsquo;t on this machine.</p>
-      <p class="lede">The link may be stale, or the page may never have existed.</p>
-      <p class="cta">
-        <a class="btn btn-primary" href="/">Back to SynapseOS</a>
-        <a class="btn" href="/wiki/">The wiki</a>
-        <a class="btn" href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
-      </p>
-    </div>
-  </section>
+<div class="page">
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <svg class="mark" viewBox="-480 -576 960 960" width="28" height="28" aria-hidden="true" focusable="false"><polygon points="0,-464 400,272 -400,272" fill="none" stroke="currentColor" stroke-width="22" opacity=".4"/><g stroke="currentColor" stroke-linecap="round"><path d="M0-48V-416M0-48 288 192M0-48-288 192" stroke-width="44"/><path d="M0-48 176 200M0-48-176 200" stroke-width="28"/></g><g fill="currentColor"><circle cy="-48" r="72"/><circle cy="-416" r="46"/><circle cx="288" cy="192" r="46"/><circle cx="-288" cy="192" r="46"/><circle cx="176" cy="200" r="34"/><circle cx="-176" cy="200" r="34"/></g></svg>
+      <span>SynapseOS</span>
+    </a>
+  </div>
+</header>
+
+<main id="main" class="wrap lost">
+  <h1>Page not found</h1>
+  <p>The link may be out of date, or the page never existed.</p>
+  <p class="actions">
+    <a class="btn" href="/">Go to the home page</a>
+    <a href="/wiki/">The wiki</a>
+    <a href="https://github.com/velle999/SYNAPSE" rel="noopener">Source on GitHub</a>
+  </p>
 </main>
+
+</div>
 </body>
 </html>
