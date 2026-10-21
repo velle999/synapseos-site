@@ -61,9 +61,9 @@
       "applicationCategory": "OperatingSystem",
       "applicationSubCategory": "Linux distribution",
       "operatingSystem": "Linux (x86_64)",
-      "softwareVersion": "1.0.1",
+      "softwareVersion": "1.0.2",
       "releaseNotes": "https://github.com/velle999/SYNAPSE/releases/latest",
-      "downloadUrl": "https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso",
+      "downloadUrl": "https://dl.soslinux.org/SynapseOS-1.0.2-x86_64.iso",
       "installUrl": "https://soslinux.org/#download",
       "url": "https://soslinux.org/",
       "image": "https://soslinux.org/assets/og.png?v=2026-08-22",
@@ -206,10 +206,10 @@
         leaving your computer.
       </p>
       <p class="actions">
-        <a class="btn" href="#download">Download 1.0.1</a>
+        <a class="btn" href="#download">Download 1.0.2</a>
         <a href="/wiki/Installation">Installation guide</a>
       </p>
-      <p class="meta">Free and open source &middot; 64-bit PCs &middot; 4.6&nbsp;GiB &middot; rolling release</p>
+      <p class="meta">Free and open source &middot; 64-bit PCs &middot; 4.7&nbsp;GiB &middot; rolling release</p>
     </div>
   </section>
 
@@ -680,23 +680,24 @@
   <section id="download" class="wrap section">
     <h2>Download and install</h2>
     <p class="release-line">
-      SynapseOS <strong>1.0.1</strong> is the current release. It adds signed
-      updates, a firewall that asks about each network, and a malware scanner that
-      tells you what it found. It&rsquo;s free, for 64-bit PCs, and the ISO is about
-      4.6&nbsp;GiB. The AI model downloads during installation.
+      SynapseOS <strong>1.0.2</strong> is the current release. It rebinds a gaming
+      mouse&rsquo;s extra buttons per game, opens YouTube and Jellyfin in their
+      television interfaces on the big screen, and fixes multi-monitor and NVIDIA
+      display problems. It&rsquo;s free, for 64-bit PCs, and the ISO is about
+      4.7&nbsp;GiB. The AI model downloads during installation.
     </p>
 
     <ol class="steps">
       <li>
         <h3>Download the ISO</h3>
         <p class="dl-actions">
-          <a class="btn" href="https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso">Download SynapseOS 1.0.1</a>
-          <a class="btn btn-plain" href="https://archive.org/download/synapseos-1.0.1/SynapseOS-1.0.1-x86_64.iso" rel="noopener">Mirror</a>
-          <a class="btn btn-plain" href="https://archive.org/download/synapseos-1.0.1/synapseos-1.0.1_archive.torrent" rel="noopener">Torrent</a>
+          <a class="btn" href="https://dl.soslinux.org/SynapseOS-1.0.2-x86_64.iso">Download SynapseOS 1.0.2</a>
+          <a class="btn btn-plain" href="https://archive.org/download/synapseos-1.0.2/SynapseOS-1.0.2-x86_64.iso" rel="noopener">Mirror</a>
+          <a class="btn btn-plain" href="https://archive.org/download/synapseos-1.0.2/synapseos-1.0.2_archive.torrent" rel="noopener">Torrent</a>
         </p>
         <p class="small">
           One file, and your browser can resume it. The mirror and the torrent are
-          on the <a href="https://archive.org/details/synapseos-1.0.1" rel="noopener">Internet Archive</a>.
+          on the <a href="https://archive.org/details/synapseos-1.0.2" rel="noopener">Internet Archive</a>.
         </p>
 
         <details class="alt-dl">
@@ -710,13 +711,13 @@
           </p>
 
           <h4 class="plat">Linux / macOS</h4>
-<pre><code>cat SynapseOS-1.0.1-x86_64.iso.part* &gt; SynapseOS-1.0.1-x86_64.iso
-sha256sum -c SynapseOS-1.0.1-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>cat SynapseOS-1.0.2-x86_64.iso.part* &gt; SynapseOS-1.0.2-x86_64.iso
+sha256sum -c SynapseOS-1.0.2-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
           <h4 class="plat">Windows</h4>
           <p>In <strong>Command Prompt</strong>, in the folder you downloaded to:</p>
-<pre><code>copy /b SynapseOS-1.0.1-x86_64.iso.part00 + SynapseOS-1.0.1-x86_64.iso.part01 + SynapseOS-1.0.1-x86_64.iso.part02 SynapseOS-1.0.1-x86_64.iso
-certutil -hashfile SynapseOS-1.0.1-x86_64.iso SHA256</code></pre>
+<pre><code>copy /b SynapseOS-1.0.2-x86_64.iso.part00 + SynapseOS-1.0.2-x86_64.iso.part01 + SynapseOS-1.0.2-x86_64.iso.part02 SynapseOS-1.0.2-x86_64.iso
+certutil -hashfile SynapseOS-1.0.2-x86_64.iso SHA256</code></pre>
           <p>
             Name every part, in order, joined by <code>+</code>, and keep the
             <code>/b</code>. Without it, <code>copy</code> stops early and leaves a
@@ -733,16 +734,16 @@ certutil -hashfile SynapseOS-1.0.1-x86_64.iso SHA256</code></pre>
         </p>
 
         <h4 class="plat">Linux / macOS</h4>
-<pre><code>curl -O https://dl.soslinux.org/SynapseOS-1.0.1-x86_64.iso.sha256
-sha256sum -c SynapseOS-1.0.1-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
+<pre><code>curl -O https://dl.soslinux.org/SynapseOS-1.0.2-x86_64.iso.sha256
+sha256sum -c SynapseOS-1.0.2-x86_64.iso.sha256   <span class="c"># shasum -a 256 -c on macOS</span></code></pre>
 
         <h4 class="plat">Windows</h4>
         <p>In <strong>PowerShell</strong>, in the folder you downloaded to:</p>
-<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-1.0.1-x86_64.iso).Hash -eq `
-  (((Get-Content .\SynapseOS-1.0.1-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
+<pre><code>(Get-FileHash -Algorithm SHA256 .\SynapseOS-1.0.2-x86_64.iso).Hash -eq `
+  (((Get-Content .\SynapseOS-1.0.2-x86_64.iso.sha256) -split '\s+')[0]).ToUpper()</code></pre>
         <p class="small">
           <code>True</code> means it&rsquo;s intact. In <strong>Command Prompt</strong>,
-          <code>certutil -hashfile SynapseOS-1.0.1-x86_64.iso SHA256</code> prints the
+          <code>certutil -hashfile SynapseOS-1.0.2-x86_64.iso SHA256</code> prints the
           checksum for you to compare with the <code>.sha256</code> file.
         </p>
       </li>
@@ -762,7 +763,7 @@ sha256sum -c SynapseOS-1.0.1-x86_64.iso.sha256   <span class="c"># shasum -a 256
 <pre><code>curl -O https://soslinux.org/synapseos-release-key.asc
 gpg --import synapseos-release-key.asc
 
-gpg --verify SynapseOS-1.0.1-x86_64.iso.asc SynapseOS-1.0.1-x86_64.iso</code></pre>
+gpg --verify SynapseOS-1.0.2-x86_64.iso.asc SynapseOS-1.0.2-x86_64.iso</code></pre>
         <p>
           A good result says <code>Good signature from &quot;SynapseOS Release
           Signing&quot;</code>, with this fingerprint:
@@ -792,7 +793,7 @@ gpg --verify SynapseOS-1.0.1-x86_64.iso.asc SynapseOS-1.0.1-x86_64.iso</code></p
         </p>
 
         <h4 class="plat">Linux / macOS</h4>
-<pre><code>sudo dd if=SynapseOS-1.0.1-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+<pre><code>sudo dd if=SynapseOS-1.0.2-x86_64.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
         <p>
           Find the stick with <code>lsblk</code> first, and write to the whole
           <strong>disk</strong> (<code>/dev/sdb</code>), not a partition on it
