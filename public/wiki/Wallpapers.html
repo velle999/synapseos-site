@@ -74,7 +74,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>Wallpapers</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Wallpapers/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-26">2026-10-26</time>
       </p>
 
       <div class="wiki-body">
@@ -367,17 +367,20 @@ for <code>swaybg</code>, which is what it was verified against before any of thi
 built.)</p>
 <h3 id="what-renders-and-what-doesnt">What renders and what doesn't</h3>
 <ul>
-<li><strong>Scene</strong> and <strong>video</strong> wallpapers render correctly, full-screen, across a
+<li><strong>Scene</strong>, <strong>video</strong> and <strong>web</strong> wallpapers render full-screen, across a
   multi-monitor layout — including rotated outputs.</li>
-<li><strong>Web</strong> wallpapers render <strong>black</strong>. CEF initialises — the packaging bugs that
-  stopped it are fixed — but the texture comes back empty. It is upstream, in
-  the CEF→GL path: the engine's own <code>--screenshot</code> is black too.</li>
-<li>Some Workshop entries are <strong>presets</strong> or <strong>editor asset packs</strong>, not
-  wallpapers. They live in the same folder and can never render; the picker
-  reads <code>project.json</code> and skips them rather than offering a row that does
-  nothing.</li>
-<li>The occasional scene mis-frames itself (half scale, one quadrant). That is
-  that wallpaper's own <code>camera.projection.isAuto</code> estimate, not a general break.</li>
+<li>A web wallpaper gets the Wallpaper Engine web API it is written against: its
+  properties and the audio spectrum its visualizer draws. It runs in
+  Chromium's sandbox, and the page can load only its own files and the files
+  its properties name.</li>
+<li>A <strong>preset</strong> renders as the wallpaper it re-configures, with its saved
+  settings and its own images and videos. The picker lists it as <code>preset</code>
+  when that wallpaper is subscribed too, and as <code>preset (base missing)</code>, which
+  it does not apply, when it is not.</li>
+<li>An <strong>editor asset pack</strong> is not a wallpaper. The picker lists it as
+  <code>asset (not a wallpaper)</code> and does not apply it.</li>
+<li>A scene with a <strong>perspective</strong> camera (a 3D scene) does not render
+  correctly: the engine draws flat, orthographic scenes only.</li>
 </ul>
 <h3 id="the-engine-cannot-survive-losing-its-surfaces">The engine cannot survive losing its surfaces</h3>
 <p>After a suspend/resume, or a monitor going away and coming back, every screen
