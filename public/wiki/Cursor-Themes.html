@@ -58,6 +58,7 @@
 <p class="wiki-toc-h">On this page</p><ul>
 <li><a href="#quick-start">Quick start</a></li>
 <li><a href="#commands">Commands</a></li>
+<li><a href="#when-the-cursor-hides">When the cursor hides</a></li>
 <li><a href="#the-thing-to-know-opendesktop-ships-two-shapes-that-look-identical">The thing to know: opendesktop ships two shapes that look identical</a></li>
 <li class="sub"><a href="#what-counts-as-a-theme">What counts as a theme</a></li>
 <li><a href="#why-the-picker-has-no-install-button">Why the picker has no install button</a></li>
@@ -72,7 +73,7 @@
       <p class="eyebrow">Customising it</p>
       <h1>Cursor Themes</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Cursor-Themes/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-07-26">2026-07-26</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Cursor-Themes/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-26">2026-10-26</time>
       </p>
 
       <div class="wiki-body">
@@ -109,6 +110,24 @@ directory, and installs into <code>~/.local/share/icons/&lt;name&gt;</code>. A p
 several themes side by side installs all of them.</p>
 <p><code>set</code> refuses a theme that is not installed. Setting a nonexistent one silently
 gives you the fallback X cursor everywhere with nothing explaining why.</p>
+<hr />
+<h2 id="when-the-cursor-hides">When the cursor hides</h2>
+<p>The cursor hides by itself in two places:</p>
+<ul>
+<li><strong>Over a fullscreen window</strong> — a video, a stream, a game — once the pointer
+  has rested on it for 3 seconds. Moving the mouse, clicking, scrolling or a pen
+  brings it straight back; a key does not, so pausing a film from the keyboard
+  keeps the picture clear. Leaving fullscreen brings it back too.</li>
+<li><strong>While the screensaver is up.</strong></li>
+</ul>
+<p>It stays while one of synui's panels is open over the fullscreen window.</p>
+<p>Set the delay in <strong>Control panel ▸ Input ▸ Hide cursor in fullscreen</strong>
+(<code>Super</code>+<code>C</code>), or in <code>synuirc</code>:</p>
+<div class="hl"><pre><span></span><code><span class="na">cursor_hide_fullscreen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">3</span><span class="w">    </span><span class="c1"># seconds, 0-60; 0 never hides it</span>
+</code></pre></div>
+
+<p><code>synctl pointer</code> shows whether it is hidden and why — <code>"hidden":["fullscreen"]</code>
+or <code>"hidden":["screensaver"]</code> — and the image it comes back as.</p>
 <hr />
 <h2 id="the-thing-to-know-opendesktop-ships-two-shapes-that-look-identical">The thing to know: opendesktop ships two shapes that look identical</h2>
 <p>Cursor themes from opendesktop.org / gnome-look.org come in two forms, and
