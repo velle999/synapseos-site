@@ -131,7 +131,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Troubleshooting</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-09-21">2026-09-21</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Troubleshooting/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-26">2026-10-26</time>
       </p>
 
       <div class="wiki-body">
@@ -319,10 +319,16 @@ you on resume; if it ever doesn't:</p>
 running is not the same as painting, which is exactly what makes this one
 confusing. See <a href="/wiki/Wallpapers#the-engine-cannot-survive-losing-its-surfaces">Wallpapers</a>.</p>
 <h3 id="a-workshop-wallpaper-is-just-black">A Workshop wallpaper is just black</h3>
-<p><strong>Web-type wallpapers do not work.</strong> They initialise and then render an empty
-texture — an upstream bug in the engine's CEF→GL path, not something a setting
-here fixes. <code>synui-wpengine list</code> shows each wallpaper's type; pick a <code>scene</code> or
-<code>video</code> one.</p>
+<ul>
+<li><strong>A web wallpaper</strong> needs <code>linux-wallpaperengine</code> 0.1.0-15 or newer. Check
+  with <code>pacman -Q linux-wallpaperengine</code> and update with <code>syn-update apply</code>.</li>
+<li><strong>Some wallpapers start with every part switched off</strong>, to be turned on in
+  Wallpaper Engine's properties panel. The Customizable Module Visualizer is
+  one. Subscribe to a preset of it in the Workshop and apply that;
+  <code>synui-wpengine list</code> shows it as <code>preset</code>.</li>
+<li>Otherwise, read the engine's output in <code>$XDG_RUNTIME_DIR/synui-wpengine.log</code>.
+  It starts over each time the engine starts.</li>
+</ul>
 <h3 id="the-picker-doesnt-list-my-workshop-wallpapers">The picker doesn't list my Workshop wallpapers</h3>
 <p>In order:</p>
 <div class="hl"><pre><span></span><code>pacman<span class="w"> </span>-Q<span class="w"> </span>linux-wallpaperengine<span class="w">                      </span><span class="c1"># is the package installed?</span>
