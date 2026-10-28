@@ -72,7 +72,7 @@
       <p class="eyebrow">Using it</p>
       <h1>Updating</h1>
       <p class="wiki-meta">
-        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-14">2026-10-14</time>
+        <a href="https://github.com/velle999/SYNAPSE/wiki/Updating/_edit" rel="noopener">Edit on GitHub</a> &middot; last edited <time datetime="2026-10-27">2026-10-27</time>
       </p>
 
       <div class="wiki-body">
@@ -170,6 +170,9 @@ is installed, and rebuilds only what changed. Builds go through <code>makepkg</c
 <code>/var/cache/synapseos</code> and rebuilds that repository's index. This matters: without
 it, a later <code>pacman -S synui</code> to repair an install would happily fetch the stale
 version the ISO shipped.</p>
+<p>The version each update replaces moves to <code>/var/cache/synapseos/superseded/</code>,
+which keeps the last two of each package. To go back to one:
+<code>sudo pacman -U /var/cache/synapseos/superseded/&lt;file&gt;</code>.</p>
 <p>The source tree is chowned to the user who invoked the command, because <code>makepkg</code>
 refuses to run as root.</p>
 <h3 id="only-signed-commits-are-built">Only signed commits are built</h3>
